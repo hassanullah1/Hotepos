@@ -1,4 +1,6 @@
+/* globals.css */
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
@@ -30,4 +32,29 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+/* Dark mode select options */
+select option {
+  background-color: #1a1a2e; /* dark background */
+  color: #ffffff; /* white text */
+}
+/* For light mode, you can keep the default or style explicitly */
+select option:checked {
+  background-color: #0d9488; /* teal highlight when selected */
+}
+
+@keyframes slide-start-to-end {
+  from {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+  }
+  to {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+}
+
+.animate-slide {
+  animation: slide-start-to-end 12s ease-in-out infinite alternate;
 }
