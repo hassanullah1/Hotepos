@@ -1,28 +1,27 @@
 // app/api/upload/route.js
-import { put } from "@vercel/blob";
+import { handleUpload } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
+  const body = await request.json();
+
   try {
-    const formData = await request.formData();
-    const files = formData.getAll("files");
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => {
+        return {
+          allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
+          addRandomSuffix: true,
+        };
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log("Upload completed:", blob.url);
+      },
+    });
 
-    if (!files.length) {
-      return NextResponse.json({ error: "No files provided" }, { status: 400 });
-    }
-
-    const uploads = await Promise.all(
-      files.map(async (file) => {
-        const blob = await put(`vehicles/${Date.now()}-${file.name}`, file, {
-          access: "public",
-        });
-        return blob.url;
-      }),
-    );
-
-    return NextResponse.json({ urls: uploads });
-  } catch (err) {
-    console.error("Upload error:", err);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    return NextResponse.json(jsonResponse);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }

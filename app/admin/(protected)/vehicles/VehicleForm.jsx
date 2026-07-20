@@ -1,5 +1,5 @@
 "use client";
-
+import { upload } from "@vercel/blob/client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -77,19 +77,18 @@ export default function VehicleForm({ vehicle }) {
     setError(null);
     setUploading(true);
 
-    const body = new FormData();
-    files.forEach((file) => body.append("files", file));
-
     try {
-      const res = await fetch("/api/upload", { method: "POST", body });
-      const data = await res.json();
-      if (res.ok) {
-        setImages((prev) => [...prev, ...data.urls]);
-      } else {
-        setError(data.error || t.common.error);
+      const uploadedUrls = [];
+      for (const file of files) {
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+        });
+        uploadedUrls.push(blob.url);
       }
-    } catch {
-      setError(t.common.error);
+      setImages((prev) => [...prev, ...uploadedUrls]);
+    } catch (err) {
+      setError(err.message || t.common.error);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
