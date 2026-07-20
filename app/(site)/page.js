@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ArrowLeft,
 } from "lucide-react";
+import LoadingScreen from "@/components/LoadingScreen";
 
 // Localized static text
 const pageText = {
@@ -32,6 +33,7 @@ const pageText = {
     categoryLabel: "Category",
     viewDetails: "select ",
     selectCue: "Select a category below to get started",
+    loading: "Getting things moving",
   },
   ps: {
     welcome: "کوهستان لوژستیک خدماتو ته ښه راغلاست",
@@ -40,6 +42,7 @@ const pageText = {
     categoryLabel: "کټګورۍ",
     viewDetails: "وټاکي",
     selectCue: "د پیل کولو لپاره لاندې یوه کټګورۍ وټاکئ",
+    loading: "چمتووالی روان دی",
   },
   prs: {
     welcome: "به خدمات لوژستیک کوهستان خوش آمدید",
@@ -48,6 +51,7 @@ const pageText = {
     categoryLabel: "دسته‌بندی",
     viewDetails: "  انتخاب کړي",
     selectCue: "برای شروع، یک دسته‌بندی را از پایین انتخاب کنید",
+    loading: "در حال آماده شدن",
   },
 };
 
@@ -326,17 +330,16 @@ export default function Home() {
 
   // ---------- Loading state ----------
   // Shown until the client has mounted (avoids any flash of footer/empty
-  // content before the real page + hero slider render).
+  // content before the real page + hero slider render). Reusable, responsive
+  // component — see components/LoadingScreen.jsx.
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 to-gray-100 dark:from-black dark:to-zinc-900">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full border-4 border-blue-200 dark:border-blue-500/20 border-t-blue-500 dark:border-t-blue-400 animate-spin" />
-          <p className="text-sm font-medium text-gray-400 dark:text-gray-500">
-            Loading…
-          </p>
-        </div>
-      </div>
+      <LoadingScreen
+        text={pageText.en.loading}
+        brandName="KOHISTAN"
+        subtitle="Logistic Services"
+        size="md"
+      />
     );
   }
 
