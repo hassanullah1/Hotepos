@@ -6,7 +6,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.pixabay.com",
         port: "",
-        pathname: "/**", // allows all paths under this hostname
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
