@@ -2,9 +2,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { vehiclesData } from "@/data/icons";
 import { sliderData } from "@/data/sliderData";
 import {
@@ -20,6 +20,7 @@ import {
   Play,
   MousePointerClick,
   ChevronDown,
+  ArrowLeft,
 } from "lucide-react";
 
 // Localized static text
@@ -29,8 +30,7 @@ const pageText = {
     footer: "Tap a card for details – local vehicle images",
     tapHint: "Tap to explore",
     categoryLabel: "Category",
-    viewDetails: "View Full Details",
-    close: "Close",
+    viewDetails: "select ",
     selectCue: "Select a category below to get started",
   },
   ps: {
@@ -38,8 +38,7 @@ const pageText = {
     footer: "د تفصیلاتو لپاره په کارت کلیک وکړئ – د موټر محلي انځورونه",
     tapHint: "د معلوماتو لپاره کلیک وکړئ",
     categoryLabel: "کټګورۍ",
-    viewDetails: "بشپړ توضیحات وګورئ",
-    close: "بندول",
+    viewDetails: "وټاکي",
     selectCue: "د پیل کولو لپاره لاندې یوه کټګورۍ وټاکئ",
   },
   prs: {
@@ -47,8 +46,7 @@ const pageText = {
     footer: "برای جزئیات روی کارت کلیک کنید – تصاویر محلی وسایط",
     tapHint: "برای مشاهده کلیک کنید",
     categoryLabel: "دسته‌بندی",
-    viewDetails: "مشاهده جزئیات کامل",
-    close: "بستن",
+    viewDetails: "  انتخاب کړي",
     selectCue: "برای شروع، یک دسته‌بندی را از پایین انتخاب کنید",
   },
 };
@@ -316,32 +314,15 @@ function SelectCue({ text, dismissed }) {
 
 export default function Home() {
   const { language } = useLanguage();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
 
-  // The "pinned" vehicle persists after the quick-view modal closes — it's what
-  // the badge in front of the slider jumps to. Separate from selectedVehicle
-  // (which only controls the modal) so closing the modal doesn't lose the pin.
+  // The "pinned" vehicle is what the badge in front of the slider jumps to.
   const [pinnedVehicle, setPinnedVehicle] = useState(null);
   const cardRefs = useRef({});
-  const closeButtonRef = useRef(null);
 
   useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    if (!selectedVehicle) return;
-    document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setSelectedVehicle(null);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selectedVehicle]);
 
   // ---------- Loading state ----------
   // Shown until the client has mounted (avoids any flash of footer/empty
@@ -363,13 +344,13 @@ export default function Home() {
   const slides = sliderData[language] || sliderData.en;
   const text = pageText[language] || pageText.en;
   const lang = pageText[language] ? language : "en";
+  const isRTL = lang === "ps" || lang === "prs";
 
-  const category = selectedVehicle ? vehicleCategory[selectedVehicle.id] : null;
-
+  // Click a card -> pin it (for the badge) and go straight to the detail page.
   const selectVehicle = (vehicle) => {
-    setSelectedVehicle(vehicle);
     setPinnedVehicle(vehicle);
     setHasSelectedOnce(true);
+    router.push(`/${vehicle.id}`);
   };
 
   const jumpToPinned = () => {
@@ -492,18 +473,18 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Category badge */}
-                {cat && (
-                  <span
-                    className={`mt-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r ${vehicle.color} text-white text-[11px] font-semibold px-2.5 py-1 shadow-sm`}
-                  >
-                    {cat.label[lang] || cat.label.en}
-                  </span>
-                )}
-
-                <div className="mt-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 text-[11px] text-blue-500 font-medium">
-                  {text.tapHint}
-                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectVehicle(vehicle);
+                  }}
+                  className={`mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${vehicle.color} text-white text-xs font-semibold px-4 py-2 shadow-sm hover:opacity-90 hover:shadow-md transition-all`}
+                >
+                  {text.viewDetails}
+                  {isRTL && <ArrowLeft size={13} />}
+                  {!isRTL && <ArrowRight size={13} />}
+                </button>
               </div>
             );
           })}
@@ -513,88 +494,6 @@ export default function Home() {
           <p>{text.footer}</p>
         </div>
       </div>
-
-      {/* Quick-view modal — confirms category, then routes to full details */}
-      {selectedVehicle && category && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedVehicle(null);
-          }}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="vehicle-modal-title"
-            className="relative w-full max-w-sm bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200"
-          >
-            <div
-              className={`relative h-24 bg-gradient-to-br ${selectedVehicle.color}`}
-            >
-              <button
-                ref={closeButtonRef}
-                onClick={() => setSelectedVehicle(null)}
-                aria-label={text.close}
-                className="absolute top-3 right-3 p-1.5 rounded-full bg-black/20 hover:bg-black/30 text-white transition"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="flex justify-center -mt-12">
-              <div className="relative w-24 h-24 rounded-full overflow-hidden ring-4 ring-white dark:ring-gray-900 shadow-lg bg-white dark:bg-gray-800">
-                <Image
-                  src={selectedVehicle.imageUrl}
-                  alt={selectedVehicle.name}
-                  fill
-                  className="object-cover"
-                  sizes="96px"
-                />
-              </div>
-            </div>
-
-            <div className="px-6 pb-6 pt-3 text-center">
-              <h3
-                id="vehicle-modal-title"
-                className="text-xl font-bold text-gray-800 dark:text-white"
-              >
-                {selectedVehicle.name}
-              </h3>
-              {selectedVehicle.description && (
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  {selectedVehicle.description}
-                </p>
-              )}
-
-              <div className="mt-4 flex justify-center">
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${selectedVehicle.color} text-white text-sm font-semibold px-4 py-1.5 shadow-sm`}
-                >
-                  <category.icon size={15} />
-                  {text.categoryLabel}:{" "}
-                  {category.label[lang] || category.label.en}
-                </span>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                <button
-                  onClick={() => setSelectedVehicle(null)}
-                  className="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                >
-                  {text.close}
-                </button>
-                <Link
-                  href={`/${selectedVehicle.id}`}
-                  className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r ${selectedVehicle.color} text-white text-sm font-semibold shadow-sm hover:opacity-90 transition`}
-                >
-                  {text.viewDetails}
-                  <ArrowRight size={15} />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -331,6 +331,7 @@ export default function VehicleForm({ vehicle }) {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={url} alt="" className="h-full w-full object-cover" />
+
                 <button
                   type="button"
                   onClick={() => removeImage(url)}
