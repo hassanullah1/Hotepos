@@ -3,7 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
-import { Users, Package, Droplet, Wrench, Snowflake, ArrowUpRight } from "lucide-react";
+import {
+  Users,
+  Package,
+  Droplet,
+  Wrench,
+  Snowflake,
+  ArrowUpRight,
+  MapPin,
+} from "lucide-react";
 
 const capacityConfig = {
   taxi: { icon: Users, label: "Seats" },
@@ -14,16 +22,21 @@ const capacityConfig = {
 };
 
 function VehicleCard({ vehicle, priority = false }) {
-  const config = capacityConfig[vehicle.type] || { icon: Package, label: "Capacity" };
+  console.log(vehicle);
+  const config = capacityConfig[vehicle.type] || {
+    icon: Package,
+    label: "Capacity",
+  };
   const CapIcon = config.icon;
   const capacityDisplay =
-    vehicle.type === "tanker" ? vehicle.capacityValue?.toLocaleString() : vehicle.capacityValue;
+    vehicle.type === "tanker"
+      ? vehicle.capacityValue?.toLocaleString()
+      : vehicle.capacityValue;
 
   return (
     <Link href={`/${vehicle.type}/${vehicle.id}`} prefetch={false}>
       <div className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer border border-gray-100 dark:border-gray-700">
-        {/* Image — only ONE image ever ships for a card; priority is limited
-            to the first row so we don't force-load everything above the fold at once */}
+        {/* Image */}
         <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
           {vehicle.image ? (
             <Image
@@ -48,7 +61,15 @@ function VehicleCard({ vehicle, priority = false }) {
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate">{vehicle.name}</h3>
+          <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate">
+            {vehicle.name}
+          </h3>
+
+          {/* 👇 Province */}
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <MapPin size={14} className="shrink-0" />
+            <span>{vehicle.province?.name || "Location not set"}</span>
+          </div>
 
           <div className="mt-2.5 flex flex-wrap gap-1.5">
             {vehicle.ac !== null && vehicle.ac !== undefined && (
@@ -86,6 +107,4 @@ function VehicleCard({ vehicle, priority = false }) {
   );
 }
 
-// Memoized so appending pages during infinite scroll doesn't re-render
-// every existing card, only the new ones.
 export default memo(VehicleCard);

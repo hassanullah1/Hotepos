@@ -13,17 +13,17 @@ const translations = {
   },
   ps: {
     // Pashto
-    brand: "کوهستان لجستیک",
+    brand: "کوهستان لوژستیک",
     home: "کور",
     about: "درباره",
-    footer: "© {year} کوهستان لجستیک",
+    footer: "© {year} کوهستان لوژستیک",
   },
   prs: {
     // Dari (Persian Afghan)
-    brand: "کوهستان لجستیک",
+    brand: "کوهستان لوژستیک",
     home: "خانه",
     about: "درباره ما",
-    footer: "© {year} کوهستان لجستیک",
+    footer: "© {year} کوهستان لوژستیک",
   },
 };
 

@@ -86,6 +86,12 @@ export async function GET(request) {
         fuelType: true,
         pricePerDay: true,
         images: true,
+        province: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         taxi:
           type === "TAXI" || !type
             ? { select: { ac: true, seats: true } }
@@ -111,9 +117,18 @@ export async function GET(request) {
 
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
-    const items = page.map((v) =>
-      serializeVehicleListItem({ ...v, images: v.images.slice(0, 1) }),
-    );
+    const items = page.map((v) => {
+      const serialized = serializeVehicleListItem({
+        ...v,
+        images: v.images.slice(0, 1),
+      });
+      return {
+        ...serialized,
+        province: v.province
+          ? { id: v.province.id, name: v.province.name }
+          : null,
+      };
+    });
 
     return NextResponse.json(
       { items, nextCursor: hasMore ? page[page.length - 1].id : null },
