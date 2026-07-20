@@ -95,8 +95,23 @@ export default function VehicleForm({ vehicle }) {
     }
   }
 
-  function removeImage(url) {
+  async function removeImage(url) {
+    // Optimistically remove from UI first
     setImages((prev) => prev.filter((u) => u !== url));
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || t.common.error);
+      }
+    } catch {
+      setError(t.common.error);
+    }
   }
 
   async function handleSubmit(e) {
