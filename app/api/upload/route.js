@@ -9,19 +9,20 @@ export async function POST(request) {
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async () => {
+      onBeforeGenerateToken: async (pathname) => {
         return {
           allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
           addRandomSuffix: true,
         };
       },
-      onUploadCompleted: async ({ blob }) => {
-        console.log("Upload completed:", blob.url);
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        console.log("blob upload completed", blob, tokenPayload);
       },
     });
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
+    console.error("Blob token error:", error);
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
