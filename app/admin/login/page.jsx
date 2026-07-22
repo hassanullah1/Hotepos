@@ -24,7 +24,7 @@ const LANGS = [
 const COPY = {
   en: {
     dir: "ltr",
-    brand: "KOHISTAN",
+    brand: "Rawan",
     brandSub: "LOGISTIC",
     tagline:
       "Fleet and dispatch operations, from the valley floor to the pass.",
@@ -45,10 +45,10 @@ const COPY = {
   },
   ps: {
     dir: "rtl",
-    brand: "کوهستان",
+    brand: "روان",
     brandSub: "لوژستیک",
     tagline: "د بېړيو او لېږد چارې، د درې څخه تر غره پورې.",
-    routeLabel: "لاره ۰۷ · کوهستان ⇌ مرکز",
+    routeLabel: "لاره ۰۷ · روان ⇌ مرکز",
     statusLabel: "سیسټمونه فعال دي",
     heading: "د اډمین ننوتل",
     subheading: "د بېړۍ، موټرچلوونکو او لېږد اداره کولو لپاره ننوځئ.",
@@ -65,10 +65,10 @@ const COPY = {
   },
   fa: {
     dir: "rtl",
-    brand: "کوهستان",
+    brand: "روان",
     brandSub: "لوژیستیک",
     tagline: "عملیات ناوگان و ارسال، از دشت تا گردنه.",
-    routeLabel: "مسیر ۰۷ · کوهستان ⇌ مرکز",
+    routeLabel: "مسیر ۰۷ · روان ⇌ مرکز",
     statusLabel: "سیستم‌ها فعال است",
     heading: "دسترسی ادمین",
     subheading: "برای مدیریت ناوگان، رانندگان و ارسال وارد شوید.",

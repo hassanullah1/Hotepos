@@ -97,23 +97,18 @@ export default function HeaderClient() {
               href="/"
               className="flex items-center gap-2.5 group flex-shrink-0"
             >
-              <div className="relative w-9 h-9 md:w-11 md:h-11 rounded-2xl bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-600 p-[2px] shadow-md shadow-blue-500/20 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105">
-                <div className="w-full h-full rounded-[14px] overflow-hidden bg-white dark:bg-slate-950">
+              <div className="relative w-9 h-9 md:w-11 md:h-11 rounded-full bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-600 p-[2px]">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-slate-950">
                   <Image
-                    src="/kohistan.png"
-                    alt="Kohistan Logistic Logo"
+                    src="/rawan.png"
+                    alt="Rawan Logistic Logo"
                     width={44}
                     height={44}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* Little "live tracking" pulse dot — a nod to logistics/routes */}
-                <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500 border-2 border-white dark:border-slate-950"></span>
-                </span>
               </div>
-              <span className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-700 dark:from-white dark:via-blue-200 dark:to-teal-200 bg-clip-text text-transparent whitespace-nowrap">
+              <span className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-teal-700 dark:from-white dark:via-blue-200 dark:to-teal-200 bg-clip-text text-transparent whitespace-nowrap">
                 {t("brand")}
               </span>
             </Link>
@@ -298,7 +293,7 @@ export default function HeaderClient() {
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-600 p-[2px]">
                   <div className="w-full h-full rounded-[10px] overflow-hidden bg-white dark:bg-slate-950">
                     <Image
-                      src="/kohistan.png"
+                      src="/rawan.png"
                       alt=""
                       width={32}
                       height={32}

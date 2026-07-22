@@ -28,7 +28,7 @@ const RTL_SCRIPT_RE =
  *                                                  simulated progress value eases up toward 90% on its
  *                                                  own, for when there's no real progress to report.
  * @param {boolean} [props.showPercentage=true]    Toggle the "NN%" readout off if you only want the caption.
- * @param {string}  [props.brandName="KOHISTAN"]   Main wordmark line.
+ * @param {string}  [props.brandName="RAWAN"]   Main wordmark line.
  * @param {string}  [props.subtitle="Logistic Services"] Small wordmark subtitle line.
  * @param {"sm"|"md"|"lg"} [props.size="md"]       Overall scale of the component.
  * @param {boolean} [props.fullScreen=true]        If true, fills the viewport and centers itself.
@@ -39,7 +39,7 @@ export default function LoadingScreen({
   text = "Please wait",
   progress,
   showPercentage = true,
-  brandName = "KOHISTAN",
+  brandName = "RAWAN",
   subtitle = "Logistic Services",
   size = "md",
   fullScreen = true,
@@ -125,8 +125,8 @@ export default function LoadingScreen({
             >
               <div className="relative h-full w-full rounded-full overflow-hidden">
                 <Image
-                  src="/kohistan.png"
-                  alt="Kohistan Logistic Logo"
+                  src="/rawan.png"
+                  alt="Rawan Logistic Logo"
                   fill
                   sizes={`${sizes.logoIcon}px`}
                   className="object-cover"

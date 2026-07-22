@@ -6,24 +6,24 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
-    brand: "Kohistan Logistic",
+    brand: "RAWAN Logistic",
     home: "Home",
     about: "About",
-    footer: "© {year} Kohistan Logistic",
+    footer: "© {year} Rawan Logistic",
   },
   ps: {
     // Pashto
-    brand: "کوهستان لوژستیک",
+    brand: "روان لوژستیک",
     home: "کور",
     about: "درباره",
-    footer: "© {year} کوهستان لوژستیک",
+    footer: "© {year} روان لوژستیک",
   },
   prs: {
     // Dari (Persian Afghan)
-    brand: "کوهستان لوژستیک",
+    brand: "روان لوژستیک",
     home: "خانه",
     about: "درباره ما",
-    footer: "© {year} کوهستان لوژستیک",
+    footer: "© {year} روان لوژستیک",
   },
 };
 

@@ -100,7 +100,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <h2 className="text-xl font-extrabold tracking-tight">
-              Kohistan <span className="text-amber-400">Logistics</span>
+              Rawan <span className="text-amber-400">Logistics</span>
             </h2>
             <p className="mt-3 text-sm text-teal-100/80 max-w-xs leading-relaxed">
               {text.tagline}
@@ -196,10 +196,10 @@ export default function Footer() {
               <li className="flex items-center gap-2.5">
                 <Mail size={15} className="shrink-0 text-amber-400" />
                 <a
-                  href="mailto:info@kohistanlogistics.com"
+                  href="mailto:info@rawanlogistics.com"
                   className="hover:text-white transition break-all"
                 >
-                  info@kohistanlogistics.com
+                  info@rawanlogistics.com
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
@@ -213,7 +213,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-teal-100/60">
           <p>
-            © {new Date().getFullYear()} Kohistan Logistics. {text.rights}
+            © {new Date().getFullYear()} Rawan Logistics. {text.rights}
           </p>
         </div>
       </div>

@@ -36,7 +36,7 @@ const pageText = {
     loading: "Getting things moving",
   },
   ps: {
-    welcome: "کوهستان لوژستیک خدماتو ته ښه راغلاست",
+    welcome: "روان لوژستیک خدماتو ته ښه راغلاست",
     footer: "د تفصیلاتو لپاره په کارت کلیک وکړئ – د موټر محلي انځورونه",
     tapHint: "د معلوماتو لپاره کلیک وکړئ",
     categoryLabel: "کټګورۍ",

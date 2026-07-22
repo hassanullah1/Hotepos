@@ -9,7 +9,7 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const email = "admin@kohistanlogistic.com";
+  const email = "admin@rawanlogistic.com";
   const plainPassword = "ChangeMe123!"; // change this after first login
 
   const existing = await prisma.user.findUnique({ where: { email } });
