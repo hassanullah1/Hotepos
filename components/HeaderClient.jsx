@@ -14,7 +14,133 @@ import {
   X,
   Check,
   MapPin,
+  Clock,
+  Truck,
+  MessageCircle,
 } from "lucide-react";
+
+// WhatsApp number (no + or spaces, country code included)
+const WHATSAPP_NUMBER = "93731574174";
+
+// Vehicle types — labelKey maps to your LanguageContext translations
+const VEHICLE_OPTIONS = [
+  { id: "dump-truck", labelKey: "vehicleDumpTruck" },
+  { id: "body-truck", labelKey: "vehicleBodyTruck" },
+  { id: "excavator", labelKey: "vehicleExcavator" },
+  { id: "tanker", labelKey: "vehicleTanker" },
+  { id: "taxi", labelKey: "vehicleTaxi" },
+  { id: "rental", labelKey: "vehicleRental" },
+];
+
+function BookingModal({ open, onClose, t }) {
+  const [vehicle, setVehicle] = useState(VEHICLE_OPTIONS[0].id);
+  const [message, setMessage] = useState("");
+
+  if (!open) return null;
+
+  const handleSend = () => {
+    const vehicleLabel =
+      t(VEHICLE_OPTIONS.find((v) => v.id === vehicle)?.labelKey) || vehicle;
+    const text = `${t("whatsappGreeting")} *${vehicleLabel}*.${
+      message.trim()
+        ? `\n\n${t("whatsappDetailsLabel")}: ${message.trim()}`
+        : ""
+    }`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      text,
+    )}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700 p-6 animate-in zoom-in-95 fade-in duration-200 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center">
+              <MessageCircle size={18} className="text-green-500" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+              {t("registerVehicleTitle")}
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Vehicle radio options — grid so 6 items fit nicely */}
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {VEHICLE_OPTIONS.map((opt) => {
+            const active = vehicle === opt.id;
+            return (
+              <label
+                key={opt.id}
+                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-colors ${
+                  active
+                    ? "border-teal-500 bg-teal-50 dark:bg-teal-500/10"
+                    : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="vehicle"
+                  value={opt.id}
+                  checked={active}
+                  onChange={() => setVehicle(opt.id)}
+                  className="w-4 h-4 accent-teal-500 flex-shrink-0"
+                />
+                <Truck
+                  size={15}
+                  className={`flex-shrink-0 ${active ? "text-teal-500" : "text-slate-400"}`}
+                />
+                <span
+                  className={`text-xs sm:text-sm font-medium truncate ${
+                    active
+                      ? "text-teal-700 dark:text-teal-300"
+                      : "text-slate-700 dark:text-slate-200"
+                  }`}
+                >
+                  {t(opt.labelKey)}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+
+        {/* Message box */}
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder={t("registerVehiclePlaceholder")}
+          rows={3}
+          className="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 px-4 py-3 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 mb-4"
+        />
+
+        {/* Send button */}
+        <button
+          onClick={handleSend}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold py-3 transition-colors"
+        >
+          <MessageCircle size={18} />
+          {t("sendViaWhatsapp")}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function HeaderClient() {
   const { theme, setTheme } = useTheme();
@@ -22,6 +148,7 @@ export default function HeaderClient() {
   const [mounted, setMounted] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const desktopLangRef = useRef(null);
   const mobileLangRef = useRef(null);
@@ -51,13 +178,14 @@ export default function HeaderClient() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll while the mobile drawer is open
+  // Lock body scroll while the mobile drawer or booking modal is open
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+    document.body.style.overflow =
+      isMobileMenuOpen || isBookingOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isBookingOpen]);
 
   if (!mounted) return null;
 
@@ -108,9 +236,16 @@ export default function HeaderClient() {
                   />
                 </div>
               </div>
-              <span className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-teal-700 dark:from-white dark:via-blue-200 dark:to-teal-200 bg-clip-text text-transparent whitespace-nowrap">
-                {t("brand")}
-              </span>
+              <div className="flex flex-col leading-tight">
+                <span className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-teal-700 dark:from-white dark:via-blue-200 dark:to-teal-200 bg-clip-text text-transparent whitespace-nowrap">
+                  {t("brand")}
+                </span>
+                {/* 24/7 badge */}
+                <span className="hidden sm:flex items-center gap-1 text-[10px] md:text-[11px] font-semibold text-teal-600 dark:text-teal-300">
+                  <Clock size={11} className="animate-pulse" />
+                  {t("available247")}
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation & Controls */}
@@ -127,6 +262,15 @@ export default function HeaderClient() {
                   </Link>
                 ))}
               </nav>
+
+              {/* Register Vehicle Button */}
+              <button
+                onClick={() => setIsBookingOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500 hover:bg-green-600 text-white text-sm font-semibold shadow-sm shadow-green-500/30 transition-colors"
+              >
+                <Truck size={16} />
+                {t("registerVehicle")}
+              </button>
 
               {/* Language Dropdown (desktop) */}
               <div className="relative" ref={desktopLangRef}>
@@ -207,8 +351,17 @@ export default function HeaderClient() {
               </button>
             </div>
 
-            {/* Mobile: Language + Dark Mode + Hamburger */}
+            {/* Mobile: Register Vehicle + Language + Dark Mode + Hamburger */}
             <div className="flex md:hidden items-center gap-1.5">
+              {/* Register Vehicle Button (mobile, icon only) */}
+              <button
+                onClick={() => setIsBookingOpen(true)}
+                aria-label={t("registerVehicle")}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-green-500 hover:bg-green-600 text-white transition-colors"
+              >
+                <Truck size={15} />
+              </button>
+
               {/* Language selector (simplified on mobile) */}
               <div className="relative" ref={mobileLangRef}>
                 <button
@@ -275,6 +428,14 @@ export default function HeaderClient() {
               </button>
             </div>
           </div>
+
+          {/* 24/7 badge (mobile, shown below logo row) */}
+          <div className="flex sm:hidden items-center gap-1 pb-2 -mt-1">
+            <Clock size={11} className="text-teal-500 animate-pulse" />
+            <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-300">
+              {t("available247")}
+            </span>
+          </div>
         </div>
       </header>
 
@@ -329,6 +490,17 @@ export default function HeaderClient() {
                   {link.label}
                 </Link>
               ))}
+              {/* Register Vehicle link in mobile drawer too */}
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  setIsBookingOpen(true);
+                }}
+                className="flex items-center gap-2.5 text-white bg-green-500 hover:bg-green-600 font-semibold py-3 px-3 rounded-xl transition-colors mt-2"
+              >
+                <Truck size={16} />
+                {t("registerVehicle")}
+              </button>
             </nav>
             <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 dark:text-slate-500">
               {currentLang?.flag} {currentLang?.label}
@@ -336,6 +508,13 @@ export default function HeaderClient() {
           </div>
         </div>
       )}
+
+      {/* Booking Modal */}
+      <BookingModal
+        open={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        t={t}
+      />
     </>
   );
 }
