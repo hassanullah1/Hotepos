@@ -5,21 +5,120 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import VehicleCard from "@/components/admin/VehicleCard";
 import { Search, SlidersHorizontal, Snowflake } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext"; // <-- NEW
 
+// -------------------- LOCALIZED TEXTS --------------------
+const pageText = {
+  en: {
+    title: "Fleet",
+    subtitle: "Choose the perfect {type} for your job",
+    searchPlaceholder: "Search by name...",
+    capacityAny: "Any",
+    acOnly: "AC only",
+    usageLabel: "Type",
+    usageBoth: "Both",
+    usageTaxi: "Taxi",
+    usageRental: "Rental",
+    noVehicles: "No vehicles found. Try adjusting filters.",
+    loadMore: "Load more",
+    loading: "Loading...",
+    error: "Failed to load vehicles",
+    typeNotFound: "Vehicle type not found",
+    backHome: "Back to home",
+  },
+  ps: {
+    title: "بیړۍ",
+    subtitle: "د خپل کار لپاره مناسب {type} غوره کړئ",
+    searchPlaceholder: "په نوم وپلټئ...",
+    capacityAny: "هر ډول",
+    acOnly: "یوازې یخچال",
+    usageLabel: "ډول",
+    usageBoth: "دواړه",
+    usageTaxi: "ټکسي",
+    usageRental: "کرایه",
+    noVehicles: "هیڅ موټر ونه موندل شو. فلټرونه تنظیم کړئ.",
+    loadMore: "نور بار کړئ",
+    loading: "بارېږي...",
+    error: "د موټرو بارول ناکام شول",
+    typeNotFound: "د موټر ډول ونه موندل شو",
+    backHome: "بیرته کور ته",
+  },
+  prs: {
+    title: "ناوگان",
+    subtitle: "{type} مناسب برای کار خود را انتخاب کنید",
+    searchPlaceholder: "جستجو بر اساس نام...",
+    capacityAny: "هر نوع",
+    acOnly: "فقط تهویه",
+    usageLabel: "نوع",
+    usageBoth: "هر دو",
+    usageTaxi: "تاکسی",
+    usageRental: "اجاره‌ای",
+    noVehicles: "هیچ وسیله‌ای یافت نشد. فیلترها را تنظیم کنید.",
+    loadMore: "بارگذاری بیشتر",
+    loading: "در حال بارگذاری...",
+    error: "بارگذاری وسایل نقلیه ناموفق بود",
+    typeNotFound: "نوع وسیله نقلیه یافت نشد",
+    backHome: "بازگشت به صفحه اصلی",
+  },
+};
+
+// -------------------- VEHICLE TYPE NAMES --------------------
+const vehicleTypeNames = {
+  en: {
+    taxi: "Taxi",
+    truck: "Truck",
+    "dump-truck": "Dump Truck",
+    tanker: "Tanker",
+    loader: "Loader",
+  },
+  ps: {
+    taxi: "ټکسي",
+    truck: "لارۍ",
+    "dump-truck": "ډمپ لارۍ",
+    tanker: "ټانکر",
+    loader: "لوډر",
+  },
+  prs: {
+    taxi: "تاکسی",
+    truck: "کامیون",
+    "dump-truck": "کامیون کمپرسی",
+    tanker: "تانکر",
+    loader: "لودر",
+  },
+};
+
+// -------------------- CAPACITY LABELS (localized) --------------------
+const CAPACITY_LABEL = {
+  taxi: { en: "Min seats", ps: "لږترلږه څوکۍ", prs: "حداقل صندلی" },
+  truck: {
+    en: "Min load (tons)",
+    ps: "لږترلږه بار (ټنه)",
+    prs: "حداقل بار (تن)",
+  },
+  "dump-truck": {
+    en: "Min payload (tons)",
+    ps: "لږترلږه پېی لوډ (ټنه)",
+    prs: "حداقل محموله (تن)",
+  },
+  tanker: {
+    en: "Min capacity (liters)",
+    ps: "لږترلږه ظرفیت (لیتر)",
+    prs: "حداقل ظرفیت (لیتر)",
+  },
+  loader: {
+    en: "Min bucket (m³)",
+    ps: "لږترلږه باکت (متر مکعب)",
+    prs: "حداقل باکت (متر مکعب)",
+  },
+};
+
+// -------------------- STATIC CONFIG --------------------
 const HERO_IMAGE = {
   taxi: "/images/taxi2.png",
   "dump-truck": "/images/du.png",
   tanker: "/images/tan.png",
   loader: "/images/ex.png",
   truck: "/images/tr.png",
-};
-
-const CAPACITY_LABEL = {
-  taxi: "Min seats",
-  truck: "Min load (tons)",
-  "dump-truck": "Min payload (tons)",
-  tanker: "Min capacity (liters)",
-  loader: "Min bucket (m³)",
 };
 
 const CAPACITY_OPTIONS = {
@@ -36,13 +135,22 @@ const AC_CAPABLE_SLUGS = new Set(["taxi"]);
 
 export default function VehicleList() {
   const { vehicleType } = useParams();
+  const { language } = useLanguage(); // <-- NEW
+
+  const text = pageText[language] || pageText.en;
+  const typeNameMap = vehicleTypeNames[language] || vehicleTypeNames.en;
+  const capacityLabel =
+    CAPACITY_LABEL[vehicleType]?.[language] ||
+    CAPACITY_LABEL[vehicleType]?.en ||
+    "Capacity";
+
   const isKnownType = Boolean(CAPACITY_LABEL[vehicleType]);
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [minCapacity, setMinCapacity] = useState(0);
   const [acOnly, setAcOnly] = useState(false);
-  const [usage, setUsage] = useState(null); // null, "taxi", "rental"
+  const [usage, setUsage] = useState(null);
 
   const [items, setItems] = useState([]);
   const [nextCursor, setNextCursor] = useState(null);
@@ -53,7 +161,7 @@ export default function VehicleList() {
   const abortRef = useRef(null);
   const sentinelRef = useRef(null);
 
-  // Debounce free-text search
+  // Debounce
   useEffect(() => {
     const t = setTimeout(
       () => setSearch(searchInput.trim()),
@@ -74,7 +182,7 @@ export default function VehicleList() {
         ...(search && { search }),
         ...(minCapacity > 0 && { minCapacity: String(minCapacity) }),
         ...(acOnly && { ac: "true" }),
-        ...(usage && { usage }), // <-- new filter
+        ...(usage && { usage }),
         ...(cursor && { cursor }),
       });
 
@@ -87,7 +195,7 @@ export default function VehicleList() {
     [vehicleType, search, minCapacity, acOnly, usage],
   );
 
-  // Reset and fetch when any filter changes
+  // Reset on filter changes
   useEffect(() => {
     if (!isKnownType) return;
     let cancelled = false;
@@ -122,7 +230,7 @@ export default function VehicleList() {
     }
   }, [nextCursor, loadingMore, fetchPage]);
 
-  // Infinite scroll observer
+  // Intersection observer
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
@@ -138,27 +246,27 @@ export default function VehicleList() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-            Vehicle type not found
+            {text.typeNotFound}
           </h1>
           <a
             href="/"
             className="text-teal-600 dark:text-teal-400 underline mt-4 block"
           >
-            Back to home
+            {text.backHome}
           </a>
         </div>
       </div>
     );
   }
 
-  const displayType =
-    vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1);
+  // The display name of the current vehicle type
+  const displayType = typeNameMap[vehicleType] || vehicleType;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
       {/* Hero banner */}
       <div className="relative isolate overflow-hidden bg-gradient-to-br from-teal-600 to-teal-800 dark:from-teal-800 dark:to-teal-950">
-        <div className="pointer-events-none absolute end-3 -top-20 w-full sm:w-120 sm:h-80 opacity-[0.75] rotate-12 rtl:rotate-[-12deg] rtl:-scale-x-100">
+        <div className="pointer-events-none absolute -end-4 -top-20 w-full sm:w-120 sm:h-80 opacity-[0.75] rotate-12 rtl:rotate-[-12deg] rtl:-scale-x-100">
           <Image
             src={HERO_IMAGE[vehicleType]}
             alt=""
@@ -177,10 +285,10 @@ export default function VehicleList() {
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
-            {displayType} fleet
+            {displayType} {text.title}
           </h1>
           <p className="mt-3 text-teal-100 text-sm sm:text-base max-w-md">
-            Choose the perfect {vehicleType} for your job
+            {text.subtitle.replace("{type}", displayType)}
           </p>
         </div>
       </div>
@@ -195,7 +303,7 @@ export default function VehicleList() {
             />
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder={text.searchPlaceholder}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="ps-9 pe-3 py-2 w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
@@ -207,14 +315,14 @@ export default function VehicleList() {
             <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-xl">
               <SlidersHorizontal size={14} className="text-gray-400" />
               <span className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">
-                {CAPACITY_LABEL[vehicleType]}
+                {capacityLabel}
               </span>
               <select
                 value={minCapacity}
                 onChange={(e) => setMinCapacity(Number(e.target.value))}
                 className="bg-transparent text-sm text-gray-800 dark:text-white outline-none cursor-pointer"
               >
-                <option value={0}>Any</option>
+                <option value={0}>{text.capacityAny}</option>
                 {CAPACITY_OPTIONS[vehicleType].map((v) => (
                   <option key={v} value={v}>
                     {v.toLocaleString()}+
@@ -223,7 +331,7 @@ export default function VehicleList() {
               </select>
             </div>
 
-            {/* AC filter (only for taxi) */}
+            {/* AC filter */}
             {AC_CAPABLE_SLUGS.has(vehicleType) && (
               <button
                 type="button"
@@ -236,24 +344,24 @@ export default function VehicleList() {
                 }`}
               >
                 <Snowflake size={14} />
-                AC only
+                {text.acOnly}
               </button>
             )}
 
-            {/* NEW: Taxi / Rental filter (only for taxi) */}
+            {/* Usage filter (taxi only) */}
             {vehicleType === "taxi" && (
               <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-xl">
                 <span className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">
-                  Type
+                  {text.usageLabel}
                 </span>
                 <select
                   value={usage || ""}
                   onChange={(e) => setUsage(e.target.value || null)}
                   className="bg-transparent text-sm text-gray-800 dark:text-white outline-none cursor-pointer"
                 >
-                  <option value="">Both</option>
-                  <option value="taxi">Taxi</option>
-                  <option value="rental">Rental</option>
+                  <option value="">{text.usageBoth}</option>
+                  <option value="taxi">{text.usageTaxi}</option>
+                  <option value="rental">{text.usageRental}</option>
                 </select>
               </div>
             )}
@@ -270,7 +378,7 @@ export default function VehicleList() {
             Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)
           ) : items.length === 0 ? (
             <div className="col-span-full text-center py-16 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
-              No vehicles found. Try adjusting filters.
+              {text.noVehicles}
             </div>
           ) : (
             items.map((vehicle, i) => (
@@ -283,7 +391,7 @@ export default function VehicleList() {
           )}
         </div>
 
-        {/* Infinite-scroll sentinel */}
+        {/* Load more */}
         {!loading && nextCursor && (
           <div ref={sentinelRef} className="flex justify-center mt-8">
             <button
@@ -291,7 +399,7 @@ export default function VehicleList() {
               disabled={loadingMore}
               className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white text-sm font-semibold transition"
             >
-              {loadingMore ? "Loading..." : "Load more"}
+              {loadingMore ? text.loading : text.loadMore}
             </button>
           </div>
         )}
