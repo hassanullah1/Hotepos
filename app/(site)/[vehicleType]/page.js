@@ -266,15 +266,6 @@ export default function VehicleList() {
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
       {/* Hero banner */}
       <div className="relative isolate overflow-hidden bg-gradient-to-br from-teal-600 to-teal-800 dark:from-teal-800 dark:to-teal-950">
-        <div className="pointer-events-none absolute -end-4 -top-20 w-full sm:w-120 sm:h-80 opacity-[0.75] rotate-12 rtl:rotate-[-12deg] rtl:-scale-x-100">
-          <Image
-            src={HERO_IMAGE[vehicleType]}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, 480px"
-            className="object-contain"
-          />
-        </div>
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.07]"
           style={{
