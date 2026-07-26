@@ -27,7 +27,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 // Localized static text
 const pageText = {
   en: {
-    welcome: "Welcome to Kohistan Logistic Services",
+    welcome: "Welcome to Rawan Logistic Services",
     footer: "Tap a card for details – local vehicle images",
     tapHint: "Tap to explore",
     categoryLabel: "Category",
@@ -45,7 +45,7 @@ const pageText = {
     loading: "چمتووالی روان دی",
   },
   prs: {
-    welcome: "به خدمات لوژستیک کوهستان خوش آمدید",
+    welcome: "به خدمات لوژستیک روان خوش آمدید",
     footer: "برای جزئیات روی کارت کلیک کنید – تصاویر محلی وسایط",
     tapHint: "برای مشاهده کلیک کنید",
     categoryLabel: "دسته‌بندی",
