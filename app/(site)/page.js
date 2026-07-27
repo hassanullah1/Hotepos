@@ -19,6 +19,7 @@ import {
   MousePointerClick,
   ChevronDown,
   ArrowLeft,
+  Hand,
 } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
 
@@ -262,7 +263,68 @@ function SelectCue({ text, dismissed }) {
 // row on larger screens, or scrolls horizontally on narrow ones. Tapping a
 // pill jumps straight to that vehicle's detail page, same as tapping its
 // card in the grid below.
-function CategoryQuickBar({ vehicles, activeId, onSelect, categoryLabel }) {
+//
+// `dismissed` (true once the user has picked anything, anywhere on the page)
+// permanently stops the hand hint so returning/active users never see it again.
+// ---------- Category quick-access bar ----------
+function CategoryQuickBar({
+  vehicles,
+  activeId,
+  onSelect,
+  categoryLabel,
+  dismissed,
+}) {
+  const barRef = useRef(null);
+  const btnRefs = useRef([]);
+  const [hintPos, setHintPos] = useState(null);
+  const [hintIndex, setHintIndex] = useState(null);
+  const [showHint, setShowHint] = useState(true);
+
+  // Hand-hint: hops from button to button so first-time users know these are tappable.
+  useEffect(() => {
+    if (dismissed || !vehicles?.length) return;
+    setShowHint(true);
+
+    let idx = 0;
+    let cycles = 0;
+    let interval;
+
+    const moveToNext = () => {
+      const i = idx % vehicles.length;
+      const btn = btnRefs.current[i];
+      const bar = barRef.current;
+      if (btn && bar) {
+        const btnRect = btn.getBoundingClientRect();
+        const barRect = bar.getBoundingClientRect();
+        setHintPos({
+          x: btnRect.left - barRect.left + btnRect.width / 2,
+          y: btnRect.top - barRect.top + btnRect.height / 2,
+        });
+        setHintIndex(i);
+      }
+      idx++;
+      if (idx % vehicles.length === 0) cycles++;
+      if (cycles >= 2) {
+        clearInterval(interval);
+        setShowHint(false);
+        setHintIndex(null);
+      }
+    };
+
+    const startTimeout = setTimeout(moveToNext, 300);
+    interval = setInterval(moveToNext, 1100);
+
+    return () => {
+      clearTimeout(startTimeout);
+      clearInterval(interval);
+    };
+  }, [dismissed, vehicles]);
+
+  const stopHint = () => {
+    setShowHint(false);
+    setHintIndex(null);
+  };
+
   if (!vehicles?.length) return null;
 
   return (
@@ -275,26 +337,37 @@ function CategoryQuickBar({ vehicles, activeId, onSelect, categoryLabel }) {
     >
       <div className="border-y sm:border-y-0 sm:border-b border-gray-200/70 dark:border-gray-700/70 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md shadow-sm">
         <div
-          className="flex sm:flex-wrap sm:justify-center items-stretch gap-2.5 sm:gap-3 px-4 sm:px-8 md:px-14 py-3.5 sm:py-4 overflow-x-auto scrollbar-none"
+          ref={barRef}
+          className="relative flex sm:flex-wrap sm:justify-center items-stretch gap-2.5 sm:gap-3 px-4 sm:px-8 md:px-14 py-3.5 sm:py-4 overflow-x-auto scrollbar-none"
           role="tablist"
           aria-label={categoryLabel}
+          onPointerDownCapture={stopHint}
         >
-          {vehicles.map((vehicle) => {
+          {vehicles.map((vehicle, i) => {
             const cat = vehicleCategory[vehicle.id];
             const CatIcon = cat?.icon;
             const isActive = activeId === vehicle.id;
+            const isHinted = showHint && hintIndex === i;
 
             return (
               <button
                 key={vehicle.id}
+                ref={(el) => (btnRefs.current[i] = el)}
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => onSelect(vehicle)}
-                className={`group flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 shrink-0 rounded-2xl sm:rounded-full px-3.5 sm:px-4 py-2.5 sm:py-2 min-w-[74px] sm:min-w-0 text-[11px] sm:text-sm font-semibold whitespace-nowrap border transition-all duration-200 ${
+                onClick={() => {
+                  onSelect(vehicle);
+                  stopHint();
+                }}
+                className={`group relative flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 shrink-0 rounded-2xl sm:rounded-full px-3.5 sm:px-4 py-2.5 sm:py-2 min-w-[74px] sm:min-w-0 text-[11px] sm:text-sm font-semibold whitespace-nowrap border transition-all duration-300 ${
                   isActive
                     ? `bg-gradient-to-r ${vehicle.color} text-white border-transparent shadow-md sm:scale-105`
                     : "bg-white dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md hover:-translate-y-0.5"
+                } ${
+                  isHinted && !isActive
+                    ? "ring-1 ring-blue-300/60 dark:ring-blue-400/40 -translate-y-0.1 "
+                    : ""
                 }`}
               >
                 <span
@@ -310,6 +383,30 @@ function CategoryQuickBar({ vehicles, activeId, onSelect, categoryLabel }) {
               </button>
             );
           })}
+
+          {/* Floating hand hint — glassy badge, ripples, and a little "press" bounce */}
+          {!dismissed && showHint && hintPos && (
+            <div
+              className="pointer-events-none absolute z-30 transition-all duration-700 ease-in-out"
+              style={{
+                left: hintPos.x,
+                top: hintPos.y,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <span className="hint-ripple absolute -inset-4 rounded-full bg-blue-400/30 dark:bg-blue-300/25" />
+              <span
+                className="hint-ripple absolute -inset-4 rounded-full bg-blue-400/20 dark:bg-blue-300/15"
+                style={{ animationDelay: "0.5s" }}
+              />
+              <div className="hint-tap relative flex items-center justify-center w-9 h-9 rounded-full  dark:bg-slate-800/95 shadow-[0_4px_14px_rgba(37,99,235,0.35)] ring-1 ring-blue-200/70 dark:ring-blue-400/30 backdrop-blur-sm">
+                <Hand
+                  size={18}
+                  className="text-blue-600 dark:text-blue-300 -rotate-[18deg]"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -320,10 +417,42 @@ function CategoryQuickBar({ vehicles, activeId, onSelect, categoryLabel }) {
         .scrollbar-none {
           scrollbar-width: none;
         }
+        @keyframes hintRipple {
+          0% {
+            transform: scale(0.5);
+            opacity: 0.3;
+          }
+          100% {
+            transform: scale(1.9);
+            opacity: 0;
+          }
+        }
+        .hint-ripple {
+          animation: hintRipple 1.4s ease-out infinite;
+        }
+        @keyframes hintTap {
+          0%,
+          100% {
+            transform: scale(1) translateY(0);
+          }
+          35% {
+            transform: scale(0.5) translateY(2px);
+          }
+          55% {
+            transform: scale(0.9) translateY(-1px);
+          }
+        }
+        .hint-tap {
+          animation: hintTap 1.1s ease-in-out infinite;
+        }
       `}</style>
     </div>
   );
 }
+
+// ---------- End category quick-access bar ----------
+// ---------- End category quick-access bar ----------
+// ---------- End category quick-access bar ----------
 // ---------- End category quick-access bar ----------
 
 export default function Home() {
@@ -384,6 +513,7 @@ export default function Home() {
           activeId={pinnedVehicle?.id}
           onSelect={selectVehicle}
           categoryLabel={text.categoryLabel}
+          dismissed={hasSelectedOnce}
         />
 
         {/* Hero image slider — its own independent images, plus the
