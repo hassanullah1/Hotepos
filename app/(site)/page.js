@@ -174,7 +174,7 @@ function HeroSlider({ slides, pinnedBadge }) {
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight drop-shadow-md">
                           {slide.title}
                         </h2>
-
+                        <div className="w-14 h-1 rounded-full mt-3 mb-3" />
                         {slide.description && (
                           <p className="max-w-md text-sm sm:text-base text-white/85">
                             {slide.description}
@@ -375,7 +375,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-gray-100 dark:from-black dark:to-zinc-900 py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-gray-100 dark:from-black dark:to-zinc-900 py-5 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         {/* Category quick-access bar — shown first, before the hero image
             slider, full-width and responsive */}
