@@ -171,15 +171,10 @@ function HeroSlider({ slides, pinnedBadge }) {
 
                       {/* Floating content card */}
                       <div className="absolute inset-x-0 bottom-0 px-4 sm:px-6 md:px-10 pb-6 sm:pb-8">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-semibold tracking-wide uppercase mb-3">
-                          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-400 to-amber-400" />
-                          {String(i + 1).padStart(2, "0")} /{" "}
-                          {String(count).padStart(2, "0")}
-                        </span>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight drop-shadow-md">
                           {slide.title}
                         </h2>
-                        <div className="w-14 h-1 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-amber-400 mt-3 mb-3" />
+
                         {slide.description && (
                           <p className="max-w-md text-sm sm:text-base text-white/85">
                             {slide.description}
