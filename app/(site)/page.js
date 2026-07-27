@@ -16,8 +16,6 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  Pause,
-  Play,
   MousePointerClick,
   ChevronDown,
   ArrowLeft,
@@ -86,17 +84,13 @@ const vehicleCategory = {
 // bars above the slide (each segment fills in real time), which double as click targets.
 const SLIDE_DURATION = 6000; // 6s — was 25s, felt static before
 
-function HeroSlider({ slides, welcomeText, pinnedBadge }) {
+function HeroSlider({ slides, pinnedBadge }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [progressKey, setProgressKey] = useState(0); // remounts the progress bar to restart its fill animation
   const timeoutRef = useRef(null);
   const count = slides.length;
 
-  const goTo = (i) => {
-    setIndex(((i % count) + count) % count);
-    setProgressKey((k) => k + 1);
-  };
+  const goTo = (i) => setIndex(((i % count) + count) % count);
   const next = () => goTo(index + 1);
   const prev = () => goTo(index - 1);
 
@@ -105,7 +99,6 @@ function HeroSlider({ slides, welcomeText, pinnedBadge }) {
     if (paused || count <= 1) return;
     timeoutRef.current = setTimeout(() => {
       setIndex((i) => (i + 1) % count);
-      setProgressKey((k) => k + 1);
     }, SLIDE_DURATION);
     return () => clearTimeout(timeoutRef.current);
   }, [paused, count, index]);
@@ -114,181 +107,133 @@ function HeroSlider({ slides, welcomeText, pinnedBadge }) {
 
   return (
     <div className="mb-16">
-      {/* Welcome banner */}
-      <div className="text-center mb-6">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-          {welcomeText}
-        </h1>
-        <div className="w-24 h-1 bg-gradient-to-r from-blue-400 via-purple-500 to-amber-400 mx-auto mt-4 rounded-full" />
-      </div>
-
-      {/* Story-style progress bars — encode both position and pacing */}
-      <div className="flex gap-1.5 mb-3 px-1">
-        {slides.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className="relative h-1 flex-1 rounded-full bg-gray-300/60 dark:bg-white/15 overflow-hidden"
-          >
-            {i < index && (
-              <span className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full" />
-            )}
-            {i === index && (
-              <span
-                key={progressKey}
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
-                style={{
-                  animation: `hero-progress ${SLIDE_DURATION}ms linear forwards`,
-                  animationPlayState: paused ? "paused" : "running",
-                }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Main slide area */}
+      {/* Main image area — full browser width, no crossfade, no video-style
+          play/pause control. Just the current photo, swapped instantly. */}
       <div
-        className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] rounded-3xl overflow-hidden shadow-xl group"
+        className="relative w-screen max-w-none overflow-x-hidden"
+        style={{
+          marginInlineStart: "calc(50% - 50vw)",
+          marginInlineEnd: "calc(50% - 50vw)",
+        }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {slides.map((slide, i) => (
-          <div
-            key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              i === index ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          >
-            {/* Ken Burns: slow drift/zoom on the active slide only, restarts each time it becomes active */}
-            <div
-              className="absolute inset-0"
-              style={
-                i === index
-                  ? {
-                      animation: `hero-kenburns ${SLIDE_DURATION + 700}ms ease-out forwards`,
-                      animationPlayState: paused ? "paused" : "running",
-                    }
-                  : undefined
-              }
-            >
-              <Image
-                src={slide.imageUrl}
-                alt={slide.title}
-                fill
-                priority={i === 0}
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
+        <div
+          dir="ltr"
+          className="relative w-full h-[300px] sm:h-[420px] md:h-[500px] overflow-hidden"
+        >
+          {/* Coverflow layout — the active slide sits centered at full focus;
+              its immediate neighbors peek in from the edges, scaled down,
+              dimmed and blurred, so three images are visible at once. */}
+          {slides.map((slide, i) => {
+            // Shortest-path offset from the active slide, wrapping around
+            // (e.g. for the last slide, "next" wraps back to slide 0).
+            let offset = i - index;
+            if (offset > count / 2) offset -= count;
+            if (offset < -count / 2) offset += count;
 
-            {/* Gradient overlay for text legibility only — no color tint over the photo */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+            const isActive = offset === 0;
+            const isNeighbor = Math.abs(offset) === 1;
+            if (!isActive && !isNeighbor) return null; // keep DOM light
 
-            {/* Title + description overlay, with a small staggered rise-in on entry */}
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 text-white">
-              <h2
-                className="text-3xl sm:text-4xl md:text-5xl font-extrabold drop-shadow-sm"
-                style={
-                  i === index
-                    ? { animation: "hero-rise-in 600ms ease-out 150ms both" }
-                    : undefined
-                }
+            return (
+              <div
+                key={slide.id}
+                onClick={() => !isActive && goTo(i)}
+                className={`absolute inset-y-0 left-1/2 w-[80%] sm:w-[62%] md:w-[52%] transition-all duration-500 ease-in-out ${
+                  isActive ? "z-20 cursor-default" : "z-10 cursor-pointer"
+                }`}
+                style={{
+                  transform: `translateX(calc(-50% + ${offset * 100}%)) scale(${
+                    isActive ? 1 : 0.86
+                  })`,
+                }}
               >
-                {slide.title}
-              </h2>
-              {slide.description && (
-                <p
-                  className="mt-2 max-w-lg text-sm sm:text-base text-white/85"
-                  style={
-                    i === index
-                      ? { animation: "hero-rise-in 600ms ease-out 280ms both" }
-                      : undefined
-                  }
+                <div
+                  className={`relative w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl transition-all duration-500 ${
+                    isActive ? "" : "blur-[2px] brightness-[0.55]"
+                  }`}
                 >
-                  {slide.description}
-                </p>
-              )}
+                  <Image
+                    src={slide.imageUrl}
+                    alt={slide.title}
+                    fill
+                    priority={i === 0}
+                    className="object-cover"
+                    sizes="(max-width: 768px) 80vw, 52vw"
+                  />
+
+                  {isActive && (
+                    <>
+                      {/* Duotone-style gradient wash for a more designed, less "raw photo" look */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/5" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+
+                      {/* Floating content card */}
+                      <div className="absolute inset-x-0 bottom-0 px-4 sm:px-6 md:px-10 pb-6 sm:pb-8">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-semibold tracking-wide uppercase mb-3">
+                          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-400 to-amber-400" />
+                          {String(i + 1).padStart(2, "0")} /{" "}
+                          {String(count).padStart(2, "0")}
+                        </span>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight drop-shadow-md">
+                          {slide.title}
+                        </h2>
+                        <div className="w-14 h-1 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-amber-400 mt-3 mb-3" />
+                        {slide.description && (
+                          <p className="max-w-md text-sm sm:text-base text-white/85">
+                            {slide.description}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Pinned-selection badge — floats in front of the slider so the
+              chosen category is always reachable without scrolling down. */}
+          {pinnedBadge && (
+            <div className="absolute top-3 start-4 sm:start-8 md:start-14 z-30">
+              {pinnedBadge}
             </div>
-          </div>
-        ))}
+          )}
 
-        {/* Pinned-selection badge — floats in front of the slider (z-30, above the
-            slides at z-10 and the arrows at z-20) so the chosen category is always
-            reachable without scrolling down manually, no matter which slide is showing. */}
-        {pinnedBadge && (
-          <div className="absolute top-3 start-3 z-30 animate-in fade-in slide-in-from-top-2 duration-300">
-            {pinnedBadge}
-          </div>
-        )}
-
-        {/* Prev / Next arrows */}
-        <button
-          onClick={prev}
-          aria-label="Previous slide"
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-        >
-          <ChevronLeft size={22} />
-        </button>
-        <button
-          onClick={next}
-          aria-label="Next slide"
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-        >
-          <ChevronRight size={22} />
-        </button>
-
-        {/* Play/pause toggle + slide counter */}
-        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded-full bg-black/30 backdrop-blur-sm text-white text-[11px] font-medium tabular-nums">
-            {String(index + 1).padStart(2, "0")} /{" "}
-            {String(count).padStart(2, "0")}
-          </span>
+          {/* Prev / Next arrows — always visible, glassy circular buttons */}
           <button
-            onClick={() => setPaused((p) => !p)}
-            aria-label={paused ? "Play slideshow" : "Pause slideshow"}
-            className="p-1.5 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white transition"
+            onClick={prev}
+            aria-label="Previous slide"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white shadow-lg transition-all hover:scale-105"
           >
-            {paused ? <Play size={13} /> : <Pause size={13} />}
+            <ChevronLeft size={20} />
           </button>
+          <button
+            onClick={next}
+            aria-label="Next slide"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white shadow-lg transition-all hover:scale-105"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          {/* Gradient progress-style dots */}
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5">
+            {slides.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === index
+                    ? "w-7 bg-gradient-to-r from-blue-400 via-purple-500 to-amber-400"
+                    : "w-1.5 bg-gray-400/60 dark:bg-white/40 hover:bg-gray-500/70 dark:hover:bg-white/60"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* Local keyframes for the slider's motion */}
-      <style jsx>{`
-        @keyframes hero-progress {
-          from {
-            width: 0%;
-          }
-          to {
-            width: 100%;
-          }
-        }
-        @keyframes hero-kenburns {
-          from {
-            transform: scale(1);
-          }
-          to {
-            transform: scale(1.08);
-          }
-        }
-        @keyframes hero-rise-in {
-          from {
-            opacity: 0;
-            transform: translateY(14px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          div {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
@@ -315,6 +260,76 @@ function SelectCue({ text, dismissed }) {
   );
 }
 // ---------- End pointer cue ----------
+
+// ---------- Category quick-access bar ----------
+// Shown first, above the hero slider. Spans the full browser width (breaks
+// out of the page's centered max-w-6xl container) and wraps into a centered
+// row on larger screens, or scrolls horizontally on narrow ones. Tapping a
+// pill jumps straight to that vehicle's detail page, same as tapping its
+// card in the grid below.
+function CategoryQuickBar({ vehicles, activeId, onSelect, categoryLabel }) {
+  if (!vehicles?.length) return null;
+
+  return (
+    <div
+      className="mb-10 w-screen max-w-none overflow-x-hidden"
+      style={{
+        marginInlineStart: "calc(50% - 50vw)",
+        marginInlineEnd: "calc(50% - 50vw)",
+      }}
+    >
+      <div className="border-y sm:border-y-0 sm:border-b border-gray-200/70 dark:border-gray-700/70 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md shadow-sm">
+        <div
+          className="flex sm:flex-wrap sm:justify-center items-stretch gap-2.5 sm:gap-3 px-4 sm:px-8 md:px-14 py-3.5 sm:py-4 overflow-x-auto scrollbar-none"
+          role="tablist"
+          aria-label={categoryLabel}
+        >
+          {vehicles.map((vehicle) => {
+            const cat = vehicleCategory[vehicle.id];
+            const CatIcon = cat?.icon;
+            const isActive = activeId === vehicle.id;
+
+            return (
+              <button
+                key={vehicle.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => onSelect(vehicle)}
+                className={`group flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 shrink-0 rounded-2xl sm:rounded-full px-3.5 sm:px-4 py-2.5 sm:py-2 min-w-[74px] sm:min-w-0 text-[11px] sm:text-sm font-semibold whitespace-nowrap border transition-all duration-200 ${
+                  isActive
+                    ? `bg-gradient-to-r ${vehicle.color} text-white border-transparent shadow-md sm:scale-105`
+                    : "bg-white dark:bg-gray-800/70 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md hover:-translate-y-0.5"
+                }`}
+              >
+                <span
+                  className={`flex items-center justify-center w-8 h-8 sm:w-6 sm:h-6 rounded-full shrink-0 ${
+                    isActive
+                      ? "bg-white/20"
+                      : `bg-gradient-to-br ${vehicle.color}`
+                  }`}
+                >
+                  {CatIcon && <CatIcon size={15} className="text-white" />}
+                </span>
+                {vehicle.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <style jsx>{`
+        .scrollbar-none::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-none {
+          scrollbar-width: none;
+        }
+      `}</style>
+    </div>
+  );
+}
+// ---------- End category quick-access bar ----------
 
 export default function Home() {
   const { language } = useLanguage();
@@ -367,11 +382,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-gray-100 dark:from-black dark:to-zinc-900 py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Hero image slider — its own independent images + welcome banner, plus
-            the pinned-selection badge floating in front of it */}
+        {/* Category quick-access bar — shown first, before the hero image
+            slider, full-width and responsive */}
+        <CategoryQuickBar
+          vehicles={vehicles}
+          activeId={pinnedVehicle?.id}
+          onSelect={selectVehicle}
+          categoryLabel={text.categoryLabel}
+        />
+
+        {/* Hero image slider — its own independent images, plus the
+            pinned-selection badge floating in front of it */}
         <HeroSlider
           slides={slides}
-          welcomeText={text.welcome}
           pinnedBadge={
             pinnedVehicle && (
               <div className="flex items-center gap-1 rounded-full bg-black/40 backdrop-blur-sm shadow-lg pl-1 pr-1 py-1">
