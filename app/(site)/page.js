@@ -174,7 +174,7 @@ function HeroSlider({ slides, pinnedBadge }) {
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight drop-shadow-md">
                           {slide.title}
                         </h2>
-                        <div className="w-14 h-1 rounded-full mt-3 mb-3" />
+                        <div className="w-14 h-1 rounded-full mt-2 mb-2" />
                         {slide.description && (
                           <p className="max-w-md text-sm sm:text-base text-white/85">
                             {slide.description}

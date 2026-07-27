@@ -240,11 +240,6 @@ export default function HeaderClient() {
                 <span className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-teal-600 to-teal-700 dark:from-white dark:via-blue-200 dark:to-teal-200 bg-clip-text text-transparent whitespace-nowrap">
                   {t("brand")}
                 </span>
-                {/* 24/7 badge */}
-                <span className="hidden sm:flex items-center gap-1 text-[10px] md:text-[11px] font-semibold text-teal-600 dark:text-teal-300">
-                  <Clock size={11} className="animate-pulse" />
-                  {t("available247")}
-                </span>
               </div>
             </Link>
 
@@ -430,12 +425,6 @@ export default function HeaderClient() {
           </div>
 
           {/* 24/7 badge (mobile, shown below logo row) */}
-          <div className="flex sm:hidden items-center gap-1 pb-2 -mt-1">
-            <Clock size={11} className="text-teal-500 animate-pulse" />
-            <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-300">
-              {t("available247")}
-            </span>
-          </div>
         </div>
       </header>
 
