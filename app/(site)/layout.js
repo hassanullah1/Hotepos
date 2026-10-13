@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Rawan Logistic",
+  title: "Melmah",
   description: "Your trusted logistics partner",
 };
 

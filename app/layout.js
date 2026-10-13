@@ -1,5 +1,6 @@
 // app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
+import { nazanin } from "./fonts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Rawan Logistic",
+  title: "Hotel Logistic",
   description: "Your trusted logistics partner",
 };
 
@@ -21,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nazanin.variable} min-h-full flex flex-col antialiased`}
       >
         <main className="flex-1">{children}</main>
       </body>

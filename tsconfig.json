@@ -30,7 +30,16 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "app/api/auth/login/route.js",
+    "prisma/seed.js",
+    "lib/prisma.js",
+    "app/api/route.js",
+    "app/api/users/[userId]/role/route.js",
+    "app/api/hotels/route.js",
+    "app/api/permissions/route.js",
+    "app/api/roles/[roleId]/permissions/route.js",
+    "app/api/roles/route.js"
   ],
   "exclude": ["node_modules"]
 }

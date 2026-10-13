@@ -1,11 +1,9 @@
+// app/api/auth/logout/route.js
 import { NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME } from "../../../../lib/auth";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
-  response.cookies.set(AUTH_COOKIE_NAME, "", {
-    path: "/",
-    maxAge: 0,
-  });
-  return response;
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(AUTH_COOKIE_NAME, "", { path: "/", maxAge: 0 });
+  return res;
 }

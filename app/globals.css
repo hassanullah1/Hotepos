@@ -1,4 +1,4 @@
-/* globals.css */
+/* globals.css – FINAL WORKING VERSION */
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -10,9 +10,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-rtl: var(--font-nazanin), Arial, Helvetica, sans-serif;
 }
+
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
@@ -36,12 +39,11 @@ body {
 
 /* Dark mode select options */
 select option {
-  background-color: #1a1a2e; /* dark background */
-  color: #ffffff; /* white text */
+  background-color: #1a1a2e;
+  color: #ffffff;
 }
-/* For light mode, you can keep the default or style explicitly */
 select option:checked {
-  background-color: #0d9488; /* teal highlight when selected */
+  background-color: #0d9488;
 }
 
 @keyframes slide-start-to-end {
@@ -57,4 +59,59 @@ select option:checked {
 
 .animate-slide {
   animation: slide-start-to-end 12s ease-in-out infinite alternate;
+}
+
+/* ============================================================
+   RTL FONT OVERRIDES – with !important to beat Tailwind utilities
+   ============================================================ */
+/* globals.css – REPLACE your old RTL block with this */
+
+@layer utilities {
+  /* Force font-family on ALL interactive elements */
+  [dir="rtl"] .font-rtl input,
+  [dir="rtl"] .font-rtl select,
+  [dir="rtl"] .font-rtl textarea,
+  [dir="rtl"] .font-rtl button {
+    font-family: var(--font-nazanin), Arial, Helvetica, sans-serif !important;
+  }
+
+  /* ----- OVERRIDE text-xs ----- */
+  [dir="rtl"] .font-rtl .text-xs,
+  [dir="rtl"] .font-rtl th.text-xs,
+  [dir="rtl"] .font-rtl td.text-xs,
+  [dir="rtl"] .font-rtl span.text-xs {
+    font-size: 0.8rem !important; /* was 0.75rem */
+  }
+
+  /* ----- OVERRIDE text-sm ----- */
+  [dir="rtl"] .font-rtl .text-sm,
+  [dir="rtl"] .font-rtl th.text-sm,
+  [dir="rtl"] .font-rtl td.text-sm,
+  [dir="rtl"] .font-rtl input.text-sm,
+  [dir="rtl"] .font-rtl select.text-sm,
+  [dir="rtl"] .font-rtl table.text-sm, /* targets <table class="text-sm"> */
+  [dir="rtl"] .font-rtl label.text-sm,
+  [dir="rtl"] .font-rtl div.text-sm {
+    font-size: 1rem !important; /* was 0.875rem – INCREASED to 1.1rem */
+  }
+
+  /* ----- OVERRIDE text-base ----- */
+  [dir="rtl"] .font-rtl .text-base {
+    font-size: 1.1rem !important;
+  }
+
+  /* ----- OVERRIDE text-lg ----- */
+  [dir="rtl"] .font-rtl .text-lg {
+    font-size: 1.2rem !important;
+  }
+
+  /* ----- OVERRIDE text-xl ----- */
+  [dir="rtl"] .font-rtl .text-xl {
+    font-size: 1.2rem !important;
+  }
+
+  /* ----- OVERRIDE text-2xl ----- */
+  [dir="rtl"] .font-rtl .text-2xl {
+    font-size: 1.5rem !important;
+  }
 }

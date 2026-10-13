@@ -6,10 +6,13 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
-    brand: "RAWAN Logistic",
+    brand: "Melmah",
     home: "Home",
+    tutorials: "ُTutorials",
+    contact: "contact",
     about: "About",
-    footer: "© {year} Rawan Logistic",
+    pricing: "Price",
+    footer: "© {year} Melmah",
     available247: "24/7 Available",
     registerVehicle: "Register Vehicle",
     registerVehicleTitle: "Register Your Vehicle",
@@ -26,10 +29,13 @@ const translations = {
   },
   ps: {
     // Pashto
-    brand: "روان لوژستیک",
+    brand: "Melmah",
     home: "کور",
+    contact: "اړیکه",
+    tutorials: "ذدکړه",
     about: "درباره",
-    footer: "© {year} روان لوژستیک",
+    pricing: "قیمت",
+    footer: "© {year} Melmah ",
     available247: "۲۴/۷ شتون لري",
     registerVehicle: "موټر ثبت کړئ",
     registerVehicleTitle: "خپل موټر ثبت کړئ",
@@ -46,10 +52,13 @@ const translations = {
   },
   prs: {
     // Dari (Persian Afghan)
-    brand: "روان لوژستیک",
+    brand: "Melmah",
+    tutorials: "ذدکړه",
+    contact: "تماس",
     home: "خانه",
     about: "درباره ما",
-    footer: "© {year} روان لوژستیک",
+    pricing: "قیمتها",
+    footer: "© {year} Melmah ",
     available247: "۲۴/۷ در دسترس",
     registerVehicle: "ثبت وسیله",
     registerVehicleTitle: "وسیله خود را ثبت کنید",

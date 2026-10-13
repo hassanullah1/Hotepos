@@ -2,8 +2,8 @@
 "use client";
 
 /**
- * Minimal loading spinner — a soft gradient ring with a gentle glow and a
- * playful bounce, plus an optional caption. No logo, no progress math.
+ * Minimal loading screen — a gold ring spinner on the same dark surface
+ * as the header and footer, with an optional caption.
  *
  * @param {Object} props
  * @param {string}  [props.text="Loading..."]  Caption under the spinner. Pass "" to hide it.
@@ -19,20 +19,25 @@ export default function LoadingScreen({
     <div
       className={`${
         fullScreen ? "min-h-[100dvh] w-full" : "w-full"
-      } flex items-center justify-center bg-gradient-to-br from-white via-violet-50 to-pink-50 dark:from-zinc-950 dark:via-zinc-950 dark:to-indigo-950 px-4 ${className}`}
+      } relative flex items-center justify-center overflow-hidden bg-[#15121C] px-4 ${className}`}
     >
-      <div className="kls-tuck flex flex-col items-center gap-4">
-        <div className="kls-spin-wrap relative h-14 w-14">
-          {/* Soft pulsing glow behind the ring */}
-          <div className="kls-glow absolute inset-0 rounded-full bg-gradient-to-tr from-violet-400 via-fuchsia-400 to-amber-300 blur-lg opacity-60 dark:opacity-40" />
+      {/* Ambient gold glow — matches the header/footer blobs */}
+      <div
+        className="kls-glow pointer-events-none absolute h-64 w-64 rounded-full bg-[#C9A227]/10 blur-3xl"
+        aria-hidden="true"
+      />
 
-          {/* Gradient ring */}
+      <div className="kls-tuck relative flex flex-col items-center gap-5">
+        <div className="kls-spin-wrap relative h-14 w-14">
+          {/* Soft gold halo behind the ring */}
+          <div className="kls-halo absolute inset-0 rounded-full bg-gradient-to-br from-[#E0B93A] to-[#8A6E1A] opacity-40 blur-md" />
+
+          {/* Gradient ring — same gold as the header logo ring */}
           <svg viewBox="0 0 56 56" className="kls-ring relative h-14 w-14">
             <defs>
               <linearGradient id="kls-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8b5cf6" />
-                <stop offset="55%" stopColor="#ec4899" />
-                <stop offset="100%" stopColor="#f59e0b" />
+                <stop offset="0%" stopColor="#E0B93A" />
+                <stop offset="100%" stopColor="#A9821E" />
               </linearGradient>
             </defs>
             <circle
@@ -40,8 +45,8 @@ export default function LoadingScreen({
               cy="28"
               r="22"
               fill="none"
-              strokeWidth="5"
-              className="stroke-violet-100 dark:stroke-zinc-800"
+              strokeWidth="4"
+              className="stroke-[#2E2938]"
             />
             <circle
               cx="28"
@@ -49,7 +54,7 @@ export default function LoadingScreen({
               r="22"
               fill="none"
               stroke="url(#kls-grad)"
-              strokeWidth="5"
+              strokeWidth="4"
               strokeLinecap="round"
               strokeDasharray="90 138"
             />
@@ -57,7 +62,7 @@ export default function LoadingScreen({
         </div>
 
         {text && (
-          <p className="kls-caption text-sm font-medium tracking-wide text-violet-400 dark:text-violet-300">
+          <p className="kls-caption text-xs font-medium uppercase tracking-[0.25em] text-[#C9A227]">
             {text}
           </p>
         )}
@@ -77,11 +82,14 @@ export default function LoadingScreen({
           animation: kls-spin 1.1s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
           transform-origin: center;
         }
+        .kls-halo {
+          animation: kls-pulse 1.6s ease-in-out infinite;
+        }
         .kls-glow {
-          animation: kls-pulse 1.4s ease-in-out infinite;
+          animation: kls-ambient 3.5s ease-in-out infinite;
         }
         .kls-caption {
-          animation: kls-fade 1.4s ease-in-out infinite;
+          animation: kls-fade 1.6s ease-in-out infinite;
         }
 
         @keyframes kls-tuck-in {
@@ -101,24 +109,35 @@ export default function LoadingScreen({
             transform: translateY(0);
           }
           50% {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
           }
         }
         @keyframes kls-pulse {
           0%,
           100% {
             transform: scale(0.9);
-            opacity: 0.5;
+            opacity: 0.3;
           }
           50% {
             transform: scale(1.15);
-            opacity: 0.75;
+            opacity: 0.55;
+          }
+        }
+        @keyframes kls-ambient {
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.35;
+          }
+          50% {
+            transform: translate(15px, -10px) scale(1.1);
+            opacity: 0.55;
           }
         }
         @keyframes kls-fade {
           0%,
           100% {
-            opacity: 0.6;
+            opacity: 0.65;
           }
           50% {
             opacity: 1;
@@ -132,6 +151,7 @@ export default function LoadingScreen({
             transform: none;
           }
           .kls-spin-wrap,
+          .kls-halo,
           .kls-glow,
           .kls-caption {
             animation: none !important;
