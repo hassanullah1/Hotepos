@@ -3,12 +3,26 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 
-const BUYER_JWT_SECRET = process.env.BUYER_JWT_SECRET;
 const BUYER_JWT_EXPIRES_IN = "30d";
 
-if (!BUYER_JWT_SECRET) {
-  throw new Error("BUYER_JWT_SECRET is not set in your environment (.env)");
+/**
+ * Lazily read the buyer JWT secret.
+ *
+ * Read inside a function (not at module load) so that Next.js's
+ * "Collecting page data" step during `next build` doesn't throw when
+ * BUYER_JWT_SECRET isn't present in the BUILD environment. On Railway
+ * (and other hosts), secrets are only available at RUNTIME — not build time.
+ */
+function getBuyerJwtSecret(): string {
+  const secret = process.env.BUYER_JWT_SECRET;
+  if (!secret) {
+    throw new Error(
+      "BUYER_JWT_SECRET is not set. Add it to your environment variables.",
+    );
+  }
+  return secret;
 }
 
 export const BUYER_COOKIE_NAME = "buyer_token";
@@ -21,13 +35,13 @@ export interface BuyerTokenPayload {
 }
 
 export function signBuyerToken(payload: BuyerTokenPayload): string {
-  return jwt.sign(payload, BUYER_JWT_SECRET as string, {
+  return jwt.sign(payload, getBuyerJwtSecret(), {
     expiresIn: BUYER_JWT_EXPIRES_IN,
   });
 }
 
 export function verifyBuyerToken(token: string): BuyerTokenPayload {
-  return jwt.verify(token, BUYER_JWT_SECRET as string) as BuyerTokenPayload;
+  return jwt.verify(token, getBuyerJwtSecret()) as BuyerTokenPayload;
 }
 
 export function hashBuyerPassword(password: string): Promise<string> {
@@ -42,7 +56,10 @@ export function compareBuyerPassword(
 }
 
 /** Sets the buyer cookie on a NextResponse (used in route handlers). */
-export function setBuyerCookieOnResponse(response, token: string) {
+export function setBuyerCookieOnResponse(
+  response: NextResponse,
+  token: string,
+): NextResponse {
   response.cookies.set(BUYER_COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
@@ -53,7 +70,9 @@ export function setBuyerCookieOnResponse(response, token: string) {
   return response;
 }
 
-export function clearBuyerCookieOnResponse(response) {
+export function clearBuyerCookieOnResponse(
+  response: NextResponse,
+): NextResponse {
   response.cookies.set(BUYER_COOKIE_NAME, "", { path: "/", maxAge: 0 });
   return response;
 }
@@ -81,7 +100,6 @@ export async function getBuyerSession(): Promise<BuyerTokenPayload | null> {
 export async function getBuyerFromRequest(
   request: Request,
 ): Promise<BuyerTokenPayload | null> {
-  // Prefer the cookie (httpOnly, set by the login route)
   const cookieHeader = request.headers.get("cookie") || "";
   const match = cookieHeader
     .split(";")
