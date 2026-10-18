@@ -54,10 +54,17 @@ const NAV_ITEMS = [
     icon: LayoutDashboard,
   },
   {
+    href: "/admin/hotel/profile",
+    key: "hotelprofile",
+    section: "manage",
+    roles: ["hotel_owner"],
+    icon: Building2,
+  },
+  {
     href: "/admin/hotels",
     key: "hotels",
     section: "manage",
-    roles: ["super_admin", "admin", "hotel_owner"],
+    roles: ["super_admin", "admin"],
     icon: Building2,
   },
   {
@@ -73,6 +80,7 @@ const NAV_ITEMS = [
     section: "manage",
     roles: ["hotel_owner", "branch_manager"],
     icon: BedDouble,
+    requiresRooms: true, // 👈 NEW — hidden when plan has no rooms
   },
   {
     href: "/admin/plans",
@@ -92,7 +100,6 @@ const NAV_ITEMS = [
     href: "/admin/owners",
     key: "owners",
     roles: ["super_admin", "admin"],
-    roles: ["admin"],
     icon: UserCog,
   },
   {
@@ -515,6 +522,9 @@ export default function AdminSidebar() {
   const [verification, setVerification] = useState(null);
   const [verifLoading, setVerifLoading] = useState(true);
 
+  // 👈 NEW — plan gate for the "rooms" nav item
+  const [hasRooms, setHasRooms] = useState(false);
+
   const sizeAppName = isRtl ? "text-[20px]" : "text-[18px]";
   const sizeAppSubtitle = isRtl ? "text-[13px]" : "text-[12px]";
   const sizeSection = isRtl ? "text-[13px]" : "text-[12px]";
@@ -562,27 +572,50 @@ export default function AdminSidebar() {
     };
   }, [hasHotelRole, pathname]);
 
+  /* ---------- plan fetch — decides whether "rooms" nav shows ---------- */
+  // 👈 NEW block
+  useEffect(() => {
+    if (!hasHotelRole) {
+      setHasRooms(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/owner/plan");
+        if (!res.ok) {
+          if (!cancelled) setHasRooms(false);
+          return;
+        }
+        const data = await res.json();
+        if (!cancelled) setHasRooms(data?.plan?.is_rooms === true);
+      } catch {
+        if (!cancelled) setHasRooms(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasHotelRole, pathname]);
+
   /* ---------- lock priority ---------- */
   const isExempt = EXEMPT_ROLES.includes(role);
 
-  // Priority 1 — subscription expired
   const subscriptionLocked = locked && !isExempt;
 
-  // Priority 2 — verification not approved (only relevant if subscription is fine)
   const verificationLocked =
     hasHotelRole &&
     !isExempt &&
     (verifLoading || (verification && verification !== "verified"));
 
-  // Exactly one block shows, subscription first
   const showSubscriptionBlock = subscriptionLocked;
   const showVerificationBlock = !showSubscriptionBlock && verificationLocked;
 
-  // Nav renders only when nothing is blocking
   const showNav = !showSubscriptionBlock && !showVerificationBlock;
 
-  // If nav is shown while subscription is expiring soon, keep items enabled —
-  // the soft banner already warns them.
   const navLocked = false;
 
   /* ---------- breakpoint ---------- */
@@ -642,7 +675,12 @@ export default function AdminSidebar() {
   /* ---------- visible items ---------- */
   const visibleItems = useMemo(
     () =>
-      NAV_ITEMS.filter((item) => item.roles.includes(role))
+      NAV_ITEMS.filter((item) => {
+        if (!item.roles.includes(role)) return false;
+        // 👈 NEW — hide items that require a plan feature the user doesn't have
+        if (item.requiresRooms && !hasRooms) return false;
+        return true;
+      })
         .map((item) =>
           item.children
             ? {
@@ -652,7 +690,7 @@ export default function AdminSidebar() {
             : item,
         )
         .filter((item) => !item.children || item.children.length > 0),
-    [role],
+    [role, hasRooms],
   );
 
   const sections = useMemo(() => {
@@ -722,8 +760,6 @@ export default function AdminSidebar() {
 
   function handleLockedClick(e) {
     e.preventDefault();
-    // Nav only locks when nothing is blocking, so this rarely fires —
-    // but keep it safe by routing to renew.
     router.push("/admin/renew");
   }
 
@@ -875,7 +911,7 @@ export default function AdminSidebar() {
           </div>
         )}
 
-        {/* ───────── Nav (only when nothing is blocking) ───────── */}
+        {/* ───────── Nav ───────── */}
         {showNav && (
           <nav className="flex-1 px-3 pb-4">
             {sections.map((section, idx) => (
@@ -1052,8 +1088,6 @@ export default function AdminSidebar() {
         <div className="space-y-1.5 px-3 pb-4 pt-2">
           <div className="mx-2 mb-2 h-px bg-gradient-to-r from-transparent via-[#D4A93A]/25 to-transparent" />
 
-          {/* Quick renew link only when nav is visible and expiring soon —
-              the full block handles "expired" */}
           {showNav && subState === "expiring_soon" && (
             <Link
               href="/admin/renew"
@@ -1078,7 +1112,6 @@ export default function AdminSidebar() {
             </Link>
           )}
 
-          {/* Profile — hidden while a block is showing */}
           {showNav && (
             <Link
               href="/admin/profile"
@@ -1133,7 +1166,6 @@ export default function AdminSidebar() {
             </Link>
           )}
 
-          {/* Logout always available */}
           <button
             type="button"
             onClick={handleLogout}

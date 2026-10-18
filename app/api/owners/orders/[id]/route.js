@@ -31,6 +31,8 @@ function serializeOrder(o) {
     order_number: o.order_number,
     status: o.status,
     order_type: o.order_type,
+    source: o.source || "pos",
+    payment_status: o.payment_status || "unpaid",
     subtotal: Number(o.subtotal),
     discount_amount: Number(o.discount_amount),
     tax_amount: Number(o.tax_amount),
@@ -109,7 +111,14 @@ const ALLOWED = [
   "paid",
   "closed",
   "cancelled",
+  "rejected",
 ];
+
+// Statuses that "advance" the order toward serving the customer
+const ADVANCING = ["in_progress", "served", "paid"];
+
+// Terminal statuses that should free the table
+const TERMINAL = ["paid", "closed", "cancelled", "rejected"];
 
 export async function PATCH(request, { params }) {
   const user = await getAuthUser(request);
@@ -123,11 +132,32 @@ export async function PATCH(request, { params }) {
 
   const body = await request.json();
   const data = {};
+
   if (body.status !== undefined) {
-    if (!ALLOWED.includes(body.status))
+    if (!ALLOWED.includes(body.status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    // ── Payment gate for ONLINE orders ──
+    // Buyer-placed orders (source = "customer" or "qr") cannot advance until
+    // payment_status becomes "paid". They can still be rejected / cancelled.
+    const isOnline = existing.source === "customer" || existing.source === "qr";
+    const isAdvancing = ADVANCING.includes(body.status);
+    const isPaid = existing.payment_status === "paid";
+
+    if (isOnline && isAdvancing && !isPaid) {
+      return NextResponse.json(
+        {
+          error:
+            "Customer has not paid yet — wait for payment before moving this order forward.",
+        },
+        { status: 400 },
+      );
+    }
+
     data.status = body.status;
   }
+
   if (body.notes !== undefined) data.notes = body.notes || null;
 
   try {
@@ -137,11 +167,8 @@ export async function PATCH(request, { params }) {
       include: ORDER_INCLUDE,
     });
 
-    // Auto-close the table session when no open orders remain
-    if (
-      updated.table_session_id &&
-      ["paid", "closed", "cancelled"].includes(updated.status)
-    ) {
+    // Free the table when the order reaches a terminal state
+    if (updated.table_session_id && TERMINAL.includes(updated.status)) {
       const stillOpen = await prisma.orders.count({
         where: {
           table_session_id: updated.table_session_id,
@@ -184,7 +211,7 @@ export async function DELETE(request, { params }) {
   }
 
   try {
-    if (existing.status === "cancelled") {
+    if (existing.status === "cancelled" || existing.status === "rejected") {
       await prisma.orders.delete({ where: { id } });
     } else {
       await prisma.orders.update({

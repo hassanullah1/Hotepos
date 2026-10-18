@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Pencil, Trash2, Plus, Eye } from "lucide-react";
+import { Pencil, Trash2, Plus, Eye, BedDouble } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
-// ----- Shared UI primitives -----
 const inputClass =
   "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500";
 
@@ -22,7 +21,6 @@ function PrimaryButton({ children, className = "", ...props }) {
   );
 }
 
-// ----- Main component -----
 export default function PlansListPage() {
   const router = useRouter();
   const { t, dir } = useAdminPreferences();
@@ -33,7 +31,6 @@ export default function PlansListPage() {
   const [includeInactive, setIncludeInactive] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Translation helper with fallbacks
   const getText = (key, fallback) => {
     try {
       const parts = key.split(".");
@@ -120,6 +117,7 @@ export default function PlansListPage() {
   const inactiveLabel = getText("plansList.inactive", "Inactive");
   const editLabel = getText("plansList.edit", "Edit");
   const deleteLabel = getText("plansList.delete", "Delete");
+  const roomsLabel = getText("plansList.rooms", "Rooms"); // 👈 NEW
 
   return (
     <div className="p-6" dir={dir}>
@@ -181,6 +179,10 @@ export default function PlansListPage() {
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Max POS
               </th>
+              {/* 👈 NEW column */}
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                {roomsLabel}
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Hotels
               </th>
@@ -196,7 +198,7 @@ export default function PlansListPage() {
             {loading ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="px-4 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
                 >
                   {loadingMsg}
@@ -205,7 +207,7 @@ export default function PlansListPage() {
             ) : plans.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="px-4 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
                 >
                   {noPlans}
@@ -236,6 +238,24 @@ export default function PlansListPage() {
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                     {plan.max_pos_devices}
+                  </td>
+                  {/* 👈 NEW cell */}
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                        plan.is_rooms
+                          ? "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400"
+                          : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                      }`}
+                      title={
+                        plan.is_rooms
+                          ? "Rooms management included"
+                          : "Rooms management not included"
+                      }
+                    >
+                      <BedDouble size={12} />
+                      {plan.is_rooms ? "✓" : "✕"}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                     {plan.hotel_count}

@@ -67,6 +67,11 @@ export type pending_signups = $Result.DefaultSelection<Prisma.$pending_signupsPa
  */
 export type subscription_plans = $Result.DefaultSelection<Prisma.$subscription_plansPayload>
 /**
+ * Model provinces
+ * 
+ */
+export type provinces = $Result.DefaultSelection<Prisma.$provincesPayload>
+/**
  * Model branches
  * This table contains check constraints and requires additional setup for migrations.
  */
@@ -490,6 +495,16 @@ export class PrismaClient<
     * ```
     */
   get subscription_plans(): Prisma.subscription_plansDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.provinces`: Exposes CRUD operations for the **provinces** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Provinces
+    * const provinces = await prisma.provinces.findMany()
+    * ```
+    */
+  get provinces(): Prisma.provincesDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.branches`: Exposes CRUD operations for the **branches** model.
@@ -1333,6 +1348,7 @@ export namespace Prisma {
     hotel_owners: 'hotel_owners',
     pending_signups: 'pending_signups',
     subscription_plans: 'subscription_plans',
+    provinces: 'provinces',
     branches: 'branches',
     audit_logs: 'audit_logs',
     customers: 'customers',
@@ -1388,7 +1404,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "subscription_plans" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "subscription_plans" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2055,6 +2071,80 @@ export namespace Prisma {
           count: {
             args: Prisma.subscription_plansCountArgs<ExtArgs>
             result: $Utils.Optional<Subscription_plansCountAggregateOutputType> | number
+          }
+        }
+      }
+      provinces: {
+        payload: Prisma.$provincesPayload<ExtArgs>
+        fields: Prisma.provincesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.provincesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.provincesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          findFirst: {
+            args: Prisma.provincesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.provincesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          findMany: {
+            args: Prisma.provincesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>[]
+          }
+          create: {
+            args: Prisma.provincesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          createMany: {
+            args: Prisma.provincesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.provincesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>[]
+          }
+          delete: {
+            args: Prisma.provincesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          update: {
+            args: Prisma.provincesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          deleteMany: {
+            args: Prisma.provincesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.provincesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.provincesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>[]
+          }
+          upsert: {
+            args: Prisma.provincesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$provincesPayload>
+          }
+          aggregate: {
+            args: Prisma.ProvincesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProvinces>
+          }
+          groupBy: {
+            args: Prisma.provincesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProvincesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.provincesCountArgs<ExtArgs>
+            result: $Utils.Optional<ProvincesCountAggregateOutputType> | number
           }
         }
       }
@@ -5135,6 +5225,7 @@ export namespace Prisma {
     hotel_owners?: hotel_ownersOmit
     pending_signups?: pending_signupsOmit
     subscription_plans?: subscription_plansOmit
+    provinces?: provincesOmit
     branches?: branchesOmit
     audit_logs?: audit_logsOmit
     customers?: customersOmit
@@ -5676,6 +5767,37 @@ export namespace Prisma {
    */
   export type Subscription_plansCountOutputTypeCountPending_signupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: pending_signupsWhereInput
+  }
+
+
+  /**
+   * Count Type ProvincesCountOutputType
+   */
+
+  export type ProvincesCountOutputType = {
+    branches: number
+  }
+
+  export type ProvincesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | ProvincesCountOutputTypeCountBranchesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProvincesCountOutputType without action
+   */
+  export type ProvincesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProvincesCountOutputType
+     */
+    select?: ProvincesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProvincesCountOutputType without action
+   */
+  export type ProvincesCountOutputTypeCountBranchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: branchesWhereInput
   }
 
 
@@ -16325,6 +16447,7 @@ export namespace Prisma {
     max_branches: number | null
     max_pos_devices: number | null
     price_monthly: Decimal | null
+    is_rooms: boolean | null
     is_active: boolean | null
     created_at: Date | null
   }
@@ -16335,6 +16458,7 @@ export namespace Prisma {
     max_branches: number | null
     max_pos_devices: number | null
     price_monthly: Decimal | null
+    is_rooms: boolean | null
     is_active: boolean | null
     created_at: Date | null
   }
@@ -16346,6 +16470,7 @@ export namespace Prisma {
     max_pos_devices: number
     price_monthly: number
     features: number
+    is_rooms: number
     is_active: number
     created_at: number
     _all: number
@@ -16370,6 +16495,7 @@ export namespace Prisma {
     max_branches?: true
     max_pos_devices?: true
     price_monthly?: true
+    is_rooms?: true
     is_active?: true
     created_at?: true
   }
@@ -16380,6 +16506,7 @@ export namespace Prisma {
     max_branches?: true
     max_pos_devices?: true
     price_monthly?: true
+    is_rooms?: true
     is_active?: true
     created_at?: true
   }
@@ -16391,6 +16518,7 @@ export namespace Prisma {
     max_pos_devices?: true
     price_monthly?: true
     features?: true
+    is_rooms?: true
     is_active?: true
     created_at?: true
     _all?: true
@@ -16489,6 +16617,7 @@ export namespace Prisma {
     max_pos_devices: number
     price_monthly: Decimal
     features: JsonValue | null
+    is_rooms: boolean
     is_active: boolean | null
     created_at: Date | null
     _count: Subscription_plansCountAggregateOutputType | null
@@ -16519,6 +16648,7 @@ export namespace Prisma {
     max_pos_devices?: boolean
     price_monthly?: boolean
     features?: boolean
+    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
     hotels?: boolean | subscription_plans$hotelsArgs<ExtArgs>
@@ -16533,6 +16663,7 @@ export namespace Prisma {
     max_pos_devices?: boolean
     price_monthly?: boolean
     features?: boolean
+    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["subscription_plans"]>
@@ -16544,6 +16675,7 @@ export namespace Prisma {
     max_pos_devices?: boolean
     price_monthly?: boolean
     features?: boolean
+    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["subscription_plans"]>
@@ -16555,11 +16687,12 @@ export namespace Prisma {
     max_pos_devices?: boolean
     price_monthly?: boolean
     features?: boolean
+    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }
 
-  export type subscription_plansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "max_branches" | "max_pos_devices" | "price_monthly" | "features" | "is_active" | "created_at", ExtArgs["result"]["subscription_plans"]>
+  export type subscription_plansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "max_branches" | "max_pos_devices" | "price_monthly" | "features" | "is_rooms" | "is_active" | "created_at", ExtArgs["result"]["subscription_plans"]>
   export type subscription_plansInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | subscription_plans$hotelsArgs<ExtArgs>
     pending_signups?: boolean | subscription_plans$pending_signupsArgs<ExtArgs>
@@ -16581,6 +16714,7 @@ export namespace Prisma {
       max_pos_devices: number
       price_monthly: Prisma.Decimal
       features: Prisma.JsonValue | null
+      is_rooms: boolean
       is_active: boolean | null
       created_at: Date | null
     }, ExtArgs["result"]["subscription_plans"]>
@@ -17014,6 +17148,7 @@ export namespace Prisma {
     readonly max_pos_devices: FieldRef<"subscription_plans", 'Int'>
     readonly price_monthly: FieldRef<"subscription_plans", 'Decimal'>
     readonly features: FieldRef<"subscription_plans", 'Json'>
+    readonly is_rooms: FieldRef<"subscription_plans", 'Boolean'>
     readonly is_active: FieldRef<"subscription_plans", 'Boolean'>
     readonly created_at: FieldRef<"subscription_plans", 'DateTime'>
   }
@@ -17476,6 +17611,1042 @@ export namespace Prisma {
 
 
   /**
+   * Model provinces
+   */
+
+  export type AggregateProvinces = {
+    _count: ProvincesCountAggregateOutputType | null
+    _min: ProvincesMinAggregateOutputType | null
+    _max: ProvincesMaxAggregateOutputType | null
+  }
+
+  export type ProvincesMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+  }
+
+  export type ProvincesMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+  }
+
+  export type ProvincesCountAggregateOutputType = {
+    id: number
+    name: number
+    _all: number
+  }
+
+
+  export type ProvincesMinAggregateInputType = {
+    id?: true
+    name?: true
+  }
+
+  export type ProvincesMaxAggregateInputType = {
+    id?: true
+    name?: true
+  }
+
+  export type ProvincesCountAggregateInputType = {
+    id?: true
+    name?: true
+    _all?: true
+  }
+
+  export type ProvincesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which provinces to aggregate.
+     */
+    where?: provincesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of provinces to fetch.
+     */
+    orderBy?: provincesOrderByWithRelationInput | provincesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: provincesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` provinces from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` provinces.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned provinces
+    **/
+    _count?: true | ProvincesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProvincesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProvincesMaxAggregateInputType
+  }
+
+  export type GetProvincesAggregateType<T extends ProvincesAggregateArgs> = {
+        [P in keyof T & keyof AggregateProvinces]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProvinces[P]>
+      : GetScalarType<T[P], AggregateProvinces[P]>
+  }
+
+
+
+
+  export type provincesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: provincesWhereInput
+    orderBy?: provincesOrderByWithAggregationInput | provincesOrderByWithAggregationInput[]
+    by: ProvincesScalarFieldEnum[] | ProvincesScalarFieldEnum
+    having?: provincesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProvincesCountAggregateInputType | true
+    _min?: ProvincesMinAggregateInputType
+    _max?: ProvincesMaxAggregateInputType
+  }
+
+  export type ProvincesGroupByOutputType = {
+    id: string
+    name: string
+    _count: ProvincesCountAggregateOutputType | null
+    _min: ProvincesMinAggregateOutputType | null
+    _max: ProvincesMaxAggregateOutputType | null
+  }
+
+  type GetProvincesGroupByPayload<T extends provincesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProvincesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProvincesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProvincesGroupByOutputType[P]>
+            : GetScalarType<T[P], ProvincesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type provincesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    branches?: boolean | provinces$branchesArgs<ExtArgs>
+    _count?: boolean | ProvincesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["provinces"]>
+
+  export type provincesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+  }, ExtArgs["result"]["provinces"]>
+
+  export type provincesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+  }, ExtArgs["result"]["provinces"]>
+
+  export type provincesSelectScalar = {
+    id?: boolean
+    name?: boolean
+  }
+
+  export type provincesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name", ExtArgs["result"]["provinces"]>
+  export type provincesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | provinces$branchesArgs<ExtArgs>
+    _count?: boolean | ProvincesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type provincesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type provincesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $provincesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "provinces"
+    objects: {
+      branches: Prisma.$branchesPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+    }, ExtArgs["result"]["provinces"]>
+    composites: {}
+  }
+
+  type provincesGetPayload<S extends boolean | null | undefined | provincesDefaultArgs> = $Result.GetResult<Prisma.$provincesPayload, S>
+
+  type provincesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<provincesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProvincesCountAggregateInputType | true
+    }
+
+  export interface provincesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['provinces'], meta: { name: 'provinces' } }
+    /**
+     * Find zero or one Provinces that matches the filter.
+     * @param {provincesFindUniqueArgs} args - Arguments to find a Provinces
+     * @example
+     * // Get one Provinces
+     * const provinces = await prisma.provinces.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends provincesFindUniqueArgs>(args: SelectSubset<T, provincesFindUniqueArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Provinces that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {provincesFindUniqueOrThrowArgs} args - Arguments to find a Provinces
+     * @example
+     * // Get one Provinces
+     * const provinces = await prisma.provinces.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends provincesFindUniqueOrThrowArgs>(args: SelectSubset<T, provincesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Provinces that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesFindFirstArgs} args - Arguments to find a Provinces
+     * @example
+     * // Get one Provinces
+     * const provinces = await prisma.provinces.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends provincesFindFirstArgs>(args?: SelectSubset<T, provincesFindFirstArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Provinces that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesFindFirstOrThrowArgs} args - Arguments to find a Provinces
+     * @example
+     * // Get one Provinces
+     * const provinces = await prisma.provinces.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends provincesFindFirstOrThrowArgs>(args?: SelectSubset<T, provincesFindFirstOrThrowArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Provinces that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Provinces
+     * const provinces = await prisma.provinces.findMany()
+     * 
+     * // Get first 10 Provinces
+     * const provinces = await prisma.provinces.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const provincesWithIdOnly = await prisma.provinces.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends provincesFindManyArgs>(args?: SelectSubset<T, provincesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Provinces.
+     * @param {provincesCreateArgs} args - Arguments to create a Provinces.
+     * @example
+     * // Create one Provinces
+     * const Provinces = await prisma.provinces.create({
+     *   data: {
+     *     // ... data to create a Provinces
+     *   }
+     * })
+     * 
+     */
+    create<T extends provincesCreateArgs>(args: SelectSubset<T, provincesCreateArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Provinces.
+     * @param {provincesCreateManyArgs} args - Arguments to create many Provinces.
+     * @example
+     * // Create many Provinces
+     * const provinces = await prisma.provinces.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends provincesCreateManyArgs>(args?: SelectSubset<T, provincesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Provinces and returns the data saved in the database.
+     * @param {provincesCreateManyAndReturnArgs} args - Arguments to create many Provinces.
+     * @example
+     * // Create many Provinces
+     * const provinces = await prisma.provinces.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Provinces and only return the `id`
+     * const provincesWithIdOnly = await prisma.provinces.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends provincesCreateManyAndReturnArgs>(args?: SelectSubset<T, provincesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Provinces.
+     * @param {provincesDeleteArgs} args - Arguments to delete one Provinces.
+     * @example
+     * // Delete one Provinces
+     * const Provinces = await prisma.provinces.delete({
+     *   where: {
+     *     // ... filter to delete one Provinces
+     *   }
+     * })
+     * 
+     */
+    delete<T extends provincesDeleteArgs>(args: SelectSubset<T, provincesDeleteArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Provinces.
+     * @param {provincesUpdateArgs} args - Arguments to update one Provinces.
+     * @example
+     * // Update one Provinces
+     * const provinces = await prisma.provinces.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends provincesUpdateArgs>(args: SelectSubset<T, provincesUpdateArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Provinces.
+     * @param {provincesDeleteManyArgs} args - Arguments to filter Provinces to delete.
+     * @example
+     * // Delete a few Provinces
+     * const { count } = await prisma.provinces.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends provincesDeleteManyArgs>(args?: SelectSubset<T, provincesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Provinces.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Provinces
+     * const provinces = await prisma.provinces.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends provincesUpdateManyArgs>(args: SelectSubset<T, provincesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Provinces and returns the data updated in the database.
+     * @param {provincesUpdateManyAndReturnArgs} args - Arguments to update many Provinces.
+     * @example
+     * // Update many Provinces
+     * const provinces = await prisma.provinces.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Provinces and only return the `id`
+     * const provincesWithIdOnly = await prisma.provinces.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends provincesUpdateManyAndReturnArgs>(args: SelectSubset<T, provincesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Provinces.
+     * @param {provincesUpsertArgs} args - Arguments to update or create a Provinces.
+     * @example
+     * // Update or create a Provinces
+     * const provinces = await prisma.provinces.upsert({
+     *   create: {
+     *     // ... data to create a Provinces
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Provinces we want to update
+     *   }
+     * })
+     */
+    upsert<T extends provincesUpsertArgs>(args: SelectSubset<T, provincesUpsertArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Provinces.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesCountArgs} args - Arguments to filter Provinces to count.
+     * @example
+     * // Count the number of Provinces
+     * const count = await prisma.provinces.count({
+     *   where: {
+     *     // ... the filter for the Provinces we want to count
+     *   }
+     * })
+    **/
+    count<T extends provincesCountArgs>(
+      args?: Subset<T, provincesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProvincesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Provinces.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProvincesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProvincesAggregateArgs>(args: Subset<T, ProvincesAggregateArgs>): Prisma.PrismaPromise<GetProvincesAggregateType<T>>
+
+    /**
+     * Group by Provinces.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {provincesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends provincesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: provincesGroupByArgs['orderBy'] }
+        : { orderBy?: provincesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, provincesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProvincesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the provinces model
+   */
+  readonly fields: provincesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for provinces.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__provincesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    branches<T extends provinces$branchesArgs<ExtArgs> = {}>(args?: Subset<T, provinces$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branchesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the provinces model
+   */
+  interface provincesFieldRefs {
+    readonly id: FieldRef<"provinces", 'String'>
+    readonly name: FieldRef<"provinces", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * provinces findUnique
+   */
+  export type provincesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter, which provinces to fetch.
+     */
+    where: provincesWhereUniqueInput
+  }
+
+  /**
+   * provinces findUniqueOrThrow
+   */
+  export type provincesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter, which provinces to fetch.
+     */
+    where: provincesWhereUniqueInput
+  }
+
+  /**
+   * provinces findFirst
+   */
+  export type provincesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter, which provinces to fetch.
+     */
+    where?: provincesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of provinces to fetch.
+     */
+    orderBy?: provincesOrderByWithRelationInput | provincesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for provinces.
+     */
+    cursor?: provincesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` provinces from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` provinces.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of provinces.
+     */
+    distinct?: ProvincesScalarFieldEnum | ProvincesScalarFieldEnum[]
+  }
+
+  /**
+   * provinces findFirstOrThrow
+   */
+  export type provincesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter, which provinces to fetch.
+     */
+    where?: provincesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of provinces to fetch.
+     */
+    orderBy?: provincesOrderByWithRelationInput | provincesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for provinces.
+     */
+    cursor?: provincesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` provinces from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` provinces.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of provinces.
+     */
+    distinct?: ProvincesScalarFieldEnum | ProvincesScalarFieldEnum[]
+  }
+
+  /**
+   * provinces findMany
+   */
+  export type provincesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter, which provinces to fetch.
+     */
+    where?: provincesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of provinces to fetch.
+     */
+    orderBy?: provincesOrderByWithRelationInput | provincesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing provinces.
+     */
+    cursor?: provincesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` provinces from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` provinces.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of provinces.
+     */
+    distinct?: ProvincesScalarFieldEnum | ProvincesScalarFieldEnum[]
+  }
+
+  /**
+   * provinces create
+   */
+  export type provincesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a provinces.
+     */
+    data: XOR<provincesCreateInput, provincesUncheckedCreateInput>
+  }
+
+  /**
+   * provinces createMany
+   */
+  export type provincesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many provinces.
+     */
+    data: provincesCreateManyInput | provincesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * provinces createManyAndReturn
+   */
+  export type provincesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * The data used to create many provinces.
+     */
+    data: provincesCreateManyInput | provincesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * provinces update
+   */
+  export type provincesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a provinces.
+     */
+    data: XOR<provincesUpdateInput, provincesUncheckedUpdateInput>
+    /**
+     * Choose, which provinces to update.
+     */
+    where: provincesWhereUniqueInput
+  }
+
+  /**
+   * provinces updateMany
+   */
+  export type provincesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update provinces.
+     */
+    data: XOR<provincesUpdateManyMutationInput, provincesUncheckedUpdateManyInput>
+    /**
+     * Filter which provinces to update
+     */
+    where?: provincesWhereInput
+    /**
+     * Limit how many provinces to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * provinces updateManyAndReturn
+   */
+  export type provincesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * The data used to update provinces.
+     */
+    data: XOR<provincesUpdateManyMutationInput, provincesUncheckedUpdateManyInput>
+    /**
+     * Filter which provinces to update
+     */
+    where?: provincesWhereInput
+    /**
+     * Limit how many provinces to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * provinces upsert
+   */
+  export type provincesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the provinces to update in case it exists.
+     */
+    where: provincesWhereUniqueInput
+    /**
+     * In case the provinces found by the `where` argument doesn't exist, create a new provinces with this data.
+     */
+    create: XOR<provincesCreateInput, provincesUncheckedCreateInput>
+    /**
+     * In case the provinces was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<provincesUpdateInput, provincesUncheckedUpdateInput>
+  }
+
+  /**
+   * provinces delete
+   */
+  export type provincesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    /**
+     * Filter which provinces to delete.
+     */
+    where: provincesWhereUniqueInput
+  }
+
+  /**
+   * provinces deleteMany
+   */
+  export type provincesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which provinces to delete
+     */
+    where?: provincesWhereInput
+    /**
+     * Limit how many provinces to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * provinces.branches
+   */
+  export type provinces$branchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branches
+     */
+    select?: branchesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branches
+     */
+    omit?: branchesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branchesInclude<ExtArgs> | null
+    where?: branchesWhereInput
+    orderBy?: branchesOrderByWithRelationInput | branchesOrderByWithRelationInput[]
+    cursor?: branchesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BranchesScalarFieldEnum | BranchesScalarFieldEnum[]
+  }
+
+  /**
+   * provinces without action
+   */
+  export type provincesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model branches
    */
 
@@ -17504,6 +18675,7 @@ export namespace Prisma {
   export type BranchesMinAggregateOutputType = {
     id: string | null
     hotel_id: string | null
+    province_id: string | null
     name: string | null
     code: string | null
     address: string | null
@@ -17525,6 +18697,7 @@ export namespace Prisma {
   export type BranchesMaxAggregateOutputType = {
     id: string | null
     hotel_id: string | null
+    province_id: string | null
     name: string | null
     code: string | null
     address: string | null
@@ -17546,6 +18719,7 @@ export namespace Prisma {
   export type BranchesCountAggregateOutputType = {
     id: number
     hotel_id: number
+    province_id: number
     name: number
     code: number
     address: number
@@ -17583,6 +18757,7 @@ export namespace Prisma {
   export type BranchesMinAggregateInputType = {
     id?: true
     hotel_id?: true
+    province_id?: true
     name?: true
     code?: true
     address?: true
@@ -17604,6 +18779,7 @@ export namespace Prisma {
   export type BranchesMaxAggregateInputType = {
     id?: true
     hotel_id?: true
+    province_id?: true
     name?: true
     code?: true
     address?: true
@@ -17625,6 +18801,7 @@ export namespace Prisma {
   export type BranchesCountAggregateInputType = {
     id?: true
     hotel_id?: true
+    province_id?: true
     name?: true
     code?: true
     address?: true
@@ -17733,6 +18910,7 @@ export namespace Prisma {
   export type BranchesGroupByOutputType = {
     id: string
     hotel_id: string
+    province_id: string | null
     name: string
     code: string | null
     address: string | null
@@ -17773,6 +18951,7 @@ export namespace Prisma {
   export type branchesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     hotel_id?: boolean
+    province_id?: boolean
     name?: boolean
     code?: boolean
     address?: boolean
@@ -17793,6 +18972,7 @@ export namespace Prisma {
     payroll_runs?: boolean | branches$payroll_runsArgs<ExtArgs>
     staff_attendance?: boolean | branches$staff_attendanceArgs<ExtArgs>
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
     users?: boolean | branches$usersArgs<ExtArgs>
     audit_logs?: boolean | branches$audit_logsArgs<ExtArgs>
     dining_areas?: boolean | branches$dining_areasArgs<ExtArgs>
@@ -17819,6 +18999,7 @@ export namespace Prisma {
   export type branchesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     hotel_id?: boolean
+    province_id?: boolean
     name?: boolean
     code?: boolean
     address?: boolean
@@ -17836,11 +19017,13 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
   }, ExtArgs["result"]["branches"]>
 
   export type branchesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     hotel_id?: boolean
+    province_id?: boolean
     name?: boolean
     code?: boolean
     address?: boolean
@@ -17858,11 +19041,13 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
   }, ExtArgs["result"]["branches"]>
 
   export type branchesSelectScalar = {
     id?: boolean
     hotel_id?: boolean
+    province_id?: boolean
     name?: boolean
     code?: boolean
     address?: boolean
@@ -17881,12 +19066,13 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type branchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "name" | "code" | "address" | "city" | "phone" | "latitude" | "longitude" | "currency" | "timezone" | "tax_rate" | "service_charge_rate" | "status" | "opening_time" | "closing_time" | "created_at" | "updated_at", ExtArgs["result"]["branches"]>
+  export type branchesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "province_id" | "name" | "code" | "address" | "city" | "phone" | "latitude" | "longitude" | "currency" | "timezone" | "tax_rate" | "service_charge_rate" | "status" | "opening_time" | "closing_time" | "created_at" | "updated_at", ExtArgs["result"]["branches"]>
   export type branchesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expenses?: boolean | branches$expensesArgs<ExtArgs>
     payroll_runs?: boolean | branches$payroll_runsArgs<ExtArgs>
     staff_attendance?: boolean | branches$staff_attendanceArgs<ExtArgs>
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
     users?: boolean | branches$usersArgs<ExtArgs>
     audit_logs?: boolean | branches$audit_logsArgs<ExtArgs>
     dining_areas?: boolean | branches$dining_areasArgs<ExtArgs>
@@ -17911,9 +19097,11 @@ export namespace Prisma {
   }
   export type branchesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
   }
   export type branchesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    provinces?: boolean | branches$provincesArgs<ExtArgs>
   }
 
   export type $branchesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17923,6 +19111,7 @@ export namespace Prisma {
       payroll_runs: Prisma.$payroll_runsPayload<ExtArgs>[]
       staff_attendance: Prisma.$staff_attendancePayload<ExtArgs>[]
       hotels: Prisma.$hotelsPayload<ExtArgs>
+      provinces: Prisma.$provincesPayload<ExtArgs> | null
       users: Prisma.$usersPayload<ExtArgs>[]
       audit_logs: Prisma.$audit_logsPayload<ExtArgs>[]
       dining_areas: Prisma.$dining_areasPayload<ExtArgs>[]
@@ -17947,6 +19136,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       hotel_id: string
+      province_id: string | null
       name: string
       code: string | null
       address: string | null
@@ -18361,6 +19551,7 @@ export namespace Prisma {
     payroll_runs<T extends branches$payroll_runsArgs<ExtArgs> = {}>(args?: Subset<T, branches$payroll_runsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$payroll_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     staff_attendance<T extends branches$staff_attendanceArgs<ExtArgs> = {}>(args?: Subset<T, branches$staff_attendanceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$staff_attendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     hotels<T extends hotelsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, hotelsDefaultArgs<ExtArgs>>): Prisma__hotelsClient<$Result.GetResult<Prisma.$hotelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    provinces<T extends branches$provincesArgs<ExtArgs> = {}>(args?: Subset<T, branches$provincesArgs<ExtArgs>>): Prisma__provincesClient<$Result.GetResult<Prisma.$provincesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     users<T extends branches$usersArgs<ExtArgs> = {}>(args?: Subset<T, branches$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audit_logs<T extends branches$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, branches$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$audit_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dining_areas<T extends branches$dining_areasArgs<ExtArgs> = {}>(args?: Subset<T, branches$dining_areasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$dining_areasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18412,6 +19603,7 @@ export namespace Prisma {
   interface branchesFieldRefs {
     readonly id: FieldRef<"branches", 'String'>
     readonly hotel_id: FieldRef<"branches", 'String'>
+    readonly province_id: FieldRef<"branches", 'String'>
     readonly name: FieldRef<"branches", 'String'>
     readonly code: FieldRef<"branches", 'String'>
     readonly address: FieldRef<"branches", 'String'>
@@ -18898,6 +20090,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Staff_attendanceScalarFieldEnum | Staff_attendanceScalarFieldEnum[]
+  }
+
+  /**
+   * branches.provinces
+   */
+  export type branches$provincesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the provinces
+     */
+    select?: provincesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the provinces
+     */
+    omit?: provincesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: provincesInclude<ExtArgs> | null
+    where?: provincesWhereInput
   }
 
   /**
@@ -65780,6 +66991,7 @@ export namespace Prisma {
     max_pos_devices: 'max_pos_devices',
     price_monthly: 'price_monthly',
     features: 'features',
+    is_rooms: 'is_rooms',
     is_active: 'is_active',
     created_at: 'created_at'
   };
@@ -65787,9 +66999,18 @@ export namespace Prisma {
   export type Subscription_plansScalarFieldEnum = (typeof Subscription_plansScalarFieldEnum)[keyof typeof Subscription_plansScalarFieldEnum]
 
 
+  export const ProvincesScalarFieldEnum: {
+    id: 'id',
+    name: 'name'
+  };
+
+  export type ProvincesScalarFieldEnum = (typeof ProvincesScalarFieldEnum)[keyof typeof ProvincesScalarFieldEnum]
+
+
   export const BranchesScalarFieldEnum: {
     id: 'id',
     hotel_id: 'hotel_id',
+    province_id: 'province_id',
     name: 'name',
     code: 'code',
     address: 'address',
@@ -67049,17 +68270,17 @@ export namespace Prisma {
 
   export type hotel_ownersWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    user_id?: string
     hotel_id?: string
     AND?: hotel_ownersWhereInput | hotel_ownersWhereInput[]
     OR?: hotel_ownersWhereInput[]
     NOT?: hotel_ownersWhereInput | hotel_ownersWhereInput[]
-    user_id?: UuidFilter<"hotel_owners"> | string
     address?: StringNullableFilter<"hotel_owners"> | string | null
     hesabpay_account_number?: StringNullableFilter<"hotel_owners"> | string | null
     created_at?: DateTimeNullableFilter<"hotel_owners"> | Date | string | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
-  }, "id" | "hotel_id">
+  }, "id" | "user_id" | "hotel_id">
 
   export type hotel_ownersOrderByWithAggregationInput = {
     id?: SortOrder
@@ -67190,6 +68411,7 @@ export namespace Prisma {
     max_pos_devices?: IntFilter<"subscription_plans"> | number
     price_monthly?: DecimalFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
     features?: JsonNullableFilter<"subscription_plans">
+    is_rooms?: BoolFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableFilter<"subscription_plans"> | Date | string | null
     hotels?: HotelsListRelationFilter
@@ -67203,6 +68425,7 @@ export namespace Prisma {
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
     features?: SortOrderInput | SortOrder
+    is_rooms?: SortOrder
     is_active?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     hotels?: hotelsOrderByRelationAggregateInput
@@ -67219,6 +68442,7 @@ export namespace Prisma {
     max_pos_devices?: IntFilter<"subscription_plans"> | number
     price_monthly?: DecimalFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
     features?: JsonNullableFilter<"subscription_plans">
+    is_rooms?: BoolFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableFilter<"subscription_plans"> | Date | string | null
     hotels?: HotelsListRelationFilter
@@ -67232,6 +68456,7 @@ export namespace Prisma {
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
     features?: SortOrderInput | SortOrder
+    is_rooms?: SortOrder
     is_active?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     _count?: subscription_plansCountOrderByAggregateInput
@@ -67251,8 +68476,49 @@ export namespace Prisma {
     max_pos_devices?: IntWithAggregatesFilter<"subscription_plans"> | number
     price_monthly?: DecimalWithAggregatesFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
     features?: JsonNullableWithAggregatesFilter<"subscription_plans">
+    is_rooms?: BoolWithAggregatesFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableWithAggregatesFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableWithAggregatesFilter<"subscription_plans"> | Date | string | null
+  }
+
+  export type provincesWhereInput = {
+    AND?: provincesWhereInput | provincesWhereInput[]
+    OR?: provincesWhereInput[]
+    NOT?: provincesWhereInput | provincesWhereInput[]
+    id?: UuidFilter<"provinces"> | string
+    name?: StringFilter<"provinces"> | string
+    branches?: BranchesListRelationFilter
+  }
+
+  export type provincesOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branches?: branchesOrderByRelationAggregateInput
+  }
+
+  export type provincesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: provincesWhereInput | provincesWhereInput[]
+    OR?: provincesWhereInput[]
+    NOT?: provincesWhereInput | provincesWhereInput[]
+    branches?: BranchesListRelationFilter
+  }, "id" | "name">
+
+  export type provincesOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    _count?: provincesCountOrderByAggregateInput
+    _max?: provincesMaxOrderByAggregateInput
+    _min?: provincesMinOrderByAggregateInput
+  }
+
+  export type provincesScalarWhereWithAggregatesInput = {
+    AND?: provincesScalarWhereWithAggregatesInput | provincesScalarWhereWithAggregatesInput[]
+    OR?: provincesScalarWhereWithAggregatesInput[]
+    NOT?: provincesScalarWhereWithAggregatesInput | provincesScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"provinces"> | string
+    name?: StringWithAggregatesFilter<"provinces"> | string
   }
 
   export type branchesWhereInput = {
@@ -67261,6 +68527,7 @@ export namespace Prisma {
     NOT?: branchesWhereInput | branchesWhereInput[]
     id?: UuidFilter<"branches"> | string
     hotel_id?: UuidFilter<"branches"> | string
+    province_id?: UuidNullableFilter<"branches"> | string | null
     name?: StringFilter<"branches"> | string
     code?: StringNullableFilter<"branches"> | string | null
     address?: StringNullableFilter<"branches"> | string | null
@@ -67281,6 +68548,7 @@ export namespace Prisma {
     payroll_runs?: Payroll_runsListRelationFilter
     staff_attendance?: Staff_attendanceListRelationFilter
     hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
+    provinces?: XOR<ProvincesNullableScalarRelationFilter, provincesWhereInput> | null
     users?: UsersListRelationFilter
     audit_logs?: Audit_logsListRelationFilter
     dining_areas?: Dining_areasListRelationFilter
@@ -67306,6 +68574,7 @@ export namespace Prisma {
   export type branchesOrderByWithRelationInput = {
     id?: SortOrder
     hotel_id?: SortOrder
+    province_id?: SortOrderInput | SortOrder
     name?: SortOrder
     code?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
@@ -67326,6 +68595,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsOrderByRelationAggregateInput
     staff_attendance?: staff_attendanceOrderByRelationAggregateInput
     hotels?: hotelsOrderByWithRelationInput
+    provinces?: provincesOrderByWithRelationInput
     users?: usersOrderByRelationAggregateInput
     audit_logs?: audit_logsOrderByRelationAggregateInput
     dining_areas?: dining_areasOrderByRelationAggregateInput
@@ -67355,6 +68625,7 @@ export namespace Prisma {
     OR?: branchesWhereInput[]
     NOT?: branchesWhereInput | branchesWhereInput[]
     hotel_id?: UuidFilter<"branches"> | string
+    province_id?: UuidNullableFilter<"branches"> | string | null
     name?: StringFilter<"branches"> | string
     code?: StringNullableFilter<"branches"> | string | null
     address?: StringNullableFilter<"branches"> | string | null
@@ -67375,6 +68646,7 @@ export namespace Prisma {
     payroll_runs?: Payroll_runsListRelationFilter
     staff_attendance?: Staff_attendanceListRelationFilter
     hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
+    provinces?: XOR<ProvincesNullableScalarRelationFilter, provincesWhereInput> | null
     users?: UsersListRelationFilter
     audit_logs?: Audit_logsListRelationFilter
     dining_areas?: Dining_areasListRelationFilter
@@ -67400,6 +68672,7 @@ export namespace Prisma {
   export type branchesOrderByWithAggregationInput = {
     id?: SortOrder
     hotel_id?: SortOrder
+    province_id?: SortOrderInput | SortOrder
     name?: SortOrder
     code?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
@@ -67429,6 +68702,7 @@ export namespace Prisma {
     NOT?: branchesScalarWhereWithAggregatesInput | branchesScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"branches"> | string
     hotel_id?: UuidWithAggregatesFilter<"branches"> | string
+    province_id?: UuidNullableWithAggregatesFilter<"branches"> | string | null
     name?: StringWithAggregatesFilter<"branches"> | string
     code?: StringNullableWithAggregatesFilter<"branches"> | string | null
     address?: StringNullableWithAggregatesFilter<"branches"> | string | null
@@ -71377,6 +72651,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     hotels?: hotelsCreateNestedManyWithoutSubscription_plansInput
@@ -71390,6 +72665,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     hotels?: hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput
@@ -71403,6 +72679,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hotels?: hotelsUpdateManyWithoutSubscription_plansNestedInput
@@ -71416,6 +72693,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hotels?: hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput
@@ -71429,6 +72707,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
   }
@@ -71440,6 +72719,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -71451,8 +72731,48 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type provincesCreateInput = {
+    id?: string
+    name: string
+    branches?: branchesCreateNestedManyWithoutProvincesInput
+  }
+
+  export type provincesUncheckedCreateInput = {
+    id?: string
+    name: string
+    branches?: branchesUncheckedCreateNestedManyWithoutProvincesInput
+  }
+
+  export type provincesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branches?: branchesUpdateManyWithoutProvincesNestedInput
+  }
+
+  export type provincesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branches?: branchesUncheckedUpdateManyWithoutProvincesNestedInput
+  }
+
+  export type provincesCreateManyInput = {
+    id?: string
+    name: string
+  }
+
+  export type provincesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type provincesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
   }
 
   export type branchesCreateInput = {
@@ -71477,6 +72797,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -71502,6 +72823,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -71565,6 +72887,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -71590,6 +72913,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71634,6 +72958,7 @@ export namespace Prisma {
   export type branchesCreateManyInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -71675,6 +73000,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75781,6 +77107,7 @@ export namespace Prisma {
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
     features?: SortOrder
+    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -75797,6 +77124,7 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
+    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -75807,6 +77135,7 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
+    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -75875,6 +77204,21 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type provincesCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+  }
+
+  export type provincesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+  }
+
+  export type provincesMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+  }
+
   export type DecimalNullableFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
@@ -75884,6 +77228,11 @@ export namespace Prisma {
     gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type ProvincesNullableScalarRelationFilter = {
+    is?: provincesWhereInput | null
+    isNot?: provincesWhereInput | null
   }
 
   export type Dining_areasListRelationFilter = {
@@ -76004,6 +77353,7 @@ export namespace Prisma {
   export type branchesCountOrderByAggregateInput = {
     id?: SortOrder
     hotel_id?: SortOrder
+    province_id?: SortOrder
     name?: SortOrder
     code?: SortOrder
     address?: SortOrder
@@ -76032,6 +77382,7 @@ export namespace Prisma {
   export type branchesMaxOrderByAggregateInput = {
     id?: SortOrder
     hotel_id?: SortOrder
+    province_id?: SortOrder
     name?: SortOrder
     code?: SortOrder
     address?: SortOrder
@@ -76053,6 +77404,7 @@ export namespace Prisma {
   export type branchesMinOrderByAggregateInput = {
     id?: SortOrder
     hotel_id?: SortOrder
+    province_id?: SortOrder
     name?: SortOrder
     code?: SortOrder
     address?: SortOrder
@@ -79631,6 +80983,48 @@ export namespace Prisma {
     deleteMany?: pending_signupsScalarWhereInput | pending_signupsScalarWhereInput[]
   }
 
+  export type branchesCreateNestedManyWithoutProvincesInput = {
+    create?: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput> | branchesCreateWithoutProvincesInput[] | branchesUncheckedCreateWithoutProvincesInput[]
+    connectOrCreate?: branchesCreateOrConnectWithoutProvincesInput | branchesCreateOrConnectWithoutProvincesInput[]
+    createMany?: branchesCreateManyProvincesInputEnvelope
+    connect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+  }
+
+  export type branchesUncheckedCreateNestedManyWithoutProvincesInput = {
+    create?: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput> | branchesCreateWithoutProvincesInput[] | branchesUncheckedCreateWithoutProvincesInput[]
+    connectOrCreate?: branchesCreateOrConnectWithoutProvincesInput | branchesCreateOrConnectWithoutProvincesInput[]
+    createMany?: branchesCreateManyProvincesInputEnvelope
+    connect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+  }
+
+  export type branchesUpdateManyWithoutProvincesNestedInput = {
+    create?: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput> | branchesCreateWithoutProvincesInput[] | branchesUncheckedCreateWithoutProvincesInput[]
+    connectOrCreate?: branchesCreateOrConnectWithoutProvincesInput | branchesCreateOrConnectWithoutProvincesInput[]
+    upsert?: branchesUpsertWithWhereUniqueWithoutProvincesInput | branchesUpsertWithWhereUniqueWithoutProvincesInput[]
+    createMany?: branchesCreateManyProvincesInputEnvelope
+    set?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    disconnect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    delete?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    connect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    update?: branchesUpdateWithWhereUniqueWithoutProvincesInput | branchesUpdateWithWhereUniqueWithoutProvincesInput[]
+    updateMany?: branchesUpdateManyWithWhereWithoutProvincesInput | branchesUpdateManyWithWhereWithoutProvincesInput[]
+    deleteMany?: branchesScalarWhereInput | branchesScalarWhereInput[]
+  }
+
+  export type branchesUncheckedUpdateManyWithoutProvincesNestedInput = {
+    create?: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput> | branchesCreateWithoutProvincesInput[] | branchesUncheckedCreateWithoutProvincesInput[]
+    connectOrCreate?: branchesCreateOrConnectWithoutProvincesInput | branchesCreateOrConnectWithoutProvincesInput[]
+    upsert?: branchesUpsertWithWhereUniqueWithoutProvincesInput | branchesUpsertWithWhereUniqueWithoutProvincesInput[]
+    createMany?: branchesCreateManyProvincesInputEnvelope
+    set?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    disconnect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    delete?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    connect?: branchesWhereUniqueInput | branchesWhereUniqueInput[]
+    update?: branchesUpdateWithWhereUniqueWithoutProvincesInput | branchesUpdateWithWhereUniqueWithoutProvincesInput[]
+    updateMany?: branchesUpdateManyWithWhereWithoutProvincesInput | branchesUpdateManyWithWhereWithoutProvincesInput[]
+    deleteMany?: branchesScalarWhereInput | branchesScalarWhereInput[]
+  }
+
   export type expensesCreateNestedManyWithoutBranchesInput = {
     create?: XOR<expensesCreateWithoutBranchesInput, expensesUncheckedCreateWithoutBranchesInput> | expensesCreateWithoutBranchesInput[] | expensesUncheckedCreateWithoutBranchesInput[]
     connectOrCreate?: expensesCreateOrConnectWithoutBranchesInput | expensesCreateOrConnectWithoutBranchesInput[]
@@ -79656,6 +81050,12 @@ export namespace Prisma {
     create?: XOR<hotelsCreateWithoutBranchesInput, hotelsUncheckedCreateWithoutBranchesInput>
     connectOrCreate?: hotelsCreateOrConnectWithoutBranchesInput
     connect?: hotelsWhereUniqueInput
+  }
+
+  export type provincesCreateNestedOneWithoutBranchesInput = {
+    create?: XOR<provincesCreateWithoutBranchesInput, provincesUncheckedCreateWithoutBranchesInput>
+    connectOrCreate?: provincesCreateOrConnectWithoutBranchesInput
+    connect?: provincesWhereUniqueInput
   }
 
   export type usersCreateNestedManyWithoutBranchesInput = {
@@ -80015,6 +81415,16 @@ export namespace Prisma {
     upsert?: hotelsUpsertWithoutBranchesInput
     connect?: hotelsWhereUniqueInput
     update?: XOR<XOR<hotelsUpdateToOneWithWhereWithoutBranchesInput, hotelsUpdateWithoutBranchesInput>, hotelsUncheckedUpdateWithoutBranchesInput>
+  }
+
+  export type provincesUpdateOneWithoutBranchesNestedInput = {
+    create?: XOR<provincesCreateWithoutBranchesInput, provincesUncheckedCreateWithoutBranchesInput>
+    connectOrCreate?: provincesCreateOrConnectWithoutBranchesInput
+    upsert?: provincesUpsertWithoutBranchesInput
+    disconnect?: provincesWhereInput | boolean
+    delete?: provincesWhereInput | boolean
+    connect?: provincesWhereUniqueInput
+    update?: XOR<XOR<provincesUpdateToOneWithWhereWithoutBranchesInput, provincesUpdateWithoutBranchesInput>, provincesUncheckedUpdateWithoutBranchesInput>
   }
 
   export type usersUpdateManyWithoutBranchesNestedInput = {
@@ -84079,6 +85489,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
@@ -84103,6 +85514,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutUsersInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -84835,6 +86247,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
@@ -84859,6 +86272,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85739,6 +87153,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     pending_signups?: pending_signupsCreateNestedManyWithoutSubscription_plansInput
@@ -85751,6 +87166,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     pending_signups?: pending_signupsUncheckedCreateNestedManyWithoutSubscription_plansInput
@@ -85829,6 +87245,7 @@ export namespace Prisma {
     expenses?: expensesCreateNestedManyWithoutBranchesInput
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -85853,6 +87270,7 @@ export namespace Prisma {
 
   export type branchesUncheckedCreateWithoutHotelsInput = {
     id?: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -85992,6 +87410,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pending_signups?: pending_signupsUpdateManyWithoutSubscription_plansNestedInput
@@ -86004,6 +87423,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pending_signups?: pending_signupsUncheckedUpdateManyWithoutSubscription_plansNestedInput
@@ -86085,6 +87505,7 @@ export namespace Prisma {
     NOT?: branchesScalarWhereInput | branchesScalarWhereInput[]
     id?: UuidFilter<"branches"> | string
     hotel_id?: UuidFilter<"branches"> | string
+    province_id?: UuidNullableFilter<"branches"> | string | null
     name?: StringFilter<"branches"> | string
     code?: StringNullableFilter<"branches"> | string | null
     address?: StringNullableFilter<"branches"> | string | null
@@ -86428,6 +87849,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     hotels?: hotelsCreateNestedManyWithoutSubscription_plansInput
@@ -86440,6 +87862,7 @@ export namespace Prisma {
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
     hotels?: hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput
@@ -86468,6 +87891,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hotels?: hotelsUpdateManyWithoutSubscription_plansNestedInput
@@ -86480,6 +87904,7 @@ export namespace Prisma {
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     features?: NullableJsonNullValueInput | InputJsonValue
+    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     hotels?: hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput
@@ -86639,6 +88064,120 @@ export namespace Prisma {
     paid_at?: DateTimeNullableFilter<"pending_signups"> | Date | string | null
   }
 
+  export type branchesCreateWithoutProvincesInput = {
+    id?: string
+    name: string
+    code?: string | null
+    address?: string | null
+    city?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    currency?: string | null
+    timezone?: string | null
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
+    status?: string | null
+    opening_time?: Date | string | null
+    closing_time?: Date | string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    expenses?: expensesCreateNestedManyWithoutBranchesInput
+    payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
+    staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
+    hotels: hotelsCreateNestedOneWithoutBranchesInput
+    users?: usersCreateNestedManyWithoutBranchesInput
+    audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
+    dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
+    dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
+    discounts?: discountsCreateNestedManyWithoutBranchesInput
+    inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
+    invoices?: invoicesCreateNestedManyWithoutBranchesInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
+    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    orders?: ordersCreateNestedManyWithoutBranchesInput
+    payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
+    pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
+    printers?: printersCreateNestedManyWithoutBranchesInput
+    shifts?: shiftsCreateNestedManyWithoutBranchesInput
+    table_sessions?: table_sessionsCreateNestedManyWithoutBranchesInput
+    staff_leave_requests?: staff_leave_requestsCreateNestedManyWithoutBranchInput
+    room_types?: room_typesCreateNestedManyWithoutBranchesInput
+    rooms?: roomsCreateNestedManyWithoutBranchesInput
+    room_stays?: room_staysCreateNestedManyWithoutBranchesInput
+    reviews?: reviewsCreateNestedManyWithoutBranchesInput
+  }
+
+  export type branchesUncheckedCreateWithoutProvincesInput = {
+    id?: string
+    hotel_id: string
+    name: string
+    code?: string | null
+    address?: string | null
+    city?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    currency?: string | null
+    timezone?: string | null
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
+    status?: string | null
+    opening_time?: Date | string | null
+    closing_time?: Date | string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    expenses?: expensesUncheckedCreateNestedManyWithoutBranchesInput
+    payroll_runs?: payroll_runsUncheckedCreateNestedManyWithoutBranchesInput
+    staff_attendance?: staff_attendanceUncheckedCreateNestedManyWithoutBranchesInput
+    users?: usersUncheckedCreateNestedManyWithoutBranchesInput
+    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutBranchesInput
+    dining_areas?: dining_areasUncheckedCreateNestedManyWithoutBranchesInput
+    dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
+    discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
+    inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
+    payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
+    pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
+    printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
+    shifts?: shiftsUncheckedCreateNestedManyWithoutBranchesInput
+    table_sessions?: table_sessionsUncheckedCreateNestedManyWithoutBranchesInput
+    staff_leave_requests?: staff_leave_requestsUncheckedCreateNestedManyWithoutBranchInput
+    room_types?: room_typesUncheckedCreateNestedManyWithoutBranchesInput
+    rooms?: roomsUncheckedCreateNestedManyWithoutBranchesInput
+    room_stays?: room_staysUncheckedCreateNestedManyWithoutBranchesInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutBranchesInput
+  }
+
+  export type branchesCreateOrConnectWithoutProvincesInput = {
+    where: branchesWhereUniqueInput
+    create: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput>
+  }
+
+  export type branchesCreateManyProvincesInputEnvelope = {
+    data: branchesCreateManyProvincesInput | branchesCreateManyProvincesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type branchesUpsertWithWhereUniqueWithoutProvincesInput = {
+    where: branchesWhereUniqueInput
+    update: XOR<branchesUpdateWithoutProvincesInput, branchesUncheckedUpdateWithoutProvincesInput>
+    create: XOR<branchesCreateWithoutProvincesInput, branchesUncheckedCreateWithoutProvincesInput>
+  }
+
+  export type branchesUpdateWithWhereUniqueWithoutProvincesInput = {
+    where: branchesWhereUniqueInput
+    data: XOR<branchesUpdateWithoutProvincesInput, branchesUncheckedUpdateWithoutProvincesInput>
+  }
+
+  export type branchesUpdateManyWithWhereWithoutProvincesInput = {
+    where: branchesScalarWhereInput
+    data: XOR<branchesUpdateManyMutationInput, branchesUncheckedUpdateManyWithoutProvincesInput>
+  }
+
   export type expensesCreateWithoutBranchesInput = {
     id?: string
     title: string
@@ -86788,6 +88327,21 @@ export namespace Prisma {
   export type hotelsCreateOrConnectWithoutBranchesInput = {
     where: hotelsWhereUniqueInput
     create: XOR<hotelsCreateWithoutBranchesInput, hotelsUncheckedCreateWithoutBranchesInput>
+  }
+
+  export type provincesCreateWithoutBranchesInput = {
+    id?: string
+    name: string
+  }
+
+  export type provincesUncheckedCreateWithoutBranchesInput = {
+    id?: string
+    name: string
+  }
+
+  export type provincesCreateOrConnectWithoutBranchesInput = {
+    where: provincesWhereUniqueInput
+    create: XOR<provincesCreateWithoutBranchesInput, provincesUncheckedCreateWithoutBranchesInput>
   }
 
   export type usersCreateWithoutBranchesInput = {
@@ -87669,6 +89223,27 @@ export namespace Prisma {
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
   }
 
+  export type provincesUpsertWithoutBranchesInput = {
+    update: XOR<provincesUpdateWithoutBranchesInput, provincesUncheckedUpdateWithoutBranchesInput>
+    create: XOR<provincesCreateWithoutBranchesInput, provincesUncheckedCreateWithoutBranchesInput>
+    where?: provincesWhereInput
+  }
+
+  export type provincesUpdateToOneWithWhereWithoutBranchesInput = {
+    where?: provincesWhereInput
+    data: XOR<provincesUpdateWithoutBranchesInput, provincesUncheckedUpdateWithoutBranchesInput>
+  }
+
+  export type provincesUpdateWithoutBranchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type provincesUncheckedUpdateWithoutBranchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
   export type usersUpsertWithWhereUniqueWithoutBranchesInput = {
     where: usersWhereUniqueInput
     update: XOR<usersUpdateWithoutBranchesInput, usersUncheckedUpdateWithoutBranchesInput>
@@ -88164,6 +89739,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
@@ -88188,6 +89764,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutAudit_logsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -88307,6 +89884,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
@@ -88331,6 +89909,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutAudit_logsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88760,6 +90339,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
@@ -88784,6 +90364,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutDining_areasInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -88894,6 +90475,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
@@ -88918,6 +90500,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutDining_areasInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89013,6 +90596,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -89037,6 +90621,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutDining_tablesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -89170,6 +90755,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -89194,6 +90780,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutDining_tablesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89348,6 +90935,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -89372,6 +90960,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutTable_sessionsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -89574,6 +91163,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -89598,6 +91188,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutTable_sessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89780,6 +91371,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -89804,6 +91396,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutMenu_categoriesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -89934,6 +91527,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -89958,6 +91552,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -90082,6 +91677,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -90106,6 +91702,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutMenu_itemsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -90323,6 +91920,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -90347,6 +91945,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutMenu_itemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -90680,6 +92279,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -90704,6 +92304,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutInventory_itemsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -90830,6 +92431,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -90854,6 +92456,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutInventory_itemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91701,6 +93304,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -91725,6 +93329,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutOrdersInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -92227,6 +93832,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -92251,6 +93857,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -93379,6 +94986,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -93403,6 +95011,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutReviewsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -93638,6 +95247,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -93662,6 +95272,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutReviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -93840,6 +95451,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -93864,6 +95476,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutDiscountsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -93964,6 +95577,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -93988,6 +95602,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutDiscountsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -94438,6 +96053,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -94462,6 +96078,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutPayment_methodsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -94632,6 +96249,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -94656,6 +96274,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutPayment_methodsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -95390,6 +97009,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -95414,6 +97034,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutInvoicesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -95563,6 +97184,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -95587,6 +97209,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -95807,6 +97430,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -95831,6 +97455,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutPos_devicesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -95996,6 +97621,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -96020,6 +97646,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutPos_devicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -96082,6 +97709,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -96106,6 +97734,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutPrintersInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -96184,6 +97813,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -96208,6 +97838,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutPrintersInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -96270,6 +97901,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -96294,6 +97926,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutShiftsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -96453,6 +98086,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -96477,6 +98111,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutShiftsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -96707,6 +98342,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -96731,6 +98367,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutStaff_leave_requestsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -96977,6 +98614,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -97001,6 +98639,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutStaff_leave_requestsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -97303,6 +98942,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -97328,6 +98968,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutExpensesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -97613,6 +99254,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -97638,6 +99280,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutExpensesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -98099,6 +99742,7 @@ export namespace Prisma {
     expenses?: expensesCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -98124,6 +99768,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutPayroll_runsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -98318,6 +99963,7 @@ export namespace Prisma {
     expenses?: expensesUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -98343,6 +99989,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutPayroll_runsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -99152,6 +100799,7 @@ export namespace Prisma {
     expenses?: expensesCreateNestedManyWithoutBranchesInput
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -99177,6 +100825,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutStaff_attendanceInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -99341,6 +100990,7 @@ export namespace Prisma {
     expenses?: expensesUpdateManyWithoutBranchesNestedInput
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -99366,6 +101016,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutStaff_attendanceInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -99428,6 +101079,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -99452,6 +101104,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutRoom_typesInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -99566,6 +101219,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -99590,6 +101244,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutRoom_typesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -99668,6 +101323,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -99692,6 +101348,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutRoomsInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -99859,6 +101516,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -99883,6 +101541,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutRoomsInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -99990,6 +101649,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
     staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
     hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
     users?: usersCreateNestedManyWithoutBranchesInput
     audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
     dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
@@ -100014,6 +101674,7 @@ export namespace Prisma {
   export type branchesUncheckedCreateWithoutRoom_staysInput = {
     id?: string
     hotel_id: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -100467,6 +102128,7 @@ export namespace Prisma {
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
     hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -100491,6 +102153,7 @@ export namespace Prisma {
   export type branchesUncheckedUpdateWithoutRoom_staysInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102475,6 +104138,7 @@ export namespace Prisma {
 
   export type branchesCreateManyHotelsInput = {
     id?: string
+    province_id?: string | null
     name: string
     code?: string | null
     address?: string | null
@@ -102559,6 +104223,7 @@ export namespace Prisma {
     expenses?: expensesUpdateManyWithoutBranchesNestedInput
     payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
     staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
     users?: usersUpdateManyWithoutBranchesNestedInput
     audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
     dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
@@ -102583,6 +104248,7 @@ export namespace Prisma {
 
   export type branchesUncheckedUpdateWithoutHotelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102626,6 +104292,7 @@ export namespace Prisma {
 
   export type branchesUncheckedUpdateManyWithoutHotelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102836,6 +104503,136 @@ export namespace Prisma {
     created_hotel_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type branchesCreateManyProvincesInput = {
+    id?: string
+    hotel_id: string
+    name: string
+    code?: string | null
+    address?: string | null
+    city?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    currency?: string | null
+    timezone?: string | null
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
+    status?: string | null
+    opening_time?: Date | string | null
+    closing_time?: Date | string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type branchesUpdateWithoutProvincesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expenses?: expensesUpdateManyWithoutBranchesNestedInput
+    payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
+    staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    users?: usersUpdateManyWithoutBranchesNestedInput
+    audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
+    dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
+    dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
+    discounts?: discountsUpdateManyWithoutBranchesNestedInput
+    inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
+    invoices?: invoicesUpdateManyWithoutBranchesNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    orders?: ordersUpdateManyWithoutBranchesNestedInput
+    payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
+    pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
+    printers?: printersUpdateManyWithoutBranchesNestedInput
+    shifts?: shiftsUpdateManyWithoutBranchesNestedInput
+    table_sessions?: table_sessionsUpdateManyWithoutBranchesNestedInput
+    staff_leave_requests?: staff_leave_requestsUpdateManyWithoutBranchNestedInput
+    room_types?: room_typesUpdateManyWithoutBranchesNestedInput
+    rooms?: roomsUpdateManyWithoutBranchesNestedInput
+    room_stays?: room_staysUpdateManyWithoutBranchesNestedInput
+    reviews?: reviewsUpdateManyWithoutBranchesNestedInput
+  }
+
+  export type branchesUncheckedUpdateWithoutProvincesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expenses?: expensesUncheckedUpdateManyWithoutBranchesNestedInput
+    payroll_runs?: payroll_runsUncheckedUpdateManyWithoutBranchesNestedInput
+    staff_attendance?: staff_attendanceUncheckedUpdateManyWithoutBranchesNestedInput
+    users?: usersUncheckedUpdateManyWithoutBranchesNestedInput
+    audit_logs?: audit_logsUncheckedUpdateManyWithoutBranchesNestedInput
+    dining_areas?: dining_areasUncheckedUpdateManyWithoutBranchesNestedInput
+    dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
+    discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
+    inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
+    payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
+    pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
+    printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
+    shifts?: shiftsUncheckedUpdateManyWithoutBranchesNestedInput
+    table_sessions?: table_sessionsUncheckedUpdateManyWithoutBranchesNestedInput
+    staff_leave_requests?: staff_leave_requestsUncheckedUpdateManyWithoutBranchNestedInput
+    room_types?: room_typesUncheckedUpdateManyWithoutBranchesNestedInput
+    rooms?: roomsUncheckedUpdateManyWithoutBranchesNestedInput
+    room_stays?: room_staysUncheckedUpdateManyWithoutBranchesNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutBranchesNestedInput
+  }
+
+  export type branchesUncheckedUpdateManyWithoutProvincesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type expensesCreateManyBranchesInput = {

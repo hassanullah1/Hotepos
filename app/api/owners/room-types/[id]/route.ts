@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { assertManagedBranch } from "@/lib/owner-scope";
+import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 async function readJson(request: Request): Promise<Record<string, unknown>> {
   try {
@@ -19,7 +20,7 @@ async function loadScoped(id: string, userId: string) {
   if (!roomType) return null;
   const branch = await assertManagedBranch(roomType.branch_id, userId);
   if (!branch) return null;
-  return roomType;
+  return { roomType, branch };
 }
 
 export async function PATCH(
@@ -31,9 +32,17 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const existing = await loadScoped(id, user.id);
-  if (!existing)
+  const scoped = await loadScoped(id, user.id);
+  if (!scoped)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { branch } = scoped;
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
+    );
 
   const body = await readJson(request);
 
@@ -85,9 +94,17 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const existing = await loadScoped(id, user.id);
-  if (!existing)
+  const scoped = await loadScoped(id, user.id);
+  if (!scoped)
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { branch } = scoped;
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
+    );
 
   const roomCount = await prisma.rooms.count({ where: { room_type_id: id } });
   if (roomCount > 0) {

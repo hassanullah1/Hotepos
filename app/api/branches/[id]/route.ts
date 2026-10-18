@@ -6,7 +6,9 @@ import { getOwnerHotelId } from "@/lib/owner-scope";
 function num(v: unknown): number | null {
   if (v === null || v === undefined) return null;
   const n =
-    typeof v === "number" ? v : Number((v as { toString(): string }).toString());
+    typeof v === "number"
+      ? v
+      : Number((v as { toString(): string }).toString());
   return Number.isFinite(n) ? n : null;
 }
 
@@ -74,7 +76,9 @@ export async function PATCH(
         : null;
   if (body.city !== undefined)
     data.city =
-      typeof body.city === "string" && body.city.trim() ? body.city.trim() : null;
+      typeof body.city === "string" && body.city.trim()
+        ? body.city.trim()
+        : null;
   if (body.phone !== undefined)
     data.phone =
       typeof body.phone === "string" && body.phone.trim()
@@ -106,22 +110,41 @@ export async function PATCH(
         ? body.status.trim()
         : "active";
 
+  // ---- Province (required if provided) ----
+  if (body.province_id !== undefined) {
+    const pid =
+      typeof body.province_id === "string" ? body.province_id.trim() : "";
+    if (!pid)
+      return NextResponse.json({ error: "PROVINCE_REQUIRED" }, { status: 400 });
+    try {
+      const exists = await prisma.provinces.findUnique({
+        where: { id: pid },
+        select: { id: true },
+      });
+      if (!exists)
+        return NextResponse.json(
+          { error: "PROVINCE_NOT_FOUND" },
+          { status: 400 },
+        );
+      data.province_id = pid;
+    } catch {
+      return NextResponse.json(
+        { error: "INVALID_PROVINCE_ID" },
+        { status: 400 },
+      );
+    }
+  }
+
   if (body.latitude !== undefined) {
     const lat = parseLat(body.latitude);
     if (lat === undefined)
-      return NextResponse.json(
-        { error: "Invalid latitude" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid latitude" }, { status: 400 });
     data.latitude = lat;
   }
   if (body.longitude !== undefined) {
     const lng = parseLng(body.longitude);
     if (lng === undefined)
-      return NextResponse.json(
-        { error: "Invalid longitude" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid longitude" }, { status: 400 });
     data.longitude = lng;
   }
 
@@ -129,6 +152,7 @@ export async function PATCH(
     const updated = await prisma.branches.update({
       where: { id },
       data,
+      include: { provinces: { select: { id: true, name: true } } },
     });
 
     return NextResponse.json({

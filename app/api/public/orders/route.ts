@@ -99,7 +99,7 @@ export async function POST(request: Request) {
       menu_item_id: i.menu_item_id,
       quantity: qty,
       unit_price: unit,
-      line_total: +(unit * qty).toFixed(2),
+      line_total: +(Number(unit) * qty).toFixed(2),
     };
   });
   const subtotal = +lines.reduce((s, l) => s + l.line_total, 0).toFixed(2);

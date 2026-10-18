@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function num(v: unknown): number | null {
   if (v === null || v === undefined) return null;
   const n =
@@ -11,10 +14,15 @@ function num(v: unknown): number | null {
 }
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+
+  // optional province guard
+  const { searchParams } = new URL(req.url);
+  const provinceIdRaw = (searchParams.get("province_id") || "").trim();
+  const provinceId = UUID_RE.test(provinceIdRaw) ? provinceIdRaw : null;
 
   const item = await prisma.menu_items.findFirst({
     where: {
@@ -24,6 +32,7 @@ export async function GET(
       branches: {
         status: "active",
         hotels: { is_online: true },
+        ...(provinceId ? { province_id: provinceId } : {}),
       },
     },
     select: {
@@ -42,6 +51,8 @@ export async function GET(
           latitude: true,
           longitude: true,
           currency: true,
+          province_id: true,
+          provinces: { select: { id: true, name: true } },
           hotels: { select: { id: true, name: true, logo_url: true } },
         },
       },
@@ -79,6 +90,12 @@ export async function GET(
       image_url: item.image_url,
       price: Number(item.price),
       currency: item.branches?.currency || "AFN",
+      province: item.branches?.provinces
+        ? {
+            id: item.branches.provinces.id,
+            name: item.branches.provinces.name,
+          }
+        : null,
       branch: {
         id: item.branches?.id || null,
         name: item.branches?.name || "",
@@ -86,6 +103,7 @@ export async function GET(
         address: item.branches?.address || null,
         latitude: num(item.branches?.latitude),
         longitude: num(item.branches?.longitude),
+        province_id: item.branches?.province_id || null,
       },
       hotel: {
         id: item.branches?.hotels?.id || null,

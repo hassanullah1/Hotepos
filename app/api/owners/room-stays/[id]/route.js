@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { assertManagedBranch } from "@/lib/owner-scope";
+import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 async function readJson(request) {
   try {
@@ -17,24 +18,28 @@ async function loadScoped(id, userId) {
   const stay = await prisma.room_stays.findUnique({ where: { id } });
   if (!stay) return null;
   const branch = await assertManagedBranch(stay.branch_id, userId);
-  return branch ? stay : null;
+  if (!branch) return null;
+  return { stay, branch };
 }
 
 // PATCH — update / extend / check out
-// body: {
-//   action?: "extend" | "checkout" | "update",
-//   nights?, rate_per_night?,             // extend
-//   payment_method_id?, amount_tendered?  // checkout
-//   guest_name?, guest_phone?, guest_id_no?, notes?  // update
-// }
 export async function PATCH(request, { params }) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const stay = await loadScoped(id, user.id);
-  if (!stay) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const scoped = await loadScoped(id, user.id);
+  if (!scoped)
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { stay, branch } = scoped;
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
+    );
 
   const body = await readJson(request);
   const action = typeof body.action === "string" ? body.action : "update";
@@ -87,7 +92,6 @@ export async function PATCH(request, { params }) {
           { status: 400 },
         );
 
-      // Recompute orders total from linked orders (safety net)
       const orderRows = await prisma.orders.findMany({
         where: { room_stay_id: id },
         select: { total_amount: true, status: true },
@@ -99,7 +103,6 @@ export async function PATCH(request, { params }) {
       const grandTotal = +(Number(stay.rent_total) + ordersTotal).toFixed(2);
 
       const result = await prisma.$transaction(async (tx) => {
-        // Record the settlement payment (optional)
         if (body.payment_method_id) {
           const amountTendered =
             body.amount_tendered != null
@@ -173,8 +176,17 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const stay = await loadScoped(id, user.id);
-  if (!stay) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const scoped = await loadScoped(id, user.id);
+  if (!scoped)
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { stay, branch } = scoped;
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
+    );
 
   if (stay.status !== "active")
     return NextResponse.json(

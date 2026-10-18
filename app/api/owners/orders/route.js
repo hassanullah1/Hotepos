@@ -21,16 +21,22 @@ const ORDER_INCLUDE = {
       customers: { select: { id: true, full_name: true, phone: true } },
     },
   },
+  buyers: {
+    select: { id: true, full_name: true, phone: true, email: true },
+  },
 };
 
 function serializeOrder(o) {
   const t = o.table_sessions?.dining_tables || null;
   const rs = o.room_stays || null;
+  const b = o.buyers || null;
   return {
     id: o.id,
     order_number: o.order_number,
     status: o.status,
     order_type: o.order_type,
+    source: o.source || "pos",
+    payment_status: o.payment_status || "unpaid",
     subtotal: Number(o.subtotal),
     discount_amount: Number(o.discount_amount),
     tax_amount: Number(o.tax_amount),
@@ -42,6 +48,7 @@ function serializeOrder(o) {
     table_session_id: o.table_session_id,
     room_stay_id: o.room_stay_id,
     customer_id: o.customer_id,
+    buyer_id: o.buyer_id,
     table: t
       ? { id: t.id, table_number: t.table_number, area_id: t.area_id }
       : null,
@@ -63,6 +70,14 @@ function serializeOrder(o) {
               }
             : null,
           guest_name: rs.guest_name,
+        }
+      : null,
+    buyer: b
+      ? {
+          id: b.id,
+          full_name: b.full_name,
+          phone: b.phone,
+          email: b.email,
         }
       : null,
     items: (o.order_items || []).map((i) => ({
@@ -99,13 +114,11 @@ async function createKitchenTicketsForOrder(order, menuMap) {
     byStation.get(station).push(oi.id);
   }
 
-  const createdTicketIds = [];
   for (const [station, orderItemIds] of byStation.entries()) {
     const ticket = await prisma.kitchen_tickets.create({
       data: { order_id: order.id, prep_station: station, status: "queued" },
       select: { id: true },
     });
-    createdTicketIds.push(ticket.id);
     await prisma.kitchen_ticket_items.createMany({
       data: orderItemIds.map((order_item_id) => ({
         kitchen_ticket_id: ticket.id,
@@ -113,10 +126,8 @@ async function createKitchenTicketsForOrder(order, menuMap) {
       })),
     });
   }
-  return createdTicketIds;
 }
 
-// GET /api/owners/orders?branch_id=...&status=open&table_id=...
 export async function GET(request) {
   const user = await getAuthUser(request);
   if (!user)
@@ -153,15 +164,6 @@ export async function GET(request) {
   return NextResponse.json({ orders: orders.map(serializeOrder) });
 }
 
-// POST /api/owners/orders
-// body: {
-//   branch_id,
-//   table_id?,                // for dine-in on a table
-//   room_stay_id?,            // for room-service / charge-to-room
-//   customer_id?,             // optional, links the order to a customer
-//   notes?, order_type?,
-//   items: [{ menu_item_id, quantity, notes? }]
-// }
 export async function POST(request) {
   const user = await getAuthUser(request);
   if (!user)
@@ -192,7 +194,6 @@ export async function POST(request) {
       { status: 404 },
     );
 
-  // table_id and room_stay_id are mutually exclusive
   if (table_id && room_stay_id) {
     return NextResponse.json(
       { error: "Cannot assign the same order to both a table and a room" },
@@ -200,7 +201,6 @@ export async function POST(request) {
     );
   }
 
-  // Validate table (if provided)
   let table = null;
   if (table_id) {
     table = await prisma.dining_tables.findFirst({
@@ -214,7 +214,6 @@ export async function POST(request) {
       );
   }
 
-  // Validate active room stay (if provided)
   let roomStay = null;
   if (room_stay_id) {
     roomStay = await prisma.room_stays.findFirst({
@@ -228,7 +227,6 @@ export async function POST(request) {
       );
   }
 
-  // Validate customer (if provided)
   let customer = null;
   if (customer_id) {
     customer = await prisma.customers.findFirst({
@@ -242,7 +240,6 @@ export async function POST(request) {
       );
   }
 
-  // Load authoritative menu rows
   const menuIds = items.map((i) => i.menu_item_id).filter(Boolean);
   const menuRows = await prisma.menu_items.findMany({
     where: { id: { in: menuIds }, branch_id },
@@ -274,7 +271,6 @@ export async function POST(request) {
   const subtotal = resolved.reduce((s, i) => s + i.line_total, 0);
 
   try {
-    // Find-or-create open table session (only when table assigned)
     let sessionId = null;
     if (table) {
       const existing = await prisma.table_sessions.findFirst({
@@ -296,12 +292,10 @@ export async function POST(request) {
       }
     }
 
-    // Default order_type based on scope
     const finalType =
       order_type ||
       (roomStay ? "room_service" : table ? "dine_in" : "takeaway");
 
-    // Create the order + its items
     const order = await prisma.orders.create({
       data: {
         branch_id,
@@ -311,6 +305,7 @@ export async function POST(request) {
         order_number: makeOrderNumber(),
         order_type: finalType,
         status: "open",
+        source: "pos",
         waiter_id: user.id,
         subtotal,
         total_amount: subtotal,
@@ -320,7 +315,6 @@ export async function POST(request) {
       include: ORDER_INCLUDE,
     });
 
-    // Bump the room stay's running bill (cached totals)
     if (roomStay) {
       await prisma.room_stays.update({
         where: { id: roomStay.id },
@@ -331,7 +325,6 @@ export async function POST(request) {
       });
     }
 
-    // Create kitchen tickets for is_kitchen items only
     try {
       await createKitchenTicketsForOrder(order, menuMap);
     } catch (ticketErr) {

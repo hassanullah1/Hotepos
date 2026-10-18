@@ -16,8 +16,6 @@ const ME_SELECT = {
     select: {
       name: true,
       scope: true,
-      // ADDED: pull the permission codes attached to this role so the
-      // frontend can gate buttons with them (see lib/usePermissions.js).
       role_permissions: {
         select: { permissions: { select: { code: true } } },
       },
@@ -27,7 +25,11 @@ const ME_SELECT = {
   hotel_owners: { select: { hotel_id: true, address: true } },
 };
 
-function serialize(u) {
+function serialize(u: any) {
+  const ownerRow = Array.isArray(u.hotel_owners)
+    ? u.hotel_owners[0] ?? null
+    : u.hotel_owners ?? null;
+
   return {
     id: u.id,
     full_name: u.full_name,
@@ -40,17 +42,22 @@ function serialize(u) {
     updated_at: u.updated_at,
     role: u.roles?.name ?? null,
     scope: u.roles?.scope ?? null,
-    // ADDED: flat array of permission codes, e.g. ["users.create", "users.edit"]
     permissions:
-      u.roles?.role_permissions?.map((rp) => rp.permissions.code) ?? [],
-    branch: u.branches ? { id: u.branches.id, name: u.branches.name } : null,
-    hotel_id: u.hotel_owner?.hotel_id ?? u.branches?.hotel_id ?? null,
-    address: u.hotel_owner?.address ?? null,
+      u.roles?.role_permissions?.map((rp: any) => rp.permissions.code) ?? [],
+    branch: u.branches
+      ? {
+          id: u.branches.id,
+          name: u.branches.name,
+          hotel_id: u.branches.hotel_id,
+        }
+      : null,
+    hotel_id: ownerRow?.hotel_id ?? u.branches?.hotel_id ?? null,
+    address: ownerRow?.address ?? null,
   };
 }
 
 // GET /api/auth/me — current user's own profile
-export async function GET(request) {
+export async function GET(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,13 +73,13 @@ export async function GET(request) {
 
 // PATCH /api/auth/me — update own name/contact info, and/or change password
 // Body: { full_name?, email?, phone?, username?, current_password?, new_password? }
-export async function PATCH(request) {
+export async function PATCH(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const data = {};
+  const data: Record<string, unknown> = {};
 
   if (body.full_name !== undefined) {
     if (!body.full_name.trim()) {
@@ -114,7 +121,6 @@ export async function PATCH(request) {
     data.phone = body.phone || null;
   }
 
-  // Changing password requires the current password — always, even for super_admin.
   if (body.new_password) {
     if (!body.current_password) {
       return NextResponse.json(

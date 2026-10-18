@@ -213,13 +213,20 @@ exports.Prisma.Subscription_plansScalarFieldEnum = {
   max_pos_devices: 'max_pos_devices',
   price_monthly: 'price_monthly',
   features: 'features',
+  is_rooms: 'is_rooms',
   is_active: 'is_active',
   created_at: 'created_at'
+};
+
+exports.Prisma.ProvincesScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
 };
 
 exports.Prisma.BranchesScalarFieldEnum = {
   id: 'id',
   hotel_id: 'hotel_id',
+  province_id: 'province_id',
   name: 'name',
   code: 'code',
   address: 'address',
@@ -740,6 +747,7 @@ exports.Prisma.ModelName = {
   hotel_owners: 'hotel_owners',
   pending_signups: 'pending_signups',
   subscription_plans: 'subscription_plans',
+  provinces: 'provinces',
   branches: 'branches',
   audit_logs: 'audit_logs',
   customers: 'customers',

@@ -5,7 +5,10 @@ import { getOwnerHotelId } from "@/lib/owner-scope";
 
 function num(v: unknown): number | null {
   if (v === null || v === undefined) return null;
-  const n = typeof v === "number" ? v : Number((v as { toString(): string }).toString());
+  const n =
+    typeof v === "number"
+      ? v
+      : Number((v as { toString(): string }).toString());
   return Number.isFinite(n) ? n : null;
 }
 
@@ -38,11 +41,17 @@ export async function GET(request: Request) {
       id: true,
       name: true,
       code: true,
+      province_id: true,
+      provinces: { select: { id: true, name: true } },
       city: true,
       address: true,
       phone: true,
       latitude: true,
       longitude: true,
+      currency: true,
+      timezone: true,
+      tax_rate: true,
+      service_charge_rate: true,
       status: true,
     },
     orderBy: { name: "asc" },
@@ -53,6 +62,8 @@ export async function GET(request: Request) {
       ...b,
       latitude: num(b.latitude),
       longitude: num(b.longitude),
+      tax_rate: num(b.tax_rate),
+      service_charge_rate: num(b.service_charge_rate),
     })),
   });
 }
@@ -77,6 +88,26 @@ export async function POST(request: Request) {
   if (!name)
     return NextResponse.json({ error: "NAME_REQUIRED" }, { status: 400 });
 
+  // ---- Province is required ----
+  const provinceId =
+    typeof body.province_id === "string" ? body.province_id.trim() : "";
+  if (!provinceId)
+    return NextResponse.json({ error: "PROVINCE_REQUIRED" }, { status: 400 });
+
+  try {
+    const provinceExists = await prisma.provinces.findUnique({
+      where: { id: provinceId },
+      select: { id: true },
+    });
+    if (!provinceExists)
+      return NextResponse.json(
+        { error: "PROVINCE_NOT_FOUND" },
+        { status: 400 },
+      );
+  } catch {
+    return NextResponse.json({ error: "INVALID_PROVINCE_ID" }, { status: 400 });
+  }
+
   const lat = parseLat(body.latitude);
   const lng = parseLng(body.longitude);
   if (lat === undefined || lng === undefined)
@@ -89,6 +120,7 @@ export async function POST(request: Request) {
     const created = await prisma.branches.create({
       data: {
         hotel_id: hotelId,
+        province_id: provinceId,
         name,
         code:
           typeof body.code === "string" && body.code.trim()
@@ -130,6 +162,7 @@ export async function POST(request: Request) {
             ? body.status.trim()
             : "active",
       },
+      include: { provinces: { select: { id: true, name: true } } },
     });
 
     return NextResponse.json(

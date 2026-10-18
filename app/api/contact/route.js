@@ -1,6 +1,6 @@
 // app/api/contact/route.js
 import { NextResponse } from "next/server";
-import { sendContactMessage } from "@/lib/email";
+import { sendContactMessage } from "@/app/admin/email";
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));

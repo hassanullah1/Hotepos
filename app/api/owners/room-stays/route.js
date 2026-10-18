@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { assertManagedBranch } from "@/lib/owner-scope";
+import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 async function readJson(request) {
   try {
@@ -34,6 +35,14 @@ export async function GET(request) {
       { error: "Branch not found or not accessible" },
       { status: 404 },
     );
+
+
+    const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+    if (!hasRooms)
+      return NextResponse.json(
+        { error: "Rooms feature is not included in your plan" },
+        { status: 403 },
+      );
 
   const stays = await prisma.room_stays.findMany({
     where: { branch_id: branchId, status },

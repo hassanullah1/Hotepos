@@ -10,11 +10,12 @@ const PLAN_SELECT = {
   price_monthly: true,
   features: true,
   is_active: true,
+  is_rooms: true, // 👈 NEW
   created_at: true,
   _count: { select: { hotels: true } },
 };
 
-function serializePlan(p) {
+function serializePlan(p: any) {
   return {
     id: p.id,
     name: p.name,
@@ -23,13 +24,14 @@ function serializePlan(p) {
     price_monthly: p.price_monthly,
     features: p.features || {},
     is_active: p.is_active,
+    is_rooms: p.is_rooms === true, // 👈 NEW
     hotel_count: p._count?.hotels ?? 0,
     created_at: p.created_at,
   };
 }
 
 // GET /api/subscription-plans?q=basic&include_inactive=1
-export async function GET(request) {
+export async function GET(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,9 +40,7 @@ export async function GET(request) {
   const q = (searchParams.get("q") || "").trim();
   const includeInactive = searchParams.get("include_inactive") === "1";
 
-  // super_admin manages plans; other roles can still read active plans
-  // (e.g. hotel_owner viewing their own plan) but not inactive ones
-  const where = {};
+  const where: any = {};
   if (!includeInactive || !requireRole(user, ["super_admin"])) {
     where.is_active = true;
   }
@@ -58,7 +58,7 @@ export async function GET(request) {
 }
 
 // POST /api/subscription-plans
-export async function POST(request) {
+export async function POST(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -104,6 +104,7 @@ export async function POST(request) {
             ? body.features
             : {},
         is_active: body.is_active ?? true,
+        is_rooms: body.is_rooms === true, // 👈 NEW
       },
       select: PLAN_SELECT,
     });

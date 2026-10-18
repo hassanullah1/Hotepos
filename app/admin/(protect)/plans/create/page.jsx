@@ -23,9 +23,9 @@ export default function CreatePlanPage() {
     max_branches: 1,
     max_pos_devices: 2,
     is_active: true,
+    is_rooms: false, // 👈 NEW
   });
 
-  // simple key:value feature toggles — extend as needed
   const [featureKeys, setFeatureKeys] = useState([{ key: "", value: "" }]);
 
   function update(field, value) {
@@ -61,6 +61,7 @@ export default function CreatePlanPage() {
           max_branches: Number(form.max_branches),
           max_pos_devices: Number(form.max_pos_devices),
           is_active: form.is_active,
+          is_rooms: form.is_rooms, // 👈 NEW
           features,
         }),
       });
@@ -161,6 +162,26 @@ export default function CreatePlanPage() {
                 onChange={(e) => update("max_pos_devices", e.target.value)}
                 className={inputClass}
               />
+            </div>
+
+            {/* 👈 NEW — rooms feature toggle */}
+            <div className="sm:col-span-2">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.is_rooms}
+                  onChange={(e) => update("is_rooms", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-black/20 text-teal-600 focus:ring-teal-500 dark:border-white/20"
+                />
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium text-[#10243A] dark:text-[#EDEBE3]">
+                    Rooms management
+                  </span>
+                  <span className="mt-0.5 block text-xs text-[#5B6472] dark:text-[#C7CDD6]">
+                    Hotels on this plan can manage rooms and room stays.
+                  </span>
+                </span>
+              </label>
             </div>
           </div>
         </div>

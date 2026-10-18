@@ -17,6 +17,11 @@ import {
   ImageOff,
   Search,
   UserPlus,
+  Globe,
+  Ban,
+  Clock,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -30,6 +35,7 @@ const STATUS_BG = {
   paid: "bg-emerald-50 dark:bg-emerald-950/40",
   closed: "bg-gray-100 dark:bg-gray-800/40",
   cancelled: "bg-red-50 dark:bg-red-950/40",
+  rejected: "bg-rose-50 dark:bg-rose-950/40",
 };
 const STATUS_TEXT = {
   open: "text-sky-700 dark:text-sky-300",
@@ -38,6 +44,7 @@ const STATUS_TEXT = {
   paid: "text-emerald-700 dark:text-emerald-300",
   closed: "text-gray-500 dark:text-gray-400",
   cancelled: "text-red-600 dark:text-red-300",
+  rejected: "text-rose-700 dark:text-rose-300",
 };
 const STATUS_DOT = {
   open: "bg-sky-500",
@@ -46,6 +53,7 @@ const STATUS_DOT = {
   paid: "bg-emerald-500",
   closed: "bg-gray-400",
   cancelled: "bg-red-500",
+  rejected: "bg-rose-600",
 };
 
 function escapeHtml(s) {
@@ -82,11 +90,13 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [tableFilter, setTableFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("pos");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const [draft, setDraft] = useState(null);
+  const pollRef = useRef(null);
 
   function handle401(res) {
     if (res.status === 401) {
@@ -96,7 +106,6 @@ export default function OrdersPage() {
     return false;
   }
 
-  // ---------- me ----------
   useEffect(() => {
     (async () => {
       try {
@@ -114,7 +123,6 @@ export default function OrdersPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---------- owner: hotels ----------
   useEffect(() => {
     if (!isOwner) return;
     (async () => {
@@ -132,7 +140,6 @@ export default function OrdersPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOwner]);
 
-  // ---------- owner: branches ----------
   async function loadBranches(hotelId) {
     if (!hotelId) return;
     setLoadingBranches(true);
@@ -165,6 +172,7 @@ export default function OrdersPage() {
     if (isOwner && selectedHotelId) {
       setBranchId("");
       setTableFilter("");
+      setSourceFilter("pos");
       setDraft(null);
       loadBranches(selectedHotelId);
     }
@@ -175,10 +183,9 @@ export default function OrdersPage() {
     if (isBranchManager && me?.branch?.id) setBranchId(me.branch.id);
   }, [isBranchManager, me]);
 
-  // ---------- load all data ----------
-  async function loadAll() {
+  async function loadAll({ silent = false } = {}) {
     if (!branchId) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     setError("");
     try {
       const hotelIdForCustomers =
@@ -222,7 +229,6 @@ export default function OrdersPage() {
       setMenuItems(mData.items || []);
       setOrders(oData.orders || []);
 
-      // Room stays (optional — endpoint may 404 in hotels without rooms)
       if (rRes && rRes.ok) {
         const rData = await rRes.json();
         setRoomStays(rData.stays || []);
@@ -230,10 +236,8 @@ export default function OrdersPage() {
         setRoomStays([]);
       }
 
-      // Customers (optional — may fail silently)
       if (cRes && cRes.ok) {
         const cData = await cRes.json();
-        // Support both paginated ({ customers: [...] }) and plain shapes
         setCustomers(cData.customers || []);
         setCustomersHotelId(hotelIdForCustomers);
       } else {
@@ -241,31 +245,55 @@ export default function OrdersPage() {
         setCustomersHotelId(hotelIdForCustomers);
       }
     } catch (err) {
-      setError(err.message);
+      if (!silent) setError(err.message);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }
 
   useEffect(() => {
     if (branchId) {
       setTableFilter("");
+      setSourceFilter("pos");
       setDraft(null);
       loadAll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId]);
 
-  // ---------- derived ----------
+  useEffect(() => {
+    if (!branchId) return;
+    pollRef.current = setInterval(() => {
+      loadAll({ silent: true });
+    }, 10000);
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branchId]);
+
   const openOrders = useMemo(
     () => orders.filter((o) => OPEN_STATUSES.includes(o.status)),
     [orders],
   );
 
   const visibleOrders = useMemo(() => {
-    if (!tableFilter) return openOrders;
-    return openOrders.filter((o) => o.table?.id === tableFilter);
-  }, [openOrders, tableFilter]);
+    let list = openOrders;
+
+    if (sourceFilter === "pos") {
+      list = list.filter((o) => o.source === "pos" || !o.source);
+    } else if (sourceFilter === "online") {
+      list = list.filter((o) => o.source === "customer");
+    } else if (sourceFilter === "qr") {
+      list = list.filter((o) => o.source === "qr");
+    }
+
+    if (tableFilter) {
+      list = list.filter((o) => o.table?.id === tableFilter);
+    }
+
+    return list;
+  }, [openOrders, tableFilter, sourceFilter]);
 
   const openCountByTable = useMemo(() => {
     const map = {};
@@ -276,6 +304,15 @@ export default function OrdersPage() {
     return map;
   }, [openOrders]);
 
+  const sourceCounts = useMemo(
+    () => ({
+      pos: openOrders.filter((o) => o.source === "pos" || !o.source).length,
+      online: openOrders.filter((o) => o.source === "customer").length,
+      qr: openOrders.filter((o) => o.source === "qr").length,
+    }),
+    [openOrders],
+  );
+
   const draftTotal = useMemo(() => {
     if (!draft) return 0;
     return draft.items.reduce((s, ci) => {
@@ -284,12 +321,8 @@ export default function OrdersPage() {
     }, 0);
   }, [draft, menuItems]);
 
-  const selectedHotelName =
-    hotels.find((h) => h.id === selectedHotelId)?.name || "";
-
-  // ---------- draft actions ----------
   function defaultScope() {
-    if (roomStays.length > 0) return "table"; // prefer table if both exist
+    if (roomStays.length > 0) return "table";
     if (tables.length > 0) return "table";
     return "takeaway";
   }
@@ -315,7 +348,6 @@ export default function OrdersPage() {
       scope: "room",
       tableId: null,
       roomStayId: stayId,
-      // Auto-attach customer if the stay has one
       customerId: stay?.customer?.id || prev?.customerId || "",
     }));
   }
@@ -344,14 +376,12 @@ export default function OrdersPage() {
     }));
   }
 
-  // Called after the quick-add modal successfully creates a customer.
   function handleCustomerCreated(customer) {
     if (!customer) return;
     setCustomers((prev) => {
       if (prev.some((c) => c.id === customer.id)) return prev;
       return [customer, ...prev];
     });
-    // Auto-select the newly created customer on the current draft
     setCustomer(customer.id);
   }
 
@@ -456,7 +486,6 @@ export default function OrdersPage() {
         const data = await res.json();
         if (!res.ok) return setError(data.error || "Failed to create order");
         setOrders((prev) => [data.order, ...prev]);
-        // Refresh room stays so totals update in the picker
         if (draft.scope === "room") loadAll();
         cancelDraft();
       } else {
@@ -490,7 +519,6 @@ export default function OrdersPage() {
     }
   }
 
-  // ---------- order actions ----------
   async function updateOrderStatus(orderId, status) {
     try {
       const res = await fetchWithAuth(`/api/owners/orders/${orderId}`, {
@@ -501,9 +529,20 @@ export default function OrdersPage() {
       const data = await res.json();
       if (!res.ok) return setError(data.error || "Failed to update order");
       setOrders((prev) => prev.map((o) => (o.id === orderId ? data.order : o)));
+      setError("");
     } catch (err) {
       setError(err.message);
     }
+  }
+
+  async function rejectOrder(orderId) {
+    if (
+      !confirm(
+        "Reject this order? The customer will be notified and the order will be closed.",
+      )
+    )
+      return;
+    await updateOrderStatus(orderId, "rejected");
   }
 
   async function cancelOrder(orderId) {
@@ -526,13 +565,7 @@ export default function OrdersPage() {
     }
   }
 
-  // ---------- print ----------
   function printOrder(order) {
-    const hotelName = isOwner ? selectedHotelName : me?.hotel?.name || "";
-    const branchName = isOwner
-      ? branches.find((b) => b.id === branchId)?.name || ""
-      : me?.branch?.name || "";
-
     let target = "Takeaway";
     if (order.room_stay?.room?.room_number) {
       target = `Room ${order.room_stay.room.room_number}`;
@@ -540,6 +573,8 @@ export default function OrdersPage() {
         target += ` — ${order.room_stay.guest_name}`;
     } else if (order.table?.table_number) {
       target = `Table ${order.table.table_number}`;
+    } else if (order.source === "customer") {
+      target = "Online order";
     }
 
     const created = new Date(order.created_at).toLocaleString();
@@ -564,8 +599,6 @@ export default function OrdersPage() {
         .center{text-align:center}
       </style></head><body>
       <div class="center">
-        <h1>${escapeHtml(hotelName)}</h1>
-        <div class="muted">${escapeHtml(branchName)}</div>
         <div class="muted">${escapeHtml(target)} · ${created}</div>
       </div>
       <hr/>
@@ -597,66 +630,109 @@ export default function OrdersPage() {
     );
   }
 
+  const isOnlineView = sourceFilter === "online";
+
   return (
-    <div className="min-h-screen bg-[#F4FAF9] dark:bg-[#0B2624] p-4" dir={dir}>
+    <div className="min-h-screen p-4" dir={dir}>
       <div className="max-w-7xl mx-auto">
-        {/* =============== HEADER =============== */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        {/* ============ HEADER — single row with branch + tabs ============ */}
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          {/* Left: icon + title + branch selector */}
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-10 w-10 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-sm shrink-0">
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center text-white shadow-sm shrink-0">
               <Utensils className="h-5 w-5" />
             </div>
-            <div className="min-w-0">
-              <h1 className="text-lg font-semibold text-teal-950 dark:text-teal-50 leading-tight">
+            <div className="flex items-center gap-2 min-w-0">
+              <h1 className="text-lg font-semibold text-teal-950 dark:text-teal-50 leading-tight whitespace-nowrap">
                 {t.orders?.title || "Orders"}
               </h1>
-              <div className="flex items-center gap-2 text-xs text-teal-700/70 dark:text-teal-300/70">
-                {isOwner && hotels.length > 1 ? (
-                  <select
-                    value={selectedHotelId}
-                    onChange={(e) => setSelectedHotelId(e.target.value)}
-                    className="bg-transparent border-0 p-0 pr-4 text-xs text-teal-700/70 dark:text-teal-300/70 focus:outline-none"
-                  >
-                    {hotels.map((h) => (
-                      <option key={h.id} value={h.id}>
-                        {h.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : isOwner && hotels.length === 1 ? (
-                  <span className="truncate">{selectedHotelName}</span>
-                ) : isBranchManager ? (
-                  <span className="truncate">
-                    {me.branch?.name || t.branch?.branchLabel || "Branch"}
-                  </span>
-                ) : null}
-                {isOwner && (
-                  <>
-                    <span className="opacity-40">·</span>
-                    <select
-                      value={branchId}
-                      onChange={(e) => setBranchId(e.target.value)}
-                      disabled={!branchesReady || branches.length === 0}
-                      className="bg-transparent border-0 p-0 pr-4 text-xs text-teal-700/70 dark:text-teal-300/70 focus:outline-none disabled:opacity-50"
-                    >
-                      {!branchesReady && <option>Loading…</option>}
-                      {branchesReady && branches.length === 0 && (
-                        <option>No branches</option>
-                      )}
-                      {branches.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.name}
-                        </option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </div>
+
+              {/* Branch selector */}
+              {isOwner && (
+                <select
+                  value={branchId}
+                  onChange={(e) => setBranchId(e.target.value)}
+                  disabled={!branchesReady || branches.length === 0}
+                  className="bg-transparent border border-teal-200 dark:border-teal-800 rounded-full px-3 py-1 text-xs text-teal-800 dark:text-teal-200 focus:outline-none disabled:opacity-50"
+                >
+                  {!branchesReady && <option>Loading…</option>}
+                  {branchesReady && branches.length === 0 && (
+                    <option>No branches</option>
+                  )}
+                  {branches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {isBranchManager && (
+                <span className="text-xs text-teal-700/70 dark:text-teal-300/70 whitespace-nowrap">
+                  {me.branch?.name || t.branch?.branchLabel || "Branch"}
+                </span>
+              )}
             </div>
           </div>
 
+          {/* Center: source tabs */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[
+              {
+                key: "pos",
+                label: "POS orders",
+                count: sourceCounts.pos,
+                icon: ShoppingBag,
+              },
+              {
+                key: "online",
+                label: "Online orders",
+                count: sourceCounts.online,
+                icon: Globe,
+              },
+              {
+                key: "qr",
+                label: "QR table",
+                count: sourceCounts.qr,
+                icon: Table2,
+              },
+            ]
+              .filter(
+                (f) => f.key === "pos" || f.count > 0 || sourceFilter === f.key,
+              )
+              .map((f) => {
+                const Icon = f.icon;
+                const active = sourceFilter === f.key;
+                return (
+                  <button
+                    key={f.key}
+                    onClick={() => setSourceFilter(f.key)}
+                    className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+                      active
+                        ? f.key === "online"
+                          ? "bg-emerald-600 text-white"
+                          : "bg-teal-600 text-white"
+                        : "bg-white dark:bg-teal-950/40 text-teal-800 dark:text-teal-200 border border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/40"
+                    }`}
+                  >
+                    <Icon className="h-3 w-3 opacity-80" />
+                    {f.label}
+                    <span
+                      className={`text-[10px] font-semibold rounded-full px-1.5 ${
+                        active
+                          ? "bg-white/25 text-white"
+                          : "bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-200"
+                      }`}
+                    >
+                      {f.count}
+                    </span>
+                  </button>
+                );
+              })}
+          </div>
+
+          {/* Right: refresh */}
           <button
-            onClick={loadAll}
+            onClick={() => loadAll()}
             disabled={!branchId || loading}
             title="Refresh"
             className="h-9 w-9 rounded-full flex items-center justify-center border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/40 disabled:opacity-40"
@@ -671,8 +747,8 @@ export default function OrdersPage() {
           </div>
         )}
 
-        {/* =============== FILTER CHIPS =============== */}
-        {tables.length > 0 && (
+        {/* ============ TABLE FILTER (POS + QR only) ============ */}
+        {!isOnlineView && tables.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 mb-3">
             <button
               onClick={() => setTableFilter("")}
@@ -682,7 +758,7 @@ export default function OrdersPage() {
                   : "bg-white dark:bg-teal-950/40 text-teal-800 dark:text-teal-200 border border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/40"
               }`}
             >
-              All ({openOrders.length})
+              All tables
             </button>
             {tables.map((tb) => {
               const count = openCountByTable[tb.id] || 0;
@@ -716,81 +792,320 @@ export default function OrdersPage() {
           </div>
         )}
 
-        {/* =============== MAIN GRID =============== */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4">
-          {/* ---------- LEFT: orders ---------- */}
-          <div className="space-y-2 min-w-0">
-            {loading && orders.length === 0 ? (
-              [...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-20 rounded-xl bg-teal-100/40 dark:bg-teal-900/20 animate-pulse"
-                />
-              ))
-            ) : visibleOrders.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-center py-12 rounded-2xl border border-dashed border-teal-200 dark:border-teal-800">
-                <Receipt className="h-6 w-6 text-teal-300 dark:text-teal-700 mb-2" />
-                <p className="text-sm text-teal-700/70 dark:text-teal-300/70">
-                  {openOrders.length === 0
-                    ? t.orders?.noOpenOrders || "No open orders yet."
-                    : t.orders?.noOrdersForTable ||
-                      "No open orders for this table."}
-                </p>
-              </div>
-            ) : (
-              visibleOrders.map((o) => (
-                <OrderRow
-                  key={o.id}
-                  order={o}
-                  active={draft?.mode === "add" && draft.orderId === o.id}
-                  onPrint={() => printOrder(o)}
-                  onStatus={(s) => updateOrderStatus(o.id, s)}
-                  onCancel={() => cancelOrder(o.id)}
-                  onAddItem={() => startAddToOrder(o.id)}
-                  onRemoveItem={(iid) => removeOrderItem(o.id, iid)}
-                  t={t}
-                />
-              ))
-            )}
-          </div>
+        {/* ============ MAIN CONTENT ============ */}
+        {isOnlineView ? (
+          <OnlineOrdersTable
+            orders={visibleOrders}
+            loading={loading}
+            onPrint={printOrder}
+            onStatus={updateOrderStatus}
+            onReject={rejectOrder}
+            onCancel={cancelOrder}
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4">
+            <div className="space-y-2 min-w-0">
+              {loading && orders.length === 0 ? (
+                [...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-20 rounded-xl bg-teal-100/40 dark:bg-teal-900/20 animate-pulse"
+                  />
+                ))
+              ) : visibleOrders.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center py-12 rounded-2xl border border-dashed border-teal-200 dark:border-teal-800">
+                  <Receipt className="h-6 w-6 text-teal-300 dark:text-teal-700 mb-2" />
+                  <p className="text-sm text-teal-700/70 dark:text-teal-300/70">
+                    {sourceFilter === "qr"
+                      ? "No QR orders waiting."
+                      : t.orders?.noOpenOrders || "No open orders yet."}
+                  </p>
+                </div>
+              ) : (
+                visibleOrders.map((o) => (
+                  <OrderRow
+                    key={o.id}
+                    order={o}
+                    active={draft?.mode === "add" && draft.orderId === o.id}
+                    onPrint={() => printOrder(o)}
+                    onStatus={(s) => updateOrderStatus(o.id, s)}
+                    onCancel={() => cancelOrder(o.id)}
+                    onReject={() => rejectOrder(o.id)}
+                    onAddItem={() => startAddToOrder(o.id)}
+                    onRemoveItem={(iid) => removeOrderItem(o.id, iid)}
+                    t={t}
+                  />
+                ))
+              )}
+            </div>
 
-          {/* ---------- RIGHT: menu ---------- */}
-          <aside className="lg:sticky lg:top-4 h-fit">
-            <MenuPanel
-              draft={draft}
-              tables={tables}
-              roomStays={roomStays}
-              customers={customers}
-              customersHotelId={customersHotelId}
-              onCustomerCreated={handleCustomerCreated}
-              menuItems={menuItems}
-              draftTotal={draftTotal}
-              onPickTable={pickTable}
-              onPickRoom={pickRoom}
-              onSetScope={setScope}
-              onSetCustomer={setCustomer}
-              onAddItem={addItem}
-              onDecItem={decItem}
-              onRemoveItem={removeItem}
-              onCancel={cancelDraft}
-              onSubmit={submitDraft}
-              saving={saving}
-              t={t}
-            />
-          </aside>
-        </div>
+            <aside className="lg:sticky lg:top-4 h-fit">
+              <MenuPanel
+                draft={draft}
+                tables={tables}
+                roomStays={roomStays}
+                customers={customers}
+                customersHotelId={customersHotelId}
+                onCustomerCreated={handleCustomerCreated}
+                menuItems={menuItems}
+                draftTotal={draftTotal}
+                onPickTable={pickTable}
+                onPickRoom={pickRoom}
+                onSetScope={setScope}
+                onSetCustomer={setCustomer}
+                onAddItem={addItem}
+                onDecItem={decItem}
+                onRemoveItem={removeItem}
+                onCancel={cancelDraft}
+                onSubmit={submitDraft}
+                saving={saving}
+                t={t}
+              />
+            </aside>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-/* ================= Order Row ================= */
+/* ================= ONLINE ORDERS TABLE ================= */
+function OnlineOrdersTable({
+  orders,
+  loading,
+  onPrint,
+  onStatus,
+  onReject,
+  onCancel,
+}) {
+  if (loading && orders.length === 0) {
+    return (
+      <div className="rounded-2xl border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950/60 overflow-hidden">
+        <div className="p-4 space-y-2">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="h-12 rounded-lg bg-teal-100/40 dark:bg-teal-900/20 animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-16 rounded-2xl border border-dashed border-emerald-300 dark:border-emerald-800">
+        <Globe className="h-7 w-7 text-emerald-300 dark:text-emerald-700 mb-2" />
+        <p className="text-sm text-teal-700/70 dark:text-teal-300/70">
+          No online orders waiting.
+        </p>
+        <p className="text-xs text-teal-700/50 dark:text-teal-300/50 mt-1">
+          New online orders will appear here automatically.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-teal-950/60 overflow-hidden shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[900px] text-sm">
+          <thead>
+            <tr className="border-b border-teal-100 dark:border-teal-800/60 bg-emerald-50/60 dark:bg-emerald-950/20 text-left text-[11px] uppercase tracking-wider text-teal-700 dark:text-teal-300">
+              <th className="px-4 py-3 font-semibold">Order #</th>
+              <th className="px-4 py-3 font-semibold">Customer</th>
+              <th className="px-4 py-3 font-semibold">Items</th>
+              <th className="px-4 py-3 font-semibold text-end">Total</th>
+              <th className="px-4 py-3 font-semibold">Payment</th>
+              <th className="px-4 py-3 font-semibold">Status</th>
+              <th className="px-4 py-3 font-semibold text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((o) => {
+              const isPaid = o.payment_status === "paid";
+              const buyer = o.buyer || {};
+              const customerName =
+                buyer.full_name || o.room_stay?.guest_name || "Guest";
+              const customerPhone = buyer.phone || "";
+              const itemsLabel = o.items
+                .map((i) => `${i.quantity}× ${i.name}`)
+                .join(", ");
+              const itemsShort =
+                itemsLabel.length > 60
+                  ? itemsLabel.slice(0, 57) + "…"
+                  : itemsLabel;
+
+              return (
+                <tr
+                  key={o.id}
+                  className="border-b border-teal-50 dark:border-teal-800/40 last:border-0 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/10"
+                >
+                  <td className="px-4 py-3 align-top">
+                    <div className="font-semibold text-teal-950 dark:text-teal-50 text-[12px]">
+                      {o.order_number}
+                    </div>
+                    <div className="text-[10px] text-teal-600/70 dark:text-teal-300/60">
+                      {new Date(o.created_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-3 align-top">
+                    <div className="text-[12px] font-medium text-teal-950 dark:text-teal-50 truncate max-w-[160px]">
+                      {customerName}
+                    </div>
+                    {customerPhone ? (
+                      <div className="text-[10px] text-teal-700/70 dark:text-teal-300/70 flex items-center gap-1">
+                        <Phone className="h-2.5 w-2.5" />
+                        <span dir="ltr">{customerPhone}</span>
+                      </div>
+                    ) : buyer.email ? (
+                      <div className="text-[10px] text-teal-700/70 dark:text-teal-300/70 flex items-center gap-1">
+                        <Mail className="h-2.5 w-2.5" />
+                        <span dir="ltr" className="truncate max-w-[140px]">
+                          {buyer.email}
+                        </span>
+                      </div>
+                    ) : null}
+                  </td>
+
+                  <td className="px-4 py-3 align-top">
+                    <div className="text-[12px] text-teal-800 dark:text-teal-200">
+                      {itemsShort}
+                    </div>
+                    <div className="text-[10px] text-teal-600/70 dark:text-teal-300/60 mt-0.5">
+                      {o.items.length} item{o.items.length === 1 ? "" : "s"}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-3 align-top text-end">
+                    <span className="font-semibold text-teal-950 dark:text-teal-50 tabular-nums text-[13px]">
+                      {o.total_amount.toFixed(2)}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3 align-top">
+                    {isPaid ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-200">
+                        <Check className="h-3 w-3" />
+                        Paid
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                        <Clock className="h-3 w-3" />
+                        Unpaid
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="px-4 py-3 align-top">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full bg-white/70 dark:bg-teal-950/40 px-2 py-0.5 text-[11px] font-medium ${
+                        STATUS_TEXT[o.status] || "text-gray-500"
+                      }`}
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          STATUS_DOT[o.status] || "bg-gray-400"
+                        }`}
+                      />
+                      {o.status.replace("_", " ")}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3 align-top">
+                    <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                      {o.status === "open" && (
+                        <button
+                          onClick={() => onStatus(o.id, "in_progress")}
+                          disabled={!isPaid}
+                          title={
+                            !isPaid
+                              ? "Customer hasn't paid yet"
+                              : "Start preparing"
+                          }
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-500 hover:bg-amber-600 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          Prepare
+                        </button>
+                      )}
+                      {o.status === "in_progress" && (
+                        <button
+                          onClick={() => onStatus(o.id, "served")}
+                          disabled={!isPaid}
+                          title={
+                            !isPaid ? "Customer hasn't paid yet" : "Mark served"
+                          }
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          Served
+                        </button>
+                      )}
+                      {o.status !== "paid" && (
+                        <button
+                          onClick={() => onStatus(o.id, "paid")}
+                          disabled={!isPaid}
+                          title={
+                            !isPaid
+                              ? "Customer hasn't paid yet"
+                              : "Mark as paid"
+                          }
+                          className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <Check className="h-3 w-3" />
+                          Paid
+                        </button>
+                      )}
+                      {o.status === "paid" && (
+                        <button
+                          onClick={() => onStatus(o.id, "closed")}
+                          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-gray-700 hover:bg-gray-800 text-white"
+                        >
+                          Close
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => onPrint(o)}
+                        title="Print"
+                        className="h-7 w-7 rounded-full flex items-center justify-center text-teal-700 hover:bg-teal-100/70 dark:text-teal-200 dark:hover:bg-teal-900/60"
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                      </button>
+
+                      {o.status !== "rejected" && (
+                        <button
+                          onClick={() => onReject(o.id)}
+                          title="Reject order"
+                          className="h-7 w-7 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                        >
+                          <Ban className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ================= Order Row (POS / QR card) ================= */
 function OrderRow({
   order,
   active,
   onPrint,
   onStatus,
   onCancel,
+  onReject,
   onAddItem,
   onRemoveItem,
   t,
@@ -801,16 +1116,22 @@ function OrderRow({
   const guestLabel =
     order.room_stay?.guest_name || order.room_stay?.customer?.full_name || null;
 
+  const isQr = order.source === "qr";
+  const isUnpaid = order.payment_status !== "paid";
+  const blockedByPayment = isQr && isUnpaid;
+
   return (
     <div
       className={`rounded-xl border overflow-hidden transition-colors ${
         active
           ? "border-teal-500 ring-2 ring-teal-500/30"
-          : "border-teal-200 dark:border-teal-800"
+          : blockedByPayment
+            ? "border-emerald-400 dark:border-emerald-700"
+            : "border-teal-200 dark:border-teal-800"
       } ${STATUS_BG[order.status] || ""}`}
     >
       <div className="flex items-center justify-between px-3 py-2 border-b border-teal-100 dark:border-teal-800/60 gap-2">
-        <div className="flex items-center gap-2 min-w-0 flex-1">
+        <div className="flex items-center gap-2 min-w-0 flex-1 flex-wrap">
           {roomLabel ? (
             <span className="inline-flex items-center gap-1 rounded-md bg-indigo-600 text-white text-[11px] font-bold px-2 py-0.5 shrink-0">
               <BedDouble className="h-3 w-3" />
@@ -825,6 +1146,20 @@ function OrderRow({
             <span className="inline-flex items-center gap-1 rounded-md bg-gray-500 text-white text-[11px] font-bold px-2 py-0.5 shrink-0">
               <ShoppingBag className="h-3 w-3" />
               TA
+            </span>
+          )}
+
+          {isQr && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 shrink-0">
+              <Table2 className="h-3 w-3" />
+              QR
+            </span>
+          )}
+
+          {blockedByPayment && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200">
+              <Clock className="h-3 w-3" />
+              Waiting for payment
             </span>
           )}
 
@@ -855,6 +1190,15 @@ function OrderRow({
           >
             <Printer className="h-3.5 w-3.5" />
           </button>
+          {order.status !== "rejected" && (
+            <button
+              onClick={onReject}
+              title="Reject order"
+              className="h-7 w-7 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+            >
+              <Ban className="h-3.5 w-3.5" />
+            </button>
+          )}
           <button
             onClick={onCancel}
             title="Cancel"
@@ -905,10 +1249,12 @@ function OrderRow({
             <Plus className="h-3 w-3" />
             {t.orders?.addItem || "Item"}
           </button>
+
           {order.status === "open" && (
             <button
               onClick={() => onStatus("in_progress")}
-              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-500 hover:bg-amber-600 text-white"
+              disabled={blockedByPayment}
+              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-500 hover:bg-amber-600 text-white disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t.orders?.startPreparing || "Prepare"}
             </button>
@@ -916,7 +1262,8 @@ function OrderRow({
           {order.status === "in_progress" && (
             <button
               onClick={() => onStatus("served")}
-              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-teal-600 hover:bg-teal-700 text-white"
+              disabled={blockedByPayment}
+              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t.orders?.markServed || "Served"}
             </button>
@@ -924,7 +1271,8 @@ function OrderRow({
           {order.status !== "paid" && (
             <button
               onClick={() => onStatus("paid")}
-              className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              disabled={blockedByPayment}
+              className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Check className="h-3 w-3" />
               {t.orders?.markPaid || "Paid"}
@@ -947,7 +1295,7 @@ function OrderRow({
   );
 }
 
-/* ================= Customer Picker (autocomplete) ================= */
+/* ================= Customer Picker ================= */
 function CustomerPicker({ customers, value, onChange, onQuickAdd, t }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -985,11 +1333,8 @@ function CustomerPicker({ customers, value, onChange, onQuickAdd, t }) {
   }, [query, open]);
 
   function commit(customer) {
-    if (!customer) {
-      onChange("");
-    } else {
-      onChange(customer.id);
-    }
+    if (!customer) onChange("");
+    else onChange(customer.id);
     setQuery("");
     setOpen(false);
   }
@@ -1031,7 +1376,6 @@ function CustomerPicker({ customers, value, onChange, onQuickAdd, t }) {
                 setQuery("");
                 requestAnimationFrame(() => inputRef.current?.focus());
               }}
-              title="Clear"
               className="h-5 w-5 shrink-0 rounded-full flex items-center justify-center text-teal-700/70 hover:bg-teal-100 dark:text-teal-200 dark:hover:bg-teal-900"
             >
               <X className="h-3 w-3" />
@@ -1058,7 +1402,6 @@ function CustomerPicker({ customers, value, onChange, onQuickAdd, t }) {
         <button
           type="button"
           onClick={onQuickAdd}
-          title={t.orders?.quickAddCustomer || "Quick add customer"}
           className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/40"
         >
           <UserPlus className="h-3.5 w-3.5" />
@@ -1153,7 +1496,6 @@ function MenuPanel({
   const canSubmit =
     !saving && items.length > 0 && (draft?.mode === "add" || scopeReady);
 
-  // ---------- quick-add customer modal state ----------
   const [quickOpen, setQuickOpen] = useState(false);
   const [quickForm, setQuickForm] = useState({
     full_name: "",
@@ -1211,7 +1553,6 @@ function MenuPanel({
 
   return (
     <div className="rounded-2xl border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950/60 overflow-hidden shadow-sm flex flex-col max-h-[calc(100vh-140px)]">
-      {/* header: mode + scope toggle + scope pickers */}
       <div className="px-3 py-2.5 border-b border-teal-100 dark:border-teal-800/60">
         <div className="flex items-center justify-between gap-2 mb-2">
           <span className="text-sm font-semibold text-teal-950 dark:text-white truncate">
@@ -1225,14 +1566,12 @@ function MenuPanel({
             <button
               onClick={onCancel}
               className="h-7 w-7 rounded-full flex items-center justify-center text-teal-700/70 hover:bg-teal-100 dark:text-teal-200 dark:hover:bg-teal-900"
-              title="Cancel"
             >
               <X className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
 
-        {/* Scope toggle */}
         {isNew && (
           <div className="flex items-center gap-1 mb-2 p-0.5 rounded-full bg-teal-50 dark:bg-teal-900/30 w-fit">
             {hasTables && (
@@ -1275,7 +1614,6 @@ function MenuPanel({
           </div>
         )}
 
-        {/* Table picker */}
         {isNew && scope === "table" && (
           <>
             {!hasTables ? (
@@ -1306,7 +1644,6 @@ function MenuPanel({
           </>
         )}
 
-        {/* Room picker */}
         {isNew && scope === "room" && (
           <>
             {!hasRooms ? (
@@ -1353,9 +1690,6 @@ function MenuPanel({
           </>
         )}
 
-        {/* Takeaway — nothing to pick */}
-
-        {/* Customer selector (optional) — autocomplete + quick add */}
         {isNew && (scope === "table" || scope === "takeaway") && (
           <div className="mt-2">
             <CustomerPicker
@@ -1375,7 +1709,6 @@ function MenuPanel({
         )}
       </div>
 
-      {/* MENU grid */}
       <div
         className={`px-3 py-2.5 overflow-y-auto flex-1 min-h-0 ${
           isNew && !scopeReady ? "opacity-50 pointer-events-none" : ""
@@ -1429,7 +1762,6 @@ function MenuPanel({
         )}
       </div>
 
-      {/* CART */}
       {draft && items.length > 0 && (
         <div className="border-t border-teal-100 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-900/20">
           <div className="px-3 py-1.5 flex items-center justify-between">
@@ -1502,7 +1834,6 @@ function MenuPanel({
         </div>
       )}
 
-      {/* ---------- quick-add customer modal ---------- */}
       {quickOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
@@ -1522,7 +1853,6 @@ function MenuPanel({
                 type="button"
                 onClick={() => setQuickOpen(false)}
                 className="h-6 w-6 rounded-full flex items-center justify-center text-teal-700/70 hover:bg-teal-100 dark:text-teal-200 dark:hover:bg-teal-900"
-                title="Close"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

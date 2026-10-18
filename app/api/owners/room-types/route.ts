@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { assertManagedBranch } from "@/lib/owner-scope";
+import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 async function readJson(request: Request): Promise<Record<string, unknown>> {
   try {
@@ -32,6 +33,13 @@ export async function GET(request: Request) {
     return NextResponse.json(
       { error: "Branch not found in your hotel" },
       { status: 404 },
+    );
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
     );
 
   const types = await prisma.room_types.findMany({
@@ -80,6 +88,13 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Branch not found in your hotel" },
       { status: 404 },
+    );
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
     );
 
   const capacity =

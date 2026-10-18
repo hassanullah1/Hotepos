@@ -10,6 +10,7 @@ const PLAN_DETAIL_SELECT = {
   price_monthly: true,
   features: true,
   is_active: true,
+  is_rooms: true, // 👈 NEW
   created_at: true,
   hotels: {
     select: {
@@ -27,7 +28,7 @@ const PLAN_DETAIL_SELECT = {
   },
 };
 
-function serializePlanDetail(p) {
+function serializePlanDetail(p: any) {
   return {
     id: p.id,
     name: p.name,
@@ -36,8 +37,9 @@ function serializePlanDetail(p) {
     price_monthly: p.price_monthly,
     features: p.features || {},
     is_active: p.is_active,
+    is_rooms: p.is_rooms === true, // 👈 NEW
     created_at: p.created_at,
-    hotels: (p.hotels || []).map((h) => ({
+    hotels: (p.hotels || []).map((h: any) => ({
       id: h.id,
       name: h.name,
       slug: h.slug,
@@ -52,7 +54,10 @@ function serializePlanDetail(p) {
   };
 }
 
-export async function GET(request, { params }) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -71,7 +76,10 @@ export async function GET(request, { params }) {
   return NextResponse.json({ plan: serializePlanDetail(plan) });
 }
 
-export async function PATCH(request, { params }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -81,7 +89,7 @@ export async function PATCH(request, { params }) {
   const { id } = await params;
 
   const body = await request.json();
-  const data = {};
+  const data: Record<string, unknown> = {};
 
   if (body.name !== undefined) {
     if (!body.name.trim()) {
@@ -122,6 +130,9 @@ export async function PATCH(request, { params }) {
       body.features && typeof body.features === "object" ? body.features : {};
   if (body.is_active !== undefined) data.is_active = !!body.is_active;
 
+  // 👇 NEW — plan-level rooms feature
+  if (body.is_rooms !== undefined) data.is_rooms = body.is_rooms === true;
+
   try {
     await prisma.subscription_plans.update({ where: { id }, data });
     const plan = await prisma.subscription_plans.findUnique({
@@ -138,7 +149,10 @@ export async function PATCH(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

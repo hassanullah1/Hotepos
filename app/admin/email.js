@@ -133,3 +133,12 @@ export async function sendPasswordResetEmail({ to, ownerName, link }) {
     return { sent: false, reason: "send_error" };
   }
 }
+
+export async function sendContactMessage({ name, email, subject, message }) {
+  return sendPasswordResetEmail({
+    name,
+    email,
+    subject,
+    message,
+  });
+}

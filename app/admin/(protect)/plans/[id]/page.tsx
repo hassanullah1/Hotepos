@@ -3,11 +3,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Pencil, Eye, ArrowLeft, Check, X, Trash2 } from "lucide-react";
+import {
+  Pencil,
+  Eye,
+  ArrowLeft,
+  Check,
+  X,
+  Trash2,
+  BedDouble,
+} from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
-// ----- Shared UI primitives -----
 const inputClass =
   "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500";
 const labelClass =
@@ -51,7 +58,6 @@ function StatusBadge({ isActive, t }) {
   );
 }
 
-// ----- Main Component -----
 export default function PlanDetailPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -170,6 +176,19 @@ export default function PlanDetailPage() {
                   {plan.max_pos_devices}
                 </span>
               </span>
+
+              {/* 👈 NEW — rooms badge */}
+              <span>·</span>
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                  plan.is_rooms
+                    ? "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400"
+                    : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                }`}
+              >
+                <BedDouble size={12} />
+                {plan.is_rooms ? "Rooms ✓" : "Rooms ✕"}
+              </span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -198,21 +217,19 @@ export default function PlanDetailPage() {
                 key={key}
                 className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
               >
-                {key}: {value}
+                {key}: {String(value)}
               </span>
             ))}
           </div>
         )}
       </div>
 
-      {/* Error banner */}
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400">
           {error}
         </div>
       )}
 
-      {/* Toggle between Hotels Table and Edit Form */}
       {showEdit ? (
         <EditForm
           plan={plan}
@@ -228,7 +245,6 @@ export default function PlanDetailPage() {
   );
 }
 
-// ----- Hotels Table -----
 function HotelsTable({ plan, dir, t }) {
   const hotels = plan.hotels || [];
   const isRtl = dir === "rtl";
@@ -331,7 +347,6 @@ function HotelsTable({ plan, dir, t }) {
   );
 }
 
-// ----- Edit Form -----
 function EditForm({ plan, onSaved, onCancel, dir, t }) {
   const [form, setForm] = useState({
     name: plan.name,
@@ -339,6 +354,7 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
     max_branches: plan.max_branches,
     max_pos_devices: plan.max_pos_devices,
     is_active: plan.is_active,
+    is_rooms: plan.is_rooms === true, // 👈 NEW
   });
   const [featureKeys, setFeatureKeys] = useState(
     Object.entries(plan.features || {}).length
@@ -383,6 +399,7 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
           max_branches: Number(form.max_branches),
           max_pos_devices: Number(form.max_pos_devices),
           is_active: form.is_active,
+          is_rooms: form.is_rooms, // 👈 NEW
           features,
         }),
       });
@@ -487,6 +504,36 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
             }
             className={inputClass}
           />
+        </div>
+
+        {/* 👈 NEW — rooms feature toggle */}
+        <div className="sm:col-span-2">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.is_rooms}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, is_rooms: e.target.checked }))
+              }
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+            />
+            <span className="min-w-0">
+              <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                Rooms management
+              </span>
+              <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
+                Hotels on this plan can manage rooms and room stays.
+                {plan.hotel_count > 0 && (
+                  <>
+                    {" "}
+                    This plan is on {plan.hotel_count} hotel
+                    {plan.hotel_count === 1 ? "" : "s"} — the change applies
+                    everywhere immediately.
+                  </>
+                )}
+              </span>
+            </span>
+          </label>
         </div>
       </div>
 

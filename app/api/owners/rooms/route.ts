@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { assertManagedBranch } from "@/lib/owner-scope";
+import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 const ROOM_SELECT = {
   id: true,
@@ -65,6 +66,13 @@ export async function GET(request: Request) {
       { status: 404 },
     );
 
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
+    );
+
   const where: Prisma.roomsWhereInput = { branch_id: branchId };
   if (roomTypeId) where.room_type_id = roomTypeId;
   if (status) where.status = status;
@@ -104,6 +112,13 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Branch not found in your hotel" },
       { status: 404 },
+    );
+
+  const hasRooms = await hotelHasRoomsFeature(branch.hotel_id);
+  if (!hasRooms)
+    return NextResponse.json(
+      { error: "Rooms feature is not included in your plan" },
+      { status: 403 },
     );
 
   const rt = await prisma.room_types.findFirst({

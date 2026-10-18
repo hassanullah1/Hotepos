@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Fraunces } from "next/font/google";
 import {
@@ -14,6 +15,10 @@ import {
   Send,
   ShieldCheck,
   CreditCard,
+  ArrowLeft,
+  Receipt,
+  MapPin,
+  ShoppingBag,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -24,44 +29,51 @@ const displayFont = Fraunces({
   variable: "--font-display",
 });
 
-const STATUSES = [
+const STATUS_STEPS = [
   {
     key: "open",
     labelEn: "Received",
     labelPs: "ترلاسه شو",
     labelPrs: "دریافت شد",
+    Icon: Receipt,
   },
   {
     key: "in_progress",
     labelEn: "Preparing",
     labelPs: "چمتو کیږي",
     labelPrs: "در حال آماده‌سازی",
+    Icon: ChefHat,
   },
   {
     key: "served",
-    labelEn: "Ready / Served",
+    labelEn: "Ready",
     labelPs: "وړاندې شو",
     labelPrs: "سرو شد",
+    Icon: CheckCircle2,
   },
   {
     key: "paid",
     labelEn: "Paid",
     labelPs: "تادیه شو",
     labelPrs: "پرداخت شد",
+    Icon: CreditCard,
   },
 ];
 
 const trackText = {
   en: {
     dir: "ltr",
+    backToMenu: "Back to menu",
     orderLabel: "Order",
     items: "Items",
+    summary: "Summary",
+    subtotal: "Subtotal",
     total: "Total",
     paymentSection: "Payment",
     payButton: "Pay with HesabPay",
     paying: "Opening HesabPay…",
     payHint: "You'll be redirected to HesabPay to complete payment.",
-    confirmingPayment: "Confirming payment…",
+    confirmingPayment: "Confirming…",
     paidLabel: "Paid",
     unpaidLabel: "Unpaid",
     failedLabel: "Payment failed",
@@ -70,19 +82,26 @@ const trackText = {
     submit: "Submit reviews",
     submitting: "Submitting…",
     thanks: "Thanks for your review!",
-    autoUpdate: "This page updates automatically every 5 seconds.",
+    autoUpdate: "This page updates every 5 seconds.",
     commentPlaceholder: "Comment (optional)",
+    orderNumber: "Order #",
+    placedAt: "Placed",
+    progress: "Progress",
+    restaurant: "Restaurant",
   },
   ps: {
     dir: "rtl",
+    backToMenu: "بیرته مینو ته",
     orderLabel: "فرمایش",
     items: "توکي",
+    summary: "لنډیز",
+    subtotal: "فرعي مجموعه",
     total: "ټول",
     paymentSection: "تادیه",
     payButton: "د حساب پی سره تادیه وکړئ",
     paying: "حساب پی پرانیستل کیږي…",
     payHint: "د تادیې بشپړولو لپاره به حساب پی ته یوړل شئ.",
-    confirmingPayment: "تادیه تصدیق کیږي…",
+    confirmingPayment: "تصدیق کیږي…",
     paidLabel: "تادیه شو",
     unpaidLabel: "نه تادیه شو",
     failedLabel: "تادیه ناکامه شوه",
@@ -91,19 +110,26 @@ const trackText = {
     submit: "بیاکتنې وسپارئ",
     submitting: "سپارل کیږي…",
     thanks: "ستاسو د بیاکتنې مننه!",
-    autoUpdate: "دا پاڼه هره ۵ ثانیه اتوماتیک تازه کیږي.",
+    autoUpdate: "دا پاڼه هره ۵ ثانیه تازه کیږي.",
     commentPlaceholder: "نظر (اختیاري)",
+    orderNumber: "د فرمایش #",
+    placedAt: "وخت",
+    progress: "پرمختګ",
+    restaurant: "رستورانت",
   },
   prs: {
     dir: "rtl",
+    backToMenu: "بازگشت به منو",
     orderLabel: "سفارش",
     items: "آیتم‌ها",
+    summary: "خلاصه",
+    subtotal: "جمع فرعی",
     total: "مجموع",
     paymentSection: "پرداخت",
     payButton: "پرداخت با حساب پی",
     paying: "در حال باز کردن حساب پی…",
     payHint: "برای تکمیل پرداخت به حساب پی هدایت می‌شوید.",
-    confirmingPayment: "در حال تأیید پرداخت…",
+    confirmingPayment: "در حال تأیید…",
     paidLabel: "پرداخت شد",
     unpaidLabel: "پرداخت نشده",
     failedLabel: "پرداخت ناموفق",
@@ -112,8 +138,12 @@ const trackText = {
     submit: "ارسال نظرات",
     submitting: "در حال ارسال…",
     thanks: "از نظر شما سپاسگزاریم!",
-    autoUpdate: "این صفحه هر ۵ ثانیه به‌طور خودکار به‌روزرسانی می‌شود.",
+    autoUpdate: "این صفحه هر ۵ ثانیه به‌روزرسانی می‌شود.",
     commentPlaceholder: "نظر (اختیاری)",
+    orderNumber: "شماره سفارش",
+    placedAt: "زمان",
+    progress: "پیشرفت",
+    restaurant: "رستورانت",
   },
 };
 
@@ -141,7 +171,6 @@ export default function TrackPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // ---------- Poll the order ----------
   useEffect(() => {
     let active = true;
     async function tick() {
@@ -164,14 +193,12 @@ export default function TrackPage() {
     };
   }, [token]);
 
-  // ---------- lang / dir ----------
   useEffect(() => {
     if (!mounted) return;
     document.documentElement.setAttribute("lang", lang);
     document.documentElement.setAttribute("dir", t.dir);
   }, [lang, mounted, t.dir]);
 
-  // ---------- Confirm payment when HesabPay redirects back ----------
   useEffect(() => {
     if (!mounted) return;
     if (confirming) return;
@@ -179,8 +206,6 @@ export default function TrackPage() {
     const paidFlag = searchParams.get("paid");
     if (paidFlag !== "1") return;
 
-    // Extract the `data={...}` blob from the raw URL. HesabPay appends it
-    // with a second `?`, so `searchParams.get("data")` returns null.
     const rawUrl = typeof window !== "undefined" ? window.location.href : "";
     let data: any = {};
     try {
@@ -189,11 +214,8 @@ export default function TrackPage() {
         const json = decodeURIComponent(rawUrl.slice(idx + 5));
         data = JSON.parse(json);
       }
-    } catch {
-      /* ignore malformed */
-    }
+    } catch {}
 
-    // `ref` is the order id we baked into success_url in create-session.
     const refOrderId = searchParams.get("ref");
     if (!refOrderId) return;
 
@@ -211,11 +233,9 @@ export default function TrackPage() {
       .then((r) => r.json())
       .then((d) => {
         if (!d.ok) console.error("Confirm returned:", d);
-        // The 5s poll above will pick up the new payment_status automatically.
       })
       .catch((err) => console.error("Confirm request failed:", err));
 
-    // Strip the query string so a refresh doesn't re-trigger.
     if (typeof window !== "undefined") {
       window.history.replaceState({}, "", window.location.pathname);
     }
@@ -300,8 +320,9 @@ export default function TrackPage() {
       </div>
     );
 
-  const currentIdx = STATUSES.findIndex((s) => s.key === order.status);
+  const currentIdx = STATUS_STEPS.findIndex((s) => s.key === order.status);
   const isPaid = order.payment_status === "paid";
+  const isCancelled = order.status === "cancelled";
 
   return (
     <div
@@ -310,6 +331,7 @@ export default function TrackPage() {
       }`}
       dir={t.dir}
     >
+      {/* Grid texture */}
       <svg
         className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-300 ${
           isDark ? "opacity-[0.04]" : "opacity-[0.05]"
@@ -335,55 +357,92 @@ export default function TrackPage() {
         )}
       </svg>
 
-      <div className="relative mx-auto flex min-h-screen max-w-md items-center justify-center px-5 py-8">
+      {/* Drifting gold blobs */}
+      <div
+        className={`blob-a pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full blur-3xl ${
+          isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
+        }`}
+        aria-hidden="true"
+      />
+      <div
+        className={`blob-b pointer-events-none absolute top-40 -right-32 h-96 w-96 rounded-full blur-3xl ${
+          isDark ? "bg-[#C9A227]/8" : "bg-[#C9A227]/12"
+        }`}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-10">
+        {/* Back link */}
+        <Link
+          href="/buy/order"
+          className={`group mb-5 inline-flex items-center gap-1.5 text-xs font-semibold transition ${
+            isDark
+              ? "text-[#B7B2C4] hover:text-[#E0B93A]"
+              : "text-[#6E687A] hover:text-[#8A6E1A]"
+          }`}
+        >
+          <ArrowLeft
+            size={13}
+            className="transition-transform group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5"
+          />
+          {t.backToMenu}
+        </Link>
+
+        {/* ============ Header card ============ */}
         <div
-          className={`w-full rounded-3xl border p-6 shadow-xl backdrop-blur-sm transition-colors sm:p-7 ${
+          className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
             isDark
               ? "border-[#2E2938] bg-[#1E1B26]/90"
               : "border-[#E4DFD4] bg-white/90"
           }`}
         >
-          {/* Header */}
-          <div className="text-center">
-            <p
-              className={`text-[10px] uppercase tracking-[0.3em] ${
-                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-              }`}
-              style={{ fontFamily: "var(--font-geist-mono)" }}
-            >
-              {t.orderLabel}
-            </p>
-            <p
-              className="mt-1 text-2xl font-semibold"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {order.order_number}
-            </p>
-            <p
-              className={`mt-1 text-xs ${
-                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-              }`}
-            >
-              {order.branch_name} ·{" "}
-              {new Date(order.created_at).toLocaleTimeString()}
-            </p>
+          <div className="relative p-6 sm:p-7">
+            <div
+              className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-[#C9A227]/15 blur-3xl"
+              aria-hidden="true"
+            />
 
-            {/* Payment badge */}
-            <div className="mt-2 flex justify-center">
+            <div className="relative flex flex-wrap items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p
+                  className={`text-[10px] uppercase tracking-[0.3em] ${
+                    isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+                  }`}
+                  style={{ fontFamily: "var(--font-geist-mono)" }}
+                >
+                  {t.orderLabel}
+                </p>
+                <h1
+                  className="mt-1 text-2xl font-semibold sm:text-3xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {order.order_number}
+                </h1>
+                <p
+                  className={`mt-1 text-xs ${
+                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  }`}
+                >
+                  {order.branch_name} ·{" "}
+                  {new Date(order.created_at).toLocaleTimeString()}
+                </p>
+              </div>
+
+              {/* Payment badge */}
               {confirming && !isPaid ? (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${
                     isDark
                       ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A]"
                       : "border-[#A9821E]/40 bg-[#C9A227]/15 text-[#8A6E1A]"
                   }`}
                 >
-                  <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" />
                   {t.confirmingPayment}
                 </span>
               ) : (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${
                     isPaid
                       ? isDark
                         ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
@@ -397,7 +456,7 @@ export default function TrackPage() {
                           : "border-amber-300 bg-amber-50 text-amber-700"
                   }`}
                 >
-                  <CreditCard className="h-2.5 w-2.5" />
+                  <CreditCard className="h-3 w-3" />
                   {isPaid
                     ? t.paidLabel
                     : order.payment_status === "failed"
@@ -407,248 +466,524 @@ export default function TrackPage() {
               )}
             </div>
           </div>
+        </div>
 
-          {/* Status timeline */}
-          {order.status === "cancelled" ? (
-            <div
-              className={`mt-6 flex items-center justify-center gap-2 rounded-xl py-4 ${
-                isDark ? "bg-red-500/10 text-red-300" : "bg-red-50 text-red-700"
-              }`}
-            >
-              <XCircle className="h-5 w-5" /> {t.cancelled}
-            </div>
-          ) : (
-            <div className="mt-6 space-y-3">
-              {STATUSES.map((s, idx) => {
-                const done = idx <= currentIdx;
-                const active = idx === currentIdx;
-                const label =
-                  lang === "ps"
-                    ? s.labelPs
-                    : lang === "prs"
-                      ? s.labelPrs
-                      : s.labelEn;
-                return (
-                  <div key={s.key} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-full transition ${
-                        done
-                          ? "bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707]"
-                          : isDark
-                            ? "bg-[#2A2534] text-[#6E687A]"
-                            : "bg-[#EDE8DE] text-[#A39D8F]"
-                      } ${active ? "ring-4 ring-[#C9A227]/25" : ""}`}
-                    >
-                      {done ? (
-                        <CheckCircle2 className="h-4 w-4" />
-                      ) : idx === 2 ? (
-                        <ChefHat className="h-4 w-4" />
-                      ) : (
-                        <Clock className="h-4 w-4" />
-                      )}
-                    </div>
-                    <span
-                      className={`text-sm ${
-                        done
-                          ? "font-semibold"
-                          : isDark
-                            ? "text-[#6E687A]"
-                            : "text-[#A39D8F]"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Items */}
+        {/* ============ Progress stepper ============ */}
+        {isCancelled ? (
           <div
-            className={`mt-6 border-t pt-4 ${
-              isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+            className={`mt-5 flex items-center justify-center gap-2 rounded-2xl border py-5 ${
+              isDark
+                ? "border-red-500/40 bg-red-500/10 text-red-300"
+                : "border-red-300 bg-red-50 text-red-700"
             }`}
           >
-            <p
-              className={`mb-2 text-[10px] uppercase tracking-[0.2em] ${
-                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-              }`}
-              style={{ fontFamily: "var(--font-geist-mono)" }}
-            >
-              {t.items}
-            </p>
-            <ul className="space-y-1">
-              {order.items.map((i: any) => (
-                <li
-                  key={i.id}
-                  className={`flex justify-between text-sm ${
-                    isDark ? "text-[#CFCADB]" : "text-[#1D1A22]"
-                  }`}
-                >
-                  <span>
-                    {i.quantity} × {i.name}
-                  </span>
-                  <span className="font-medium tabular-nums">
-                    {i.line_total.toFixed(2)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div
-              className={`mt-3 flex justify-between border-t pt-3 text-base font-bold ${
-                isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
-              }`}
-            >
-              <span>{t.total}</span>
-              <span className="text-[#E0B93A]">
-                {order.total_amount.toFixed(2)} {order.currency}
-              </span>
-            </div>
+            <XCircle className="h-5 w-5" />
+            <span className="text-sm font-semibold">{t.cancelled}</span>
           </div>
-
-          {/* Pay button */}
-          {!isPaid && order.status !== "cancelled" && (
-            <div
-              className={`mt-6 border-t pt-4 ${
-                isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
-              }`}
-            >
+        ) : (
+          <div
+            className={`mt-5 overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+              isDark
+                ? "border-[#2E2938] bg-[#1E1B26]/90"
+                : "border-[#E4DFD4] bg-white/90"
+            }`}
+          >
+            <div className="p-5 sm:p-6">
               <p
-                className={`mb-3 text-[10px] uppercase tracking-[0.2em] ${
+                className={`mb-5 text-[10px] uppercase tracking-[0.2em] ${
                   isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
                 }`}
                 style={{ fontFamily: "var(--font-geist-mono)" }}
               >
-                {t.paymentSection}
+                {t.progress}
               </p>
-              <button
-                onClick={payNow}
-                disabled={paying || confirming}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:opacity-60"
-              >
-                {paying ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <ShieldCheck className="h-4 w-4" />
-                )}
-                {paying ? t.paying : t.payButton}
-              </button>
-              <p
-                className={`mt-2 text-center text-[11px] ${
-                  isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-                }`}
-              >
-                {t.payHint}
-              </p>
-            </div>
-          )}
 
-          {/* Review form */}
-          {canReview && (
-            <div
-              className={`mt-6 border-t pt-4 ${
-                isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
-              }`}
-            >
-              <p
-                className={`mb-3 text-[10px] uppercase tracking-[0.2em] ${
-                  isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-                }`}
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                {t.rateItems}
-              </p>
-              <div className="space-y-3">
-                {order.items.map((i: any) => {
-                  const key = i.menu_item_id || i.id;
+              <ol className="flex items-start justify-between gap-1 sm:gap-2">
+                {STATUS_STEPS.map((s, idx) => {
+                  const done = idx <= currentIdx;
+                  const active = idx === currentIdx;
+                  const label =
+                    lang === "ps"
+                      ? s.labelPs
+                      : lang === "prs"
+                        ? s.labelPrs
+                        : s.labelEn;
+                  const Icon = s.Icon;
+
                   return (
-                    <div
-                      key={key}
-                      className={`rounded-xl border p-3 ${
-                        isDark
-                          ? "border-[#332C3E] bg-[#161320]"
-                          : "border-[#E4DFD4] bg-[#FAF8F4]"
-                      }`}
+                    <li
+                      key={s.key}
+                      className="flex flex-1 flex-col items-center text-center"
                     >
-                      <p className="text-sm font-medium">{i.name}</p>
-                      <div className="mt-1.5 flex items-center gap-1">
-                        {[1, 2, 3, 4, 5].map((n) => (
-                          <button
-                            key={n}
-                            type="button"
-                            onClick={() =>
-                              setRatings((r) => ({ ...r, [key]: n }))
-                            }
-                            className="p-0.5"
-                          >
-                            <Star
-                              className={`h-5 w-5 ${
-                                (ratings[key] || 0) >= n
-                                  ? "fill-[#C9A227] text-[#C9A227]"
-                                  : isDark
-                                    ? "text-[#332C3E]"
-                                    : "text-[#D4CFC4]"
-                              }`}
-                            />
-                          </button>
-                        ))}
+                      <div className="flex w-full items-center">
+                        {idx > 0 && (
+                          <span
+                            className={`h-0.5 flex-1 transition-colors ${
+                              done
+                                ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
+                                : isDark
+                                  ? "bg-[#2A2534]"
+                                  : "bg-[#EDE8DE]"
+                            }`}
+                          />
+                        )}
+
+                        <span
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all ${
+                            done
+                              ? "bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/30"
+                              : isDark
+                                ? "bg-[#2A2534] text-[#6E687A]"
+                                : "bg-[#EDE8DE] text-[#A39D8F]"
+                          } ${active ? "ring-4 ring-[#C9A227]/25" : ""}`}
+                        >
+                          <Icon size={16} strokeWidth={2.25} />
+                        </span>
+
+                        {idx < STATUS_STEPS.length - 1 && (
+                          <span
+                            className={`h-0.5 flex-1 transition-colors ${
+                              idx < currentIdx
+                                ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
+                                : isDark
+                                  ? "bg-[#2A2534]"
+                                  : "bg-[#EDE8DE]"
+                            }`}
+                          />
+                        )}
                       </div>
-                      <input
-                        value={comments[key] || ""}
-                        onChange={(e) =>
-                          setComments((c) => ({
-                            ...c,
-                            [key]: e.target.value,
-                          }))
-                        }
-                        placeholder={t.commentPlaceholder}
-                        className={`mt-2 w-full rounded-lg border px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A227]/30 ${
-                          isDark
-                            ? "border-[#332C3E] bg-[#15121C] text-[#F0EAE2]"
-                            : "border-[#E4DFD4] bg-white text-[#1D1A22]"
+
+                      <span
+                        className={`mt-2 text-[11px] font-medium sm:text-xs ${
+                          done
+                            ? isDark
+                              ? "text-[#F0EAE2]"
+                              : "text-[#1D1A22]"
+                            : isDark
+                              ? "text-[#6E687A]"
+                              : "text-[#A39D8F]"
                         }`}
-                      />
-                    </div>
+                      >
+                        {label}
+                      </span>
+                    </li>
                   );
                 })}
-              </div>
-              <button
-                onClick={submitReviews}
-                disabled={submitting || Object.keys(ratings).length === 0}
-                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-2.5 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 disabled:opacity-50"
-              >
-                {submitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                {submitting ? t.submitting : t.submit}
-              </button>
+              </ol>
             </div>
-          )}
+          </div>
+        )}
 
-          {submitted && (
-            <p
-              className={`mt-3 rounded-lg px-3 py-2 text-center text-xs ${
+        {/* ============ Two column grid ============ */}
+        <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_320px]">
+          {/* LEFT: items + review */}
+          <div className="space-y-5">
+            {/* Items card */}
+            <div
+              className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
                 isDark
-                  ? "bg-emerald-500/10 text-emerald-300"
-                  : "bg-emerald-50 text-emerald-700"
+                  ? "border-[#2E2938] bg-[#1E1B26]/90"
+                  : "border-[#E4DFD4] bg-white/90"
               }`}
             >
-              {t.thanks}
-            </p>
-          )}
+              <div
+                className={`flex items-center justify-between border-b px-5 py-4 ${
+                  isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <ShoppingBag
+                    size={15}
+                    className={isDark ? "text-[#C9A227]" : "text-[#A9821E]"}
+                  />
+                  <h2
+                    className="text-sm font-semibold"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {t.items}
+                  </h2>
+                </div>
+                <span
+                  className={`text-xs ${
+                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  }`}
+                >
+                  {order.items.length}
+                </span>
+              </div>
 
-          <p
-            className={`mt-4 text-center text-[11px] ${
-              isDark ? "text-[#6E5555]" : "text-[#A39D8F]"
-            }`}
-          >
-            {t.autoUpdate}
-          </p>
+              <ul>
+                {order.items.map((i: any, idx: number) => (
+                  <li
+                    key={i.id}
+                    className={`flex items-center justify-between gap-3 px-5 py-3.5 ${
+                      idx > 0
+                        ? isDark
+                          ? "border-t border-[#2E2938]"
+                          : "border-t border-[#E4DFD4]"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                          isDark
+                            ? "bg-[#C9A227]/15 text-[#E0B93A]"
+                            : "bg-[#C9A227]/15 text-[#8A6E1A]"
+                        }`}
+                      >
+                        {i.quantity}×
+                      </span>
+                      <span className="truncate text-sm font-medium">
+                        {i.name}
+                      </span>
+                    </div>
+                    <span
+                      className={`shrink-0 text-sm font-semibold tabular-nums ${
+                        isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                      }`}
+                    >
+                      {i.line_total.toFixed(2)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Review card */}
+            {canReview && (
+              <div
+                className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+                  isDark
+                    ? "border-[#2E2938] bg-[#1E1B26]/90"
+                    : "border-[#E4DFD4] bg-white/90"
+                }`}
+              >
+                <div
+                  className={`flex items-center gap-2 border-b px-5 py-4 ${
+                    isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+                  }`}
+                >
+                  <Star
+                    size={15}
+                    className={isDark ? "text-[#C9A227]" : "text-[#A9821E]"}
+                  />
+                  <h2
+                    className="text-sm font-semibold"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {t.rateItems}
+                  </h2>
+                </div>
+
+                <div className="space-y-3 p-5">
+                  {order.items.map((i: any) => {
+                    const key = i.menu_item_id || i.id;
+                    return (
+                      <div
+                        key={key}
+                        className={`rounded-xl border p-4 ${
+                          isDark
+                            ? "border-[#332C3E] bg-[#161320]"
+                            : "border-[#E4DFD4] bg-[#FAF8F4]"
+                        }`}
+                      >
+                        <p className="text-sm font-medium">{i.name}</p>
+
+                        <div className="mt-2 flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <button
+                              key={n}
+                              type="button"
+                              onClick={() =>
+                                setRatings((r) => ({ ...r, [key]: n }))
+                              }
+                              className="p-0.5 transition hover:scale-110"
+                            >
+                              <Star
+                                className={`h-6 w-6 transition ${
+                                  (ratings[key] || 0) >= n
+                                    ? "fill-[#C9A227] text-[#C9A227]"
+                                    : isDark
+                                      ? "text-[#332C3E]"
+                                      : "text-[#D4CFC4]"
+                                }`}
+                              />
+                            </button>
+                          ))}
+                          {ratings[key] ? (
+                            <span
+                              className={`ml-2 text-xs font-semibold ${
+                                isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                              }`}
+                            >
+                              {ratings[key]} / 5
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <input
+                          value={comments[key] || ""}
+                          onChange={(e) =>
+                            setComments((c) => ({
+                              ...c,
+                              [key]: e.target.value,
+                            }))
+                          }
+                          placeholder={t.commentPlaceholder}
+                          className={`mt-3 w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-[#C9A227]/30 ${
+                            isDark
+                              ? "border-[#332C3E] bg-[#15121C] text-[#F0EAE2] placeholder:text-[#5E5670] focus:border-[#C9A227]"
+                              : "border-[#E4DFD4] bg-white text-[#1D1A22] placeholder:text-[#A39D8F] focus:border-[#A9821E]"
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+
+                  <button
+                    onClick={submitReviews}
+                    disabled={submitting || Object.keys(ratings).length === 0}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                  >
+                    {submitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                    {submitting ? t.submitting : t.submit}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {submitted && (
+              <div
+                className={`flex items-center justify-center gap-2 rounded-2xl border py-4 text-sm font-semibold ${
+                  isDark
+                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+                    : "border-emerald-300 bg-emerald-50 text-emerald-700"
+                }`}
+              >
+                <CheckCircle2 size={16} />
+                {t.thanks}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: summary + payment */}
+          <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
+            {/* Summary card */}
+            <div
+              className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+                isDark
+                  ? "border-[#2E2938] bg-[#1E1B26]/90"
+                  : "border-[#E4DFD4] bg-white/90"
+              }`}
+            >
+              <div className="p-5 sm:p-6">
+                <p
+                  className={`mb-4 text-[10px] uppercase tracking-[0.2em] ${
+                    isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+                  }`}
+                  style={{ fontFamily: "var(--font-geist-mono)" }}
+                >
+                  {t.summary}
+                </p>
+
+                <dl className="space-y-3 text-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <dt
+                      className={`text-xs ${
+                        isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                      }`}
+                    >
+                      {t.orderNumber}
+                    </dt>
+                    <dd
+                      className="text-end text-xs font-semibold"
+                      style={{ fontFamily: "var(--font-geist-mono)" }}
+                    >
+                      {order.order_number}
+                    </dd>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-3">
+                    <dt
+                      className={`inline-flex items-center gap-1 text-xs ${
+                        isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                      }`}
+                    >
+                      <MapPin size={11} />
+                      {t.restaurant}
+                    </dt>
+                    <dd className="max-w-[55%] truncate text-end text-xs font-medium">
+                      {order.branch_name}
+                    </dd>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-3">
+                    <dt
+                      className={`inline-flex items-center gap-1 text-xs ${
+                        isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                      }`}
+                    >
+                      <Clock size={11} />
+                      {t.placedAt}
+                    </dt>
+                    <dd className="text-end text-xs font-medium">
+                      {new Date(order.created_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div
+                  className={`mt-5 space-y-2 border-t pt-4 ${
+                    isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+                  }`}
+                >
+                  <div className="flex justify-between text-sm">
+                    <span
+                      className={`text-xs ${
+                        isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                      }`}
+                    >
+                      {t.subtotal}
+                    </span>
+                    <span className="font-medium tabular-nums">
+                      {order.total_amount.toFixed(2)}
+                    </span>
+                  </div>
+                  <div
+                    className={`flex justify-between border-t pt-3 ${
+                      isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+                    }`}
+                  >
+                    <span
+                      className="text-base font-bold"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {t.total}
+                    </span>
+                    <span
+                      className={`text-base font-bold tabular-nums ${
+                        isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                      }`}
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {order.total_amount.toFixed(2)} {order.currency}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Pay CTA card */}
+            {!isPaid && !isCancelled && (
+              <div
+                className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+                  isDark
+                    ? "border-[#C9A227]/40 bg-gradient-to-br from-[#C9A227]/10 to-[#1E1B26]/90"
+                    : "border-[#A9821E]/40 bg-gradient-to-br from-[#C9A227]/10 to-white/90"
+                }`}
+              >
+                <div className="p-5 sm:p-6">
+                  <div className="mb-3 flex items-center gap-2">
+                    <ShieldCheck
+                      size={15}
+                      className={isDark ? "text-[#C9A227]" : "text-[#A9821E]"}
+                    />
+                    <p
+                      className="text-sm font-semibold"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {t.paymentSection}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={payNow}
+                    disabled={paying || confirming}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+                  >
+                    {paying ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <CreditCard className="h-4 w-4" />
+                    )}
+                    {paying ? t.paying : t.payButton}
+                  </button>
+
+                  <p
+                    className={`mt-2.5 text-center text-[11px] leading-relaxed ${
+                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                    }`}
+                  >
+                    {t.payHint}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {isPaid && (
+              <div
+                className={`flex items-center justify-center gap-2 rounded-2xl border py-4 text-sm font-semibold ${
+                  isDark
+                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+                    : "border-emerald-300 bg-emerald-50 text-emerald-700"
+                }`}
+              >
+                <CheckCircle2 size={16} />
+                {t.paidLabel}
+              </div>
+            )}
+          </aside>
         </div>
+
+        <p
+          className={`mt-8 text-center text-[11px] ${
+            isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+          }`}
+        >
+          {t.autoUpdate}
+        </p>
       </div>
+
+      <style jsx>{`
+        @keyframes drift-a {
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(30px, 40px);
+          }
+        }
+        @keyframes drift-b {
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(-40px, 30px);
+          }
+        }
+        .blob-a {
+          animation: drift-a 11s ease-in-out infinite;
+        }
+        .blob-b {
+          animation: drift-b 13s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .blob-a,
+          .blob-b {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
