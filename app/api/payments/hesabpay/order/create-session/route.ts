@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   if (order.status === "cancelled")
     return NextResponse.json({ error: "ORDER_CANCELLED" }, { status: 400 });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ;
   const token = order.public_token || order.id;
 
   const result = await createOrderPaymentSession({

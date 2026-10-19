@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       { status: 500 },
     );
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ;
   const total = Number(plan.price_monthly) * monthsNum;
 
   const user = await prisma.users.findUnique({

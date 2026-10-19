@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 // for the user to retry payment.
 export async function GET(request) {
   const id = new URL(request.url).searchParams.get("id");
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ;
 
   let planId = "";
 
