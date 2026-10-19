@@ -2,6 +2,7 @@
 "use client";
 
 import {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -213,6 +214,7 @@ function MiniAfPay() {
         alt="AfPay"
         className="h-full w-full object-cover"
         loading="lazy"
+        decoding="async"
       />
       <CardFinish />
     </div>
@@ -229,6 +231,7 @@ function MiniHesabPay() {
         alt="HesabPay"
         className="h-full w-full object-cover"
         loading="lazy"
+        decoding="async"
       />
       <CardFinish />
     </div>
@@ -937,6 +940,193 @@ function PaymentWallet({
   );
 }
 
+/* ---------------- Dish card (memoized so typing doesn't re-render the grid) ---------------- */
+const DishCard = memo(function DishCard({
+  it,
+  idx,
+  isDark,
+  t,
+  onOpen,
+  onPrefetch,
+}: {
+  it: Item;
+  idx: number;
+  isDark: boolean;
+  t: any;
+  onOpen: (item: Item) => void;
+  onPrefetch: (item: Item) => void;
+}) {
+  return (
+    <div
+      className="dish-slot"
+      style={{ animationDelay: `${Math.min(idx, 11) * 45}ms` }}
+    >
+      <button
+        onClick={() => onOpen(it)}
+        onMouseEnter={() => onPrefetch(it)}
+        onFocus={() => onPrefetch(it)}
+        className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border text-start backdrop-blur-sm ${
+          isDark
+            ? "border-[#2E2938] bg-[#1E1B26]/90 hover:border-[#C9A227]/60"
+            : "border-[#E4DFD4] bg-white hover:border-[#A9821E]/50"
+        }`}
+      >
+        <span className="dish-sheen pointer-events-none absolute inset-0 z-20" />
+
+        <div
+          className={`relative aspect-[4/3] overflow-hidden ${
+            isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
+          }`}
+        >
+          {it.image_url ? (
+            <img
+              src={it.image_url}
+              alt={it.name}
+              width={400}
+              height={300}
+              loading={idx < 4 ? "eager" : "lazy"}
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+          ) : (
+            <div
+              className={`flex h-full w-full items-center justify-center ${
+                isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"
+              }`}
+            >
+              <ShoppingBag size={32} />
+            </div>
+          )}
+
+          <span
+            className={`pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t to-transparent ${
+              isDark ? "from-[#1E1B26]" : "from-white"
+            }`}
+          />
+
+          {it.distance_km !== null && (
+            <span
+              className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold backdrop-blur-sm ${
+                isDark
+                  ? "bg-[#15121C]/90 text-[#E0B93A]"
+                  : "bg-white/95 text-[#8A6E1A] shadow-sm"
+              }`}
+            >
+              <MapPin size={10} />
+              {it.distance_km < 1
+                ? `${Math.round(it.distance_km * 1000)} m`
+                : `${it.distance_km.toFixed(1)} km`}
+            </span>
+          )}
+
+          {it.order_count > 50 && (
+            <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-0.5 text-[10px] font-semibold text-[#1D1707] shadow-sm">
+              <Flame size={10} />
+              {t.popular}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-1 flex-col p-3.5">
+          <h3
+            className="line-clamp-1 text-sm font-medium"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {it.name}
+          </h3>
+
+          <p
+            className={`mt-1 line-clamp-1 text-xs ${
+              isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+            }`}
+          >
+            {it.hotel.name || it.branch.name}
+            {it.branch.city ? ` · ${it.branch.city}` : ""}
+          </p>
+
+          <div
+            className={`mt-2 flex items-center gap-2 text-[11px] ${
+              isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
+            }`}
+          >
+            {it.review_count > 0 ? (
+              <span className="inline-flex items-center gap-1">
+                <Star size={12} className="fill-[#C9A227] text-[#C9A227]" />
+                <span
+                  className={`font-semibold ${
+                    isDark ? "text-[#F0EAE2]" : "text-[#1D1A22]"
+                  }`}
+                >
+                  {it.avg_rating.toFixed(1)}
+                </span>
+                <span className={isDark ? "text-[#6E687A]" : "text-[#A39D8F]"}>
+                  ({it.review_count})
+                </span>
+              </span>
+            ) : (
+              <span className={isDark ? "text-[#6E687A]" : "text-[#A39D8F]"}>
+                {t.noReviews}
+              </span>
+            )}
+
+            {it.order_count > 0 && (
+              <>
+                <span className={isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"}>
+                  ·
+                </span>
+                <span>
+                  {it.order_count} {t.ordered}
+                </span>
+              </>
+            )}
+          </div>
+
+          {it.description && (
+            <p
+              className={`mt-2 line-clamp-2 text-xs leading-relaxed ${
+                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+              }`}
+            >
+              {it.description}
+            </p>
+          )}
+
+          <div
+            className={`mt-auto flex items-center justify-between border-t pt-3 ${
+              isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
+            }`}
+          >
+            <span
+              className={`text-base font-semibold ${
+                isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+              }`}
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {Number(it.price).toFixed(2)}{" "}
+              <span
+                className={`text-xs font-medium ${
+                  isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                }`}
+              >
+                {it.currency}
+              </span>
+            </span>
+            <span
+              className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 ${
+                isDark
+                  ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
+                  : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
+              }`}
+            >
+              {t.order}
+            </span>
+          </div>
+        </div>
+      </button>
+    </div>
+  );
+});
+
 /* ---------------- Main page ---------------- */
 export default function BuyerMenuDiscoveryPage() {
   const router = useRouter();
@@ -946,7 +1136,9 @@ export default function BuyerMenuDiscoveryPage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const lang = orderText[language] ? language : "en";
+  const lang = (orderText as any)[language]
+    ? (language as keyof typeof orderText)
+    : "en";
   const t = orderText[lang];
   const isRTL = t.dir === "rtl";
   const isDark = mounted ? resolvedTheme !== "light" : true;
@@ -979,24 +1171,27 @@ export default function BuyerMenuDiscoveryPage() {
   );
   const [locating, setLocating] = useState(false);
 
+  const abortRef = useRef<AbortController | null>(null);
+  const busyRef = useRef(false);
+
   // ---- Load provinces + AUTO-SELECT first (or saved) ----
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/public/provinces", {
-          cache: "no-store",
-        });
+        const res = await fetch("/api/public/provinces");
         const data = await res.json();
         if (cancelled) return;
 
         const list: Province[] = data.provinces || [];
         setProvinces(list);
 
-        const saved =
-          typeof window !== "undefined"
-            ? window.localStorage.getItem(PROVINCE_STORAGE_KEY)
-            : null;
+        let saved: string | null = null;
+        try {
+          saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
+        } catch {
+          /* ignore */
+        }
 
         if (saved && list.some((p) => p.id === saved)) {
           setProvinceId(saved);
@@ -1006,7 +1201,7 @@ export default function BuyerMenuDiscoveryPage() {
           setLoading(false);
         }
       } catch {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       } finally {
         if (!cancelled) setProvinceReady(true);
       }
@@ -1037,8 +1232,15 @@ export default function BuyerMenuDiscoveryPage() {
   const fetchItems = useCallback(
     async (targetPage: number, append = false) => {
       if (!provinceId) return;
-      if (append) setLoadingMore(true);
-      else setLoading(true);
+
+      // cancel any request still in flight so old results never overwrite new ones
+      abortRef.current?.abort();
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+
+      busyRef.current = true;
+      setLoadingMore(append);
+      setLoading(!append);
       setError("");
 
       try {
@@ -1055,21 +1257,30 @@ export default function BuyerMenuDiscoveryPage() {
           params.set("radius", "25");
         }
 
-        const res = await fetch(`/api/public/menu-items?${params.toString()}`);
+        const res = await fetch(`/api/public/menu-items?${params.toString()}`, {
+          signal: ctrl.signal,
+        });
         if (!res.ok) throw new Error("Failed to load dishes");
         const data = await res.json();
 
-        setItems((prev) =>
-          append ? [...prev, ...(data.items || [])] : data.items || [],
-        );
+        const incoming: Item[] = data.items || [];
+        setItems((prev) => {
+          if (!append) return incoming;
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...incoming.filter((i) => !seen.has(i.id))];
+        });
         setPage(data.page || targetPage);
         setTotal(data.total || 0);
         setTotalPages(data.totalPages || 1);
+        busyRef.current = false;
+        setLoading(false);
+        setLoadingMore(false);
       } catch (err: any) {
-        setError(err.message);
-      } finally {
-        if (append) setLoadingMore(false);
-        else setLoading(false);
+        if (err?.name === "AbortError") return; // a newer request took over
+        setError(err?.message || "Something went wrong");
+        busyRef.current = false;
+        setLoading(false);
+        setLoadingMore(false);
       }
     },
     [debouncedQ, coords, sort, provinceId],
@@ -1080,6 +1291,8 @@ export default function BuyerMenuDiscoveryPage() {
     setPage(1);
     if (!provinceReady) return;
     if (!provinceId) {
+      abortRef.current?.abort();
+      busyRef.current = false;
       setLoading(false);
       setLoadingMore(false);
       setTotal(0);
@@ -1087,6 +1300,9 @@ export default function BuyerMenuDiscoveryPage() {
       return;
     }
     fetchItems(1, false);
+    return () => {
+      abortRef.current?.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQ, sort, coords, provinceId, provinceReady]);
 
@@ -1098,8 +1314,7 @@ export default function BuyerMenuDiscoveryPage() {
       (entries) => {
         if (
           entries[0].isIntersecting &&
-          !loading &&
-          !loadingMore &&
+          !busyRef.current &&
           page < totalPages &&
           provinceId
         ) {
@@ -1110,9 +1325,9 @@ export default function BuyerMenuDiscoveryPage() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [loading, loadingMore, page, totalPages, fetchItems, provinceId]);
+  }, [items.length, page, totalPages, fetchItems, provinceId]);
 
-  function useGPS() {
+  function requestLocation() {
     if (!navigator.geolocation) {
       setError("Geolocation not supported");
       return;
@@ -1132,21 +1347,31 @@ export default function BuyerMenuDiscoveryPage() {
         setError(err.message || "Could not get your location");
         setLocating(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 },
     );
   }
 
   function handleSortClick(key: string) {
     if (key === "near" && !coords) {
-      useGPS();
+      requestLocation();
       return;
     }
     setSort(key);
   }
 
-  function openItem(item: Item) {
-    router.push(`/buy/order/item/${item.id}?province_id=${provinceId}`);
-  }
+  const openItem = useCallback(
+    (item: Item) => {
+      router.push(`/buy/order/item/${item.id}?province_id=${provinceId}`);
+    },
+    [router, provinceId],
+  );
+
+  const prefetchItem = useCallback(
+    (item: Item) => {
+      router.prefetch(`/buy/order/item/${item.id}?province_id=${provinceId}`);
+    },
+    [router, provinceId],
+  );
 
   const showingLabel = useMemo(() => {
     if (total === 0) return "";
@@ -1357,7 +1582,7 @@ export default function BuyerMenuDiscoveryPage() {
             </div>
           )}
 
-          {!loading && provinceId && items.length === 0 && (
+          {!loading && !error && provinceId && items.length === 0 && (
             <div
               className={`rounded-2xl border border-dashed px-6 py-14 text-center ${
                 isDark ? "border-[#332C3E]" : "border-[#E4DFD4]"
@@ -1394,183 +1619,15 @@ export default function BuyerMenuDiscoveryPage() {
           {items.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((it, idx) => (
-                <div
+                <DishCard
                   key={it.id}
-                  className="dish-slot"
-                  style={{ animationDelay: `${Math.min(idx, 11) * 45}ms` }}
-                >
-                  <button
-                    onClick={() => openItem(it)}
-                    className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border text-start backdrop-blur-sm ${
-                      isDark
-                        ? "border-[#2E2938] bg-[#1E1B26]/90 hover:border-[#C9A227]/60"
-                        : "border-[#E4DFD4] bg-white hover:border-[#A9821E]/50"
-                    }`}
-                  >
-                    <span className="dish-sheen pointer-events-none absolute inset-0 z-20" />
-
-                    <div
-                      className={`relative aspect-[4/3] overflow-hidden ${
-                        isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
-                      }`}
-                    >
-                      {it.image_url ? (
-                        <img
-                          src={it.image_url}
-                          alt={it.name}
-                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                        />
-                      ) : (
-                        <div
-                          className={`flex h-full w-full items-center justify-center ${
-                            isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"
-                          }`}
-                        >
-                          <ShoppingBag size={32} />
-                        </div>
-                      )}
-
-                      <span
-                        className={`pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t to-transparent ${
-                          isDark ? "from-[#1E1B26]" : "from-white"
-                        }`}
-                      />
-
-                      {it.distance_km !== null && (
-                        <span
-                          className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold backdrop-blur-sm ${
-                            isDark
-                              ? "bg-[#15121C]/90 text-[#E0B93A]"
-                              : "bg-white/95 text-[#8A6E1A] shadow-sm"
-                          }`}
-                        >
-                          <MapPin size={10} />
-                          {it.distance_km < 1
-                            ? `${Math.round(it.distance_km * 1000)} m`
-                            : `${it.distance_km.toFixed(1)} km`}
-                        </span>
-                      )}
-
-                      {it.order_count > 50 && (
-                        <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-0.5 text-[10px] font-semibold text-[#1D1707] shadow-sm">
-                          <Flame size={10} />
-                          {t.popular}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-1 flex-col p-3.5">
-                      <h3
-                        className="line-clamp-1 text-sm font-medium"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        {it.name}
-                      </h3>
-
-                      <p
-                        className={`mt-1 line-clamp-1 text-xs ${
-                          isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                        }`}
-                      >
-                        {it.hotel.name || it.branch.name}
-                        {it.branch.city ? ` · ${it.branch.city}` : ""}
-                      </p>
-
-                      <div
-                        className={`mt-2 flex items-center gap-2 text-[11px] ${
-                          isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
-                        }`}
-                      >
-                        {it.review_count > 0 ? (
-                          <span className="inline-flex items-center gap-1">
-                            <Star
-                              size={12}
-                              className="fill-[#C9A227] text-[#C9A227]"
-                            />
-                            <span
-                              className={`font-semibold ${
-                                isDark ? "text-[#F0EAE2]" : "text-[#1D1A22]"
-                              }`}
-                            >
-                              {it.avg_rating.toFixed(1)}
-                            </span>
-                            <span
-                              className={
-                                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-                              }
-                            >
-                              ({it.review_count})
-                            </span>
-                          </span>
-                        ) : (
-                          <span
-                            className={
-                              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-                            }
-                          >
-                            {t.noReviews}
-                          </span>
-                        )}
-
-                        {it.order_count > 0 && (
-                          <>
-                            <span
-                              className={
-                                isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"
-                              }
-                            >
-                              ·
-                            </span>
-                            <span>
-                              {it.order_count} {t.ordered}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      {it.description && (
-                        <p
-                          className={`mt-2 line-clamp-2 text-xs leading-relaxed ${
-                            isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                          }`}
-                        >
-                          {it.description}
-                        </p>
-                      )}
-
-                      <div
-                        className={`mt-auto flex items-center justify-between border-t pt-3 ${
-                          isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
-                        }`}
-                      >
-                        <span
-                          className={`text-base font-semibold ${
-                            isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
-                          }`}
-                          style={{ fontFamily: "var(--font-display)" }}
-                        >
-                          {it.price.toFixed(2)}{" "}
-                          <span
-                            className={`text-xs font-medium ${
-                              isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                            }`}
-                          >
-                            {it.currency}
-                          </span>
-                        </span>
-                        <span
-                          className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 ${
-                            isDark
-                              ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
-                              : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
-                          }`}
-                        >
-                          {t.order}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                </div>
+                  it={it}
+                  idx={idx}
+                  isDark={isDark}
+                  t={t}
+                  onOpen={openItem}
+                  onPrefetch={prefetchItem}
+                />
               ))}
             </div>
           )}
@@ -1635,7 +1692,8 @@ export default function BuyerMenuDiscoveryPage() {
         </div>
       </div>
 
-      <style jsx>{`
+      {/* global because DishCard is a separate component */}
+      <style jsx global>{`
         .dish-slot {
           position: relative;
           animation: card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
