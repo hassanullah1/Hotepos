@@ -1,26 +1,49 @@
-import nodemailer from "nodemailer";
-
-// Requires these env vars (add to .env):
-//   SMTP_HOST=smtp.yourmailprovider.com
-//   SMTP_PORT=587
-//   SMTP_USER=your-smtp-username
-//   SMTP_PASS=your-smtp-password
-//   EMAIL_FROM="Hotel App <no-reply@yourdomain.com>"
-//   LOGIN_URL=https://yourapp.com/login
+// lib/email.js
 //
-// Any SMTP provider works (Gmail app password, Resend, SendGrid SMTP,
-// Mailgun, Zoho, etc). Nodemailer doesn't care which one you use.
+// Uses Resend's HTTP API (port 443). Railway blocks outbound SMTP ports
+// 25/465/587, so nodemailer will hang and eventually fail with
+// ETIMEDOUT / ENETUNREACH. This version uses fetch() to an HTTPS endpoint,
+// which is never blocked.
+//
+// Required env vars (Railway → Variables):
+//   RESEND_API_KEY=re_xxxxxxxxx
+//   EMAIL_FROM="Hotel App <onboarding@resend.dev>"   (or your own verified domain)
+//   LOGIN_URL=https://yourapp.com/login              (optional, used in welcome email)
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: Number(process.env.SMTP_PORT) === 465, // true only for port 465
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
+async function sendViaResend({ to, subject, html, text }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not set in environment variables");
+  }
+
+  const res = await fetch(RESEND_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from: process.env.EMAIL_FROM || "Hotel App <onboarding@resend.dev>",
+      to: [to],
+      subject,
+      html,
+      text,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Resend API Error ${res.status}: ${body}`);
+  }
+
+  return res.json();
+}
+
+// ─────────────────────────────────────────────────────────────
+// 1. Owner welcome email (after successful payment)
+// ─────────────────────────────────────────────────────────────
 export async function sendOwnerWelcomeEmail({
   to,
   ownerName,
@@ -60,22 +83,22 @@ export async function sendOwnerWelcomeEmail({
   ].join("\n");
 
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
+    await sendViaResend({
       to,
       subject: `Your ${hotelName} account is ready`,
-      text,
       html,
+      text,
     });
     return { sent: true };
   } catch (err) {
-    console.error("sendOwnerWelcomeEmail failed:", err);
+    console.error("sendOwnerWelcomeEmail failed:", err.message);
     return { sent: false, reason: "send_error" };
   }
 }
 
-// lib/email.js  (add this export; keep everything else as-is)
-
+// ─────────────────────────────────────────────────────────────
+// 2. Password reset email (also used as "set your password" link)
+// ─────────────────────────────────────────────────────────────
 export async function sendPasswordResetEmail({ to, ownerName, link }) {
   if (!to) {
     console.warn("sendPasswordResetEmail: no email address, skipping send");
@@ -120,30 +143,24 @@ export async function sendPasswordResetEmail({ to, ownerName, link }) {
   ].join("\n");
 
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to,
-      subject,
-      text,
-      html,
-    });
+    await sendViaResend({ to, subject, html, text });
     return { sent: true };
   } catch (err) {
-    console.error("sendPasswordResetEmail failed:", err);
+    console.error("sendPasswordResetEmail failed:", err.message);
     return { sent: false, reason: "send_error" };
   }
 }
 
+// ─────────────────────────────────────────────────────────────
+// 3. Contact message (re-uses reset flow)
+// ─────────────────────────────────────────────────────────────
 export async function sendContactMessage({ name, email, subject, message }) {
-  return sendPasswordResetEmail({
-    name,
-    email,
-    subject,
-    message,
-  });
+  return sendPasswordResetEmail({ name, email, subject, message });
 }
 
-
+// ─────────────────────────────────────────────────────────────
+// 4. Signup OTP email
+// ─────────────────────────────────────────────────────────────
 export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
   if (!to) {
     console.warn("sendSignupOtpEmail: no email address, skipping send");
@@ -176,16 +193,10 @@ export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
   ].join("\n");
 
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to,
-      subject,
-      text,
-      html,
-    });
+    await sendViaResend({ to, subject, html, text });
     return { sent: true };
   } catch (err) {
-    console.error("sendSignupOtpEmail failed:", err);
+    console.error("sendSignupOtpEmail failed:", err.message);
     return { sent: false, reason: "send_error" };
   }
 }
