@@ -52,12 +52,7 @@ function HesabPayIcon({ className = "" }) {
 
 function AfPayIcon({ className = "" }) {
   return (
-    <img
-      src="/afpay.png"
-      alt="AfPay"
-      className={className}
-      loading="lazy"
-    />
+    <img src="/afpay.png" alt="AfPay" className={className} loading="lazy" />
   );
 }
 
@@ -296,6 +291,16 @@ export default function SignupPage() {
   const [formError, setFormError] = useState("");
   const [errorKey, setErrorKey] = useState(0);
 
+  // ---- email verification state ----
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerificationId, setEmailVerificationId] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
+  const [otpSubmitting, setOtpSubmitting] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const otpRefs = useRef([]);
+
   useEffect(() => {
     if (!planId) {
       setPlanError(tRef.current.signupErrorNoPlan || "No plan selected.");
@@ -309,7 +314,7 @@ export default function SignupPage() {
         const res = await fetch("/api/public/subscription-plans");
         if (!res.ok)
           throw new Error(
-            tRef.current.signupErrorLoadPlan || "Couldn't load plan details",
+            tRef.current.signupErrorLoadPlan || "Couldn't load plan",
           );
         const data = await res.json();
         const match = (data.plans || []).find((p) => p.id === planId);
@@ -338,7 +343,15 @@ export default function SignupPage() {
     };
   }, [planId]);
 
+  // Changing email invalidates any prior verification
   function updateField(field, value) {
+    if (field === "email" && value !== form.email) {
+      setEmailVerified(false);
+      setEmailVerificationId("");
+      setOtpSent(false);
+      setOtpDigits(["", "", "", "", "", ""]);
+      setOtpError("");
+    }
     setForm((f) => ({ ...f, [field]: value }));
   }
 
@@ -370,80 +383,163 @@ export default function SignupPage() {
     (completedCount / requiredFields.length) * 100,
   );
 
-  async function createPendingSignup(channel) {
-    const res = await fetch("/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan_id: planId, ...form, channel }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || t.signupErrorGeneric);
-    return data.id;
-  }
-
-  async function handleWhatsApp() {
-    const validationError = validate();
-    if (validationError) {
-      showError(validationError);
-      setTouched({ hotel_name: true, owner_name: true, email: true });
+  // ---- OTP send ----
+  async function sendOtp() {
+    if (!form.email.trim() || !form.email.includes("@")) {
+      showError(t.signupErrorEmail);
       return;
     }
-    setFormError("");
-    setSubmitting("whatsapp");
+    setOtpError("");
+    setSendingOtp(true);
     try {
-      await createPendingSignup("whatsapp").catch(() => null);
-
-      const priceLine = plan?.price_monthly
-        ? `$${Number(plan.price_monthly).toLocaleString()}${t.signupPriceSuffix || "/mo"}`
-        : t.signupCustomPricing || "custom pricing";
-
-      const messageLines = [
-        t.signupWhatsAppIntro
-          .replace("{planName}", plan?.name || "")
-          .replace("{price}", priceLine),
-        "",
-        `${t.signupWhatsAppBusinessName}: ${form.hotel_name}`,
-        `${t.signupWhatsAppContactName}: ${form.owner_name}`,
-        `${t.signupWhatsAppEmail}: ${form.email}`,
-        form.phone ? `${t.signupWhatsAppPhone}: ${form.phone}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n");
-
-      const url = WHATSAPP_NUMBER
-        ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(messageLines)}`
-        : `https://wa.me/?text=${encodeURIComponent(messageLines)}`;
-
-      window.open(url, "_blank", "noopener,noreferrer");
-    } finally {
-      setSubmitting(null);
-    }
-  }
-
-  async function handleHesabPay() {
-    const validationError = validate();
-    if (validationError) {
-      showError(validationError);
-      setTouched({ hotel_name: true, owner_name: true, email: true });
-      return;
-    }
-    setFormError("");
-    setSubmitting("hesabpay");
-    try {
-      const signupId = await createPendingSignup("hesabpay");
-
-      const res = await fetch("/api/payments/hesabpay/create-session", {
+      const res = await fetch("/api/email-verifications/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pending_signup_id: signupId }),
+        body: JSON.stringify({
+          email: form.email.trim().toLowerCase(),
+          ownerName: form.owner_name.trim(),
+          hotelName: form.hotel_name.trim(),
+        }),
       });
       const data = await res.json();
-      if (!res.ok || !data.payment_url) {
-        throw new Error(data.error || t.signupErrorPaymentStart);
-      }
-      window.location.href = data.payment_url;
+      if (!res.ok) throw new Error(data.error || "Could not send code");
+      setEmailVerificationId(data.verification_id);
+      setOtpSent(true);
+      setOtpDigits(["", "", "", "", "", ""]);
+      setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err) {
-      showError(err.message || t.signupErrorPaymentStart);
+      setOtpError(err.message);
+    } finally {
+      setSendingOtp(false);
+    }
+  }
+
+  // ---- OTP verify ----
+  async function verifyOtp() {
+    const code = otpDigits.join("");
+    if (code.length !== 6) {
+      setOtpError("Enter all 6 digits.");
+      return;
+    }
+    setOtpError("");
+    setOtpSubmitting(true);
+    try {
+      const res = await fetch("/api/email-verifications/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          verification_id: emailVerificationId,
+          otp: code,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Verification failed");
+      setEmailVerified(true);
+      setOtpSent(false);
+    } catch (err) {
+      setOtpError(err.message);
+      setOtpDigits(["", "", "", "", "", ""]);
+      otpRefs.current[0]?.focus();
+    } finally {
+      setOtpSubmitting(false);
+    }
+  }
+
+  function setOtpDigit(i, val) {
+    const clean = val.replace(/\D/g, "").slice(-1);
+    setOtpDigits((d) => {
+      const next = [...d];
+      next[i] = clean;
+      return next;
+    });
+    if (clean && i < 5) otpRefs.current[i + 1]?.focus();
+  }
+
+  function otpKeyDown(i, e) {
+    if (e.key === "Backspace" && !otpDigits[i] && i > 0)
+      otpRefs.current[i - 1]?.focus();
+  }
+
+  function otpPaste(e) {
+    e.preventDefault();
+    const text = (e.clipboardData.getData("text") || "")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+    if (!text) return;
+    const next = text.split("");
+    while (next.length < 6) next.push("");
+    setOtpDigits(next);
+    otpRefs.current[Math.min(text.length, 5)]?.focus();
+  }
+
+  // ---- signup (both channels) ----
+  async function createSignup(channel) {
+    if (!emailVerified) {
+      showError("Please verify your email first.");
+      return;
+    }
+    const validationError = validate();
+    if (validationError) {
+      showError(validationError);
+      setTouched({ hotel_name: true, owner_name: true, email: true });
+      return;
+    }
+    setFormError("");
+    setSubmitting(channel);
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plan_id: planId,
+          ...form,
+          channel,
+          verification_id: emailVerificationId,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t.signupErrorGeneric);
+
+      if (channel === "hesabpay") {
+        // New: /api/signup returned { hotel_id }, not { id }
+        const pres = await fetch("/api/payments/hesabpay/create-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hotel_id: data.hotel_id }),
+        });
+        const pdata = await pres.json();
+        if (!pres.ok || !pdata.payment_url) {
+          throw new Error(pdata.error || t.signupErrorPaymentStart);
+        }
+        window.location.href = pdata.payment_url;
+      } else {
+        // WhatsApp: /api/signup returned { signup_id }
+        const priceLine = plan?.price_monthly
+          ? `$${Number(plan.price_monthly).toLocaleString()}${t.signupPriceSuffix || "/mo"}`
+          : t.signupCustomPricing || "custom pricing";
+
+        const messageLines = [
+          t.signupWhatsAppIntro
+            .replace("{planName}", plan?.name || "")
+            .replace("{price}", priceLine),
+          "",
+          `${t.signupWhatsAppBusinessName}: ${form.hotel_name}`,
+          `${t.signupWhatsAppContactName}: ${form.owner_name}`,
+          `${t.signupWhatsAppEmail}: ${form.email}`,
+          form.phone ? `${t.signupWhatsAppPhone}: ${form.phone}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const url = WHATSAPP_NUMBER
+          ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(messageLines)}`
+          : `https://wa.me/?text=${encodeURIComponent(messageLines)}`;
+
+        window.open(url, "_blank", "noopener,noreferrer");
+        setSubmitting(null);
+      }
+    } catch (err) {
+      showError(err.message || t.signupErrorGeneric);
       setSubmitting(null);
     }
   }
@@ -471,7 +567,7 @@ export default function SignupPage() {
       placeholder: t.signupEmailPlaceholder,
       type: "email",
       optional: false,
-      span: "",
+      span: "sm:col-span-2", // ← was "" — now full-width row
     },
     {
       field: "phone",
@@ -479,7 +575,7 @@ export default function SignupPage() {
       placeholder: t.signupPhonePlaceholder,
       type: "tel",
       optional: true,
-      span: "",
+      span: "sm:col-span-2", // ← was "" — now full-width row
     },
   ];
 
@@ -584,7 +680,9 @@ export default function SignupPage() {
                               ? "border-[#E5484D]/70"
                               : isFocused
                                 ? "border-[#C9A227] ring-4 ring-[#C9A227]/10"
-                                : "border-[#2E2938] hover:border-[#3A3347]"
+                                : emailVerified && field === "email"
+                                  ? "border-[#4B8A6F]/50"
+                                  : "border-[#2E2938] hover:border-[#3A3347]"
                           }`}
                         >
                           <Icon
@@ -607,12 +705,36 @@ export default function SignupPage() {
                             placeholder={placeholder}
                             className="w-full min-w-0 bg-transparent py-2.5 text-sm text-[#F0EAE2] placeholder:text-[#4F4A5C] focus:outline-none"
                           />
-                          {isValid && !optional && (
-                            <Check
-                              size={15}
-                              strokeWidth={2.5}
-                              className="anim-pop shrink-0 text-[#4B8A6F]"
-                            />
+
+                          {field === "email" ? (
+                            emailVerified ? (
+                              <span className="flex shrink-0 items-center gap-1 rounded-md bg-[#4B8A6F]/15 px-2 py-1 text-xs font-semibold text-[#7FC7A6]">
+                                <Check size={12} strokeWidth={3} />
+                                Verified
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={sendOtp}
+                                disabled={sendingOtp || !isValid}
+                                className="shrink-0 rounded-md bg-[#C9A227]/15 px-2.5 py-1 text-xs font-semibold text-[#E0B93A] transition-colors hover:bg-[#C9A227]/25 disabled:pointer-events-none disabled:opacity-40"
+                              >
+                                {sendingOtp
+                                  ? "Sending…"
+                                  : otpSent
+                                    ? "Resend"
+                                    : "Verify"}
+                              </button>
+                            )
+                          ) : (
+                            isValid &&
+                            !optional && (
+                              <Check
+                                size={15}
+                                strokeWidth={2.5}
+                                className="anim-pop shrink-0 text-[#4B8A6F]"
+                              />
+                            )
                           )}
                         </div>
                       </div>
@@ -620,6 +742,73 @@ export default function SignupPage() {
                   },
                 )}
               </div>
+
+              {/* OTP panel */}
+              {otpSent && !emailVerified && (
+                <div className="anim-in mt-4 rounded-2xl border border-[#C9A227]/30 bg-[#15121C] p-4">
+                  <p className="text-sm text-[#B7B2C4]">
+                    Enter the 6-digit code sent to{" "}
+                    <strong className="text-[#E0B93A]">{form.email}</strong>
+                  </p>
+
+                  <div
+                    className="mt-3 flex items-center gap-2"
+                    onPaste={otpPaste}
+                  >
+                    {otpDigits.map((d, i) => (
+                      <input
+                        key={i}
+                        ref={(el) => (otpRefs.current[i] = el)}
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        maxLength={1}
+                        value={d}
+                        onChange={(e) => setOtpDigit(i, e.target.value)}
+                        onKeyDown={(e) => otpKeyDown(i, e)}
+                        className="h-12 w-10 rounded-lg border border-[#2E2938] bg-[#0F0D14] text-center text-lg font-semibold tabular-nums text-[#F0EAE2] outline-none transition-colors focus:border-[#C9A227] focus:ring-4 focus:ring-[#C9A227]/15"
+                      />
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={verifyOtp}
+                      disabled={
+                        otpSubmitting || otpDigits.join("").length !== 6
+                      }
+                      className="ml-auto flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#E0B93A] to-[#C9A227] px-3 py-2.5 text-sm font-semibold text-[#1D1707] shadow-lg shadow-[#C9A227]/20 transition-all hover:shadow-[#C9A227]/35 disabled:opacity-40"
+                    >
+                      {otpSubmitting ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Check size={14} strokeWidth={3} />
+                      )}
+                      Verify
+                    </button>
+                  </div>
+
+                  {otpError && (
+                    <p
+                      role="alert"
+                      className="anim-error mt-2 text-xs text-[#FF9B9E]"
+                    >
+                      {otpError}
+                    </p>
+                  )}
+
+                  <p className="mt-3 text-xs text-[#6E687A]">
+                    Didn't get it? Check spam, or{" "}
+                    <button
+                      type="button"
+                      onClick={sendOtp}
+                      disabled={sendingOtp}
+                      className="text-[#C9A227] underline-offset-2 hover:underline disabled:opacity-50"
+                    >
+                      {sendingOtp ? "sending…" : "resend code"}
+                    </button>
+                    .
+                  </p>
+                </div>
+              )}
 
               {formError && (
                 <p
@@ -632,14 +821,18 @@ export default function SignupPage() {
               )}
 
               <div className="mt-5 space-y-2.5">
-                {/* ───── Pay button: shield + label + 4 payment icons ─────
-                    Icons match what HesabPay's own checkout shows:
-                    HesabPay wallet · AfPay · Visa · Mastercard */}
+                {!emailVerified && (
+                  <p className="flex items-center gap-1.5 rounded-lg border border-[#C9A227]/25 bg-[#C9A227]/5 px-3 py-2 text-xs text-[#E0B93A]">
+                    <ShieldCheck size={13} />
+                    Verify your email above to unlock signup
+                  </p>
+                )}
+
                 <button
                   type="button"
-                  onClick={handleHesabPay}
-                  disabled={submitting !== null}
-                  className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#C9A227] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-lg shadow-[#C9A227]/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[#C9A227]/35 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E0B93A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B1823] disabled:pointer-events-none disabled:opacity-50"
+                  onClick={() => createSignup("hesabpay")}
+                  disabled={!emailVerified || submitting !== null}
+                  className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#C9A227] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-lg shadow-[#C9A227]/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[#C9A227]/35 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E0B93A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B1823] disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none"
                 >
                   {submitting === "hesabpay" ? (
                     <Loader2 size={16} className="animate-spin" />
@@ -651,7 +844,6 @@ export default function SignupPage() {
                   )}
                   <span>{t.signupHesabPayButton}</span>
                   <span className="flex items-center gap-1.5">
-                   
                     <AfPayIcon className="h-5 w-8" />
                     <VisaIcon className="h-5 w-8" />
                     <MastercardIcon className="h-5 w-8" />
@@ -668,9 +860,9 @@ export default function SignupPage() {
 
                 <button
                   type="button"
-                  onClick={handleWhatsApp}
-                  disabled={submitting !== null}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl border border-[#3A3347] px-4 py-3 text-sm font-semibold text-[#F0EAE2] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A227] hover:bg-[#C9A227]/5 hover:text-[#E0B93A] active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B1823] disabled:pointer-events-none disabled:opacity-50"
+                  onClick={() => createSignup("whatsapp")}
+                  disabled={!emailVerified || submitting !== null}
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl border border-[#3A3347] px-4 py-3 text-sm font-semibold text-[#F0EAE2] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A227] hover:bg-[#C9A227]/5 hover:text-[#E0B93A] active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B1823] disabled:pointer-events-none disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-[#3A3347] disabled:hover:bg-transparent disabled:hover:text-[#F0EAE2]"
                 >
                   {submitting === "whatsapp" ? (
                     <Loader2 size={16} className="animate-spin" />

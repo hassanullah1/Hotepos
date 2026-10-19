@@ -153,10 +153,11 @@ model hotels {
 /// user_id IS the primary key: this is a profile, not a separate login.
 /// One user owns exactly one hotel; one hotel has exactly one owner.
 model hotel_owners {
-  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id                 String    @unique @db.Uuid
-  hotel_id                String    @unique @db.Uuid
-  address                 String?
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id  String  @unique @db.Uuid
+  hotel_id String  @unique @db.Uuid
+  address  String?
+
   hesabpay_account_number String?   @db.VarChar(30)
   created_at              DateTime? @default(now()) @db.Timestamptz(6)
 
@@ -180,13 +181,26 @@ model pending_signups {
   hesabpay_session_id String? @db.VarChar(150)
   created_hotel_id    String? @db.Uuid
 
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  paid_at    DateTime? @db.Timestamptz(6)
-
+  created_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  paid_at            DateTime?          @db.Timestamptz(6)
+  expires_at         DateTime?          @db.Timestamptz(6)
   subscription_plans subscription_plans @relation(fields: [subscription_plan_id], references: [id])
 
   @@index([subscription_plan_id], map: "idx_pending_signups_plan")
   @@index([status], map: "idx_pending_signups_status")
+  @@index([expires_at], map: "idx_pending_signups_expires")
+}
+
+model email_verifications {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email       String    @db.VarChar(150)
+  otp         String    @db.VarChar(6)
+  attempts    Int       @default(0)
+  expires_at  DateTime  @db.Timestamptz(6)
+  verified_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([email], map: "idx_email_verifications_email")
 }
 
 model subscription_plans {

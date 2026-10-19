@@ -203,7 +203,18 @@ exports.Prisma.Pending_signupsScalarFieldEnum = {
   hesabpay_session_id: 'hesabpay_session_id',
   created_hotel_id: 'created_hotel_id',
   created_at: 'created_at',
-  paid_at: 'paid_at'
+  paid_at: 'paid_at',
+  expires_at: 'expires_at'
+};
+
+exports.Prisma.Email_verificationsScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  otp: 'otp',
+  attempts: 'attempts',
+  expires_at: 'expires_at',
+  verified_at: 'verified_at',
+  created_at: 'created_at'
 };
 
 exports.Prisma.Subscription_plansScalarFieldEnum = {
@@ -746,6 +757,7 @@ exports.Prisma.ModelName = {
   hotels: 'hotels',
   hotel_owners: 'hotel_owners',
   pending_signups: 'pending_signups',
+  email_verifications: 'email_verifications',
   subscription_plans: 'subscription_plans',
   provinces: 'provinces',
   branches: 'branches',

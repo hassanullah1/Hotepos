@@ -142,3 +142,50 @@ export async function sendContactMessage({ name, email, subject, message }) {
     message,
   });
 }
+
+
+export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
+  if (!to) {
+    console.warn("sendSignupOtpEmail: no email address, skipping send");
+    return { sent: false, reason: "no_email" };
+  }
+
+  const subject = `Your ${hotelName || "Hotel App"} verification code`;
+
+  const html = `
+    <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#1D1A22">
+      <h2 style="font-family:Fraunces,serif;font-weight:500;margin:0 0 12px">Your verification code</h2>
+      <p>Hi ${ownerName || "there"},</p>
+      <p>Enter this code to finish verifying your email for <strong>${hotelName || "Hotel App"}</strong>:</p>
+      <p style="margin:24px 0;font-size:32px;font-weight:700;letter-spacing:8px;color:#1D1A22">${otp}</p>
+      <p style="font-size:13px;color:#6E687A">This code expires in 10 minutes.</p>
+      <p style="font-size:13px;color:#6E687A">If you didn't request this, you can safely ignore this email.</p>
+    </div>
+  `;
+
+  const text = [
+    `Your verification code`,
+    ``,
+    `Hi ${ownerName || "there"},`,
+    ``,
+    `Enter this code to finish verifying your email for ${hotelName || "Hotel App"}:`,
+    ``,
+    otp,
+    ``,
+    `This code expires in 10 minutes.`,
+  ].join("\n");
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to,
+      subject,
+      text,
+      html,
+    });
+    return { sent: true };
+  } catch (err) {
+    console.error("sendSignupOtpEmail failed:", err);
+    return { sent: false, reason: "send_error" };
+  }
+}

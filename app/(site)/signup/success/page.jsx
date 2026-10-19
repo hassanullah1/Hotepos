@@ -53,6 +53,8 @@ const successText = {
     errorMissingRef: "Missing reference.",
     errorConfirm: "Couldn't confirm payment. Please contact support.",
     errorConfirmShort: "Couldn't confirm payment.",
+    errorExpired:
+      "This signup has expired because the payment window closed. No hotel was created. Please start a new signup.",
     warningTitle: "Don't close this screen yet",
     warningBody:
       "Your login details will appear here in a moment. Keep this page open so you can copy them.",
@@ -86,6 +88,8 @@ const successText = {
     errorMissingRef: "حواله نشته.",
     errorConfirm: "تادیه تصدیق نشوه. مهرباني وکړئ د ملاتړ سره اړیکه ونیسئ.",
     errorConfirmShort: "تادیه تصدیق نشوه.",
+    errorExpired:
+      "دا نوم لیکنه له مودې ووتلې ځکه چې د تادیې وخت پای ته رسیدلی. هیڅ هوټل نه دی جوړ شوی. مهرباني وکړئ نوی نوم لیکنه پیل کړئ.",
     warningTitle: "دا پرده لا تر اوسه مه بندوئ",
     warningBody:
       "ستاسو د ننوتلو توضیحات به دلته ژر ښکاره شي. دا پاڼه پرانیستې وساتئ ترڅو یې کاپي کړئ.",
@@ -119,6 +123,8 @@ const successText = {
     errorMissingRef: "مرجع موجود نیست.",
     errorConfirm: "تأیید پرداخت ممکن نشد. لطفاً با پشتیبانی تماس بگیرید.",
     errorConfirmShort: "تأیید پرداخت ممکن نشد.",
+    errorExpired:
+      "این ثبت‌نام منقضی شده است زیرا پنجره پرداخت بسته شد. هیچ هتلی ساخته نشد. لطفاً ثبت‌نام جدیدی شروع کنید.",
     warningTitle: "این صفحه را هنوز نبندید",
     warningBody:
       "اطلاعات ورود شما به‌زودی اینجا نمایش داده می‌شود. این صفحه را باز نگه دارید تا بتوانید آن‌ها را کپی کنید.",
@@ -157,7 +163,6 @@ export default function SignupSuccessPage() {
 
   const hesabData = parseHesabData(rawRef);
   const transaction_id = hesabData.transaction_id;
-  const success = hesabData.success === true;
 
   const [state, setState] = useState("checking"); // checking | waiting | ready | error
   const [message, setMessage] = useState("");
@@ -185,8 +190,8 @@ export default function SignupSuccessPage() {
     }
     let cancelled = false;
     let attempts = 0;
-    const MAX = 20;
-    let confirmed = false;
+    const MAX = 15; // 30 s total (15 × 2 s) — down from 20 × 2 s
+    let firedConfirm = false;
 
     async function poll() {
       attempts++;
@@ -203,47 +208,51 @@ export default function SignupSuccessPage() {
           return;
         }
 
-        if (data.status === "paid" && data.reveal_password) {
+        // ── Expired / failed ─────────────────────────────
+        if (data.status === "expired" || data.status === "failed") {
+          setState("error");
+          setMessage(t.errorExpired);
+          return;
+        }
+
+        // ── Paid → show creds ────────────────────────────
+        if (data.status === "paid") {
           setCreds({
             email: data.email,
-            password: data.reveal_password,
+            password: data.reveal_password || null,
             hotel_name: data.hotel_name,
           });
           setState("ready");
           return;
         }
 
-        if (data.status === "paid" && !data.reveal_password) {
-          setState("ready");
-          setCreds({
-            email: data.email,
-            password: null,
-            hotel_name: data.hotel_name,
-          });
-          return;
-        }
-
-        if (
-          data.status !== "paid" &&
-          !confirmed &&
-          success &&
-          transaction_id &&
-          attempts === 1
-        ) {
-          confirmed = true;
+        // ── Fire confirm on the FIRST poll ───────────────
+        // We're at /signup/success with a real hotel_id created
+        // <30 min ago — that's enough signal. Webhook is optional;
+        // this call activates the hotel directly if still expired.
+        if (!firedConfirm) {
+          firedConfirm = true;
           try {
             await fetch("/api/signup/confirm", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ref, transaction_id, success: true }),
+              body: JSON.stringify({
+                ref,
+                success: true,
+                transaction_id: transaction_id || null,
+              }),
             });
           } catch {
-            /* fall through */
+            /* fall through — next poll will try again */
+            firedConfirm = false;
           }
         }
 
-        if (attempts < MAX) setTimeout(poll, 2000);
-        else setState("waiting");
+        if (attempts < MAX) {
+          setTimeout(poll, 2000);
+        } else {
+          setState("waiting");
+        }
       } catch {
         if (!cancelled) {
           setState("error");
@@ -251,12 +260,13 @@ export default function SignupSuccessPage() {
         }
       }
     }
+
     poll();
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref, transaction_id, success, mounted]);
+  }, [ref, mounted]);
 
   async function copy(label, value) {
     try {
@@ -509,7 +519,7 @@ export default function SignupSuccessPage() {
             </div>
           )}
 
-          {/* ---------- PERSISTENT WARNING (until copied) ---------- */}
+          {/* ---------- PERSISTENT WARNING ---------- */}
           {showWarning && (
             <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-[#C9A227]/30 bg-[#C9A227]/5 px-3.5 py-3">
               <ShieldAlert

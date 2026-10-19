@@ -3,40 +3,47 @@ import prisma from "@/lib/prisma";
 
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
+// GET /api/signup/status?ref=<hotel_id>
+// Success page polls this. Returns status mapped to "pending" | "paid" | "expired"
+// so the existing UI works unchanged. reveal_password is always null now
+// (users set their own password via the reset link).
 export async function GET(request) {
   const raw = new URL(request.url).searchParams.get("ref") || "";
   const match = raw.match(UUID_RE);
   const ref = match ? match[0] : "";
-  if (!ref)
+  if (!ref) {
     return NextResponse.json({ error: "ref required" }, { status: 400 });
-
-  const signup = await prisma.pending_signups.findUnique({
-    where: { id: ref },
-  });
-  if (!signup)
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const can_reveal =
-    signup.status === "paid" &&
-    !!signup.reveal_password &&
-    signup.reveal_expires_at &&
-    signup.reveal_expires_at > new Date();
-
-  let reveal = null;
-  if (can_reveal) {
-    reveal = signup.reveal_password;
-    // Clear it the moment we hand it out — one-time reveal.
-    await prisma.pending_signups.update({
-      where: { id: signup.id },
-      data: { reveal_password: null, reveal_expires_at: null },
-    });
   }
 
+  const hotel = await prisma.hotels.findUnique({
+    where: { id: ref },
+    include: { hotel_owner: { include: { users: true } } },
+  });
+  if (!hotel) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const now = new Date();
+  const isActive =
+    (hotel.subscription_status === "active" ||
+      hotel.subscription_status === "trial") &&
+    hotel.subscription_expires_at &&
+    hotel.subscription_expires_at > now;
+
+  const isRecent =
+    hotel.created_at &&
+    now.getTime() - new Date(hotel.created_at).getTime() < 30 * 60 * 1000;
+
+  let status;
+  if (isActive) status = "paid";
+  else if (isRecent) status = "pending";
+  else status = "expired";
+
   return NextResponse.json({
-    id: signup.id,
-    status: signup.status,
-    hotel_name: signup.hotel_name,
-    email: signup.email,
-    reveal_password: reveal,
+    id: hotel.id,
+    status,
+    hotel_name: hotel.name,
+    email: hotel.hotel_owner?.users?.email || null,
+    reveal_password: null, // password is set via reset link, not revealed here
   });
 }

@@ -158,11 +158,15 @@ model hotel_owners {
    user_id    String    @unique @db.Uuid 
   hotel_id   String    @unique @db.Uuid
   address    String?
+ 
+
+
   hesabpay_account_number String? @db.VarChar(30)
   created_at DateTime? @default(now()) @db.Timestamptz(6)
 
   users  users  @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   hotels hotels @relation(fields: [hotel_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+ 
 }
 
 model pending_signups {
@@ -183,11 +187,24 @@ model pending_signups {
 
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   paid_at    DateTime? @db.Timestamptz(6)
-
+  expires_at DateTime? @db.Timestamptz(6)
   subscription_plans subscription_plans @relation(fields: [subscription_plan_id], references: [id])
 
   @@index([subscription_plan_id], map: "idx_pending_signups_plan")
   @@index([status], map: "idx_pending_signups_status")
+  @@index([expires_at], map: "idx_pending_signups_expires")
+}
+
+model email_verifications {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email       String    @db.VarChar(150)
+  otp         String    @db.VarChar(6)
+  attempts    Int       @default(0)
+  expires_at  DateTime  @db.Timestamptz(6)
+  verified_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([email], map: "idx_email_verifications_email")
 }
 
 model subscription_plans {
