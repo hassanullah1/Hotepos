@@ -1,43 +1,43 @@
-// lib/email.js
+// lib/email.js — Brevo HTTP API
+// Works on Railway free plan (HTTPS port 443, never blocked).
 //
-// Uses Resend's HTTP API (port 443). Railway blocks outbound SMTP ports
-// 25/465/587, so nodemailer will hang and eventually fail with
-// ETIMEDOUT / ENETUNREACH. This version uses fetch() to an HTTPS endpoint,
-// which is never blocked.
-//
-// Required env vars (Railway → Variables):
-//   RESEND_API_KEY=re_xxxxxxxxx
-//   EMAIL_FROM="Hotel App <onboarding@resend.dev>"   (or your own verified domain)
-//   LOGIN_URL=https://yourapp.com/login              (optional, used in welcome email)
+// Required env vars:
+//   BREVO_API_KEY=xkeysib-xxxxxxxxx
+//   EMAIL_FROM_ADDRESS=hassanullahsalamzaiwar@gmail.com  (your verified sender)
+//   LOGIN_URL=https://melmah.up.railway.app/login        (optional)
 
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
-async function sendViaResend({ to, subject, html, text }) {
-  const apiKey = process.env.RESEND_API_KEY;
+async function sendViaBrevo({ to, subject, html, text }) {
+  const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
-    throw new Error("RESEND_API_KEY is not set in environment variables");
+    throw new Error("BREVO_API_KEY is not set in environment variables");
   }
 
-  const res = await fetch(RESEND_ENDPOINT, {
+  const senderEmail = process.env.EMAIL_FROM_ADDRESS;
+  if (!senderEmail) {
+    throw new Error("EMAIL_FROM_ADDRESS is not set in environment variables");
+  }
+
+  const res = await fetch(BREVO_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      "api-key": apiKey,
     },
     body: JSON.stringify({
-      from: process.env.EMAIL_FROM || "Hotel App <onboarding@resend.dev>",
-      to: [to],
+      sender: { name: "Melmah", email: senderEmail },
+      to: [{ email: to }],
       subject,
-      html,
-      text,
+      htmlContent: html,
+      textContent: text,
     }),
   });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Resend API Error ${res.status}: ${body}`);
+    throw new Error(`Brevo API Error ${res.status}: ${body}`);
   }
-
   return res.json();
 }
 
@@ -55,11 +55,12 @@ export async function sendOwnerWelcomeEmail({
     return { sent: false, reason: "no_email" };
   }
 
-  const loginUrl = process.env.LOGIN_URL || "https://yourapp.com/login";
+  const loginUrl =
+    process.env.LOGIN_URL || "https://melmah.up.railway.app/login";
 
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
-      <h2 style="color:#10243A;">Welcome to Hotel App</h2>
+      <h2 style="color:#10243A;">Welcome to Melmah</h2>
       <p>Hi ${ownerName || "there"},</p>
       <p><strong>${hotelName}</strong> is set up and ready to go. Here's how to log in:</p>
       <table style="margin: 16px 0; border-collapse: collapse;">
@@ -72,7 +73,7 @@ export async function sendOwnerWelcomeEmail({
   `;
 
   const text = [
-    `Welcome to Hotel App`,
+    `Welcome to Melmah`,
     ``,
     `${hotelName} is set up and ready to go.`,
     `Login page: ${loginUrl}`,
@@ -83,7 +84,7 @@ export async function sendOwnerWelcomeEmail({
   ].join("\n");
 
   try {
-    await sendViaResend({
+    await sendViaBrevo({
       to,
       subject: `Your ${hotelName} account is ready`,
       html,
@@ -97,7 +98,7 @@ export async function sendOwnerWelcomeEmail({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 2. Password reset email (also used as "set your password" link)
+// 2. Password reset email
 // ─────────────────────────────────────────────────────────────
 export async function sendPasswordResetEmail({ to, ownerName, link }) {
   if (!to) {
@@ -143,7 +144,7 @@ export async function sendPasswordResetEmail({ to, ownerName, link }) {
   ].join("\n");
 
   try {
-    await sendViaResend({ to, subject, html, text });
+    await sendViaBrevo({ to, subject, html, text });
     return { sent: true };
   } catch (err) {
     console.error("sendPasswordResetEmail failed:", err.message);
@@ -152,7 +153,7 @@ export async function sendPasswordResetEmail({ to, ownerName, link }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 3. Contact message (re-uses reset flow)
+// 3. Contact form (re-uses password reset)
 // ─────────────────────────────────────────────────────────────
 export async function sendContactMessage({ name, email, subject, message }) {
   return sendPasswordResetEmail({ name, email, subject, message });
@@ -167,13 +168,13 @@ export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
     return { sent: false, reason: "no_email" };
   }
 
-  const subject = `Your ${hotelName || "Hotel App"} verification code`;
+  const subject = `Your ${hotelName || "Melmah"} verification code`;
 
   const html = `
     <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#1D1A22">
       <h2 style="font-family:Fraunces,serif;font-weight:500;margin:0 0 12px">Your verification code</h2>
       <p>Hi ${ownerName || "there"},</p>
-      <p>Enter this code to finish verifying your email for <strong>${hotelName || "Hotel App"}</strong>:</p>
+      <p>Enter this code to finish verifying your email for <strong>${hotelName || "Melmah"}</strong>:</p>
       <p style="margin:24px 0;font-size:32px;font-weight:700;letter-spacing:8px;color:#1D1A22">${otp}</p>
       <p style="font-size:13px;color:#6E687A">This code expires in 10 minutes.</p>
       <p style="font-size:13px;color:#6E687A">If you didn't request this, you can safely ignore this email.</p>
@@ -185,7 +186,7 @@ export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
     ``,
     `Hi ${ownerName || "there"},`,
     ``,
-    `Enter this code to finish verifying your email for ${hotelName || "Hotel App"}:`,
+    `Enter this code to finish verifying your email for ${hotelName || "Melmah"}:`,
     ``,
     otp,
     ``,
@@ -193,7 +194,7 @@ export async function sendSignupOtpEmail({ to, ownerName, hotelName, otp }) {
   ].join("\n");
 
   try {
-    await sendViaResend({ to, subject, html, text });
+    await sendViaBrevo({ to, subject, html, text });
     return { sent: true };
   } catch (err) {
     console.error("sendSignupOtpEmail failed:", err.message);
