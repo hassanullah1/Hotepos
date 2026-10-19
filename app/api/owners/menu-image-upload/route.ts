@@ -1,20 +1,26 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-import crypto from "crypto";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { randomUUID } from "crypto";
 import { getAuthUser } from "@/lib/auth";
-import { getOwnerHotelId } from "@/lib/owner-scope";
+import { r2, R2_BUCKET, R2_PUBLIC_URL } from "@/lib/r2";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-export async function POST(request) {
+const EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
+export async function POST(request: Request) {
+  // ── auth (unchanged) ──────────────────────────────────────────
   const user = await getAuthUser(request);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Allow hotel_owners, branch_managers, and super_admins
   const roleName = user.roles?.name;
   if (
     !roleName ||
@@ -23,10 +29,8 @@ export async function POST(request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Optionally, you could verify that branch_manager has a branch_id,
-  // but since we don't need a branch for the upload, we skip that.
-
-  let formData;
+  // ── parse form (unchanged) ────────────────────────────────────
+  let formData: FormData;
   try {
     formData = await request.formData();
   } catch {
@@ -50,25 +54,23 @@ export async function POST(request) {
     );
   }
 
+  // ── upload to R2 (this is the only part that changed) ─────────
   try {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const ext = EXT[file.type];
+    const key = `menu-items/${randomUUID()}.${ext}`;
 
-    const extFromName = path.extname(file.name || "");
-    const ext = extFromName || `.${file.type.split("/")[1]}`;
-    const filename = `${crypto.randomUUID()}${ext}`;
-
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      "menu-items",
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: key,
+        Body: Buffer.from(await file.arrayBuffer()),
+        ContentType: file.type,
+        CacheControl: "public, max-age=31536000, immutable",
+      }),
     );
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, filename), buffer);
 
     return NextResponse.json(
-      { url: `/uploads/menu-items/${filename}` },
+      { url: `${R2_PUBLIC_URL}/${key}` },
       { status: 201 },
     );
   } catch (err) {
