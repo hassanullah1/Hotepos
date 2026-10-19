@@ -45,6 +45,9 @@ const ROLES = [
 ];
 
 async function main() {
+  // ---------------------------------------------------------------
+  // 1. Permissions
+  // ---------------------------------------------------------------
   console.log("Seeding permissions…");
   const permissions = await Promise.all(
     PERMISSIONS.map((p) =>
@@ -56,6 +59,9 @@ async function main() {
     ),
   );
 
+  // ---------------------------------------------------------------
+  // 2. Roles
+  // ---------------------------------------------------------------
   console.log("Seeding roles…");
   const roles = {};
   for (const r of ROLES) {
@@ -66,7 +72,11 @@ async function main() {
     });
   }
 
-  // super_admin gets every permission
+  // ---------------------------------------------------------------
+  // 3. Role → permission mappings
+  // ---------------------------------------------------------------
+
+  // super_admin: every permission
   await prisma.role_permissions.createMany({
     data: permissions.map((p) => ({
       role_id: roles.super_admin.id,
@@ -77,7 +87,7 @@ async function main() {
 
   // hotel_owner
   const ownerCodes = [
-    "hotel.view",
+    "hotels.view",
     "branches.view",
     "branches.manage",
     "users.view",
@@ -122,110 +132,31 @@ async function main() {
   }
 
   // ---------------------------------------------------------------
-  // Platform Super Admin (scope: platform — no hotel, no branch)
+  // 4. Platform Super Admin (the ONLY user this seed creates)
   // ---------------------------------------------------------------
-  const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@platform.local";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
+  const adminEmail = (
+    process.env.SEED_ADMIN_EMAIL || "hassanullahshahbaz74@gmail.com"
+  ).toLowerCase();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "shahbaz@123";
   const adminName = process.env.SEED_ADMIN_NAME || "Platform Super Admin";
 
   console.log(`Seeding platform admin: ${adminEmail}`);
   const adminPasswordHash = await bcrypt.hash(adminPassword, 12);
 
   await prisma.users.upsert({
-    where: { email: adminEmail.toLowerCase() },
+    where: { email: adminEmail },
     update: { role_id: roles.super_admin.id },
     create: {
       full_name: adminName,
-      email: adminEmail.toLowerCase(),
+      email: adminEmail,
       password_hash: adminPasswordHash,
       role_id: roles.super_admin.id,
     },
   });
 
-  // ---------------------------------------------------------------
-  // Sample Hotel + Hotel Owner (scope: hotel — 1-to-1 profile)
-  // ---------------------------------------------------------------
-  const hotelSlug = process.env.SEED_HOTEL_SLUG || "kohistan-demo";
-  const hotel = await prisma.hotels.upsert({
-    where: { slug: hotelSlug },
-    update: {},
-    create: {
-      name: process.env.SEED_HOTEL_NAME || "Kohistan Demo Hotel",
-      slug: hotelSlug,
-      subscription_status: "trial",
-    },
-  });
-
-  const ownerEmail = process.env.SEED_OWNER_EMAIL || "owner@kohistan.local";
-  const ownerPassword = process.env.SEED_OWNER_PASSWORD || "OwnerPass123!";
-  const ownerName = process.env.SEED_OWNER_NAME || "Hotel Owner";
-
-  console.log(`Seeding hotel owner: ${ownerEmail}`);
-  const ownerPasswordHash = await bcrypt.hash(ownerPassword, 12);
-
-  const ownerUser = await prisma.users.upsert({
-    where: { email: ownerEmail.toLowerCase() },
-    update: { role_id: roles.hotel_owner.id },
-    create: {
-      full_name: ownerName,
-      email: ownerEmail.toLowerCase(),
-      password_hash: ownerPasswordHash,
-      role_id: roles.hotel_owner.id,
-    },
-  });
-
-  // Create the 1-to-1 hotel_owners profile (this is the "separate form")
-  // Create the 1-to-1 hotel_owners profile (this is the "separate form")
-  await prisma.hotel_owners.upsert({
-    where: { hotel_id: hotel.id },
-    update: { user_id: ownerUser.id },
-    create: {
-      user_id: ownerUser.id,
-      hotel_id: hotel.id,
-      address: process.env.SEED_OWNER_ADDRESS || null,
-    },
-  });
-
-  // ---------------------------------------------------------------
-  // Sample Branch + Branch Manager (scope: branch)
-  // ---------------------------------------------------------------
-  const branch = await prisma.branches.upsert({
-    where: { hotel_id_code: { hotel_id: hotel.id, code: "MAIN" } },
-    update: {},
-    create: {
-      hotel_id: hotel.id,
-      name: "Main Branch",
-      code: "MAIN",
-    },
-  });
-
-  const managerEmail =
-    process.env.SEED_MANAGER_EMAIL || "manager@kohistan.local";
-  const managerPassword =
-    process.env.SEED_MANAGER_PASSWORD || "ManagerPass123!";
-  const managerPasswordHash = await bcrypt.hash(managerPassword, 12);
-
-  await prisma.users.upsert({
-    where: { email: managerEmail.toLowerCase() },
-    update: { role_id: roles.branch_manager.id, branch_id: branch.id },
-    create: {
-      full_name: "Branch Manager",
-      email: managerEmail.toLowerCase(),
-      password_hash: managerPasswordHash,
-      role_id: roles.branch_manager.id,
-      branch_id: branch.id,
-    },
-  });
-
   console.log("✅ Seed complete.");
   console.log(`🔑 Super admin : ${adminEmail} / ${adminPassword}`);
-  console.log(
-    `🔑 Hotel owner : ${ownerEmail} / ${ownerPassword}  (hotel: ${hotel.slug})`,
-  );
-  console.log(
-    `🔑 Manager     : ${managerEmail} / ${managerPassword}  (branch: ${branch.code})`,
-  );
-  console.log("⚠️  Change these passwords after first login!");
+  console.log("⚠️  Change this password after first login!");
 }
 
 main()

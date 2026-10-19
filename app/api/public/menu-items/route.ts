@@ -157,7 +157,7 @@ export async function GET(request: Request) {
         ${distanceSelect}
       FROM menu_items mi
       JOIN branches b ON b.id = mi.branch_id
-      LEFT JOIN categories c ON c.id = mi.category_id
+      LEFT JOIN menu_categories c ON c.id = mi.category_id
       ${whereSql}
       ORDER BY ${orderBy}
       LIMIT ${pageSize} OFFSET ${offset}
