@@ -51,7 +51,7 @@ type StatusStep = {
  */
 function buildStatusSteps(order: any): StatusStep[] {
   const isPaid = order.payment_status === "paid";
-  const isCancelled = order.status === "cancelled";
+  const isCancelled = order.status === "rejected";
   console.log(order)
 
   const statusFlow = ["open", "in_progress", "ready", "completed"];
@@ -95,7 +95,7 @@ function buildStatusSteps(order: any): StatusStep[] {
 
     // ---------- Step 4: Ready ----------
     {
-      key: "ready",
+      key: "served",
       labelEn: "Ready",
       labelPs: "وړاندې شو",
       labelPrs: "سرو شد",
