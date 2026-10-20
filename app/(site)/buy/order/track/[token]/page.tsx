@@ -51,11 +51,21 @@ type StatusStep = {
  */
 function buildStatusSteps(order: any): StatusStep[] {
   const isPaid = order.payment_status === "paid";
-  const isCancelled = order.status === "rejected";
-  console.log(order)
+
+  // Accept every alias the backend may return
+  const isCancelled =
+    order.status === "rejected" || order.status === "cancelled";
+
+  // Collapse aliases → canonical flow value
+  const normalizeStatus = (s: string): string => {
+    if (s === "served") return "ready";
+    if (s === "paid" || s === "closed") return "completed";
+    return s;
+  };
 
   const statusFlow = ["open", "in_progress", "ready", "completed"];
-  const statusIdx = statusFlow.indexOf(order.status);
+  const normalized = normalizeStatus(order.status);
+  const statusIdx = statusFlow.indexOf(normalized);
   const safeStatusIdx = statusIdx < 0 ? 0 : statusIdx;
 
   return [
@@ -107,7 +117,7 @@ function buildStatusSteps(order: any): StatusStep[] {
     // ---------- Step 5: Completed OR Cancelled ----------
     isCancelled
       ? {
-          key: "rejected",
+          key: "cancelled",
           labelEn: "Cancelled",
           labelPs: "لغوه شو",
           labelPrs: "لغو شد",
@@ -116,7 +126,7 @@ function buildStatusSteps(order: any): StatusStep[] {
           active: true,
         }
       : {
-          key: "paid",
+          key: "completed",
           labelEn: "Completed",
           labelPs: "مکمل",
           labelPrs: "تکمیل",
@@ -390,7 +400,9 @@ export default function TrackPage() {
     );
 
   const isPaid = order.payment_status === "paid";
-  const isCancelled = order.status === "cancelled";
+  // Accept every alias the backend may return
+  const isCancelled =
+    order.status === "cancelled" || order.status === "rejected";
   const steps = buildStatusSteps(order);
 
   return (
