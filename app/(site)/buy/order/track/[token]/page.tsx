@@ -159,6 +159,7 @@ const trackText = {
     submit: "Submit reviews",
     submitting: "Submitting…",
     thanks: "Thanks for your review!",
+    alreadyReviewed: "You've already reviewed this order.",
     autoUpdate: "This page updates every 5 seconds.",
     commentPlaceholder: "Comment (optional)",
     orderNumber: "Order #",
@@ -187,6 +188,7 @@ const trackText = {
     submit: "بیاکتنې وسپارئ",
     submitting: "سپارل کیږي…",
     thanks: "ستاسو د بیاکتنې مننه!",
+    alreadyReviewed: "تاسو لا دمخه دا فرمایش بیاکتنه کړې ده.",
     autoUpdate: "دا پاڼه هره ۵ ثانیه تازه کیږي.",
     commentPlaceholder: "نظر (اختیاري)",
     orderNumber: "د فرمایش #",
@@ -215,6 +217,7 @@ const trackText = {
     submit: "ارسال نظرات",
     submitting: "در حال ارسال…",
     thanks: "از نظر شما سپاسگزاریم!",
+    alreadyReviewed: "شما قبلاً این سفارش را ارزیابی کرده‌اید.",
     autoUpdate: "این صفحه هر ۵ ثانیه به‌روزرسانی می‌شود.",
     commentPlaceholder: "نظر (اختیاری)",
     orderNumber: "شماره سفارش",
@@ -319,10 +322,20 @@ export default function TrackPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, searchParams]);
 
+  // Already reviewed? Accept several likely backend shapes.
+  const alreadyReviewed =
+    !!order &&
+    (order.is_reviewed === true ||
+      order.reviewed === true ||
+      order.has_review === true ||
+      (Array.isArray(order.reviews) && order.reviews.length > 0) ||
+      (typeof order.reviews_count === "number" && order.reviews_count > 0));
+
   const canReview =
     order &&
     ["ready", "completed", "served", "paid", "closed"].includes(order.status) &&
-    !submitted;
+    !submitted &&
+    !alreadyReviewed;
 
   async function payNow() {
     if (!order?.id) return;
@@ -854,7 +867,7 @@ export default function TrackPage() {
               </div>
             )}
 
-            {submitted && (
+            {(submitted || alreadyReviewed) && (
               <div
                 className={`flex items-center justify-center gap-2 rounded-2xl border py-4 text-sm font-semibold ${
                   isDark
@@ -863,7 +876,7 @@ export default function TrackPage() {
                 }`}
               >
                 <CheckCircle2 size={16} />
-                {t.thanks}
+                {submitted ? t.thanks : t.alreadyReviewed}
               </div>
             )}
           </div>
