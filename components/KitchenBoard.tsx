@@ -6,37 +6,38 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 // Menu data (unchanged – static food items)
 const FOOD_ITEMS = {
-  pizza: [
-    { name: "Margherita", price: 300 },
-    { name: "Pepperoni", price: 350 },
-    { name: "Veggie", price: 320 },
+  kebab: [
+    { name: "کابلي کباب", price: 400 },
+    { name: "شنو کباب", price: 380 },
+    { name: "ټکي کباب", price: 420 },
   ],
-  chicken: [
-    { name: "Grilled Chicken", price: 400 },
-    { name: "Fried Chicken", price: 380 },
-    { name: "Chicken Tikka", price: 420 },
+  burger: [
+    { name: "کابلي برګر", price: 300 },
+    { name: "چرګ برګر", price: 320 },
+    { name: "ډبل برګر", price: 380 },
   ],
   drinks: [
-    { name: "Coffee", price: 150 },
-    { name: "Tea", price: 100 },
-    { name: "Soda", price: 120 },
+    { name: "شین چای", price: 50 },
+    { name: "تور چای", price: 40 },
+    { name: "دوغ", price: 80 },
   ],
-  soups: [
-    { name: "Tomato Soup", price: 180 },
-    { name: "Chicken Soup", price: 220 },
+  rice: [
+    { name: "کابلي پلاو", price: 350 },
+    { name: "چالو", price: 200 },
+    { name: "شپېلې پلاو", price: 300 },
   ],
   desserts: [
-    { name: "Cheesecake", price: 250 },
-    { name: "Brownie", price: 200 },
+    { name: "فالوده", price: 150 },
+    { name: "شیر یخ", price: 120 },
   ],
   sides: [
-    { name: "Fries", price: 140 },
-    { name: "Garlic Bread", price: 160 },
-    { name: "Salad", price: 180 },
+    { name: "نان", price: 20 },
+    { name: "سلاد", price: 60 },
+    { name: "شوروا", price: 100 },
   ],
 };
 
-const MENU_KEYS = ["pizza", "chicken", "drinks", "soups", "desserts", "sides"];
+const MENU_KEYS = ["kebab", "burger", "drinks", "rice", "desserts", "sides"];
 const MAX_NEW_ORDERS = 3;
 
 export default function KitchenBoard({ isRTL }) {

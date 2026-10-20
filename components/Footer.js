@@ -5,40 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Globe,
-  Send,
-  MessageCircle,
-  BedDouble,
-  ClipboardCheck,
-  UtensilsCrossed,
-  Receipt,
-} from "lucide-react";
-
-const solutions = [
-  { icon: BedDouble, key: "rooms", href: "/#rooms", labelKey: "solutionRooms" },
-  {
-    icon: ClipboardCheck,
-    key: "frontdesk",
-    href: "/#front-desk",
-    labelKey: "solutionFrontdesk",
-  },
-  {
-    icon: UtensilsCrossed,
-    key: "restaurant",
-    href: "/#restaurant",
-    labelKey: "solutionRestaurant",
-  },
-  {
-    icon: Receipt,
-    key: "billing",
-    href: "/#billing",
-    labelKey: "solutionBilling",
-  },
-];
+import { Phone, Mail, MapPin, Globe, Send, MessageCircle } from "lucide-react";
 
 function useRevealOnView() {
   const containerRef = useRef(null);
@@ -70,45 +37,51 @@ function useRevealOnView() {
   return { containerRef, revealed };
 }
 
+const socials = [
+  { href: "#", label: "Website", Icon: Globe },
+  { href: "#", label: "Telegram", Icon: Send },
+  { href: "#", label: "WhatsApp", Icon: MessageCircle },
+];
+
 export default function Footer() {
   const t = useTranslation();
   const { containerRef, revealed } = useRevealOnView();
 
   return (
-    <footer className="relative isolate overflow-hidden border-t border-[#2E2938] bg-[#15121C] text-[#F0EAE2]">
-      {/* Thin gold line at the top — same signature as the header's scrolled state */}
+    <footer className="relative isolate overflow-hidden border-t border-slate-200 bg-gradient-to-b from-[#FAF7F0] to-white text-slate-900 transition-colors duration-300 dark:border-[#2E2938] dark:from-[#15121C] dark:to-[#0F0D14] dark:text-[#F0EAE2]">
+      {/* Gold accent line */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C9A227]/60 to-transparent"
         aria-hidden="true"
       />
 
-      {/* Ambient gold glow — matches the mobile drawer's glow */}
+      {/* Ambient gold glows */}
       <div
-        className="glow-drift pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-[#C9A227]/10 blur-3xl"
+        className="glow-drift pointer-events-none absolute -top-24 start-[-4rem] h-72 w-72 rounded-full bg-[#C9A227]/15 blur-3xl dark:bg-[#C9A227]/10"
         aria-hidden="true"
       />
       <div
-        className="glow-drift-reverse pointer-events-none absolute -bottom-20 right-0 h-80 w-80 rounded-full bg-[#C9A227]/8 blur-3xl"
+        className="glow-drift-reverse pointer-events-none absolute -bottom-20 end-0 h-80 w-80 rounded-full bg-[#C9A227]/10 blur-3xl dark:bg-[#C9A227]/[0.08]"
         aria-hidden="true"
       />
 
-      {/* Subtle dot grid, warm-tinted to fit the palette */}
+      {/* Dot grid — inherits currentColor, adapts to theme */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] dark:opacity-[0.04]"
         style={{
           backgroundImage:
-            "radial-gradient(circle, #F0EAE2 1px, transparent 1px)",
+            "radial-gradient(circle, currentColor 1px, transparent 1px)",
           backgroundSize: "18px 18px",
         }}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-16 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 sm:pt-14 lg:px-8">
         <div
           ref={containerRef}
-          className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 sm:items-start"
         >
-          {/* Brand */}
+          {/* ── Brand ───────────────────────────────── */}
           <div
             className={`reveal ${revealed ? "reveal-in" : ""}`}
             style={{ transitionDelay: "0ms" }}
@@ -118,10 +91,10 @@ export default function Footer() {
               className="group inline-flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
             >
               <div className="relative h-11 w-11 rounded-full bg-gradient-to-br from-[#E0B93A] to-[#8A6E1A] p-[2px] transition-transform duration-300 group-hover:rotate-6">
-                <div className="h-full w-full overflow-hidden rounded-full bg-[#15121C]">
+                <div className="h-full w-full overflow-hidden rounded-full bg-white dark:bg-[#15121C]">
                   <Image
                     src="/Melmah.png"
-                    alt="Rawan Logistic Logo"
+                    alt={t.appName}
                     width={44}
                     height={44}
                     className="h-full w-full object-cover"
@@ -130,137 +103,75 @@ export default function Footer() {
               </div>
               <div className="flex flex-col leading-tight">
                 <span
-                  className="whitespace-nowrap text-lg font-semibold tracking-tight text-[#F0EAE2] md:text-xl"
+                  className="whitespace-nowrap text-lg font-semibold tracking-tight md:text-xl"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {t.appName}
                 </span>
-                <span className="hidden text-[10px] uppercase tracking-[0.2em] text-[#6E687A] sm:inline">
+                <span className="hidden text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-[#6E687A] sm:inline">
                   {t.badge}
                 </span>
               </div>
             </Link>
 
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#B7B2C4]">
-              {t.footerTagline}
-            </p>
-
+            {/* Social row */}
             <div className="mt-5 flex items-center gap-2">
-              <a
-                href="#"
-                aria-label="Website"
-                className="social-icon flex h-9 w-9 items-center justify-center rounded-full border border-[#2E2938] bg-[#1B1823] text-[#CFCADB] transition-all duration-300 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
-              >
-                <Globe size={15} />
-              </a>
-              <a
-                href="#"
-                aria-label="Telegram"
-                className="social-icon flex h-9 w-9 items-center justify-center rounded-full border border-[#2E2938] bg-[#1B1823] text-[#CFCADB] transition-all duration-300 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
-              >
-                <Send size={15} />
-              </a>
-              <a
-                href="#"
-                aria-label="WhatsApp"
-                className="social-icon flex h-9 w-9 items-center justify-center rounded-full border border-[#2E2938] bg-[#1B1823] text-[#CFCADB] transition-all duration-300 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
-              >
-                <MessageCircle size={15} />
-              </a>
+              {socials.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="social-icon flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-all duration-300 hover:border-[#C9A227]/60 hover:text-[#8A6E1A] dark:border-[#2E2938] dark:bg-[#1B1823] dark:text-[#CFCADB] dark:hover:text-[#E0B93A]"
+                >
+                  <Icon size={15} />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Product links */}
+          {/* ── Contact ────────────────────────────── */}
           <div
             className={`reveal ${revealed ? "reveal-in" : ""}`}
-            style={{ transitionDelay: "80ms" }}
+            style={{ transitionDelay: "120ms" }}
           >
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E687A]">
-              {t.footerProduct}
-            </h3>
-            <ul className="mt-4 space-y-2.5 text-sm">
-              <li>
-                <Link href="/" className="footer-link">
-                  {t.footerHome}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="footer-link">
-                  {t.footerAbout}
-                </Link>
-              </li>
-              <li>
-                <Link href="/#how-it-works" className="footer-link">
-                  {t.footerFeatures}
-                </Link>
-              </li>
-              <li>
-                <Link href="/register" className="footer-link">
-                  {t.footerRegister}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Solutions */}
-          <div
-            className={`reveal ${revealed ? "reveal-in" : ""}`}
-            style={{ transitionDelay: "160ms" }}
-          >
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E687A]">
-              {t.footerSolutions}
-            </h3>
-            <ul className="mt-4 space-y-2.5 text-sm">
-              {solutions.map(({ icon: Icon, key, href, labelKey }) => (
-                <li key={key}>
-                  <Link
-                    href={href}
-                    className="footer-link inline-flex items-center gap-2"
-                  >
-                    <Icon size={14} className="shrink-0 text-[#C9A227]" />
-                    {t[labelKey]}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div
-            className={`reveal ${revealed ? "reveal-in" : ""}`}
-            style={{ transitionDelay: "240ms" }}
-          >
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E687A]">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-[#6E687A]">
               {t.footerContact}
             </h3>
             <ul className="mt-4 space-y-3 text-sm">
-              <li className="flex items-center gap-2.5">
-                <Phone size={15} className="shrink-0 text-[#C9A227]" />
-                <a href="tel:+93700000000" className="footer-link">
-                  +93 70 000 0000
+              <li className="flex items-start gap-2.5">
+                <Phone size={15} className="mt-0.5 shrink-0 text-[#C9A227]" />
+                <a
+                  href="tel:+93700000000"
+                  dir="ltr"
+                  className="footer-link text-slate-600 dark:text-[#B7B2C4]"
+                >
+                  +93 731574174
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Mail size={15} className="shrink-0 text-[#C9A227]" />
+              <li className="flex items-start gap-2.5">
+                <Mail size={15} className="mt-0.5 shrink-0 text-[#C9A227]" />
                 <a
                   href="mailto:info@Melmah.af"
-                  className="footer-link break-all"
+                  dir="ltr"
+                  className="footer-link break-all text-slate-600 dark:text-[#B7B2C4]"
                 >
-                  info@Melmah .af
+                  info@Melmah.af
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <MapPin size={15} className="shrink-0 text-[#C9A227]" />
-                <span className="text-[#B7B2C4]">{t.footerAddress}</span>
+              <li className="flex items-start gap-2.5">
+                <MapPin size={15} className="mt-0.5 shrink-0 text-[#C9A227]" />
+                <span className="text-slate-600 dark:text-[#B7B2C4]">
+                  {t.footerAddress}
+                </span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* ── Bottom bar ──────────────────────────── */}
         <div
-          className={`reveal ${revealed ? "reveal-in" : ""} mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#2E2938] pt-6 text-xs text-[#6E687A] sm:flex-row`}
-          style={{ transitionDelay: "320ms" }}
+          className={`reveal ${revealed ? "reveal-in" : ""} mt-10 flex items-center justify-center border-t border-slate-200 pt-6 text-xs text-slate-500 dark:border-[#2E2938] dark:text-[#6E687A]`}
+          style={{ transitionDelay: "200ms" }}
         >
           <p>
             © {new Date().getFullYear()} {t.appName}. {t.rights}
@@ -284,13 +195,12 @@ export default function Footer() {
         .footer-link {
           position: relative;
           display: inline-block;
-          color: #b7b2c4;
           transition: color 0.25s ease;
         }
         .footer-link::after {
           content: "";
           position: absolute;
-          left: 0;
+          inset-inline-start: 0;
           bottom: -2px;
           width: 0%;
           height: 1px;
@@ -298,6 +208,9 @@ export default function Footer() {
           transition: width 0.3s ease;
         }
         .footer-link:hover {
+          color: #8a6e1a;
+        }
+        :global(.dark) .footer-link:hover {
           color: #e0b93a;
         }
         .footer-link:hover::after {
@@ -308,7 +221,8 @@ export default function Footer() {
           transition:
             transform 0.25s ease,
             border-color 0.25s ease,
-            color 0.25s ease;
+            color 0.25s ease,
+            background-color 0.25s ease;
         }
         .social-icon:hover {
           transform: translateY(-2px) scale(1.06);

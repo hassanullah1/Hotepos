@@ -80,7 +80,7 @@ const NAV_ITEMS = [
     section: "manage",
     roles: ["hotel_owner", "branch_manager"],
     icon: BedDouble,
-    requiresRooms: true, // 👈 NEW — hidden when plan has no rooms
+    requiresRooms: true,
   },
   {
     href: "/admin/plans",
@@ -522,7 +522,6 @@ export default function AdminSidebar() {
   const [verification, setVerification] = useState(null);
   const [verifLoading, setVerifLoading] = useState(true);
 
-  // 👈 NEW — plan gate for the "rooms" nav item
   const [hasRooms, setHasRooms] = useState(false);
 
   const sizeAppName = isRtl ? "text-[20px]" : "text-[18px]";
@@ -573,7 +572,6 @@ export default function AdminSidebar() {
   }, [hasHotelRole, pathname]);
 
   /* ---------- plan fetch — decides whether "rooms" nav shows ---------- */
-  // 👈 NEW block
   useEffect(() => {
     if (!hasHotelRole) {
       setHasRooms(false);
@@ -641,6 +639,26 @@ export default function AdminSidebar() {
     };
   }, []);
 
+  /* ---------- Escape to close (mobile) ---------- */
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
+  /* ---------- lock body scroll while mobile drawer is open ---------- */
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   function toggleCollapsed() {
     setCollapsed((prev) => {
       const next = !prev;
@@ -677,7 +695,6 @@ export default function AdminSidebar() {
     () =>
       NAV_ITEMS.filter((item) => {
         if (!item.roles.includes(role)) return false;
-        // 👈 NEW — hide items that require a plan feature the user doesn't have
         if (item.requiresRooms && !hasRooms) return false;
         return true;
       })
@@ -779,7 +796,7 @@ export default function AdminSidebar() {
           type="button"
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
-          className={`fixed start-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0B1B2E]/95 text-[#F1ECDD] ring-1 ring-[#D4A93A]/30 shadow-lg shadow-black/30 backdrop-blur transition-transform active:scale-95 lg:hidden ${FOCUS_RING}`}
+          className={`fixed start-4 top-3 z-50 flex h-9 w-9 items-center justify-center rounded-2xl bg-[#0B1B2E]/95 text-[#F1ECDD] ring-1 ring-[#D4A93A]/30 shadow-lg shadow-black/30 backdrop-blur transition-transform active:scale-95 lg:hidden ${FOCUS_RING}`}
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </button>
@@ -800,8 +817,8 @@ export default function AdminSidebar() {
         onFocusCapture={handleEnter}
         onBlurCapture={handleLeave}
         className={[
-          "group/rail relative flex shrink-0 flex-col overflow-y-auto overflow-x-hidden",
-          "w-72 max-w-[85%]",
+          "group/rail flex shrink-0 flex-col overflow-y-auto overflow-x-hidden",
+          "w-[min(18rem,78vw)]",
           "fixed inset-y-0 start-0 z-40",
           "text-[#F1ECDD]",
           "border-e border-[#D4A93A]/15",
@@ -878,13 +895,21 @@ export default function AdminSidebar() {
             </button>
           )}
 
+          {/* Close button (mobile) */}
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
             aria-label="Close menu"
-            className={`shrink-0 rounded-lg p-1.5 text-[#A9B6C6] transition-colors hover:bg-white/10 hover:text-white lg:hidden ${FOCUS_RING}`}
+            className={[
+              "ms-auto grid h-9 w-9 shrink-0 place-items-center rounded-full lg:hidden",
+              "bg-white/[0.08] text-[#F1ECDD] ring-1 ring-white/15",
+              "transition-all duration-200 motion-reduce:transition-none",
+              "hover:bg-[#D4A93A]/20 hover:text-[#D4A93A] hover:ring-[#D4A93A]/50",
+              "active:scale-95",
+              FOCUS_RING,
+            ].join(" ")}
           >
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
           </button>
         </div>
 

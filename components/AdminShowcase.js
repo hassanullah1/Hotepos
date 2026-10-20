@@ -166,7 +166,7 @@ export default function AdminShowcase({ isRTL }) {
               <div className="absolute -inset-2 bg-black/10 rounded-2xl blur-xl -z-10" />
               <div className="bg-[#2a2a3a] rounded-xl p-1.5 shadow-2xl shadow-black/20 border border-[#3a3a4a]">
                 <div className="bg-[#0a0a0f] rounded-lg overflow-hidden aspect-[16/10] relative">
-                  <AdminDashboard compact={true} />
+                  <AdminDashboard />
                   <div
                     className="cursor-anim absolute pointer-events-none z-50 will-change-transform"
                     style={{ top: "25%", left: "35%" }}
