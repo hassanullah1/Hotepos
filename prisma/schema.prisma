@@ -510,7 +510,7 @@ model orders {
   public_token           String?                  @unique @db.VarChar(64)
   created_at             DateTime?                @default(now()) @db.Timestamptz(6)
   updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
- payment_status    String?   @default("unpaid") @db.VarChar(20)  // unpaid | paid | failed | refunded
+  payment_status    String?   @default("unpaid") @db.VarChar(20)  // unpaid | paid | failed | refunded
   payment_reference String?   @db.VarChar(150)                     // HesabPay session/transaction id
   paid_at           DateTime? @db.Timestamptz(6)
 

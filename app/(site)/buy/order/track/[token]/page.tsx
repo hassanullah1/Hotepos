@@ -29,36 +29,102 @@ const displayFont = Fraunces({
   variable: "--font-display",
 });
 
-const STATUS_STEPS = [
-  {
-    key: "open",
-    labelEn: "Received",
-    labelPs: "ترلاسه شو",
-    labelPrs: "دریافت شد",
-    Icon: Receipt,
-  },
-  {
-    key: "in_progress",
-    labelEn: "Preparing",
-    labelPs: "چمتو کیږي",
-    labelPrs: "در حال آماده‌سازی",
-    Icon: ChefHat,
-  },
-  {
-    key: "served",
-    labelEn: "Ready",
-    labelPs: "وړاندې شو",
-    labelPrs: "سرو شد",
-    Icon: CheckCircle2,
-  },
-  {
-    key: "paid",
-    labelEn: "Paid",
-    labelPs: "تادیه شو",
-    labelPrs: "پرداخت شد",
-    Icon: CreditCard,
-  },
-];
+type StatusStep = {
+  key: string;
+  labelEn: string;
+  labelPs: string;
+  labelPrs: string;
+  Icon: any;
+  done: boolean;
+  active: boolean;
+};
+
+/**
+ * Builds the stepper steps dynamically — ALWAYS returns 5 steps:
+ *  Step 1: Received
+ *  Step 2: Paid / Unpaid   ← GATE (must be paid to advance)
+ *  Step 3: Preparing
+ *  Step 4: Ready
+ *  Step 5: Completed  OR  Cancelled
+ *
+ * If not paid → steps 3, 4, 5 stay grey (do not advance).
+ */
+function buildStatusSteps(order: any): StatusStep[] {
+  const isPaid = order.payment_status === "paid";
+  const isCancelled = order.status === "cancelled";
+
+  const statusFlow = ["open", "in_progress", "ready", "completed"];
+  const statusIdx = statusFlow.indexOf(order.status);
+  const safeStatusIdx = statusIdx < 0 ? 0 : statusIdx;
+
+  return [
+    // ---------- Step 1: Received ----------
+    {
+      key: "open",
+      labelEn: "Received",
+      labelPs: "ترلاسه شو",
+      labelPrs: "دریافت شد",
+      Icon: Receipt,
+      done: true, // order exists → it was received
+      active: false,
+    },
+
+    // ---------- Step 2: Paid / Unpaid (GATE) ----------
+    {
+      key: "payment",
+      labelEn: isPaid ? "Paid" : "Unpaid",
+      labelPs: isPaid ? "تادیه شو" : "نه تادیه شو",
+      labelPrs: isPaid ? "پرداخت شد" : "پرداخت نشده",
+      Icon: isPaid ? CheckCircle2 : CreditCard,
+      done: isPaid,
+      // If unpaid (and not cancelled), this is the blocking/current step
+      active: !isPaid && !isCancelled,
+    },
+
+    // ---------- Step 3: Preparing ----------
+    {
+      key: "in_progress",
+      labelEn: "Preparing",
+      labelPs: "چمتو کیږي",
+      labelPrs: "در حال آماده‌سازی",
+      Icon: ChefHat,
+      done: isPaid && !isCancelled && safeStatusIdx >= 2,
+      active: isPaid && !isCancelled && safeStatusIdx <= 1,
+    },
+
+    // ---------- Step 4: Ready ----------
+    {
+      key: "ready",
+      labelEn: "Ready",
+      labelPs: "وړاندې شو",
+      labelPrs: "سرو شد",
+      Icon: Clock,
+      done: isPaid && !isCancelled && safeStatusIdx >= 3,
+      active: isPaid && !isCancelled && safeStatusIdx === 2,
+    },
+
+    // ---------- Step 5: Completed OR Cancelled ----------
+    isCancelled
+      ? {
+          key: "cancelled",
+          labelEn: "Cancelled",
+          labelPs: "لغوه شو",
+          labelPrs: "لغو شد",
+          Icon: XCircle,
+          done: false,
+          active: true,
+        }
+      : {
+          key: "completed",
+          labelEn: "Completed",
+          labelPs: "مکمل",
+          labelPrs: "تکمیل",
+          Icon: CheckCircle2,
+          done: isPaid && safeStatusIdx >= 3,
+          active: isPaid && safeStatusIdx === 3,
+        },
+  ];
+}
 
 const trackText = {
   en: {
@@ -243,7 +309,9 @@ export default function TrackPage() {
   }, [mounted, searchParams]);
 
   const canReview =
-    order && ["served", "paid", "closed"].includes(order.status) && !submitted;
+    order &&
+    ["ready", "completed", "served", "paid", "closed"].includes(order.status) &&
+    !submitted;
 
   async function payNow() {
     if (!order?.id) return;
@@ -320,9 +388,9 @@ export default function TrackPage() {
       </div>
     );
 
-  const currentIdx = STATUS_STEPS.findIndex((s) => s.key === order.status);
   const isPaid = order.payment_status === "paid";
   const isCancelled = order.status === "cancelled";
+  const steps = buildStatusSteps(order);
 
   return (
     <div
@@ -468,111 +536,127 @@ export default function TrackPage() {
           </div>
         </div>
 
-        {/* ============ Progress stepper ============ */}
-        {isCancelled ? (
-          <div
-            className={`mt-5 flex items-center justify-center gap-2 rounded-2xl border py-5 ${
-              isDark
-                ? "border-red-500/40 bg-red-500/10 text-red-300"
-                : "border-red-300 bg-red-50 text-red-700"
-            }`}
-          >
-            <XCircle className="h-5 w-5" />
-            <span className="text-sm font-semibold">{t.cancelled}</span>
-          </div>
-        ) : (
-          <div
-            className={`mt-5 overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
-              isDark
-                ? "border-[#2E2938] bg-[#1E1B26]/90"
-                : "border-[#E4DFD4] bg-white/90"
-            }`}
-          >
-            <div className="p-5 sm:p-6">
-              <p
-                className={`mb-5 text-[10px] uppercase tracking-[0.2em] ${
-                  isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-                }`}
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                {t.progress}
-              </p>
+        {/* ============ Progress stepper (5 steps) ============ */}
+        <div
+          className={`mt-5 overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+            isDark
+              ? "border-[#2E2938] bg-[#1E1B26]/90"
+              : "border-[#E4DFD4] bg-white/90"
+          }`}
+        >
+          <div className="p-5 sm:p-6">
+            <p
+              className={`mb-5 text-[10px] uppercase tracking-[0.2em] ${
+                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+              }`}
+              style={{ fontFamily: "var(--font-geist-mono)" }}
+            >
+              {t.progress}
+            </p>
 
-              <ol className="flex items-start justify-between gap-1 sm:gap-2">
-                {STATUS_STEPS.map((s, idx) => {
-                  const done = idx <= currentIdx;
-                  const active = idx === currentIdx;
-                  const label =
-                    lang === "ps"
-                      ? s.labelPs
-                      : lang === "prs"
-                        ? s.labelPrs
-                        : s.labelEn;
-                  const Icon = s.Icon;
+            <ol className="flex items-start justify-between gap-1 sm:gap-2">
+              {steps.map((s, idx) => {
+                const label =
+                  lang === "ps"
+                    ? s.labelPs
+                    : lang === "prs"
+                      ? s.labelPrs
+                      : s.labelEn;
+                const Icon = s.Icon;
+                const isCancelledStep = s.key === "cancelled";
+                const isPaymentStep = s.key === "payment";
+                const reached = s.done || s.active;
 
-                  return (
-                    <li
-                      key={s.key}
-                      className="flex flex-1 flex-col items-center text-center"
-                    >
-                      <div className="flex w-full items-center">
-                        {idx > 0 && (
-                          <span
-                            className={`h-0.5 flex-1 transition-colors ${
-                              done
-                                ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
-                                : isDark
-                                  ? "bg-[#2A2534]"
-                                  : "bg-[#EDE8DE]"
-                            }`}
-                          />
-                        )}
+                const prevReached =
+                  idx > 0 && (steps[idx - 1].done || steps[idx - 1].active);
+                const nextReached =
+                  idx < steps.length - 1 &&
+                  (steps[idx + 1].done || steps[idx + 1].active);
 
+                const beforeGold = idx > 0 && prevReached && reached;
+                const afterGold = reached && nextReached;
+
+                // Unpaid state → show payment step in amber to signal "action needed"
+                const isUnpaidStep = isPaymentStep && !isPaid && !isCancelled;
+
+                return (
+                  <li
+                    key={s.key}
+                    className="flex flex-1 flex-col items-center text-center"
+                  >
+                    <div className="flex w-full items-center">
+                      {idx > 0 && (
                         <span
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all ${
-                            done
-                              ? "bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/30"
+                          className={`h-0.5 flex-1 transition-colors ${
+                            beforeGold
+                              ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
                               : isDark
-                                ? "bg-[#2A2534] text-[#6E687A]"
-                                : "bg-[#EDE8DE] text-[#A39D8F]"
-                          } ${active ? "ring-4 ring-[#C9A227]/25" : ""}`}
-                        >
-                          <Icon size={16} strokeWidth={2.25} />
-                        </span>
-
-                        {idx < STATUS_STEPS.length - 1 && (
-                          <span
-                            className={`h-0.5 flex-1 transition-colors ${
-                              idx < currentIdx
-                                ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
-                                : isDark
-                                  ? "bg-[#2A2534]"
-                                  : "bg-[#EDE8DE]"
-                            }`}
-                          />
-                        )}
-                      </div>
+                                ? "bg-[#2A2534]"
+                                : "bg-[#EDE8DE]"
+                          }`}
+                        />
+                      )}
 
                       <span
-                        className={`mt-2 text-[11px] font-medium sm:text-xs ${
-                          done
-                            ? isDark
-                              ? "text-[#F0EAE2]"
-                              : "text-[#1D1A22]"
-                            : isDark
-                              ? "text-[#6E687A]"
-                              : "text-[#A39D8F]"
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all ${
+                          isCancelledStep
+                            ? "bg-gradient-to-br from-red-500 to-red-700 text-white shadow-md shadow-red-500/30"
+                            : isUnpaidStep
+                              ? "bg-gradient-to-br from-amber-400 to-amber-600 text-[#1D1707] shadow-md shadow-amber-500/30"
+                              : reached
+                                ? "bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/30"
+                                : isDark
+                                  ? "bg-[#2A2534] text-[#6E687A]"
+                                  : "bg-[#EDE8DE] text-[#A39D8F]"
+                        } ${
+                          s.active
+                            ? isCancelledStep
+                              ? "ring-4 ring-red-500/25"
+                              : isUnpaidStep
+                                ? "ring-4 ring-amber-500/25"
+                                : "ring-4 ring-[#C9A227]/25"
+                            : ""
                         }`}
                       >
-                        {label}
+                        <Icon size={16} strokeWidth={2.25} />
                       </span>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
+
+                      {idx < steps.length - 1 && (
+                        <span
+                          className={`h-0.5 flex-1 transition-colors ${
+                            afterGold
+                              ? "bg-gradient-to-r from-[#E0B93A] to-[#C9A227]"
+                              : isDark
+                                ? "bg-[#2A2534]"
+                                : "bg-[#EDE8DE]"
+                          }`}
+                        />
+                      )}
+                    </div>
+
+                    <span
+                      className={`mt-2 text-[11px] font-medium sm:text-xs ${
+                        isCancelledStep
+                          ? "text-red-500"
+                          : isUnpaidStep
+                            ? "text-amber-500"
+                            : reached
+                              ? isDark
+                                ? "text-[#F0EAE2]"
+                                : "text-[#1D1A22]"
+                              : isDark
+                                ? "text-[#6E687A]"
+                                : "text-[#A39D8F]"
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
-        )}
+        </div>
 
         {/* ============ Two column grid ============ */}
         <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_320px]">
