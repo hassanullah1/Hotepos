@@ -1057,7 +1057,7 @@ function OnlineOrdersTable({
                           className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           <Check className="h-3 w-3" />
-                          Paid
+                          Complete
                         </button>
                       )}
                       {o.status === "paid" && (
