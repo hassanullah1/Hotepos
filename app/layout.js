@@ -1,6 +1,7 @@
 // app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import { nazanin } from "./fonts";
+import InstallPrompt from "./components/InstallPrompt"; 
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import "./globals.css";
 
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
       >
         <main className="flex-1">{children}</main>
         <ServiceWorkerRegister />
+        <InstallPrompt />
       </body>
     </html>
   );

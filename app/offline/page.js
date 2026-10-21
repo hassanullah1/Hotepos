@@ -1,11 +1,14 @@
 // app/offline/page.js
+import OfflineGame from "./OfflineGame";
+
 export const metadata = {
   title: "Offline — Hotel Logistic",
 };
 
 export default function OfflinePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#15121C] px-6 text-center text-[#F0EAE2]">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#15121C] px-6 py-12 text-center text-[#F0EAE2]">
+      {/* Offline icon */}
       <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-[#C9A227]/30 bg-[#C9A227]/10">
         <svg
           width="28"
@@ -37,7 +40,12 @@ export default function OfflinePage() {
         automatically when you're back online.
       </p>
 
-      {/* ✅ Plain <a> — reloads page, no onClick, no client component */}
+      {/* Mini-game */}
+      <div className="mt-8 w-full max-w-sm">
+        <OfflineGame />
+      </div>
+
+      {/* Actions */}
       <a
         href="/"
         className="mt-6 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-2.5 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5"
