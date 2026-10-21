@@ -24,14 +24,26 @@ export async function POST(request: Request) {
   const branchId = typeof body.branch_id === "string" ? body.branch_id : "";
   const tableToken =
     typeof body.table_token === "string" ? body.table_token : "";
-  const orderTypeRaw =
-    typeof body.order_type === "string" ? body.order_type : "takeaway";
-  const orderType = ["takeaway", "dine_in", "room_service"].includes(
-    orderTypeRaw,
-  )
-    ? orderTypeRaw
-    : "takeaway";
   const note = typeof body.note === "string" ? body.note.trim() : "";
+
+  // delivery fields (only for customer / non-QR orders)
+  const deliveryAddressRaw =
+    typeof body.delivery_address === "string"
+      ? body.delivery_address.trim()
+      : "";
+  const deliveryNotesRaw =
+    typeof body.delivery_notes === "string" ? body.delivery_notes.trim() : "";
+
+  const deliveryLatNum =
+    body.delivery_lat != null && body.delivery_lat !== ""
+      ? Number(body.delivery_lat)
+      : NaN;
+  const deliveryLngNum =
+    body.delivery_lng != null && body.delivery_lng !== ""
+      ? Number(body.delivery_lng)
+      : NaN;
+  const deliveryLat = Number.isFinite(deliveryLatNum) ? deliveryLatNum : null;
+  const deliveryLng = Number.isFinite(deliveryLngNum) ? deliveryLngNum : null;
 
   const items = Array.isArray(body.items)
     ? (body.items as CartLine[]).filter(
@@ -43,7 +55,7 @@ export async function POST(request: Request) {
   if (!items.length)
     return NextResponse.json({ error: "EMPTY_CART" }, { status: 400 });
 
-  // Resolve branch — hotel must be online
+  // ── Resolve branch (hotel must be online) ──
   let branch = null;
   let table = null;
 
@@ -76,7 +88,43 @@ export async function POST(request: Request) {
   if (!branch)
     return NextResponse.json({ error: "BRANCH_NOT_FOUND" }, { status: 404 });
 
-  // Items must be available AND online
+  const source: "qr" | "customer" = table ? "qr" : "customer";
+  const orderType: "dine_in" | "delivery" = table ? "dine_in" : "delivery";
+
+  // ── For online delivery, pull contact from the buyer's account ──
+  let contactName = "";
+  let contactPhone = "";
+
+  if (source === "customer") {
+    const dbBuyer = await prisma.buyers.findUnique({
+      where: { id: buyer.buyerId },
+      select: { full_name: true, phone: true },
+    });
+
+    contactName = dbBuyer?.full_name?.trim() || "";
+    contactPhone = dbBuyer?.phone?.trim() || "";
+
+    if (!contactName) {
+      return NextResponse.json(
+        { error: "BUYER_NAME_MISSING" },
+        { status: 400 },
+      );
+    }
+    if (!contactPhone) {
+      return NextResponse.json(
+        { error: "BUYER_PHONE_MISSING" },
+        { status: 400 },
+      );
+    }
+    if (!deliveryAddressRaw) {
+      return NextResponse.json(
+        { error: "DELIVERY_ADDRESS_REQUIRED" },
+        { status: 400 },
+      );
+    }
+  }
+
+  // ── Validate items ──
   const menuItemIds = items.map((i) => i.menu_item_id);
   const menuItems = await prisma.menu_items.findMany({
     where: {
@@ -104,7 +152,7 @@ export async function POST(request: Request) {
   });
   const subtotal = +lines.reduce((s, l) => s + l.line_total, 0).toFixed(2);
 
-  // Dine-in: resolve/create table session
+  // ── Dine-in: resolve/create table session ──
   let tableSessionId: string | null = null;
   if (orderType === "dine_in" && table) {
     const existing = await prisma.table_sessions.findFirst({
@@ -149,11 +197,28 @@ export async function POST(request: Request) {
         order_number: orderNumber,
         order_type: orderType,
         status: "open",
-        source: table ? "qr" : "customer",
+        source,
         public_token: token,
         subtotal,
         total_amount: subtotal,
         notes: note || null,
+
+        // Only online delivery orders get a satellite row
+        ...(source === "customer"
+          ? {
+              online_details: {
+                create: {
+                  contact_name: contactName,
+                  contact_phone: contactPhone,
+                  delivery_address: deliveryAddressRaw,
+                  delivery_lat: deliveryLat,
+                  delivery_lng: deliveryLng,
+                  delivery_notes: deliveryNotesRaw || null,
+                },
+              },
+            }
+          : {}),
+
         order_items: {
           create: lines.map((l) => ({
             menu_item_id: l.menu_item_id,

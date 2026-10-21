@@ -483,30 +483,30 @@ model inventory_transactions {
 /// An order is EITHER a POS order (customer_id set, buyer_id null)
 /// OR an online order (buyer_id set, customer_id null). Never both.
 model orders {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  branch_id         String    @db.Uuid
-  table_session_id  String?   @db.Uuid
-  customer_id       String?   @db.Uuid
-  buyer_id          String?   @db.Uuid
-  room_stay_id      String?   @db.Uuid
-  order_number      String    @db.VarChar(30)
-  order_type        String    @default("dine_in") @db.VarChar(20)
-  status            String    @default("open") @db.VarChar(20)
-  waiter_id         String?   @db.Uuid
-  subtotal          Decimal   @default(0) @db.Decimal(12, 2)
-  discount_amount   Decimal   @default(0) @db.Decimal(12, 2)
-  tax_amount        Decimal   @default(0) @db.Decimal(12, 2)
-  service_charge    Decimal   @default(0) @db.Decimal(12, 2)
-  total_amount      Decimal   @default(0) @db.Decimal(12, 2)
-  notes             String?
-  source            String?   @default("pos") @db.VarChar(20) // pos | customer | qr
-  public_token      String?   @unique @db.VarChar(64)
-  created_at        DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
-  payment_status    String?   @default("unpaid") @db.VarChar(20) // unpaid | paid | failed | refunded
-  payment_reference String?   @db.VarChar(150) // HesabPay session/transaction id
-  paid_at           DateTime? @db.Timestamptz(6)
-
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branch_id              String                   @db.Uuid
+  table_session_id       String?                  @db.Uuid
+  customer_id            String?                  @db.Uuid
+  buyer_id               String?                  @db.Uuid
+  room_stay_id           String?                  @db.Uuid
+  order_number           String                   @db.VarChar(30)
+  order_type             String                   @default("dine_in") @db.VarChar(20)
+  status                 String                   @default("open") @db.VarChar(20)
+  waiter_id              String?                  @db.Uuid
+  subtotal               Decimal                  @default(0) @db.Decimal(12, 2)
+  discount_amount        Decimal                  @default(0) @db.Decimal(12, 2)
+  tax_amount             Decimal                  @default(0) @db.Decimal(12, 2)
+  service_charge         Decimal                  @default(0) @db.Decimal(12, 2)
+  total_amount           Decimal                  @default(0) @db.Decimal(12, 2)
+  notes                  String?
+  source                 String?                  @default("pos") @db.VarChar(20) // pos | customer | qr
+  public_token           String?                  @unique @db.VarChar(64)
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  payment_status         String?                  @default("unpaid") @db.VarChar(20) // unpaid | paid | failed | refunded
+  payment_reference      String?                  @db.VarChar(150) // HesabPay session/transaction id
+  paid_at                DateTime?                @db.Timestamptz(6)
+  online_details         online_order_details?
   payout                 order_payouts?
   inventory_transactions inventory_transactions[]
   invoices               invoices[]
@@ -530,6 +530,29 @@ model orders {
   @@index([status], map: "idx_orders_status")
   @@index([source], map: "idx_orders_source")
   @@index([buyer_id], map: "idx_orders_buyer")
+}
+
+model online_order_details {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id String @unique @db.Uuid
+
+  // ── contact (required for every online order) ──
+  contact_name  String @db.VarChar(150)
+  contact_phone String @db.VarChar(30)
+
+  // ── delivery (null for pickup) ──
+  delivery_address String?
+  delivery_city    String?  @db.VarChar(100)
+  delivery_lat     Decimal? @db.Decimal(10, 7)
+  delivery_lng     Decimal? @db.Decimal(10, 7)
+  delivery_notes   String?
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  orders orders @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@index([order_id], map: "idx_online_details_order")
 }
 
 model platform_settings {

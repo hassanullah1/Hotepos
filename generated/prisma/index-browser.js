@@ -401,6 +401,20 @@ exports.Prisma.OrdersScalarFieldEnum = {
   paid_at: 'paid_at'
 };
 
+exports.Prisma.Online_order_detailsScalarFieldEnum = {
+  id: 'id',
+  order_id: 'order_id',
+  contact_name: 'contact_name',
+  contact_phone: 'contact_phone',
+  delivery_address: 'delivery_address',
+  delivery_city: 'delivery_city',
+  delivery_lat: 'delivery_lat',
+  delivery_lng: 'delivery_lng',
+  delivery_notes: 'delivery_notes',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.Platform_settingsScalarFieldEnum = {
   id: 'id',
   commission_rate: 'commission_rate',
@@ -774,6 +788,7 @@ exports.Prisma.ModelName = {
   menu_item_ingredients: 'menu_item_ingredients',
   inventory_transactions: 'inventory_transactions',
   orders: 'orders',
+  online_order_details: 'online_order_details',
   platform_settings: 'platform_settings',
   order_payouts: 'order_payouts',
   order_items: 'order_items',

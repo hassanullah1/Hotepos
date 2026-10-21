@@ -513,7 +513,7 @@ model orders {
   payment_status    String?   @default("unpaid") @db.VarChar(20)  // unpaid | paid | failed | refunded
   payment_reference String?   @db.VarChar(150)                     // HesabPay session/transaction id
   paid_at           DateTime? @db.Timestamptz(6)
-
+   online_details online_order_details?
   payout order_payouts?  
   inventory_transactions inventory_transactions[]
   invoices               invoices[]
@@ -540,6 +540,31 @@ model orders {
   @@index([buyer_id], map: "idx_orders_buyer")
 }
 
+
+
+
+model online_order_details {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id         String   @unique @db.Uuid
+
+  // ── contact (required for every online order) ──
+  contact_name     String   @db.VarChar(150)
+  contact_phone    String   @db.VarChar(30)
+
+  // ── delivery (null for pickup) ──
+  delivery_address String?
+  delivery_city    String?  @db.VarChar(100)
+  delivery_lat     Decimal? @db.Decimal(10, 7)
+  delivery_lng     Decimal? @db.Decimal(10, 7)
+  delivery_notes   String?
+
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  orders orders @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@index([order_id], map: "idx_online_details_order")
+}
 
 
 model platform_settings {

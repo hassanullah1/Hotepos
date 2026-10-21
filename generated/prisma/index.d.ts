@@ -149,6 +149,11 @@ export type inventory_transactions = $Result.DefaultSelection<Prisma.$inventory_
  */
 export type orders = $Result.DefaultSelection<Prisma.$ordersPayload>
 /**
+ * Model online_order_details
+ * 
+ */
+export type online_order_details = $Result.DefaultSelection<Prisma.$online_order_detailsPayload>
+/**
  * Model platform_settings
  * 
  */
@@ -660,6 +665,16 @@ export class PrismaClient<
     * ```
     */
   get orders(): Prisma.ordersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.online_order_details`: Exposes CRUD operations for the **online_order_details** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Online_order_details
+    * const online_order_details = await prisma.online_order_details.findMany()
+    * ```
+    */
+  get online_order_details(): Prisma.online_order_detailsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.platform_settings`: Exposes CRUD operations for the **platform_settings** model.
@@ -1379,6 +1394,7 @@ export namespace Prisma {
     menu_item_ingredients: 'menu_item_ingredients',
     inventory_transactions: 'inventory_transactions',
     orders: 'orders',
+    online_order_details: 'online_order_details',
     platform_settings: 'platform_settings',
     order_payouts: 'order_payouts',
     order_items: 'order_items',
@@ -1420,7 +1436,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3271,6 +3287,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ordersCountArgs<ExtArgs>
             result: $Utils.Optional<OrdersCountAggregateOutputType> | number
+          }
+        }
+      }
+      online_order_details: {
+        payload: Prisma.$online_order_detailsPayload<ExtArgs>
+        fields: Prisma.online_order_detailsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.online_order_detailsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.online_order_detailsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          findFirst: {
+            args: Prisma.online_order_detailsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.online_order_detailsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          findMany: {
+            args: Prisma.online_order_detailsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>[]
+          }
+          create: {
+            args: Prisma.online_order_detailsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          createMany: {
+            args: Prisma.online_order_detailsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.online_order_detailsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>[]
+          }
+          delete: {
+            args: Prisma.online_order_detailsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          update: {
+            args: Prisma.online_order_detailsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          deleteMany: {
+            args: Prisma.online_order_detailsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.online_order_detailsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.online_order_detailsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>[]
+          }
+          upsert: {
+            args: Prisma.online_order_detailsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$online_order_detailsPayload>
+          }
+          aggregate: {
+            args: Prisma.Online_order_detailsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOnline_order_details>
+          }
+          groupBy: {
+            args: Prisma.online_order_detailsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Online_order_detailsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.online_order_detailsCountArgs<ExtArgs>
+            result: $Utils.Optional<Online_order_detailsCountAggregateOutputType> | number
           }
         }
       }
@@ -5331,6 +5421,7 @@ export namespace Prisma {
     menu_item_ingredients?: menu_item_ingredientsOmit
     inventory_transactions?: inventory_transactionsOmit
     orders?: ordersOmit
+    online_order_details?: online_order_detailsOmit
     platform_settings?: platform_settingsOmit
     order_payouts?: order_payoutsOmit
     order_items?: order_itemsOmit
@@ -36140,6 +36231,7 @@ export namespace Prisma {
     payment_status?: boolean
     payment_reference?: boolean
     paid_at?: boolean
+    online_details?: boolean | orders$online_detailsArgs<ExtArgs>
     payout?: boolean | orders$payoutArgs<ExtArgs>
     inventory_transactions?: boolean | orders$inventory_transactionsArgs<ExtArgs>
     invoices?: boolean | orders$invoicesArgs<ExtArgs>
@@ -36249,6 +36341,7 @@ export namespace Prisma {
 
   export type ordersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "branch_id" | "table_session_id" | "customer_id" | "buyer_id" | "room_stay_id" | "order_number" | "order_type" | "status" | "waiter_id" | "subtotal" | "discount_amount" | "tax_amount" | "service_charge" | "total_amount" | "notes" | "source" | "public_token" | "created_at" | "updated_at" | "payment_status" | "payment_reference" | "paid_at", ExtArgs["result"]["orders"]>
   export type ordersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    online_details?: boolean | orders$online_detailsArgs<ExtArgs>
     payout?: boolean | orders$payoutArgs<ExtArgs>
     inventory_transactions?: boolean | orders$inventory_transactionsArgs<ExtArgs>
     invoices?: boolean | orders$invoicesArgs<ExtArgs>
@@ -36285,6 +36378,7 @@ export namespace Prisma {
   export type $ordersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "orders"
     objects: {
+      online_details: Prisma.$online_order_detailsPayload<ExtArgs> | null
       payout: Prisma.$order_payoutsPayload<ExtArgs> | null
       inventory_transactions: Prisma.$inventory_transactionsPayload<ExtArgs>[]
       invoices: Prisma.$invoicesPayload<ExtArgs>[]
@@ -36718,6 +36812,7 @@ export namespace Prisma {
    */
   export interface Prisma__ordersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    online_details<T extends orders$online_detailsArgs<ExtArgs> = {}>(args?: Subset<T, orders$online_detailsArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payout<T extends orders$payoutArgs<ExtArgs> = {}>(args?: Subset<T, orders$payoutArgs<ExtArgs>>): Prisma__order_payoutsClient<$Result.GetResult<Prisma.$order_payoutsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     inventory_transactions<T extends orders$inventory_transactionsArgs<ExtArgs> = {}>(args?: Subset<T, orders$inventory_transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$inventory_transactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends orders$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, orders$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -37185,6 +37280,25 @@ export namespace Prisma {
   }
 
   /**
+   * orders.online_details
+   */
+  export type orders$online_detailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    where?: online_order_detailsWhereInput
+  }
+
+  /**
    * orders.payout
    */
   export type orders$payoutArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -37482,6 +37596,1185 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ordersInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model online_order_details
+   */
+
+  export type AggregateOnline_order_details = {
+    _count: Online_order_detailsCountAggregateOutputType | null
+    _avg: Online_order_detailsAvgAggregateOutputType | null
+    _sum: Online_order_detailsSumAggregateOutputType | null
+    _min: Online_order_detailsMinAggregateOutputType | null
+    _max: Online_order_detailsMaxAggregateOutputType | null
+  }
+
+  export type Online_order_detailsAvgAggregateOutputType = {
+    delivery_lat: Decimal | null
+    delivery_lng: Decimal | null
+  }
+
+  export type Online_order_detailsSumAggregateOutputType = {
+    delivery_lat: Decimal | null
+    delivery_lng: Decimal | null
+  }
+
+  export type Online_order_detailsMinAggregateOutputType = {
+    id: string | null
+    order_id: string | null
+    contact_name: string | null
+    contact_phone: string | null
+    delivery_address: string | null
+    delivery_city: string | null
+    delivery_lat: Decimal | null
+    delivery_lng: Decimal | null
+    delivery_notes: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Online_order_detailsMaxAggregateOutputType = {
+    id: string | null
+    order_id: string | null
+    contact_name: string | null
+    contact_phone: string | null
+    delivery_address: string | null
+    delivery_city: string | null
+    delivery_lat: Decimal | null
+    delivery_lng: Decimal | null
+    delivery_notes: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Online_order_detailsCountAggregateOutputType = {
+    id: number
+    order_id: number
+    contact_name: number
+    contact_phone: number
+    delivery_address: number
+    delivery_city: number
+    delivery_lat: number
+    delivery_lng: number
+    delivery_notes: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Online_order_detailsAvgAggregateInputType = {
+    delivery_lat?: true
+    delivery_lng?: true
+  }
+
+  export type Online_order_detailsSumAggregateInputType = {
+    delivery_lat?: true
+    delivery_lng?: true
+  }
+
+  export type Online_order_detailsMinAggregateInputType = {
+    id?: true
+    order_id?: true
+    contact_name?: true
+    contact_phone?: true
+    delivery_address?: true
+    delivery_city?: true
+    delivery_lat?: true
+    delivery_lng?: true
+    delivery_notes?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Online_order_detailsMaxAggregateInputType = {
+    id?: true
+    order_id?: true
+    contact_name?: true
+    contact_phone?: true
+    delivery_address?: true
+    delivery_city?: true
+    delivery_lat?: true
+    delivery_lng?: true
+    delivery_notes?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Online_order_detailsCountAggregateInputType = {
+    id?: true
+    order_id?: true
+    contact_name?: true
+    contact_phone?: true
+    delivery_address?: true
+    delivery_city?: true
+    delivery_lat?: true
+    delivery_lng?: true
+    delivery_notes?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Online_order_detailsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which online_order_details to aggregate.
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of online_order_details to fetch.
+     */
+    orderBy?: online_order_detailsOrderByWithRelationInput | online_order_detailsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: online_order_detailsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` online_order_details from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` online_order_details.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned online_order_details
+    **/
+    _count?: true | Online_order_detailsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Online_order_detailsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Online_order_detailsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Online_order_detailsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Online_order_detailsMaxAggregateInputType
+  }
+
+  export type GetOnline_order_detailsAggregateType<T extends Online_order_detailsAggregateArgs> = {
+        [P in keyof T & keyof AggregateOnline_order_details]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOnline_order_details[P]>
+      : GetScalarType<T[P], AggregateOnline_order_details[P]>
+  }
+
+
+
+
+  export type online_order_detailsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: online_order_detailsWhereInput
+    orderBy?: online_order_detailsOrderByWithAggregationInput | online_order_detailsOrderByWithAggregationInput[]
+    by: Online_order_detailsScalarFieldEnum[] | Online_order_detailsScalarFieldEnum
+    having?: online_order_detailsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Online_order_detailsCountAggregateInputType | true
+    _avg?: Online_order_detailsAvgAggregateInputType
+    _sum?: Online_order_detailsSumAggregateInputType
+    _min?: Online_order_detailsMinAggregateInputType
+    _max?: Online_order_detailsMaxAggregateInputType
+  }
+
+  export type Online_order_detailsGroupByOutputType = {
+    id: string
+    order_id: string
+    contact_name: string
+    contact_phone: string
+    delivery_address: string | null
+    delivery_city: string | null
+    delivery_lat: Decimal | null
+    delivery_lng: Decimal | null
+    delivery_notes: string | null
+    created_at: Date
+    updated_at: Date
+    _count: Online_order_detailsCountAggregateOutputType | null
+    _avg: Online_order_detailsAvgAggregateOutputType | null
+    _sum: Online_order_detailsSumAggregateOutputType | null
+    _min: Online_order_detailsMinAggregateOutputType | null
+    _max: Online_order_detailsMaxAggregateOutputType | null
+  }
+
+  type GetOnline_order_detailsGroupByPayload<T extends online_order_detailsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Online_order_detailsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Online_order_detailsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Online_order_detailsGroupByOutputType[P]>
+            : GetScalarType<T[P], Online_order_detailsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type online_order_detailsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    order_id?: boolean
+    contact_name?: boolean
+    contact_phone?: boolean
+    delivery_address?: boolean
+    delivery_city?: boolean
+    delivery_lat?: boolean
+    delivery_lng?: boolean
+    delivery_notes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["online_order_details"]>
+
+  export type online_order_detailsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    order_id?: boolean
+    contact_name?: boolean
+    contact_phone?: boolean
+    delivery_address?: boolean
+    delivery_city?: boolean
+    delivery_lat?: boolean
+    delivery_lng?: boolean
+    delivery_notes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["online_order_details"]>
+
+  export type online_order_detailsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    order_id?: boolean
+    contact_name?: boolean
+    contact_phone?: boolean
+    delivery_address?: boolean
+    delivery_city?: boolean
+    delivery_lat?: boolean
+    delivery_lng?: boolean
+    delivery_notes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["online_order_details"]>
+
+  export type online_order_detailsSelectScalar = {
+    id?: boolean
+    order_id?: boolean
+    contact_name?: boolean
+    contact_phone?: boolean
+    delivery_address?: boolean
+    delivery_city?: boolean
+    delivery_lat?: boolean
+    delivery_lng?: boolean
+    delivery_notes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type online_order_detailsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "order_id" | "contact_name" | "contact_phone" | "delivery_address" | "delivery_city" | "delivery_lat" | "delivery_lng" | "delivery_notes" | "created_at" | "updated_at", ExtArgs["result"]["online_order_details"]>
+  export type online_order_detailsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }
+  export type online_order_detailsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }
+  export type online_order_detailsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orders?: boolean | ordersDefaultArgs<ExtArgs>
+  }
+
+  export type $online_order_detailsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "online_order_details"
+    objects: {
+      orders: Prisma.$ordersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      order_id: string
+      contact_name: string
+      contact_phone: string
+      delivery_address: string | null
+      delivery_city: string | null
+      delivery_lat: Prisma.Decimal | null
+      delivery_lng: Prisma.Decimal | null
+      delivery_notes: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["online_order_details"]>
+    composites: {}
+  }
+
+  type online_order_detailsGetPayload<S extends boolean | null | undefined | online_order_detailsDefaultArgs> = $Result.GetResult<Prisma.$online_order_detailsPayload, S>
+
+  type online_order_detailsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<online_order_detailsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Online_order_detailsCountAggregateInputType | true
+    }
+
+  export interface online_order_detailsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['online_order_details'], meta: { name: 'online_order_details' } }
+    /**
+     * Find zero or one Online_order_details that matches the filter.
+     * @param {online_order_detailsFindUniqueArgs} args - Arguments to find a Online_order_details
+     * @example
+     * // Get one Online_order_details
+     * const online_order_details = await prisma.online_order_details.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends online_order_detailsFindUniqueArgs>(args: SelectSubset<T, online_order_detailsFindUniqueArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Online_order_details that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {online_order_detailsFindUniqueOrThrowArgs} args - Arguments to find a Online_order_details
+     * @example
+     * // Get one Online_order_details
+     * const online_order_details = await prisma.online_order_details.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends online_order_detailsFindUniqueOrThrowArgs>(args: SelectSubset<T, online_order_detailsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Online_order_details that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsFindFirstArgs} args - Arguments to find a Online_order_details
+     * @example
+     * // Get one Online_order_details
+     * const online_order_details = await prisma.online_order_details.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends online_order_detailsFindFirstArgs>(args?: SelectSubset<T, online_order_detailsFindFirstArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Online_order_details that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsFindFirstOrThrowArgs} args - Arguments to find a Online_order_details
+     * @example
+     * // Get one Online_order_details
+     * const online_order_details = await prisma.online_order_details.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends online_order_detailsFindFirstOrThrowArgs>(args?: SelectSubset<T, online_order_detailsFindFirstOrThrowArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Online_order_details that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Online_order_details
+     * const online_order_details = await prisma.online_order_details.findMany()
+     * 
+     * // Get first 10 Online_order_details
+     * const online_order_details = await prisma.online_order_details.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const online_order_detailsWithIdOnly = await prisma.online_order_details.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends online_order_detailsFindManyArgs>(args?: SelectSubset<T, online_order_detailsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Online_order_details.
+     * @param {online_order_detailsCreateArgs} args - Arguments to create a Online_order_details.
+     * @example
+     * // Create one Online_order_details
+     * const Online_order_details = await prisma.online_order_details.create({
+     *   data: {
+     *     // ... data to create a Online_order_details
+     *   }
+     * })
+     * 
+     */
+    create<T extends online_order_detailsCreateArgs>(args: SelectSubset<T, online_order_detailsCreateArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Online_order_details.
+     * @param {online_order_detailsCreateManyArgs} args - Arguments to create many Online_order_details.
+     * @example
+     * // Create many Online_order_details
+     * const online_order_details = await prisma.online_order_details.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends online_order_detailsCreateManyArgs>(args?: SelectSubset<T, online_order_detailsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Online_order_details and returns the data saved in the database.
+     * @param {online_order_detailsCreateManyAndReturnArgs} args - Arguments to create many Online_order_details.
+     * @example
+     * // Create many Online_order_details
+     * const online_order_details = await prisma.online_order_details.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Online_order_details and only return the `id`
+     * const online_order_detailsWithIdOnly = await prisma.online_order_details.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends online_order_detailsCreateManyAndReturnArgs>(args?: SelectSubset<T, online_order_detailsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Online_order_details.
+     * @param {online_order_detailsDeleteArgs} args - Arguments to delete one Online_order_details.
+     * @example
+     * // Delete one Online_order_details
+     * const Online_order_details = await prisma.online_order_details.delete({
+     *   where: {
+     *     // ... filter to delete one Online_order_details
+     *   }
+     * })
+     * 
+     */
+    delete<T extends online_order_detailsDeleteArgs>(args: SelectSubset<T, online_order_detailsDeleteArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Online_order_details.
+     * @param {online_order_detailsUpdateArgs} args - Arguments to update one Online_order_details.
+     * @example
+     * // Update one Online_order_details
+     * const online_order_details = await prisma.online_order_details.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends online_order_detailsUpdateArgs>(args: SelectSubset<T, online_order_detailsUpdateArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Online_order_details.
+     * @param {online_order_detailsDeleteManyArgs} args - Arguments to filter Online_order_details to delete.
+     * @example
+     * // Delete a few Online_order_details
+     * const { count } = await prisma.online_order_details.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends online_order_detailsDeleteManyArgs>(args?: SelectSubset<T, online_order_detailsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Online_order_details.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Online_order_details
+     * const online_order_details = await prisma.online_order_details.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends online_order_detailsUpdateManyArgs>(args: SelectSubset<T, online_order_detailsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Online_order_details and returns the data updated in the database.
+     * @param {online_order_detailsUpdateManyAndReturnArgs} args - Arguments to update many Online_order_details.
+     * @example
+     * // Update many Online_order_details
+     * const online_order_details = await prisma.online_order_details.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Online_order_details and only return the `id`
+     * const online_order_detailsWithIdOnly = await prisma.online_order_details.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends online_order_detailsUpdateManyAndReturnArgs>(args: SelectSubset<T, online_order_detailsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Online_order_details.
+     * @param {online_order_detailsUpsertArgs} args - Arguments to update or create a Online_order_details.
+     * @example
+     * // Update or create a Online_order_details
+     * const online_order_details = await prisma.online_order_details.upsert({
+     *   create: {
+     *     // ... data to create a Online_order_details
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Online_order_details we want to update
+     *   }
+     * })
+     */
+    upsert<T extends online_order_detailsUpsertArgs>(args: SelectSubset<T, online_order_detailsUpsertArgs<ExtArgs>>): Prisma__online_order_detailsClient<$Result.GetResult<Prisma.$online_order_detailsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Online_order_details.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsCountArgs} args - Arguments to filter Online_order_details to count.
+     * @example
+     * // Count the number of Online_order_details
+     * const count = await prisma.online_order_details.count({
+     *   where: {
+     *     // ... the filter for the Online_order_details we want to count
+     *   }
+     * })
+    **/
+    count<T extends online_order_detailsCountArgs>(
+      args?: Subset<T, online_order_detailsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Online_order_detailsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Online_order_details.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Online_order_detailsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Online_order_detailsAggregateArgs>(args: Subset<T, Online_order_detailsAggregateArgs>): Prisma.PrismaPromise<GetOnline_order_detailsAggregateType<T>>
+
+    /**
+     * Group by Online_order_details.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {online_order_detailsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends online_order_detailsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: online_order_detailsGroupByArgs['orderBy'] }
+        : { orderBy?: online_order_detailsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, online_order_detailsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOnline_order_detailsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the online_order_details model
+   */
+  readonly fields: online_order_detailsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for online_order_details.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__online_order_detailsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    orders<T extends ordersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ordersDefaultArgs<ExtArgs>>): Prisma__ordersClient<$Result.GetResult<Prisma.$ordersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the online_order_details model
+   */
+  interface online_order_detailsFieldRefs {
+    readonly id: FieldRef<"online_order_details", 'String'>
+    readonly order_id: FieldRef<"online_order_details", 'String'>
+    readonly contact_name: FieldRef<"online_order_details", 'String'>
+    readonly contact_phone: FieldRef<"online_order_details", 'String'>
+    readonly delivery_address: FieldRef<"online_order_details", 'String'>
+    readonly delivery_city: FieldRef<"online_order_details", 'String'>
+    readonly delivery_lat: FieldRef<"online_order_details", 'Decimal'>
+    readonly delivery_lng: FieldRef<"online_order_details", 'Decimal'>
+    readonly delivery_notes: FieldRef<"online_order_details", 'String'>
+    readonly created_at: FieldRef<"online_order_details", 'DateTime'>
+    readonly updated_at: FieldRef<"online_order_details", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * online_order_details findUnique
+   */
+  export type online_order_detailsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter, which online_order_details to fetch.
+     */
+    where: online_order_detailsWhereUniqueInput
+  }
+
+  /**
+   * online_order_details findUniqueOrThrow
+   */
+  export type online_order_detailsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter, which online_order_details to fetch.
+     */
+    where: online_order_detailsWhereUniqueInput
+  }
+
+  /**
+   * online_order_details findFirst
+   */
+  export type online_order_detailsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter, which online_order_details to fetch.
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of online_order_details to fetch.
+     */
+    orderBy?: online_order_detailsOrderByWithRelationInput | online_order_detailsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for online_order_details.
+     */
+    cursor?: online_order_detailsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` online_order_details from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` online_order_details.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of online_order_details.
+     */
+    distinct?: Online_order_detailsScalarFieldEnum | Online_order_detailsScalarFieldEnum[]
+  }
+
+  /**
+   * online_order_details findFirstOrThrow
+   */
+  export type online_order_detailsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter, which online_order_details to fetch.
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of online_order_details to fetch.
+     */
+    orderBy?: online_order_detailsOrderByWithRelationInput | online_order_detailsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for online_order_details.
+     */
+    cursor?: online_order_detailsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` online_order_details from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` online_order_details.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of online_order_details.
+     */
+    distinct?: Online_order_detailsScalarFieldEnum | Online_order_detailsScalarFieldEnum[]
+  }
+
+  /**
+   * online_order_details findMany
+   */
+  export type online_order_detailsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter, which online_order_details to fetch.
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of online_order_details to fetch.
+     */
+    orderBy?: online_order_detailsOrderByWithRelationInput | online_order_detailsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing online_order_details.
+     */
+    cursor?: online_order_detailsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` online_order_details from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` online_order_details.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of online_order_details.
+     */
+    distinct?: Online_order_detailsScalarFieldEnum | Online_order_detailsScalarFieldEnum[]
+  }
+
+  /**
+   * online_order_details create
+   */
+  export type online_order_detailsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a online_order_details.
+     */
+    data: XOR<online_order_detailsCreateInput, online_order_detailsUncheckedCreateInput>
+  }
+
+  /**
+   * online_order_details createMany
+   */
+  export type online_order_detailsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many online_order_details.
+     */
+    data: online_order_detailsCreateManyInput | online_order_detailsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * online_order_details createManyAndReturn
+   */
+  export type online_order_detailsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * The data used to create many online_order_details.
+     */
+    data: online_order_detailsCreateManyInput | online_order_detailsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * online_order_details update
+   */
+  export type online_order_detailsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a online_order_details.
+     */
+    data: XOR<online_order_detailsUpdateInput, online_order_detailsUncheckedUpdateInput>
+    /**
+     * Choose, which online_order_details to update.
+     */
+    where: online_order_detailsWhereUniqueInput
+  }
+
+  /**
+   * online_order_details updateMany
+   */
+  export type online_order_detailsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update online_order_details.
+     */
+    data: XOR<online_order_detailsUpdateManyMutationInput, online_order_detailsUncheckedUpdateManyInput>
+    /**
+     * Filter which online_order_details to update
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * Limit how many online_order_details to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * online_order_details updateManyAndReturn
+   */
+  export type online_order_detailsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * The data used to update online_order_details.
+     */
+    data: XOR<online_order_detailsUpdateManyMutationInput, online_order_detailsUncheckedUpdateManyInput>
+    /**
+     * Filter which online_order_details to update
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * Limit how many online_order_details to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * online_order_details upsert
+   */
+  export type online_order_detailsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the online_order_details to update in case it exists.
+     */
+    where: online_order_detailsWhereUniqueInput
+    /**
+     * In case the online_order_details found by the `where` argument doesn't exist, create a new online_order_details with this data.
+     */
+    create: XOR<online_order_detailsCreateInput, online_order_detailsUncheckedCreateInput>
+    /**
+     * In case the online_order_details was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<online_order_detailsUpdateInput, online_order_detailsUncheckedUpdateInput>
+  }
+
+  /**
+   * online_order_details delete
+   */
+  export type online_order_detailsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
+    /**
+     * Filter which online_order_details to delete.
+     */
+    where: online_order_detailsWhereUniqueInput
+  }
+
+  /**
+   * online_order_details deleteMany
+   */
+  export type online_order_detailsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which online_order_details to delete
+     */
+    where?: online_order_detailsWhereInput
+    /**
+     * Limit how many online_order_details to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * online_order_details without action
+   */
+  export type online_order_detailsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the online_order_details
+     */
+    select?: online_order_detailsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the online_order_details
+     */
+    omit?: online_order_detailsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: online_order_detailsInclude<ExtArgs> | null
   }
 
 
@@ -68394,6 +69687,23 @@ export namespace Prisma {
   export type OrdersScalarFieldEnum = (typeof OrdersScalarFieldEnum)[keyof typeof OrdersScalarFieldEnum]
 
 
+  export const Online_order_detailsScalarFieldEnum: {
+    id: 'id',
+    order_id: 'order_id',
+    contact_name: 'contact_name',
+    contact_phone: 'contact_phone',
+    delivery_address: 'delivery_address',
+    delivery_city: 'delivery_city',
+    delivery_lat: 'delivery_lat',
+    delivery_lng: 'delivery_lng',
+    delivery_notes: 'delivery_notes',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type Online_order_detailsScalarFieldEnum = (typeof Online_order_detailsScalarFieldEnum)[keyof typeof Online_order_detailsScalarFieldEnum]
+
+
   export const Platform_settingsScalarFieldEnum: {
     id: 'id',
     commission_rate: 'commission_rate',
@@ -70859,6 +72169,7 @@ export namespace Prisma {
     payment_status?: StringNullableFilter<"orders"> | string | null
     payment_reference?: StringNullableFilter<"orders"> | string | null
     paid_at?: DateTimeNullableFilter<"orders"> | Date | string | null
+    online_details?: XOR<Online_order_detailsNullableScalarRelationFilter, online_order_detailsWhereInput> | null
     payout?: XOR<Order_payoutsNullableScalarRelationFilter, order_payoutsWhereInput> | null
     inventory_transactions?: Inventory_transactionsListRelationFilter
     invoices?: InvoicesListRelationFilter
@@ -70899,6 +72210,7 @@ export namespace Prisma {
     payment_status?: SortOrderInput | SortOrder
     payment_reference?: SortOrderInput | SortOrder
     paid_at?: SortOrderInput | SortOrder
+    online_details?: online_order_detailsOrderByWithRelationInput
     payout?: order_payoutsOrderByWithRelationInput
     inventory_transactions?: inventory_transactionsOrderByRelationAggregateInput
     invoices?: invoicesOrderByRelationAggregateInput
@@ -70943,6 +72255,7 @@ export namespace Prisma {
     payment_status?: StringNullableFilter<"orders"> | string | null
     payment_reference?: StringNullableFilter<"orders"> | string | null
     paid_at?: DateTimeNullableFilter<"orders"> | Date | string | null
+    online_details?: XOR<Online_order_detailsNullableScalarRelationFilter, online_order_detailsWhereInput> | null
     payout?: XOR<Order_payoutsNullableScalarRelationFilter, order_payoutsWhereInput> | null
     inventory_transactions?: Inventory_transactionsListRelationFilter
     invoices?: InvoicesListRelationFilter
@@ -71017,6 +72330,93 @@ export namespace Prisma {
     payment_status?: StringNullableWithAggregatesFilter<"orders"> | string | null
     payment_reference?: StringNullableWithAggregatesFilter<"orders"> | string | null
     paid_at?: DateTimeNullableWithAggregatesFilter<"orders"> | Date | string | null
+  }
+
+  export type online_order_detailsWhereInput = {
+    AND?: online_order_detailsWhereInput | online_order_detailsWhereInput[]
+    OR?: online_order_detailsWhereInput[]
+    NOT?: online_order_detailsWhereInput | online_order_detailsWhereInput[]
+    id?: UuidFilter<"online_order_details"> | string
+    order_id?: UuidFilter<"online_order_details"> | string
+    contact_name?: StringFilter<"online_order_details"> | string
+    contact_phone?: StringFilter<"online_order_details"> | string
+    delivery_address?: StringNullableFilter<"online_order_details"> | string | null
+    delivery_city?: StringNullableFilter<"online_order_details"> | string | null
+    delivery_lat?: DecimalNullableFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: DecimalNullableFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: StringNullableFilter<"online_order_details"> | string | null
+    created_at?: DateTimeFilter<"online_order_details"> | Date | string
+    updated_at?: DateTimeFilter<"online_order_details"> | Date | string
+    orders?: XOR<OrdersScalarRelationFilter, ordersWhereInput>
+  }
+
+  export type online_order_detailsOrderByWithRelationInput = {
+    id?: SortOrder
+    order_id?: SortOrder
+    contact_name?: SortOrder
+    contact_phone?: SortOrder
+    delivery_address?: SortOrderInput | SortOrder
+    delivery_city?: SortOrderInput | SortOrder
+    delivery_lat?: SortOrderInput | SortOrder
+    delivery_lng?: SortOrderInput | SortOrder
+    delivery_notes?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    orders?: ordersOrderByWithRelationInput
+  }
+
+  export type online_order_detailsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    order_id?: string
+    AND?: online_order_detailsWhereInput | online_order_detailsWhereInput[]
+    OR?: online_order_detailsWhereInput[]
+    NOT?: online_order_detailsWhereInput | online_order_detailsWhereInput[]
+    contact_name?: StringFilter<"online_order_details"> | string
+    contact_phone?: StringFilter<"online_order_details"> | string
+    delivery_address?: StringNullableFilter<"online_order_details"> | string | null
+    delivery_city?: StringNullableFilter<"online_order_details"> | string | null
+    delivery_lat?: DecimalNullableFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: DecimalNullableFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: StringNullableFilter<"online_order_details"> | string | null
+    created_at?: DateTimeFilter<"online_order_details"> | Date | string
+    updated_at?: DateTimeFilter<"online_order_details"> | Date | string
+    orders?: XOR<OrdersScalarRelationFilter, ordersWhereInput>
+  }, "id" | "order_id">
+
+  export type online_order_detailsOrderByWithAggregationInput = {
+    id?: SortOrder
+    order_id?: SortOrder
+    contact_name?: SortOrder
+    contact_phone?: SortOrder
+    delivery_address?: SortOrderInput | SortOrder
+    delivery_city?: SortOrderInput | SortOrder
+    delivery_lat?: SortOrderInput | SortOrder
+    delivery_lng?: SortOrderInput | SortOrder
+    delivery_notes?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: online_order_detailsCountOrderByAggregateInput
+    _avg?: online_order_detailsAvgOrderByAggregateInput
+    _max?: online_order_detailsMaxOrderByAggregateInput
+    _min?: online_order_detailsMinOrderByAggregateInput
+    _sum?: online_order_detailsSumOrderByAggregateInput
+  }
+
+  export type online_order_detailsScalarWhereWithAggregatesInput = {
+    AND?: online_order_detailsScalarWhereWithAggregatesInput | online_order_detailsScalarWhereWithAggregatesInput[]
+    OR?: online_order_detailsScalarWhereWithAggregatesInput[]
+    NOT?: online_order_detailsScalarWhereWithAggregatesInput | online_order_detailsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"online_order_details"> | string
+    order_id?: UuidWithAggregatesFilter<"online_order_details"> | string
+    contact_name?: StringWithAggregatesFilter<"online_order_details"> | string
+    contact_phone?: StringWithAggregatesFilter<"online_order_details"> | string
+    delivery_address?: StringNullableWithAggregatesFilter<"online_order_details"> | string | null
+    delivery_city?: StringNullableWithAggregatesFilter<"online_order_details"> | string | null
+    delivery_lat?: DecimalNullableWithAggregatesFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: DecimalNullableWithAggregatesFilter<"online_order_details"> | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: StringNullableWithAggregatesFilter<"online_order_details"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"online_order_details"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"online_order_details"> | Date | string
   }
 
   export type platform_settingsWhereInput = {
@@ -75230,6 +76630,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -75270,6 +76671,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -75298,6 +76700,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -75338,6 +76741,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -75418,6 +76822,103 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type online_order_detailsCreateInput = {
+    id?: string
+    contact_name: string
+    contact_phone: string
+    delivery_address?: string | null
+    delivery_city?: string | null
+    delivery_lat?: Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    orders: ordersCreateNestedOneWithoutOnline_detailsInput
+  }
+
+  export type online_order_detailsUncheckedCreateInput = {
+    id?: string
+    order_id: string
+    contact_name: string
+    contact_phone: string
+    delivery_address?: string | null
+    delivery_city?: string | null
+    delivery_lat?: Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type online_order_detailsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: ordersUpdateOneRequiredWithoutOnline_detailsNestedInput
+  }
+
+  export type online_order_detailsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order_id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type online_order_detailsCreateManyInput = {
+    id?: string
+    order_id: string
+    contact_name: string
+    contact_phone: string
+    delivery_address?: string | null
+    delivery_city?: string | null
+    delivery_lat?: Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type online_order_detailsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type online_order_detailsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order_id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type platform_settingsCreateInput = {
@@ -79409,6 +80910,11 @@ export namespace Prisma {
     quantity_change?: SortOrder
   }
 
+  export type Online_order_detailsNullableScalarRelationFilter = {
+    is?: online_order_detailsWhereInput | null
+    isNot?: online_order_detailsWhereInput | null
+  }
+
   export type Order_payoutsNullableScalarRelationFilter = {
     is?: order_payoutsWhereInput | null
     isNot?: order_payoutsWhereInput | null
@@ -79543,6 +81049,63 @@ export namespace Prisma {
     total_amount?: SortOrder
   }
 
+  export type OrdersScalarRelationFilter = {
+    is?: ordersWhereInput
+    isNot?: ordersWhereInput
+  }
+
+  export type online_order_detailsCountOrderByAggregateInput = {
+    id?: SortOrder
+    order_id?: SortOrder
+    contact_name?: SortOrder
+    contact_phone?: SortOrder
+    delivery_address?: SortOrder
+    delivery_city?: SortOrder
+    delivery_lat?: SortOrder
+    delivery_lng?: SortOrder
+    delivery_notes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type online_order_detailsAvgOrderByAggregateInput = {
+    delivery_lat?: SortOrder
+    delivery_lng?: SortOrder
+  }
+
+  export type online_order_detailsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    order_id?: SortOrder
+    contact_name?: SortOrder
+    contact_phone?: SortOrder
+    delivery_address?: SortOrder
+    delivery_city?: SortOrder
+    delivery_lat?: SortOrder
+    delivery_lng?: SortOrder
+    delivery_notes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type online_order_detailsMinOrderByAggregateInput = {
+    id?: SortOrder
+    order_id?: SortOrder
+    contact_name?: SortOrder
+    contact_phone?: SortOrder
+    delivery_address?: SortOrder
+    delivery_city?: SortOrder
+    delivery_lat?: SortOrder
+    delivery_lng?: SortOrder
+    delivery_notes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type online_order_detailsSumOrderByAggregateInput = {
+    delivery_lat?: SortOrder
+    delivery_lng?: SortOrder
+  }
+
   export type platform_settingsCountOrderByAggregateInput = {
     id?: SortOrder
     commission_rate?: SortOrder
@@ -79570,11 +81133,6 @@ export namespace Prisma {
 
   export type platform_settingsSumOrderByAggregateInput = {
     commission_rate?: SortOrder
-  }
-
-  export type OrdersScalarRelationFilter = {
-    is?: ordersWhereInput
-    isNot?: ordersWhereInput
   }
 
   export type order_payoutsCountOrderByAggregateInput = {
@@ -84288,6 +85846,12 @@ export namespace Prisma {
     update?: XOR<XOR<ordersUpdateToOneWithWhereWithoutInventory_transactionsInput, ordersUpdateWithoutInventory_transactionsInput>, ordersUncheckedUpdateWithoutInventory_transactionsInput>
   }
 
+  export type online_order_detailsCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: online_order_detailsCreateOrConnectWithoutOrdersInput
+    connect?: online_order_detailsWhereUniqueInput
+  }
+
   export type order_payoutsCreateNestedOneWithoutOrdersInput = {
     create?: XOR<order_payoutsCreateWithoutOrdersInput, order_payoutsUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: order_payoutsCreateOrConnectWithoutOrdersInput
@@ -84379,6 +85943,12 @@ export namespace Prisma {
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
   }
 
+  export type online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput = {
+    create?: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: online_order_detailsCreateOrConnectWithoutOrdersInput
+    connect?: online_order_detailsWhereUniqueInput
+  }
+
   export type order_payoutsUncheckedCreateNestedOneWithoutOrdersInput = {
     create?: XOR<order_payoutsCreateWithoutOrdersInput, order_payoutsUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: order_payoutsCreateOrConnectWithoutOrdersInput
@@ -84432,6 +86002,16 @@ export namespace Prisma {
     connectOrCreate?: paymentsCreateOrConnectWithoutOrdersInput | paymentsCreateOrConnectWithoutOrdersInput[]
     createMany?: paymentsCreateManyOrdersInputEnvelope
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
+  }
+
+  export type online_order_detailsUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: online_order_detailsCreateOrConnectWithoutOrdersInput
+    upsert?: online_order_detailsUpsertWithoutOrdersInput
+    disconnect?: online_order_detailsWhereInput | boolean
+    delete?: online_order_detailsWhereInput | boolean
+    connect?: online_order_detailsWhereUniqueInput
+    update?: XOR<XOR<online_order_detailsUpdateToOneWithWhereWithoutOrdersInput, online_order_detailsUpdateWithoutOrdersInput>, online_order_detailsUncheckedUpdateWithoutOrdersInput>
   }
 
   export type order_payoutsUpdateOneWithoutOrdersNestedInput = {
@@ -84600,6 +86180,16 @@ export namespace Prisma {
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
+  export type online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput = {
+    create?: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
+    connectOrCreate?: online_order_detailsCreateOrConnectWithoutOrdersInput
+    upsert?: online_order_detailsUpsertWithoutOrdersInput
+    disconnect?: online_order_detailsWhereInput | boolean
+    delete?: online_order_detailsWhereInput | boolean
+    connect?: online_order_detailsWhereUniqueInput
+    update?: XOR<XOR<online_order_detailsUpdateToOneWithWhereWithoutOrdersInput, online_order_detailsUpdateWithoutOrdersInput>, online_order_detailsUncheckedUpdateWithoutOrdersInput>
+  }
+
   export type order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput = {
     create?: XOR<order_payoutsCreateWithoutOrdersInput, order_payoutsUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: order_payoutsCreateOrConnectWithoutOrdersInput
@@ -84706,6 +86296,20 @@ export namespace Prisma {
     update?: paymentsUpdateWithWhereUniqueWithoutOrdersInput | paymentsUpdateWithWhereUniqueWithoutOrdersInput[]
     updateMany?: paymentsUpdateManyWithWhereWithoutOrdersInput | paymentsUpdateManyWithWhereWithoutOrdersInput[]
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
+  }
+
+  export type ordersCreateNestedOneWithoutOnline_detailsInput = {
+    create?: XOR<ordersCreateWithoutOnline_detailsInput, ordersUncheckedCreateWithoutOnline_detailsInput>
+    connectOrCreate?: ordersCreateOrConnectWithoutOnline_detailsInput
+    connect?: ordersWhereUniqueInput
+  }
+
+  export type ordersUpdateOneRequiredWithoutOnline_detailsNestedInput = {
+    create?: XOR<ordersCreateWithoutOnline_detailsInput, ordersUncheckedCreateWithoutOnline_detailsInput>
+    connectOrCreate?: ordersCreateOrConnectWithoutOnline_detailsInput
+    upsert?: ordersUpsertWithoutOnline_detailsInput
+    connect?: ordersWhereUniqueInput
+    update?: XOR<XOR<ordersUpdateToOneWithWhereWithoutOnline_detailsInput, ordersUpdateWithoutOnline_detailsInput>, ordersUncheckedUpdateWithoutOnline_detailsInput>
   }
 
   export type ordersCreateNestedOneWithoutPayoutInput = {
@@ -87019,6 +88623,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -87057,6 +88662,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -88237,6 +89843,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -88275,6 +89882,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -90082,6 +91690,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -90120,6 +91729,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -91424,6 +93034,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -91462,6 +93073,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -92223,6 +93835,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -92261,6 +93874,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -94183,6 +95797,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsCreateNestedManyWithoutOrdersInput
@@ -94222,6 +95837,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsUncheckedCreateNestedManyWithoutOrdersInput
@@ -94385,6 +96001,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUpdateManyWithoutOrdersNestedInput
@@ -94424,6 +96041,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUncheckedUpdateManyWithoutOrdersNestedInput
@@ -94431,6 +96049,37 @@ export namespace Prisma {
     order_items?: order_itemsUncheckedUpdateManyWithoutOrdersNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutOrdersNestedInput
     payments?: paymentsUncheckedUpdateManyWithoutOrdersNestedInput
+  }
+
+  export type online_order_detailsCreateWithoutOrdersInput = {
+    id?: string
+    contact_name: string
+    contact_phone: string
+    delivery_address?: string | null
+    delivery_city?: string | null
+    delivery_lat?: Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type online_order_detailsUncheckedCreateWithoutOrdersInput = {
+    id?: string
+    contact_name: string
+    contact_phone: string
+    delivery_address?: string | null
+    delivery_city?: string | null
+    delivery_lat?: Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type online_order_detailsCreateOrConnectWithoutOrdersInput = {
+    where: online_order_detailsWhereUniqueInput
+    create: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
   }
 
   export type order_payoutsCreateWithoutOrdersInput = {
@@ -95018,6 +96667,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type online_order_detailsUpsertWithoutOrdersInput = {
+    update: XOR<online_order_detailsUpdateWithoutOrdersInput, online_order_detailsUncheckedUpdateWithoutOrdersInput>
+    create: XOR<online_order_detailsCreateWithoutOrdersInput, online_order_detailsUncheckedCreateWithoutOrdersInput>
+    where?: online_order_detailsWhereInput
+  }
+
+  export type online_order_detailsUpdateToOneWithWhereWithoutOrdersInput = {
+    where?: online_order_detailsWhereInput
+    data: XOR<online_order_detailsUpdateWithoutOrdersInput, online_order_detailsUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type online_order_detailsUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type online_order_detailsUncheckedUpdateWithoutOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contact_name?: StringFieldUpdateOperationsInput | string
+    contact_phone?: StringFieldUpdateOperationsInput | string
+    delivery_address?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_city?: NullableStringFieldUpdateOperationsInput | string | null
+    delivery_lat?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_lng?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    delivery_notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type order_payoutsUpsertWithoutOrdersInput = {
     update: XOR<order_payoutsUpdateWithoutOrdersInput, order_payoutsUncheckedUpdateWithoutOrdersInput>
     create: XOR<order_payoutsCreateWithoutOrdersInput, order_payoutsUncheckedCreateWithoutOrdersInput>
@@ -95545,6 +97231,158 @@ export namespace Prisma {
     data: XOR<paymentsUpdateManyMutationInput, paymentsUncheckedUpdateManyWithoutOrdersInput>
   }
 
+  export type ordersCreateWithoutOnline_detailsInput = {
+    id?: string
+    order_number: string
+    order_type?: string
+    status?: string
+    subtotal?: Decimal | DecimalJsLike | number | string
+    discount_amount?: Decimal | DecimalJsLike | number | string
+    tax_amount?: Decimal | DecimalJsLike | number | string
+    service_charge?: Decimal | DecimalJsLike | number | string
+    total_amount?: Decimal | DecimalJsLike | number | string
+    notes?: string | null
+    source?: string | null
+    public_token?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    payment_status?: string | null
+    payment_reference?: string | null
+    paid_at?: Date | string | null
+    payout?: order_payoutsCreateNestedOneWithoutOrdersInput
+    inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
+    invoices?: invoicesCreateNestedManyWithoutOrdersInput
+    kitchen_tickets?: kitchen_ticketsCreateNestedManyWithoutOrdersInput
+    order_discounts?: order_discountsCreateNestedManyWithoutOrdersInput
+    order_items?: order_itemsCreateNestedManyWithoutOrdersInput
+    reviews?: reviewsCreateNestedManyWithoutOrdersInput
+    branches: branchesCreateNestedOneWithoutOrdersInput
+    customers?: customersCreateNestedOneWithoutOrdersInput
+    buyers?: buyersCreateNestedOneWithoutOrdersInput
+    table_sessions?: table_sessionsCreateNestedOneWithoutOrdersInput
+    room_stays?: room_staysCreateNestedOneWithoutOrdersInput
+    users?: usersCreateNestedOneWithoutOrdersInput
+    payments?: paymentsCreateNestedManyWithoutOrdersInput
+  }
+
+  export type ordersUncheckedCreateWithoutOnline_detailsInput = {
+    id?: string
+    branch_id: string
+    table_session_id?: string | null
+    customer_id?: string | null
+    buyer_id?: string | null
+    room_stay_id?: string | null
+    order_number: string
+    order_type?: string
+    status?: string
+    waiter_id?: string | null
+    subtotal?: Decimal | DecimalJsLike | number | string
+    discount_amount?: Decimal | DecimalJsLike | number | string
+    tax_amount?: Decimal | DecimalJsLike | number | string
+    service_charge?: Decimal | DecimalJsLike | number | string
+    total_amount?: Decimal | DecimalJsLike | number | string
+    notes?: string | null
+    source?: string | null
+    public_token?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    payment_status?: string | null
+    payment_reference?: string | null
+    paid_at?: Date | string | null
+    payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
+    inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
+    invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
+    kitchen_tickets?: kitchen_ticketsUncheckedCreateNestedManyWithoutOrdersInput
+    order_discounts?: order_discountsUncheckedCreateNestedManyWithoutOrdersInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutOrdersInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutOrdersInput
+    payments?: paymentsUncheckedCreateNestedManyWithoutOrdersInput
+  }
+
+  export type ordersCreateOrConnectWithoutOnline_detailsInput = {
+    where: ordersWhereUniqueInput
+    create: XOR<ordersCreateWithoutOnline_detailsInput, ordersUncheckedCreateWithoutOnline_detailsInput>
+  }
+
+  export type ordersUpsertWithoutOnline_detailsInput = {
+    update: XOR<ordersUpdateWithoutOnline_detailsInput, ordersUncheckedUpdateWithoutOnline_detailsInput>
+    create: XOR<ordersCreateWithoutOnline_detailsInput, ordersUncheckedCreateWithoutOnline_detailsInput>
+    where?: ordersWhereInput
+  }
+
+  export type ordersUpdateToOneWithWhereWithoutOnline_detailsInput = {
+    where?: ordersWhereInput
+    data: XOR<ordersUpdateWithoutOnline_detailsInput, ordersUncheckedUpdateWithoutOnline_detailsInput>
+  }
+
+  export type ordersUpdateWithoutOnline_detailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order_number?: StringFieldUpdateOperationsInput | string
+    order_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    discount_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    service_charge?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    public_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    payment_status?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
+    paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
+    inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
+    invoices?: invoicesUpdateManyWithoutOrdersNestedInput
+    kitchen_tickets?: kitchen_ticketsUpdateManyWithoutOrdersNestedInput
+    order_discounts?: order_discountsUpdateManyWithoutOrdersNestedInput
+    order_items?: order_itemsUpdateManyWithoutOrdersNestedInput
+    reviews?: reviewsUpdateManyWithoutOrdersNestedInput
+    branches?: branchesUpdateOneRequiredWithoutOrdersNestedInput
+    customers?: customersUpdateOneWithoutOrdersNestedInput
+    buyers?: buyersUpdateOneWithoutOrdersNestedInput
+    table_sessions?: table_sessionsUpdateOneWithoutOrdersNestedInput
+    room_stays?: room_staysUpdateOneWithoutOrdersNestedInput
+    users?: usersUpdateOneWithoutOrdersNestedInput
+    payments?: paymentsUpdateManyWithoutOrdersNestedInput
+  }
+
+  export type ordersUncheckedUpdateWithoutOnline_detailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    branch_id?: StringFieldUpdateOperationsInput | string
+    table_session_id?: NullableStringFieldUpdateOperationsInput | string | null
+    customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    buyer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    room_stay_id?: NullableStringFieldUpdateOperationsInput | string | null
+    order_number?: StringFieldUpdateOperationsInput | string
+    order_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    waiter_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    discount_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    service_charge?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    public_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    payment_status?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
+    paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
+    inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
+    invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
+    kitchen_tickets?: kitchen_ticketsUncheckedUpdateManyWithoutOrdersNestedInput
+    order_discounts?: order_discountsUncheckedUpdateManyWithoutOrdersNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutOrdersNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutOrdersNestedInput
+    payments?: paymentsUncheckedUpdateManyWithoutOrdersNestedInput
+  }
+
   export type ordersCreateWithoutPayoutInput = {
     id?: string
     order_number: string
@@ -95563,6 +97401,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsCreateNestedManyWithoutOrdersInput
@@ -95602,6 +97441,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsUncheckedCreateNestedManyWithoutOrdersInput
@@ -95645,6 +97485,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUpdateManyWithoutOrdersNestedInput
@@ -95684,6 +97525,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUncheckedUpdateManyWithoutOrdersNestedInput
@@ -95776,6 +97618,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -95815,6 +97658,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -95935,6 +97779,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -95974,6 +97819,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -96139,6 +97985,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -96178,6 +98025,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -96237,6 +98085,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -96276,6 +98125,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -96443,6 +98293,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -96482,6 +98333,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -96710,6 +98562,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -96749,6 +98602,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -97151,6 +99005,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -97190,6 +99045,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -97351,6 +99207,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -97390,6 +99247,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -97733,6 +99591,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -97772,6 +99631,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -98046,6 +99906,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -98085,6 +99946,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -98466,6 +100328,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsCreateNestedManyWithoutOrdersInput
@@ -98505,6 +100368,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     kitchen_tickets?: kitchen_ticketsUncheckedCreateNestedManyWithoutOrdersInput
@@ -98647,6 +100511,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUpdateManyWithoutOrdersNestedInput
@@ -98686,6 +100551,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     kitchen_tickets?: kitchen_ticketsUncheckedUpdateManyWithoutOrdersNestedInput
@@ -103363,6 +105229,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsCreateNestedManyWithoutOrdersInput
     invoices?: invoicesCreateNestedManyWithoutOrdersInput
@@ -103401,6 +105268,7 @@ export namespace Prisma {
     payment_status?: string | null
     payment_reference?: string | null
     paid_at?: Date | string | null
+    online_details?: online_order_detailsUncheckedCreateNestedOneWithoutOrdersInput
     payout?: order_payoutsUncheckedCreateNestedOneWithoutOrdersInput
     inventory_transactions?: inventory_transactionsUncheckedCreateNestedManyWithoutOrdersInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutOrdersInput
@@ -104803,6 +106671,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -104841,6 +106710,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -105264,6 +107134,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -105302,6 +107173,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -106793,6 +108665,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -106831,6 +108704,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -107328,6 +109202,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -107366,6 +109241,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -107658,6 +109534,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -107696,6 +109573,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput
@@ -108880,6 +110758,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUpdateManyWithoutOrdersNestedInput
@@ -108918,6 +110797,7 @@ export namespace Prisma {
     payment_status?: NullableStringFieldUpdateOperationsInput | string | null
     payment_reference?: NullableStringFieldUpdateOperationsInput | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    online_details?: online_order_detailsUncheckedUpdateOneWithoutOrdersNestedInput
     payout?: order_payoutsUncheckedUpdateOneWithoutOrdersNestedInput
     inventory_transactions?: inventory_transactionsUncheckedUpdateManyWithoutOrdersNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutOrdersNestedInput

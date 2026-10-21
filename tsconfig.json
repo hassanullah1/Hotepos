@@ -40,6 +40,6 @@
     "app/api/permissions/route.js",
     "app/api/roles/[roleId]/permissions/route.js",
     "app/api/roles/route.js"
-, "app/admin/(protect)/owners/menu/page.tsx"  ],
+, "app/admin/(protect)/owners/menu/page.tsx", "app/admin/(protect)/owners/online-orders/page.tsx"  ],
   "exclude": ["node_modules"]
 }

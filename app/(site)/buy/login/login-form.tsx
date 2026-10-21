@@ -1,7 +1,6 @@
-// app/buy/login/login-form.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -19,6 +18,8 @@ import {
   Sparkles,
   Eye,
   EyeOff,
+  Check,
+  ShieldCheck,
 } from "lucide-react";
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
@@ -58,7 +59,22 @@ const loginText = {
     emailOrPhoneRequired: "Enter an email or phone to continue",
     genericError: "Something went wrong. Please try again.",
     emailOptional: "optional if phone given",
-    phoneOptional: "optional if email given",
+    phoneOptional: "optional",
+    emailRequired: "Email is required",
+    emailVerifyFirst: "Please verify your email first.",
+    verify: "Verify",
+    verified: "Verified",
+    sending: "Sending…",
+    resend: "Resend",
+    sendingCode: "Sending…",
+    enter6Digits: "Enter all 6 digits.",
+    codeSentTo: "Enter the 6-digit code sent to",
+    verifyButton: "Verify",
+    resendPrompt: "Didn't get it? Check spam, or",
+    resendAction: "resend code",
+    sendingResend: "sending…",
+    verificationFailed: "Verification failed",
+    couldNotSend: "Could not send code",
   },
   ps: {
     dir: "rtl",
@@ -87,7 +103,22 @@ const loginText = {
     emailOrPhoneRequired: "د دوام لپاره بریښنالیک یا تلیفون ولیکئ",
     genericError: "یو څه غلط شول. بیا هڅه وکړئ.",
     emailOptional: "که تلیفون ورکړل شي اختیاري",
-    phoneOptional: "که بریښنالیک ورکړل شي اختیاري",
+    phoneOptional: "اختیاري",
+    emailRequired: "بریښنالیک اړین دی",
+    emailVerifyFirst: "مهرباني وکړئ لومړی خپل بریښنالیک تصدیق کړئ.",
+    verify: "تصدیق",
+    verified: "تصدیق شو",
+    sending: "لېږل کیږي…",
+    resend: "بیا واستوئ",
+    sendingCode: "لېږل کیږي…",
+    enter6Digits: "ټول ۶ عددونه ولیکئ.",
+    codeSentTo: "۶ عددي کوډ چې ولېږل شو دلته ولیکئ",
+    verifyButton: "تصدیق",
+    resendPrompt: "نه یې ترلاسه کړ؟ سپیم وګورئ، یا",
+    resendAction: "کوډ بیا واستوئ",
+    sendingResend: "لېږل کیږي…",
+    verificationFailed: "تصدیق ناکام شو",
+    couldNotSend: "کوډ نه شي لېږل شوی",
   },
   prs: {
     dir: "rtl",
@@ -116,7 +147,22 @@ const loginText = {
     emailOrPhoneRequired: "برای ادامه ایمیل یا تلیفون وارد کنید",
     genericError: "مشکلی پیش آمد. دوباره تلاش کنید.",
     emailOptional: "در صورت داشتن تلیفون اختیاری",
-    phoneOptional: "در صورت داشتن ایمیل اختیاری",
+    phoneOptional: "اختیاری",
+    emailRequired: "ایمیل الزامی است",
+    emailVerifyFirst: "لطفاً ابتدا ایمیل خود را تأیید کنید.",
+    verify: "تأیید",
+    verified: "تأیید شده",
+    sending: "در حال ارسال…",
+    resend: "ارسال دوباره",
+    sendingCode: "در حال ارسال…",
+    enter6Digits: "همه ۶ رقم را وارد کنید.",
+    codeSentTo: "کد ۶ رقمی ارسال‌شده را وارد کنید به",
+    verifyButton: "تأیید",
+    resendPrompt: "دریافت نکردید؟ اسپم را بررسی کنید، یا",
+    resendAction: "ارسال دوباره کد",
+    sendingResend: "در حال ارسال…",
+    verificationFailed: "تأیید ناموفق بود",
+    couldNotSend: "کد ارسال نشد",
   },
 };
 
@@ -142,7 +188,7 @@ export default function LoginForm() {
     document.documentElement.setAttribute("dir", t.dir);
   }, [lang, mounted, t.dir]);
 
-  const [mode, setMode] = useState("login");
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [form, setForm] = useState({
     identifier: "",
     full_name: "",
@@ -154,8 +200,134 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // ─────────── email verification ───────────
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailVerificationId, setEmailVerificationId] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
+  const [otpSubmitting, setOtpSubmitting] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+
+  function updateField(field: keyof typeof form, value: string) {
+    // Any change to email resets the verification
+    if (field === "email" && value !== form.email) {
+      setEmailVerified(false);
+      setEmailVerificationId("");
+      setOtpSent(false);
+      setOtpDigits(["", "", "", "", "", ""]);
+      setOtpError("");
+    }
+    setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  async function sendOtp() {
+    const email = form.email.trim().toLowerCase();
+    if (!email || !email.includes("@")) {
+      setError(t.emailRequired);
+      return;
+    }
+    setOtpError("");
+    setError("");
+    setSendingOtp(true);
+    try {
+      const res = await fetch("/api/email-verifications/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          ownerName: form.full_name.trim(),
+          hotelName: "Buyer Account",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t.couldNotSend);
+      setEmailVerificationId(data.verification_id);
+      setOtpSent(true);
+      setOtpDigits(["", "", "", "", "", ""]);
+      setTimeout(() => otpRefs.current[0]?.focus(), 100);
+    } catch (err: any) {
+      setOtpError(err.message);
+    } finally {
+      setSendingOtp(false);
+    }
+  }
+
+  async function verifyOtp() {
+    const code = otpDigits.join("");
+    if (code.length !== 6) {
+      setOtpError(t.enter6Digits);
+      return;
+    }
+    setOtpError("");
+    setOtpSubmitting(true);
+    try {
+      const res = await fetch("/api/email-verifications/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          verification_id: emailVerificationId,
+          otp: code,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t.verificationFailed);
+      setEmailVerified(true);
+      setOtpSent(false);
+    } catch (err: any) {
+      setOtpError(err.message);
+      setOtpDigits(["", "", "", "", "", ""]);
+      otpRefs.current[0]?.focus();
+    } finally {
+      setOtpSubmitting(false);
+    }
+  }
+
+  function setOtpDigit(i: number, val: string) {
+    const clean = val.replace(/\D/g, "").slice(-1);
+    setOtpDigits((d) => {
+      const next = [...d];
+      next[i] = clean;
+      return next;
+    });
+    if (clean && i < 5) otpRefs.current[i + 1]?.focus();
+  }
+
+  function otpKeyDown(i: number, e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Backspace" && !otpDigits[i] && i > 0) {
+      otpRefs.current[i - 1]?.focus();
+    }
+  }
+
+  function otpPaste(e: React.ClipboardEvent<HTMLDivElement>) {
+    e.preventDefault();
+    const text = (e.clipboardData.getData("text") || "")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+    if (!text) return;
+    const next = text.split("");
+    while (next.length < 6) next.push("");
+    setOtpDigits(next);
+    otpRefs.current[Math.min(text.length, 5)]?.focus();
+  }
+
+  // ─────────── submit ───────────
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+
+    // Require email verification on signup
+    if (mode === "signup") {
+      if (!form.email.trim() || !form.email.includes("@")) {
+        setError(t.emailRequired);
+        return;
+      }
+      if (!emailVerified || !emailVerificationId) {
+        setError(t.emailVerifyFirst);
+        return;
+      }
+    }
+
     setLoading(true);
     setError("");
     try {
@@ -167,9 +339,10 @@ export default function LoginForm() {
           ? { identifier: form.identifier, password: form.password }
           : {
               full_name: form.full_name,
-              email: form.email || undefined,
+              email: form.email.trim().toLowerCase(),
               phone: form.phone || undefined,
               password: form.password,
+              verification_id: emailVerificationId,
             };
 
       const res = await fetch(url, {
@@ -194,6 +367,7 @@ export default function LoginForm() {
   function switchMode() {
     setMode(mode === "login" ? "signup" : "login");
     setError("");
+    setOtpError("");
   }
 
   const ArrowBack = isRTL ? ArrowRight : ArrowLeft;
@@ -331,7 +505,7 @@ export default function LoginForm() {
                 icon={<UserIcon size={15} />}
                 label={t.nameLabel}
                 value={form.full_name}
-                onChange={(v) => setForm({ ...form, full_name: v })}
+                onChange={(v) => updateField("full_name", v)}
                 placeholder={t.namePlaceholder}
                 isDark={isDark}
                 required
@@ -343,29 +517,156 @@ export default function LoginForm() {
                 icon={<Mail size={15} />}
                 label={t.identifierLabel}
                 value={form.identifier}
-                onChange={(v) => setForm({ ...form, identifier: v })}
+                onChange={(v) => updateField("identifier", v)}
                 placeholder={t.identifierPlaceholder}
                 isDark={isDark}
                 required
               />
             ) : (
               <>
+                {/* EMAIL — with inline verify button / verified badge */}
                 <Field
                   icon={<Mail size={15} />}
                   label={t.emailLabel}
-                  sublabel={t.emailOptional}
                   type="email"
                   value={form.email}
-                  onChange={(v) => setForm({ ...form, email: v })}
+                  onChange={(v) => updateField("email", v)}
                   placeholder={t.emailPlaceholder}
                   isDark={isDark}
+                  required
+                  action={
+                    emailVerified ? (
+                      <span
+                        className={`me-2 flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold ${
+                          isDark
+                            ? "bg-emerald-500/15 text-emerald-300"
+                            : "bg-emerald-100 text-emerald-700"
+                        }`}
+                      >
+                        <Check size={11} strokeWidth={3} />
+                        {t.verified}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={sendOtp}
+                        disabled={
+                          sendingOtp ||
+                          !form.email.includes("@") ||
+                          form.email.trim().length < 5
+                        }
+                        className={`me-2 shrink-0 rounded-md px-2.5 py-1 text-[10px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                          isDark
+                            ? "bg-[#C9A227]/15 text-[#E0B93A] hover:bg-[#C9A227]/25"
+                            : "bg-[#C9A227]/15 text-[#8A6E1A] hover:bg-[#C9A227]/25"
+                        }`}
+                      >
+                        {sendingOtp ? t.sending : otpSent ? t.resend : t.verify}
+                      </button>
+                    )
+                  }
                 />
+
+                {/* OTP PANEL — only when code was sent and not yet verified */}
+                {otpSent && !emailVerified && (
+                  <div
+                    className={`anim-in rounded-xl border p-3 ${
+                      isDark
+                        ? "border-[#C9A227]/30 bg-[#15121C]"
+                        : "border-[#A9821E]/30 bg-[#FAF8F4]"
+                    }`}
+                  >
+                    <p
+                      className={`flex items-center gap-1.5 text-[11px] ${
+                        isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
+                      }`}
+                    >
+                      <ShieldCheck
+                        size={12}
+                        className={isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"}
+                      />
+                      {t.codeSentTo}{" "}
+                      <strong
+                        className={isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"}
+                      >
+                        {form.email}
+                      </strong>
+                    </p>
+
+                    <div
+                      className="mt-2.5 flex items-center gap-1.5"
+                      onPaste={otpPaste}
+                    >
+                      {otpDigits.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={(el) => {
+                            otpRefs.current[i] = el;
+                          }}
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={1}
+                          value={d}
+                          onChange={(e) => setOtpDigit(i, e.target.value)}
+                          onKeyDown={(e) => otpKeyDown(i, e)}
+                          className={`h-10 w-9 rounded-lg border text-center text-sm font-semibold tabular-nums outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/25 ${
+                            isDark
+                              ? "border-[#332C3E] bg-[#0F0D14] text-[#F0EAE2] focus:border-[#C9A227]"
+                              : "border-[#E4DFD4] bg-white text-[#1D1A22] focus:border-[#A9821E]"
+                          }`}
+                        />
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={verifyOtp}
+                        disabled={
+                          otpSubmitting || otpDigits.join("").length !== 6
+                        }
+                        className="ms-auto flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3 py-2 text-[11px] font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/20 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                      >
+                        {otpSubmitting ? (
+                          <Loader2 size={12} className="animate-spin" />
+                        ) : (
+                          <Check size={12} strokeWidth={3} />
+                        )}
+                        {t.verifyButton}
+                      </button>
+                    </div>
+
+                    {otpError && (
+                      <p className="mt-1.5 text-[11px] text-red-500">
+                        {otpError}
+                      </p>
+                    )}
+
+                    <p
+                      className={`mt-2 text-[10px] ${
+                        isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+                      }`}
+                    >
+                      {t.resendPrompt}{" "}
+                      <button
+                        type="button"
+                        onClick={sendOtp}
+                        disabled={sendingOtp}
+                        className={`font-semibold underline-offset-2 hover:underline disabled:opacity-50 ${
+                          isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                        }`}
+                      >
+                        {sendingOtp ? t.sendingResend : t.resendAction}
+                      </button>
+                      .
+                    </p>
+                  </div>
+                )}
+
                 <Field
                   icon={<Phone size={15} />}
                   label={t.phoneLabel}
                   sublabel={t.phoneOptional}
                   value={form.phone}
-                  onChange={(v) => setForm({ ...form, phone: v })}
+                  onChange={(v) => updateField("phone", v)}
                   placeholder={t.phonePlaceholder}
                   isDark={isDark}
                   dir="ltr"
@@ -437,10 +738,24 @@ export default function LoginForm() {
               </div>
             )}
 
+            {/* Signup hint when email not verified */}
+            {mode === "signup" && !emailVerified && (
+              <div
+                className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[11px] ${
+                  isDark
+                    ? "border-[#C9A227]/30 bg-[#C9A227]/5 text-[#E0B93A]"
+                    : "border-[#A9821E]/30 bg-[#C9A227]/10 text-[#8A6E1A]"
+                }`}
+              >
+                <ShieldCheck size={12} className="shrink-0" />
+                {t.emailVerifyFirst}
+              </div>
+            )}
+
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (mode === "signup" && !emailVerified)}
               className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -483,6 +798,27 @@ export default function LoginForm() {
           </Link>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes anim-in {
+          from {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .anim-in {
+          animation: anim-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .anim-in {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -502,6 +838,7 @@ function Field({
   isDark,
   dir,
   required,
+  action,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -513,6 +850,7 @@ function Field({
   isDark: boolean;
   dir?: "ltr" | "rtl";
   required?: boolean;
+  action?: React.ReactNode;
 }) {
   return (
     <div>
@@ -561,6 +899,7 @@ function Field({
               : "text-[#1D1A22] placeholder:text-[#A39D8F]"
           }`}
         />
+        {action}
       </div>
     </div>
   );

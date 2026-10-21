@@ -10,13 +10,10 @@ import {
   Plus,
   Minus,
   ShoppingBag,
-  X,
-  LogIn,
   MessageSquare,
   Utensils,
   ChevronRight,
-  Sparkles,
-  Search,
+  Store,
 } from "lucide-react";
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
@@ -28,78 +25,62 @@ const displayFont = Fraunces({
   variable: "--font-display",
 });
 
+export const cartKey = (branchId: string) => `buy_checkout_${branchId}`;
+
 const branchText = {
   en: {
     dir: "ltr",
     back: "Back",
     items: "items",
     checkout: "Checkout",
-    confirmOrder: "Confirm order",
-    total: "Total",
-    orderingAs: "Ordering as",
-    signInToOrder: "Sign in to place your order",
-    signIn: "Sign in to order",
-    placeOrder: "Place order",
-    placing: "Placing order…",
-    notePlaceholder: "Add a note (optional)",
     reviews: "Reviews",
-    searchPlaceholder: "Search dishes in this menu…",
     all: "All",
     loadMore: "Load more",
     loadingMore: "Loading…",
     noItems: "No dishes found",
-    noItemsHint: "Try a different search or category.",
+    noItemsHint: "Try a different category.",
     noCategories: "No menu items yet",
     noCategoriesHint: "This restaurant hasn't added any dishes.",
     add: "Add",
+    deliveryMode: "Delivery order",
+    myOrders: "My orders",
+    menu: "Menu",
   },
   ps: {
     dir: "rtl",
     back: "بیرته",
     items: "توکي",
     checkout: "چیک آوټ",
-    confirmOrder: "فرمایش تایید کړئ",
-    total: "ټول",
-    orderingAs: "فرمایش د",
-    signInToOrder: "د فرمایش کولو لپاره ننوځئ",
-    signIn: "د فرمایش لپاره ننوځئ",
-    placeOrder: "فرمایش وکړئ",
-    placing: "فرمایش کیږي…",
-    notePlaceholder: "یادونه اضافه کړئ (اختیاري)",
     reviews: "بیاکتنې",
-    searchPlaceholder: "پدې مینو کې خواړه ولټوئ…",
     all: "ټول",
     loadMore: "نور ښودل",
     loadingMore: "بارول…",
     noItems: "خواړه ونه موندل شول",
-    noItemsHint: "بله لټون یا کټګوري وازموئ.",
+    noItemsHint: "بله کټګوري وازموئ.",
     noCategories: "تر اوسه خواړه نشته",
     noCategoriesHint: "دا رستورانت لا تر اوسه خواړه نه دي اضافه کړي.",
     add: "اضافه کړئ",
+    deliveryMode: "د تحویل فرمایش",
+    myOrders: "زما فرمایشونه",
+    menu: "مینو",
   },
   prs: {
     dir: "rtl",
     back: "بازگشت",
     items: "آیتم",
     checkout: "پرداخت",
-    confirmOrder: "تأیید سفارش",
-    total: "مجموع",
-    orderingAs: "سفارش به نام",
-    signInToOrder: "برای سفارش وارد شوید",
-    signIn: "ورود برای سفارش",
-    placeOrder: "ثبت سفارش",
-    placing: "در حال ثبت…",
-    notePlaceholder: "یادداشت اضافه کنید (اختیاری)",
     reviews: "نظرات",
-    searchPlaceholder: "جستجوی غذا در این منو…",
     all: "همه",
     loadMore: "بیشتر",
     loadingMore: "در حال بارگذاری…",
     noItems: "غذایی یافت نشد",
-    noItemsHint: "جستجو یا دسته‌بندی دیگری امتحان کنید.",
+    noItemsHint: "دسته‌بندی دیگری امتحان کنید.",
     noCategories: "هنوز غذایی نیست",
     noCategoriesHint: "این رستورانت هنوز غذایی اضافه نکرده است.",
     add: "افزودن",
+    deliveryMode: "سفارش تحویل",
+    myOrders: "سفارش‌های من",
+    menu: "منو",
   },
 };
 
@@ -108,7 +89,7 @@ export default function BranchOrderPage() {
   const searchParams = useSearchParams();
   const preselectItemId = searchParams.get("item");
   const router = useRouter();
-  const { buyer, loading: meLoading } = useBuyerAuth();
+  useBuyerAuth();
   const { language } = useLanguage();
   const { resolvedTheme } = useTheme();
 
@@ -126,45 +107,44 @@ export default function BranchOrderPage() {
     document.documentElement.setAttribute("dir", t.dir);
   }, [lang, mounted, t.dir]);
 
-  // Branch + categories
   const [branch, setBranch] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [branchLoading, setBranchLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Items (paginated)
   const [items, setItems] = useState<any[]>([]);
   const [itemsLoading, setItemsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  // Filters
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // Cart — full item data so it survives filter changes
   const [cart, setCart] = useState<Record<string, { item: any; qty: number }>>(
     {},
   );
-  const [cartOpen, setCartOpen] = useState(false);
-  const [note, setNote] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  // ---------- Debounce search ----------
+  // ── restore cart ──
+  const [cartRestored, setCartRestored] = useState(false);
   useEffect(() => {
-    const id = setTimeout(() => setDebouncedSearch(search.trim()), 350);
-    return () => clearTimeout(id);
-  }, [search]);
+    if (typeof window === "undefined") return;
+    try {
+      const raw = sessionStorage.getItem(cartKey(branchId));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.cart) setCart(parsed.cart);
+      }
+    } catch {
+      /* ignore */
+    }
+    setCartRestored(true);
+  }, [branchId]);
 
-  // ---------- Reset page on filter change ----------
   useEffect(() => {
     setPage(1);
     setItems([]);
-  }, [categoryFilter, debouncedSearch]);
+  }, [categoryFilter]);
 
-  // ---------- Load branch + categories ----------
   useEffect(() => {
     (async () => {
       try {
@@ -181,7 +161,6 @@ export default function BranchOrderPage() {
     })();
   }, [branchId]);
 
-  // ---------- Load items ----------
   const loadItems = useCallback(
     async (targetPage: number, append = false) => {
       setItemsLoading(true);
@@ -191,7 +170,6 @@ export default function BranchOrderPage() {
           limit: "20",
           category_id: categoryFilter,
         });
-        if (debouncedSearch) params.set("q", debouncedSearch);
 
         const res = await fetch(
           `/api/public/branches/${branchId}/items?${params.toString()}`,
@@ -209,49 +187,68 @@ export default function BranchOrderPage() {
         setItemsLoading(false);
       }
     },
-    [branchId, categoryFilter, debouncedSearch],
+    [branchId, categoryFilter],
   );
 
   useEffect(() => {
     if (branchLoading) return;
     loadItems(1, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branchLoading, categoryFilter, debouncedSearch]);
+  }, [branchLoading, categoryFilter]);
 
-  // ---------- Auto-add preselect item ----------
   useEffect(() => {
     if (!preselectItemId || branchLoading) return;
 
-    const existing = items.find((i: any) => i.id === preselectItemId);
-    if (existing) {
-      addToCart(existing);
-      setCartOpen(true);
-      return;
-    }
-
-    (async () => {
-      try {
-        const res = await fetch(`/api/public/menu-items/${preselectItemId}`);
-        if (!res.ok) return;
-        const d = await res.json();
-        if (d.item) {
-          addToCart({
-            id: d.item.id,
-            name: d.item.name,
-            description: d.item.description,
-            image_url: d.item.image_url,
-            price: d.item.price,
-          });
-          setCartOpen(true);
+    async function addPreselect() {
+      const existing = items.find((i: any) => i.id === preselectItemId);
+      if (existing) {
+        addToCart(existing);
+      } else {
+        try {
+          const res = await fetch(`/api/public/menu-items/${preselectItemId}`);
+          if (res.ok) {
+            const d = await res.json();
+            if (d.item) {
+              addToCart({
+                id: d.item.id,
+                name: d.item.name,
+                description: d.item.description,
+                image_url: d.item.image_url,
+                price: d.item.price,
+              });
+            }
+          }
+        } catch {
+          /* ignore */
         }
-      } catch {
-        /* ignore */
       }
-    })();
+      router.replace(`/buy/order/${branchId}`, { scroll: false });
+    }
+    addPreselect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preselectItemId, branchLoading]);
 
-  // ---------- Cart helpers ----------
+  useEffect(() => {
+    if (!cartRestored) return;
+    if (typeof window === "undefined") return;
+    if (!branch) return;
+    try {
+      sessionStorage.setItem(
+        cartKey(branchId),
+        JSON.stringify({
+          branch: {
+            id: branch.id,
+            name: branch.name,
+            currency: branch.currency || "AFN",
+          },
+          cart,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [cart, cartRestored, branch, branchId]);
+
   function addToCart(item: any) {
     setCart((c) => {
       const existing = c[item.id];
@@ -295,43 +292,11 @@ export default function BranchOrderPage() {
     [cartLines],
   );
 
-  // ---------- Submit ----------
-  async function submit() {
-    if (!buyer) {
-      router.push(
-        `/buy/login?next=${encodeURIComponent(`/buy/order/${branchId}`)}`,
-      );
-      return;
-    }
-    if (!cartLines.length) return;
-    setSaving(true);
-    setError("");
-    try {
-      const res = await fetch("/api/public/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({
-          branch_id: branchId,
-          order_type: "takeaway",
-          note,
-          items: cartLines.map((l) => ({
-            menu_item_id: l.item.id,
-            quantity: l.qty,
-          })),
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok) throw new Error(d.error || "Failed to place order");
-      router.push(`/buy/order/track/${d.order.public_token}`);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
-    }
+  function goToCheckout() {
+    router.push(`/buy/order/${branchId}/checkout`);
   }
 
-  // ---------- Infinite scroll trigger ----------
+  // ── Infinite scroll ──
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = loadMoreRef.current;
@@ -348,7 +313,9 @@ export default function BranchOrderPage() {
     return () => io.disconnect();
   }, [itemsLoading, page, totalPages, loadItems]);
 
-  // ---------- Loading screen ----------
+  // ── Horizontal category scroll ──
+  const catScrollRef = useRef<HTMLDivElement | null>(null);
+
   if (branchLoading)
     return (
       <div
@@ -386,19 +353,18 @@ export default function BranchOrderPage() {
     );
 
   const currency = branch.currency || "AFN";
-  const hasItems = total > 0 || items.length > 0;
   const menuIsEmpty = categories.length === 0 && total === 0;
 
   return (
     <div
-      className={`${displayFont.variable} relative min-h-screen overflow-hidden pb-32 transition-colors duration-300 ${
+      className={`${displayFont.variable} relative transition-colors duration-300 ${
         isDark ? "bg-[#15121C] text-[#F0EAE2]" : "bg-[#F7F4EE] text-[#1D1A22]"
       }`}
       dir={t.dir}
     >
-      {/* Grid texture */}
+      {/* Grid texture (viewport-fixed) */}
       <svg
-        className={`pointer-events-none fixed inset-0 h-full w-full transition-opacity duration-300 ${
+        className={`pointer-events-none fixed inset-0 -z-10 h-full w-full transition-opacity duration-300 ${
           isDark ? "opacity-[0.04]" : "opacity-[0.05]"
         }`}
         viewBox="0 0 300 300"
@@ -423,98 +389,117 @@ export default function BranchOrderPage() {
       </svg>
 
       <div
-        className={`pointer-events-none fixed -top-32 -left-32 h-96 w-96 rounded-full blur-3xl ${
+        className={`pointer-events-none fixed -top-32 -left-32 -z-10 h-96 w-96 rounded-full blur-3xl ${
           isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
         }`}
         aria-hidden="true"
       />
-      <div
-        className={`pointer-events-none fixed top-40 -right-32 h-96 w-96 rounded-full blur-3xl ${
-          isDark ? "bg-[#C9A227]/8" : "bg-[#C9A227]/12"
-        }`}
-        aria-hidden="true"
-      />
 
-      {/* Sticky filters bar */}
-      <div
-        className={`sticky top-0 z-20 border-b backdrop-blur-xl transition-colors ${
-          isDark
-            ? "border-[#2E2938]/60 bg-[#15121C]/90"
-            : "border-[#E4DFD4]/60 bg-[#F7F4EE]/90"
-        }`}
-      >
-        <div className="mx-auto max-w-3xl px-4 py-3">
-          {/* Search */}
-          <div className="relative">
-            <Search
-              size={15}
-              className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${
-                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-              } ${isRTL ? "right-3" : "left-3"}`}
-            />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t.searchPlaceholder}
-              className={`w-full rounded-xl border py-2.5 text-sm outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/30 ${
-                isDark
-                  ? "border-[#332C3E] bg-[#161320] text-[#F0EAE2] placeholder:text-[#5E5670] focus:border-[#C9A227]"
-                  : "border-[#E4DFD4] bg-[#FAF8F4] text-[#1D1A22] placeholder:text-[#A39D8F] focus:border-[#A9821E]"
-              } ${isRTL ? "pr-9 pl-3" : "pl-9 pr-3"}`}
-            />
+      <div className="mx-auto max-w-3xl px-4 pt-3 pb-2">
+        {/* Branch name row */}
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/30">
+            <Store className="h-5 w-5" />
           </div>
-
-          {/* Category chips */}
-          {categories.length > 0 && (
-            <div className="-mx-1 mt-2.5 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
-              <button
-                onClick={() => setCategoryFilter("all")}
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition ${
-                  categoryFilter === "all"
-                    ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-sm shadow-[#C9A227]/25"
-                    : isDark
-                      ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:border-[#C9A227]/50 hover:text-[#E0B93A]"
-                      : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:border-[#A9821E]/50 hover:text-[#8A6E1A]"
-                }`}
-              >
-                {t.all}
-              </button>
-              {categories.map((c) => {
-                const active = categoryFilter === c.id;
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => setCategoryFilter(c.id)}
-                    className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition ${
-                      active
-                        ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-sm shadow-[#C9A227]/25"
-                        : isDark
-                          ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:border-[#C9A227]/50 hover:text-[#E0B93A]"
-                          : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:border-[#A9821E]/50 hover:text-[#8A6E1A]"
-                    }`}
-                  >
-                    {c.name}
-                    <span
-                      className={`rounded-full px-1 text-[10px] font-bold ${
-                        active
-                          ? "bg-[#1D1707]/15 text-[#1D1707]"
-                          : isDark
-                            ? "bg-[#2A2534] text-[#6E687A]"
-                            : "bg-[#EDE8DE] text-[#A39D8F]"
-                      }`}
-                    >
-                      {c.item_count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          <div className="min-w-0 flex-1">
+            <h1
+              className="truncate text-lg font-bold leading-tight sm:text-xl"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {branch?.name || "Restaurant"}
+            </h1>
+            <p
+              className={`mt-0.5 flex items-center gap-1.5 text-[11px] ${
+                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+              }`}
+            >
+              <Utensils className="h-3 w-3 shrink-0" />
+              <span className="truncate">{t.menu}</span>
+              {branch?.city && (
+                <>
+                  <span className="opacity-40">·</span>
+                  <span className="truncate">{branch.city}</span>
+                </>
+              )}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="relative mx-auto max-w-3xl px-4 py-5">
+      {/* ── Horizontal scrolling category chips ── */}
+      {categories.length > 0 && (
+        <div className="relative mx-auto max-w-3xl">
+          <div
+            ref={catScrollRef}
+            className="scrollbar-hide flex gap-1.5 overflow-x-auto px-4 pb-3 [scroll-snap-type:x_proximity] [-ms-overflow-style:none]"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            <button
+              onClick={() => setCategoryFilter("all")}
+              className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition [scroll-snap-align:start] ${
+                categoryFilter === "all"
+                  ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-sm shadow-[#C9A227]/25"
+                  : isDark
+                    ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:border-[#C9A227]/50 hover:text-[#E0B93A]"
+                    : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:border-[#A9821E]/50 hover:text-[#8A6E1A]"
+              }`}
+            >
+              {t.all}
+            </button>
+
+            {categories.map((c) => {
+              const active = categoryFilter === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setCategoryFilter(c.id)}
+                  className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition [scroll-snap-align:start] ${
+                    active
+                      ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-sm shadow-[#C9A227]/25"
+                      : isDark
+                        ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:border-[#C9A227]/50 hover:text-[#E0B93A]"
+                        : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:border-[#A9821E]/50 hover:text-[#8A6E1A]"
+                  }`}
+                >
+                  {c.name}
+                  <span
+                    className={`rounded-full px-1.5 text-[10px] font-bold ${
+                      active
+                        ? "bg-[#1D1707]/15 text-[#1D1707]"
+                        : isDark
+                          ? "bg-[#2A2534] text-[#6E687A]"
+                          : "bg-[#EDE8DE] text-[#A39D8F]"
+                    }`}
+                  >
+                    {c.item_count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Gradient fade edges */}
+          <div
+            className={`pointer-events-none absolute top-0 bottom-3 w-8 ${
+              isDark
+                ? "bg-gradient-to-r from-[#15121C] to-transparent"
+                : "bg-gradient-to-r from-[#F7F4EE] to-transparent"
+            } ${isRTL ? "right-0 rotate-180" : "left-0"}`}
+          />
+          <div
+            className={`pointer-events-none absolute top-0 bottom-3 w-8 ${
+              isDark
+                ? "bg-gradient-to-l from-[#15121C] to-transparent"
+                : "bg-gradient-to-l from-[#F7F4EE] to-transparent"
+            } ${isRTL ? "left-0 rotate-180" : "right-0"}`}
+          />
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════ */}
+      {/* ITEMS LIST */}
+      {/* ════════════════════════════════════════ */}
+      <div className="mx-auto max-w-3xl px-4 py-5">
         {error && (
           <div
             className={`mb-4 rounded-xl border px-3.5 py-2.5 text-sm ${
@@ -527,7 +512,6 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* Whole menu empty */}
         {menuIsEmpty && (
           <div
             className={`rounded-2xl border border-dashed px-6 py-16 text-center ${
@@ -562,7 +546,6 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* First-load skeleton */}
         {itemsLoading && items.length === 0 && (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -578,7 +561,6 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* No results for filter */}
         {!itemsLoading && items.length === 0 && !menuIsEmpty && (
           <div
             className={`rounded-2xl border border-dashed px-6 py-16 text-center ${
@@ -592,7 +574,7 @@ export default function BranchOrderPage() {
                   : "border-[#A9821E]/30 bg-[#C9A227]/15"
               }`}
             >
-              <Search
+              <Utensils
                 size={20}
                 className={isDark ? "text-[#C9A227]" : "text-[#A9821E]"}
               />
@@ -608,7 +590,6 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* Items list */}
         {items.length > 0 && (
           <div className="space-y-3">
             {items.map((i) => {
@@ -624,7 +605,7 @@ export default function BranchOrderPage() {
                 >
                   <Link
                     href={`/buy/order/item/${i.id}`}
-                    className={`relative w-24 shrink-0 overflow-hidden sm:w-28 ${
+                    className={`relative w-28 shrink-0 overflow-hidden sm:w-32 ${
                       isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
                     }`}
                   >
@@ -640,26 +621,31 @@ export default function BranchOrderPage() {
                           isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"
                         }`}
                       >
-                        <ShoppingBag size={24} />
+                        <ShoppingBag size={28} />
                       </div>
+                    )}
+                    {qty > 0 && (
+                      <span className="absolute top-2 left-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B93A] to-[#A9821E] px-1.5 text-[11px] font-bold text-[#1D1707] shadow-md">
+                        {qty}
+                      </span>
                     )}
                   </Link>
 
-                  <div className="flex min-w-0 flex-1 flex-col p-3">
+                  <div className="flex min-w-0 flex-1 flex-col p-3.5">
                     <div className="flex items-start justify-between gap-2">
                       <Link
                         href={`/buy/order/item/${i.id}`}
                         className="min-w-0 flex-1"
                       >
                         <h3
-                          className="truncate text-sm font-medium"
+                          className="truncate text-[15px] font-semibold"
                           style={{ fontFamily: "var(--font-display)" }}
                         >
                           {i.name}
                         </h3>
                         {i.description && (
                           <p
-                            className={`mt-0.5 line-clamp-1 text-[11px] ${
+                            className={`mt-0.5 line-clamp-2 text-[11px] leading-snug ${
                               isDark ? "text-[#9691A6]" : "text-[#8A8496]"
                             }`}
                           >
@@ -681,9 +667,9 @@ export default function BranchOrderPage() {
                       </Link>
                     </div>
 
-                    <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+                    <div className="mt-auto flex items-end justify-between gap-2 pt-2.5">
                       <span
-                        className={`text-sm font-semibold ${
+                        className={`text-[15px] font-bold ${
                           isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
                         }`}
                         style={{ fontFamily: "var(--font-display)" }}
@@ -701,7 +687,7 @@ export default function BranchOrderPage() {
                       {qty === 0 ? (
                         <button
                           onClick={() => addToCart(i)}
-                          className="flex h-9 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3.5 text-xs font-semibold text-[#1D1707] shadow-sm shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-[#C9A227]/35 active:translate-y-0"
+                          className="flex h-9 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-xs font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-[#C9A227]/35 active:translate-y-0"
                         >
                           <Plus className="h-3.5 w-3.5" />
                           {t.add}
@@ -751,7 +737,7 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* Infinite scroll trigger + Load more */}
+        {/* Load more */}
         {page < totalPages && (
           <div ref={loadMoreRef} className="py-8 text-center">
             {itemsLoading ? (
@@ -784,7 +770,6 @@ export default function BranchOrderPage() {
           </div>
         )}
 
-        {/* End of list marker */}
         {items.length > 0 && page >= totalPages && (
           <div className="py-8 text-center">
             <div
@@ -804,210 +789,49 @@ export default function BranchOrderPage() {
         )}
       </div>
 
-      {/* Floating cart bar */}
+      {/* ════════════════════════════════════════ */}
+      {/* CART BUTTON */}
+      {/* ════════════════════════════════════════ */}
       {cartCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 px-4 pb-4">
-          <div className="mx-auto max-w-3xl">
-            <button
-              onClick={() => setCartOpen(true)}
-              className="group flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-3.5 text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50"
-            >
-              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1D1707]/15">
-                <ShoppingBag className="h-4 w-4" />
-                <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
-                  {cartCount}
-                </span>
-              </span>
-              <div className="flex-1 text-start">
-                <p className="text-[11px] font-medium uppercase tracking-[0.15em] opacity-80">
-                  {cartCount} {t.items}
-                </p>
-                <p
-                  className="text-base font-bold tabular-nums"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {cartTotal.toFixed(2)} {currency}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#1D1707] px-4 py-2 text-xs font-bold text-[#E0B93A] transition group-hover:bg-[#1D1707]/90">
-                {t.checkout}
-                <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" />
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Checkout modal */}
-      {cartOpen && (
-        <div
-          className="fixed inset-0 z-40 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setCartOpen(false);
-          }}
-        >
-          <div
-            className={`max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl border p-5 shadow-2xl sm:rounded-3xl sm:p-6 ${
-              isDark
-                ? "border-[#2E2938] bg-[#1B1823]"
-                : "border-[#E4DFD4] bg-white"
-            }`}
+        <div className="mx-auto max-w-2xl space-y-2 px-4 pb-4">
+          <button
+            onClick={goToCheckout}
+            className="group flex w-full items-center gap-3 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-1 text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50 sm:px-3 sm:py-2"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                    isDark
-                      ? "bg-[#C9A227]/15 text-[#E0B93A]"
-                      : "bg-[#C9A227]/15 text-[#8A6E1A]"
-                  }`}
-                >
-                  <ShoppingBag className="h-4 w-4" />
-                </span>
-                <h3
-                  className="text-lg font-medium"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {t.confirmOrder}
-                </h3>
-              </div>
-              <button
-                onClick={() => setCartOpen(false)}
-                className={`rounded-full p-1.5 transition ${
-                  isDark
-                    ? "text-[#6E687A] hover:bg-[#2A2534] hover:text-[#F0EAE2]"
-                    : "text-[#A39D8F] hover:bg-[#F7F4EE] hover:text-[#1D1A22]"
-                }`}
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div
-              className={`max-h-56 space-y-1.5 overflow-y-auto rounded-2xl border p-3.5 ${
-                isDark
-                  ? "border-[#2E2938] bg-[#161320]"
-                  : "border-[#E4DFD4] bg-[#FAF8F4]"
-              }`}
-            >
-              {cartLines.map((l) => (
-                <div
-                  key={l.id}
-                  className="flex items-center gap-2 py-1 text-sm"
-                >
-                  <span
-                    className={`flex h-6 min-w-6 items-center justify-center rounded-full text-[11px] font-bold ${
-                      isDark
-                        ? "bg-[#C9A227]/15 text-[#E0B93A]"
-                        : "bg-[#C9A227]/15 text-[#8A6E1A]"
-                    }`}
-                  >
-                    {l.qty}
-                  </span>
-                  <span className="flex-1 truncate">{l.item.name}</span>
-                  <span className="shrink-0 font-medium tabular-nums">
-                    {(l.item.price * l.qty).toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div
-              className={`mt-4 flex items-center justify-between border-t pt-4 ${
-                isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
-              }`}
-            >
-              <span
-                className={`text-xs font-semibold uppercase tracking-[0.15em] ${
-                  isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                }`}
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                {t.total}
+            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1D1707]/15 sm:h-10 sm:w-10">
+              <ShoppingBag className="h-4 w-4" />
+              <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
+                {cartCount}
               </span>
-              <span
-                className={`text-xl font-bold tabular-nums ${
-                  isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
-                }`}
+            </span>
+            <div className="flex-1 text-start">
+              <p className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-80 sm:text-[11px]">
+                {cartCount} {t.items}
+              </p>
+              <p
+                className="text-sm font-bold tabular-nums sm:text-base"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {cartTotal.toFixed(2)}{" "}
-                <span
-                  className={`text-xs font-medium ${
-                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                  }`}
-                >
-                  {currency}
-                </span>
-              </span>
+                {cartTotal.toFixed(2)} {currency}
+              </p>
             </div>
-
-            <div className="mt-4">
-              {meLoading ? (
-                <div
-                  className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs ${
-                    isDark
-                      ? "border-[#332C3E] bg-[#161320] text-[#9691A6]"
-                      : "border-[#E4DFD4] bg-[#FAF8F4] text-[#8A8496]"
-                  }`}
-                >
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                </div>
-              ) : buyer ? (
-                <div
-                  className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-xs ${
-                    isDark
-                      ? "border-[#C9A227]/30 bg-[#C9A227]/5 text-[#E0B93A]"
-                      : "border-[#A9821E]/30 bg-[#C9A227]/10 text-[#8A6E1A]"
-                  }`}
-                >
-                  <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">
-                    {t.orderingAs}{" "}
-                    <strong className="font-semibold">{buyer.full_name}</strong>
-                    {buyer.phone ? (
-                      <span className="opacity-70"> · {buyer.phone}</span>
-                    ) : null}
-                  </span>
-                </div>
-              ) : (
-                <Link
-                  href={`/buy/login?next=${encodeURIComponent(
-                    `/buy/order/${branchId}`,
-                  )}`}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-amber-300/60 bg-amber-50 px-3 py-3 text-xs font-semibold text-amber-800 transition hover:bg-amber-100 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20"
-                >
-                  <LogIn className="h-3.5 w-3.5" />
-                  {t.signInToOrder}
-                </Link>
-              )}
-            </div>
-
-            <textarea
-              placeholder={t.notePlaceholder}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={2}
-              className={`mt-3 w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/30 ${
-                isDark
-                  ? "border-[#332C3E] bg-[#161320] text-[#F0EAE2] placeholder:text-[#5E5670] focus:border-[#C9A227]"
-                  : "border-[#E4DFD4] bg-[#FAF8F4] text-[#1D1A22] placeholder:text-[#A39D8F] focus:border-[#A9821E]"
-              }`}
-            />
-
-            {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
-
-            <button
-              onClick={submit}
-              disabled={saving || !buyer}
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
-            >
-              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {saving ? t.placing : !buyer ? t.signIn : t.placeOrder}
-            </button>
-          </div>
+            <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#1D1707] px-3 py-2 text-[11px] font-bold text-[#E0B93A] transition group-hover:bg-[#1D1707]/90 sm:px-4 sm:text-xs">
+              {t.checkout}
+              <ChevronRight className="h-3 w-3 rtl:rotate-180 sm:h-3.5 sm:w-3.5" />
+            </span>
+          </button>
         </div>
       )}
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

@@ -24,12 +24,16 @@ const ORDER_INCLUDE = {
   buyers: {
     select: { id: true, full_name: true, phone: true, email: true },
   },
+  // ── NEW: online delivery details ──
+  online_details: true,
 };
 
 function serializeOrder(o) {
   const t = o.table_sessions?.dining_tables || null;
   const rs = o.room_stays || null;
   const b = o.buyers || null;
+  const od = o.online_details || null;
+
   return {
     id: o.id,
     order_number: o.order_number,
@@ -49,9 +53,11 @@ function serializeOrder(o) {
     room_stay_id: o.room_stay_id,
     customer_id: o.customer_id,
     buyer_id: o.buyer_id,
+
     table: t
       ? { id: t.id, table_number: t.table_number, area_id: t.area_id }
       : null,
+
     room_stay: rs
       ? {
           id: rs.id,
@@ -72,6 +78,7 @@ function serializeOrder(o) {
           guest_name: rs.guest_name,
         }
       : null,
+
     buyer: b
       ? {
           id: b.id,
@@ -80,6 +87,23 @@ function serializeOrder(o) {
           email: b.email,
         }
       : null,
+
+    // ── NEW: online-only contact + delivery ──
+    // null for POS / QR orders. Present only for source = "customer".
+    online_details: od
+      ? {
+          contact_name: od.contact_name,
+          contact_phone: od.contact_phone,
+          delivery_address: od.delivery_address,
+          delivery_city: od.delivery_city,
+          delivery_lat:
+            od.delivery_lat != null ? Number(od.delivery_lat) : null,
+          delivery_lng:
+            od.delivery_lng != null ? Number(od.delivery_lng) : null,
+          delivery_notes: od.delivery_notes,
+        }
+      : null,
+
     items: (o.order_items || []).map((i) => ({
       id: i.id,
       menu_item_id: i.menu_item_id,
