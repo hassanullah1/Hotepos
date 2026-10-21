@@ -1,5 +1,5 @@
 "use client";
-
+import { cartKey } from "../cart-storage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -25,7 +25,7 @@ const displayFont = Fraunces({
   variable: "--font-display",
 });
 
-export const cartKey = (branchId: string) => `buy_checkout_${branchId}`;
+
 
 const branchText = {
   en: {
