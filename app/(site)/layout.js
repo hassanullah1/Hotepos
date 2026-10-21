@@ -4,21 +4,8 @@ import "../globals.css";
 import { Providers } from "../../providers/providers";
 import HeaderClient from "../../components/HeaderClient";
 import Footer from "../../components/Footer";
+import InstallPrompt from "../components/InstallPrompt";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata = {
-  title: "Melmah",
-  description: "Your trusted logistics partner",
-};
 
 export default function Layout({ children }) {
   return (
@@ -27,6 +14,7 @@ export default function Layout({ children }) {
         <HeaderClient />
         <main className="flex-1">{children}</main>
         <Footer />
+        <InstallPrompt />
       </Providers>
     </div>
   );
