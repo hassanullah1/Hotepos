@@ -105,7 +105,6 @@ export async function POST(req: Request) {
       },
       select: { id: true, full_name: true, email: true, phone: true },
     });
-
     // ── consume the verification (single-use) ──
     if (verification_id) {
       await prisma.email_verifications
@@ -114,7 +113,6 @@ export async function POST(req: Request) {
           /* non-critical */
         });
     }
-
     const token = signBuyerToken({
       buyerId: buyer.id,
       email: buyer.email,
