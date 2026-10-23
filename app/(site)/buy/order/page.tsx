@@ -13,7 +13,7 @@ import {
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import {
   Search,
   Loader2,
@@ -29,12 +29,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+
 
 type Item = {
   id: string;

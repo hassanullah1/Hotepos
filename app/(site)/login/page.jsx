@@ -5,15 +5,9 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import LoadingScreen from "@/components/LoadingScreen";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
 
 /* ------------------------------------------------------------------ */
 /* Translations — same shape as `pageText` in @/lib/pageText.          */

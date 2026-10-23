@@ -15,15 +15,10 @@ import {
   ChevronDown,
   Infinity as InfinityIcon,
 } from "lucide-react";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import { useTranslation } from "@/hooks/useTranslation";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+
 
 const PLANS_ENDPOINT = "/api/public/subscription-plans";
 const VISIBLE_FEATURES = 5;

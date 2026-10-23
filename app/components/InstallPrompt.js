@@ -12,6 +12,10 @@ const installText = {
     title: "Install Melmah App",
     subtitle: "Faster ordering. Works offline. No app store needed.",
     install: "Install",
+
+
+
+    
     later: "Not now",
     iosTitle: "Add Melmah to Home Screen",
     iosSubtitle: 'Tap the Share button below, then "Add to Home Screen".',

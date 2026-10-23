@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import LoadingScreen from "@/components/LoadingScreen";
-import { Fraunces } from "next/font/google";
+
 import {
   CheckCircle2,
   Loader2,
@@ -20,12 +20,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+;
 
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 

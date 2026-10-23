@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import {
   Loader2,
   Star,
@@ -17,12 +17,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+
 
 const itemText = {
   en: {

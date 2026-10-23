@@ -2,7 +2,7 @@
 import OfflineGame from "./OfflineGame";
 
 export const metadata = {
-  title: "Offline — Hotel Logistic",
+  title: "Offline — melmah",
 };
 
 export default function OfflinePage() {

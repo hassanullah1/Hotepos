@@ -15,15 +15,10 @@ import {
   MonitorSmartphone,
   ArrowLeft,
 } from "lucide-react";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import { useTranslation } from "@/hooks/useTranslation";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 

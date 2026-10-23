@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import {
   Loader2,
   Utensils,
@@ -24,12 +24,7 @@ import {
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
+
 
 const loginText = {
   en: {

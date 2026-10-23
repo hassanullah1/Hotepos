@@ -1,10 +1,17 @@
 /* globals.css – FINAL WORKING VERSION */
 @import "tailwindcss";
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/500-italic.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/fraunces/600-italic.css";
+@import "@fontsource/fraunces/700.css";
+@import "@fontsource/fraunces/700-italic.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-display: "Fraunces", Georgia, serif;
 }
 
 @theme inline {
@@ -35,6 +42,10 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+.font-display-fraunces {
+  --font-display: "Fraunces", Georgia, serif;
 }
 
 /* Dark mode select options */

@@ -1,7 +1,7 @@
 {
-  "name": "Hotel Logistic",
-  "short_name": "Hotel Logistic",
-  "description": "Your trusted logistics partner",
+  "name": "melmah",
+  "short_name": "melmah",
+  "description": "Your trusted melmah partner",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

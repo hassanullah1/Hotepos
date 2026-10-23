@@ -17,16 +17,16 @@ const geistMono = Geist_Mono({
 
 // ─────────── metadata (includes PWA) ───────────
 export const metadata = {
-  title: "Hotel Logistic",
-  description: "Your trusted logistics partner",
+  title: "melmah",
+  description: "Your trusted melmah partner",
 
   // PWA
   manifest: "/manifest.webmanifest",
-  applicationName: "Hotel Logistic",
+  applicationName: "melmah",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Hotel Logistic",
+    title: "melmah",
   },
   icons: {
     icon: [
@@ -60,7 +60,7 @@ export default function RootLayout({ children }) {
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <meta name="apple-mobile-web-app-title" content="Hotel Logistic" />
+        <meta name="apple-mobile-web-app-title" content="melmah" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
       <body

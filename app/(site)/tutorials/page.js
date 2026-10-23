@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import LoadingScreen from "@/components/LoadingScreen";
-import { Fraunces } from "next/font/google";
+import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import {
   Sparkles,
   Play,
@@ -17,12 +17,6 @@ import {
   X,
 } from "lucide-react";
 
-const displayFont = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
 
 const tutorialsText = {
   en: {
