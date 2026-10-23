@@ -56,7 +56,7 @@ export async function sendOwnerWelcomeEmail({
   }
 
   const loginUrl =
-    process.env.LOGIN_URL || "https://melmah.up.railway.app/login";
+    process.env.LOGIN_URL || "https://melmah.up.railway.app/hotel/login";
 
   const html = `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">

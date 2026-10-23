@@ -87,7 +87,7 @@ export default function OwnerBranchesPage() {
       const res = await fetchWithAuth(url);
 
       if (!res.ok) {
-        if (res.status === 401) return router.push("/owner/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.branches.loadError);
       }
       const data = await res.json();

@@ -17,8 +17,6 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-
-
 const itemText = {
   en: {
     dir: "ltr",
@@ -140,7 +138,7 @@ export default function ItemDetailPage() {
       >
         <p className="text-sm text-red-500">{error || t.notFound}</p>
         <Link
-          href="/buy/order"
+          href="/order"
           className={`inline-flex items-center gap-1.5 text-xs font-semibold ${
             isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
           }`}
@@ -196,7 +194,7 @@ export default function ItemDetailPage() {
       <div className="relative mx-auto max-w-3xl px-5 py-6 sm:px-6 sm:py-8">
         {/* Back link */}
         <Link
-          href="/buy/order"
+          href="/order"
           className={`group mb-5 inline-flex items-center gap-1.5 text-xs font-semibold transition ${
             isDark
               ? "text-[#B7B2C4] hover:text-[#E0B93A]"
@@ -327,7 +325,7 @@ export default function ItemDetailPage() {
                 </p>
 
                 <Link
-                  href={`/buy/order/${item.branch?.id}?item=${item.id}`}
+                  href={`/order/${item.branch?.id}?item=${item.id}`}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35"
                 >
                   <ShoppingBag size={15} />

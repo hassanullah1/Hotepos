@@ -34,12 +34,12 @@
   "shortcuts": [
     {
       "name": "Orders",
-      "url": "/buy/order",
+      "url": "/order",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "My orders",
-      "url": "/buy/orders",
+      "url": "/orders",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]

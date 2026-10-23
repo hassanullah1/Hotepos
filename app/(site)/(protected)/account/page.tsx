@@ -1,4 +1,4 @@
-// app/buy/account/page.tsx
+// app/account/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -26,8 +26,6 @@ import {
 } from "lucide-react";
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
-
-
 
 const accountText = {
   en: {
@@ -161,7 +159,7 @@ export default function BuyerAccountPage() {
     if (meLoading) return;
 
     if (!buyer) {
-      router.replace("/buy/login?next=/buy/account");
+      router.replace("/login?next=/account");
       return;
     }
 
@@ -182,7 +180,7 @@ export default function BuyerAccountPage() {
 
   async function handleLogout() {
     await logout();
-    router.push("/buy/order");
+    router.push("/order");
     router.refresh();
   }
 
@@ -258,7 +256,7 @@ export default function BuyerAccountPage() {
             {t.signInHint}
           </p>
           <Link
-            href="/buy/login?next=/buy/account"
+            href="/login?next=/account"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/30"
           >
             {t.signInCta}
@@ -448,7 +446,7 @@ export default function BuyerAccountPage() {
               {t.myOrders}
             </h2>
             <Link
-              href="/buy/order"
+              href="/order"
               className={`group inline-flex items-center gap-1.5 text-xs font-semibold transition ${
                 isDark
                   ? "text-[#E0B93A] hover:text-[#F0C94A]"
@@ -495,7 +493,7 @@ export default function BuyerAccountPage() {
                 {t.noOrdersHint}
               </p>
               <Link
-                href="/buy/order"
+                href="/order"
                 className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-2.5 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition hover:-translate-y-0.5"
               >
                 <ShoppingBag size={14} />
@@ -506,8 +504,6 @@ export default function BuyerAccountPage() {
             <OrdersTable orders={orders} t={t} isDark={isDark} />
           )}
         </div>
-
-      
       </div>
     </div>
   );
@@ -668,7 +664,7 @@ function OrdersTable({
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1.5">
                         <Link
-                          href={`/buy/order/track/${o.public_token}`}
+                          href={`/order/track/${o.public_token}`}
                           className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition ${
                             isDark
                               ? "border-[#332C3E] bg-[#161320] text-[#CFCADB] hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
@@ -680,7 +676,7 @@ function OrdersTable({
 
                         {canReview && (
                           <Link
-                            href={`/buy/order/track/${o.public_token}`}
+                            href={`/order/track/${o.public_token}`}
                             className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2.5 py-1.5 text-[11px] font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-[#C9A227]/35"
                           >
                             <Star size={10} />
@@ -792,7 +788,7 @@ function OrdersTable({
               {/* Row 3: actions */}
               <div className="mt-3 flex items-center gap-2">
                 <Link
-                  href={`/buy/order/track/${o.public_token}`}
+                  href={`/order/track/${o.public_token}`}
                   className={`flex-1 inline-flex items-center justify-center gap-1 rounded-lg border px-3 py-2 text-[11px] font-semibold transition ${
                     isDark
                       ? "border-[#332C3E] bg-[#161320] text-[#CFCADB]"
@@ -804,7 +800,7 @@ function OrdersTable({
                 </Link>
                 {canReview && (
                   <Link
-                    href={`/buy/order/track/${o.public_token}`}
+                    href={`/order/track/${o.public_token}`}
                     className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3 py-2 text-[11px] font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/25"
                   >
                     <Star size={11} />

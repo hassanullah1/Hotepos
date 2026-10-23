@@ -18,9 +18,6 @@ import {
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
 
-
-
-
 const branchText = {
   en: {
     dir: "ltr",
@@ -216,7 +213,7 @@ export default function BranchOrderPage() {
           /* ignore */
         }
       }
-      router.replace(`/buy/order/${branchId}`, { scroll: false });
+      router.replace(`/order/${branchId}`, { scroll: false });
     }
     addPreselect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -287,7 +284,7 @@ export default function BranchOrderPage() {
   );
 
   function goToCheckout() {
-    router.push(`/buy/order/${branchId}/checkout`);
+    router.push(`/order/${branchId}/checkout`);
   }
 
   // ── Infinite scroll ──
@@ -335,7 +332,7 @@ export default function BranchOrderPage() {
         <div>
           <p className="text-sm text-red-500">{error || "Not found"}</p>
           <Link
-            href="/buy/order"
+            href="/order"
             className={`mt-3 inline-block text-xs font-semibold ${
               isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
             }`}
@@ -598,7 +595,7 @@ export default function BranchOrderPage() {
                   }`}
                 >
                   <Link
-                    href={`/buy/order/item/${i.id}`}
+                    href={`/order/item/${i.id}`}
                     className={`relative w-28 shrink-0 overflow-hidden sm:w-32 ${
                       isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
                     }`}
@@ -628,7 +625,7 @@ export default function BranchOrderPage() {
                   <div className="flex min-w-0 flex-1 flex-col p-3.5">
                     <div className="flex items-start justify-between gap-2">
                       <Link
-                        href={`/buy/order/item/${i.id}`}
+                        href={`/order/item/${i.id}`}
                         className="min-w-0 flex-1"
                       >
                         <h3
@@ -649,7 +646,7 @@ export default function BranchOrderPage() {
                       </Link>
 
                       <Link
-                        href={`/buy/order/item/${i.id}`}
+                        href={`/order/item/${i.id}`}
                         className={`shrink-0 rounded-full border p-1.5 transition ${
                           isDark
                             ? "border-[#332C3E] text-[#6E687A] hover:border-[#C9A227]/50 hover:text-[#E0B93A]"

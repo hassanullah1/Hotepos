@@ -130,7 +130,7 @@ function ResetForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t.errorGeneric);
       setDone(true);
-      setTimeout(() => router.push("/login"), 1800);
+      setTimeout(() => router.push("/hotel/login"), 1800);
     } catch (err) {
       setError(err.message || t.errorGeneric);
       setLoading(false);
@@ -259,7 +259,7 @@ function ResetForm() {
         </button>
 
         <Link
-          href="/login"
+          href="/hotel/login"
           className="flex items-center justify-center gap-1.5 text-xs text-[#9691A6] underline-offset-2 transition-colors hover:text-[#C9A227] hover:underline"
         >
           <BackArrow size={12} />

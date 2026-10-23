@@ -133,7 +133,7 @@ export default function DashboardPage() {
       if (branchId) params.set("branch_id", branchId);
 
       const res = await fetchWithAuth(`/api/dashboard?${params.toString()}`);
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const json = await res.json();
       if (!res.ok) {
         setError(json.error || d.loadError || "Could not load dashboard data.");

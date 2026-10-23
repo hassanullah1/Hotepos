@@ -24,8 +24,6 @@ import {
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
 
-
-
 const loginText = {
   en: {
     dir: "ltr",
@@ -164,7 +162,7 @@ const loginText = {
 export default function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/buy/order";
+  const next = params.get("next") || "/order";
   const { refresh } = useBuyerAuth();
   const { language } = useLanguage();
   const { resolvedTheme } = useTheme();
@@ -425,7 +423,7 @@ export default function LoginForm() {
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-8 sm:px-6">
         {/* Back link */}
         <Link
-          href="/buy/order"
+          href="/order"
           className={`group mb-6 inline-flex items-center gap-1.5 text-xs font-semibold transition ${
             isDark
               ? "text-[#B7B2C4] hover:text-[#E0B93A]"
@@ -781,7 +779,7 @@ export default function LoginForm() {
         {/* Bottom hint */}
         <div className="mt-6 flex items-center justify-center">
           <Link
-            href="/buy/order"
+            href="/order"
             className={`inline-flex items-center gap-1.5 text-xs transition ${
               isDark
                 ? "text-[#6E687A] hover:text-[#E0B93A]"

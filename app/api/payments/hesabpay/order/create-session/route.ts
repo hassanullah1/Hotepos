@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   if (order.status === "cancelled")
     return NextResponse.json({ error: "ORDER_CANCELLED" }, { status: 400 });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   const token = order.public_token || order.id;
 
   const result = await createOrderPaymentSession({
@@ -47,8 +47,8 @@ export async function POST(request: Request) {
     amount: Number(order.total_amount),
     email: buyer.email,
     // `ref` lets the track page know which order to confirm after redirect.
-    success_url: `${appUrl}/buy/order/track/${token}?paid=1&ref=${order.id}`,
-    failure_url: `${appUrl}/buy/order/track/${token}?payment=failed`,
+    success_url: `${appUrl}/order/track/${token}?paid=1&ref=${order.id}`,
+    failure_url: `${appUrl}/order/track/${token}?payment=failed`,
   });
 
   if (!result.ok)

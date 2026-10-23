@@ -7,6 +7,7 @@ const LanguageContext = createContext();
 const translations = {
   en: {
     brand: "Melmah",
+    hotelRegister: "Register hotel",
     home: "Home",
     tutorials: "ُTutorials",
     contact: "contact",
@@ -32,6 +33,7 @@ const translations = {
     brand: "Melmah",
     home: "کور",
     contact: "اړیکه",
+    hotelRegister: "ثبت هوټل",
     tutorials: "ذدکړه",
     about: "درباره",
     pricing: "قیمت",
@@ -55,6 +57,7 @@ const translations = {
     brand: "Melmah",
     tutorials: "ذدکړه",
     contact: "تماس",
+    hotelRegister: "راجستر هوتل",
     home: "خانه",
     about: "درباره ما",
     pricing: "قیمتها",

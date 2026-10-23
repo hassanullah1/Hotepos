@@ -34,7 +34,7 @@ export default function SetPasswordForm() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Couldn't load signup");
         if (!data.can_set_password) {
-          if (data.status === "paid") router.replace("/login");
+          if (data.status === "paid") router.replace("/hotel/login");
           else throw new Error("Signup is not ready yet.");
           return;
         }
@@ -64,7 +64,7 @@ export default function SetPasswordForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not save password");
       setDone(true);
-      setTimeout(() => router.push("/login"), 1800);
+      setTimeout(() => router.push("/hotel/login"), 1800);
     } catch (err: any) {
       setError(err.message);
       setSubmitting(false);

@@ -79,7 +79,7 @@ export default function CustomerHistoryPage() {
 
   function handle401(res: Response) {
     if (res.status === 401) {
-      router.push("/login");
+      router.push("/hotel/login");
       return true;
     }
     return false;

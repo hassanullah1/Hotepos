@@ -1,4 +1,4 @@
-// app/buy/order/page.tsx
+// app/order/page.tsx
 "use client";
 
 import {
@@ -28,8 +28,6 @@ import {
   Check,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-
-
 
 type Item = {
   id: string;
@@ -781,156 +779,7 @@ function PaymentWallet({
         </div>
       </div>
 
-      <style jsx global>{`
-        .pw-arm {
-          position: absolute;
-          top: 10px;
-          width: 66px;
-          height: 42px;
-          margin-left: -33px;
-          transform-origin: 50% 141px;
-          transition:
-            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
-            opacity 0.6s ease;
-          will-change: transform;
-        }
-        .pw-card {
-          width: 100%;
-          height: 100%;
-          transform-origin: 50% 50%;
-          transition:
-            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
-            filter 0.6s ease;
-          box-shadow:
-            0 1px 0 rgba(255, 255, 255, 0.25) inset,
-            0 8px 14px -6px rgba(0, 0, 0, 0.6);
-          border-radius: 7px;
-          perspective: 320px;
-        }
-        .pw-front > .wallet-card-body {
-          animation: pw-tilt 3.8s ease-in-out infinite;
-          transform-style: preserve-3d;
-        }
-        @keyframes pw-tilt {
-          0%,
-          100% {
-            transform: rotateY(-12deg) rotateX(5deg);
-          }
-          50% {
-            transform: rotateY(12deg) rotateX(-4deg);
-          }
-        }
-        .pw-front {
-          animation: pw-float 2.6s ease-in-out 0.9s infinite;
-          box-shadow:
-            0 10px 18px -8px rgba(0, 0, 0, 0.6),
-            0 0 18px -4px rgba(201, 162, 39, 0.55);
-        }
-        @keyframes pw-float {
-          0%,
-          100% {
-            translate: 0 0;
-            rotate: -1.5deg;
-          }
-          50% {
-            translate: 0 -3px;
-            rotate: 1.5deg;
-          }
-        }
-        .pw-leaving {
-          animation: pw-leave 0.95s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes pw-leave {
-          0% {
-            translate: 0 0;
-          }
-          35% {
-            translate: 0 -14px;
-            rotate: calc(10deg * var(--pw-dir, 1));
-          }
-          100% {
-            translate: 0 0;
-            rotate: 0deg;
-          }
-        }
-        .pw-glow {
-          position: absolute;
-          left: 50%;
-          bottom: -2px;
-          width: 120px;
-          height: 16px;
-          transform: translateX(-50%);
-          border-radius: 999px;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(201, 162, 39, 0.55),
-            transparent 72%
-          );
-          filter: blur(5px);
-          animation: pw-glow 3.2s ease-in-out infinite;
-          pointer-events: none;
-        }
-        @keyframes pw-glow {
-          0%,
-          100% {
-            opacity: 0.35;
-            transform: translateX(-50%) scaleX(0.8);
-          }
-          50% {
-            opacity: 0.9;
-            transform: translateX(-50%) scaleX(1.1);
-          }
-        }
-        .pw-msg {
-          animation: pw-msg-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-          animation-delay: 0.12s;
-        }
-        @keyframes pw-msg-in {
-          0% {
-            opacity: 0;
-            transform: translateY(8px);
-            filter: blur(3px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-          }
-        }
-        .card-sheen {
-          background: linear-gradient(
-            115deg,
-            transparent 30%,
-            rgba(255, 255, 255, 0.65) 48%,
-            transparent 66%
-          );
-          transform: translateX(-140%);
-          animation: sheen-run 4.5s ease-in-out infinite;
-        }
-        @keyframes sheen-run {
-          0%,
-          55% {
-            transform: translateX(-140%);
-          }
-          78%,
-          100% {
-            transform: translateX(140%);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .pw-arm,
-          .pw-card,
-          .pw-front,
-          .pw-leaving,
-          .pw-front > .wallet-card-body,
-          .pw-glow,
-          .pw-msg,
-          .card-sheen {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{ __html: WALLET_CSS }} />
     </div>
   );
 }
@@ -960,7 +809,7 @@ const DishCard = memo(function DishCard({
         onClick={() => onOpen(it)}
         onMouseEnter={() => onPrefetch(it)}
         onFocus={() => onPrefetch(it)}
-        className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border text-start backdrop-blur-sm ${
+        className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-xl border text-start backdrop-blur-sm sm:rounded-2xl ${
           isDark
             ? "border-[#2E2938] bg-[#1E1B26]/90 hover:border-[#C9A227]/60"
             : "border-[#E4DFD4] bg-white hover:border-[#A9821E]/50"
@@ -969,7 +818,7 @@ const DishCard = memo(function DishCard({
         <span className="dish-sheen pointer-events-none absolute inset-0 z-20" />
 
         <div
-          className={`relative aspect-[4/3] overflow-hidden ${
+          className={`relative aspect-square overflow-hidden sm:aspect-[4/3] ${
             isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
           }`}
         >
@@ -989,25 +838,25 @@ const DishCard = memo(function DishCard({
                 isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"
               }`}
             >
-              <ShoppingBag size={32} />
+              <ShoppingBag size={26} />
             </div>
           )}
 
           <span
-            className={`pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t to-transparent ${
+            className={`pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t to-transparent ${
               isDark ? "from-[#1E1B26]" : "from-white"
             }`}
           />
 
           {it.distance_km !== null && (
             <span
-              className={`absolute left-2 top-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold backdrop-blur-sm ${
+              className={`absolute left-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-semibold backdrop-blur-sm sm:left-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px] ${
                 isDark
                   ? "bg-[#15121C]/90 text-[#E0B93A]"
                   : "bg-white/95 text-[#8A6E1A] shadow-sm"
               }`}
             >
-              <MapPin size={10} />
+              <MapPin size={9} />
               {it.distance_km < 1
                 ? `${Math.round(it.distance_km * 1000)} m`
                 : `${it.distance_km.toFixed(1)} km`}
@@ -1015,23 +864,23 @@ const DishCard = memo(function DishCard({
           )}
 
           {it.order_count > 50 && (
-            <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-0.5 text-[10px] font-semibold text-[#1D1707] shadow-sm">
-              <Flame size={10} />
-              {t.popular}
+            <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-1.5 py-0.5 text-[9px] font-semibold text-[#1D1707] shadow-sm sm:right-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px]">
+              <Flame size={9} />
+              <span className="hidden min-[380px]:inline">{t.popular}</span>
             </span>
           )}
         </div>
 
-        <div className="flex flex-1 flex-col p-3.5">
+        <div className="flex flex-1 flex-col p-2.5 sm:p-3.5">
           <h3
-            className="line-clamp-1 text-sm font-medium"
+            className="line-clamp-1 text-[13px] font-medium sm:text-sm"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {it.name}
           </h3>
 
           <p
-            className={`mt-1 line-clamp-1 text-xs ${
+            className={`mt-0.5 line-clamp-1 text-[10.5px] sm:mt-1 sm:text-xs ${
               isDark ? "text-[#9691A6]" : "text-[#8A8496]"
             }`}
           >
@@ -1040,13 +889,13 @@ const DishCard = memo(function DishCard({
           </p>
 
           <div
-            className={`mt-2 flex items-center gap-2 text-[11px] ${
+            className={`mt-1.5 flex items-center gap-1.5 text-[10.5px] sm:mt-2 sm:gap-2 sm:text-[11px] ${
               isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
             }`}
           >
             {it.review_count > 0 ? (
               <span className="inline-flex items-center gap-1">
-                <Star size={12} className="fill-[#C9A227] text-[#C9A227]" />
+                <Star size={11} className="fill-[#C9A227] text-[#C9A227]" />
                 <span
                   className={`font-semibold ${
                     isDark ? "text-[#F0EAE2]" : "text-[#1D1A22]"
@@ -1065,20 +914,21 @@ const DishCard = memo(function DishCard({
             )}
 
             {it.order_count > 0 && (
-              <>
+              <span className="hidden items-center gap-2 sm:inline-flex">
                 <span className={isDark ? "text-[#332C3E]" : "text-[#D4CFC4]"}>
                   ·
                 </span>
                 <span>
                   {it.order_count} {t.ordered}
                 </span>
-              </>
+              </span>
             )}
           </div>
 
+          {/* description only on bigger screens */}
           {it.description && (
             <p
-              className={`mt-2 line-clamp-2 text-xs leading-relaxed ${
+              className={`mt-2 line-clamp-2 hidden text-xs leading-relaxed sm:block ${
                 isDark ? "text-[#9691A6]" : "text-[#8A8496]"
               }`}
             >
@@ -1086,35 +936,37 @@ const DishCard = memo(function DishCard({
             </p>
           )}
 
-          <div
-            className={`mt-auto flex items-center justify-between border-t pt-3 ${
-              isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
-            }`}
-          >
-            <span
-              className={`text-base font-semibold ${
-                isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+          <div className="mt-auto">
+            <div
+              className={`mt-2 flex items-center justify-between gap-1 border-t pt-2 sm:mt-3 sm:pt-3 ${
+                isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
               }`}
-              style={{ fontFamily: "var(--font-display)" }}
             >
-              {Number(it.price).toFixed(2)}{" "}
               <span
-                className={`text-xs font-medium ${
-                  isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                className={`text-[13px] font-semibold sm:text-base ${
+                  isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                }`}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {Number(it.price).toFixed(2)}{" "}
+                <span
+                  className={`text-[10px] font-medium sm:text-xs ${
+                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  }`}
+                >
+                  {it.currency}
+                </span>
+              </span>
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
+                  isDark
+                    ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
+                    : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
                 }`}
               >
-                {it.currency}
+                {t.order}
               </span>
-            </span>
-            <span
-              className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 ${
-                isDark
-                  ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
-                  : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
-              }`}
-            >
-              {t.order}
-            </span>
+            </div>
           </div>
         </div>
       </button>
@@ -1356,14 +1208,14 @@ export default function BuyerMenuDiscoveryPage() {
 
   const openItem = useCallback(
     (item: Item) => {
-      router.push(`/buy/order/item/${item.id}?province_id=${provinceId}`);
+      router.push(`/order/item/${item.id}?province_id=${provinceId}`);
     },
     [router, provinceId],
   );
 
   const prefetchItem = useCallback(
     (item: Item) => {
-      router.prefetch(`/buy/order/item/${item.id}?province_id=${provinceId}`);
+      router.prefetch(`/order/item/${item.id}?province_id=${provinceId}`);
     },
     [router, provinceId],
   );
@@ -1425,7 +1277,7 @@ export default function BuyerMenuDiscoveryPage() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-6">
+      <div className="relative mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-6">
         <PaymentWallet isDark={isDark} t={t} isRTL={isRTL} />
 
         <div className="rounded-2xl bg-gradient-to-br from-[#C9A227]/45 via-[#C9A227]/10 to-[#C9A227]/25 p-px shadow-sm">
@@ -1515,7 +1367,7 @@ export default function BuyerMenuDiscoveryPage() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           {error && (
             <div
               className={`mb-4 rounded-xl border px-3.5 py-2 text-sm ${
@@ -1563,11 +1415,11 @@ export default function BuyerMenuDiscoveryPage() {
           )}
 
           {loading && items.length === 0 && provinceId && (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className={`h-64 animate-pulse rounded-2xl border ${
+                  className={`h-52 animate-pulse rounded-xl border sm:h-64 sm:rounded-2xl ${
                     isDark
                       ? "border-[#2E2938] bg-[#1E1B26]/60"
                       : "border-[#E4DFD4] bg-white/60"
@@ -1612,7 +1464,7 @@ export default function BuyerMenuDiscoveryPage() {
           )}
 
           {items.length > 0 && (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               {items.map((it, idx) => (
                 <DishCard
                   key={it.id}
@@ -1688,7 +1540,164 @@ export default function BuyerMenuDiscoveryPage() {
       </div>
 
       {/* global because DishCard is a separate component */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: PAGE_CSS }} />
+    </div>
+  );
+}
+
+/* ---------------- Global CSS (plain <style>, no styled-jsx hashes => no hydration mismatch) ---------------- */
+const WALLET_CSS = `
+        .pw-arm {
+          position: absolute;
+          top: 10px;
+          width: 66px;
+          height: 42px;
+          margin-left: -33px;
+          transform-origin: 50% 141px;
+          transition:
+            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
+            opacity 0.6s ease;
+          will-change: transform;
+        }
+        .pw-card {
+          width: 100%;
+          height: 100%;
+          transform-origin: 50% 50%;
+          transition:
+            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
+            filter 0.6s ease;
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.25) inset,
+            0 8px 14px -6px rgba(0, 0, 0, 0.6);
+          border-radius: 7px;
+          perspective: 320px;
+        }
+        .pw-front > .wallet-card-body {
+          animation: pw-tilt 3.8s ease-in-out infinite;
+          transform-style: preserve-3d;
+        }
+        @keyframes pw-tilt {
+          0%,
+          100% {
+            transform: rotateY(-12deg) rotateX(5deg);
+          }
+          50% {
+            transform: rotateY(12deg) rotateX(-4deg);
+          }
+        }
+        .pw-front {
+          animation: pw-float 2.6s ease-in-out 0.9s infinite;
+          box-shadow:
+            0 10px 18px -8px rgba(0, 0, 0, 0.6),
+            0 0 18px -4px rgba(201, 162, 39, 0.55);
+        }
+        @keyframes pw-float {
+          0%,
+          100% {
+            translate: 0 0;
+            rotate: -1.5deg;
+          }
+          50% {
+            translate: 0 -3px;
+            rotate: 1.5deg;
+          }
+        }
+        .pw-leaving {
+          animation: pw-leave 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes pw-leave {
+          0% {
+            translate: 0 0;
+          }
+          35% {
+            translate: 0 -14px;
+            rotate: calc(10deg * var(--pw-dir, 1));
+          }
+          100% {
+            translate: 0 0;
+            rotate: 0deg;
+          }
+        }
+        .pw-glow {
+          position: absolute;
+          left: 50%;
+          bottom: -2px;
+          width: 120px;
+          height: 16px;
+          transform: translateX(-50%);
+          border-radius: 999px;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(201, 162, 39, 0.55),
+            transparent 72%
+          );
+          filter: blur(5px);
+          animation: pw-glow 3.2s ease-in-out infinite;
+          pointer-events: none;
+        }
+        @keyframes pw-glow {
+          0%,
+          100% {
+            opacity: 0.35;
+            transform: translateX(-50%) scaleX(0.8);
+          }
+          50% {
+            opacity: 0.9;
+            transform: translateX(-50%) scaleX(1.1);
+          }
+        }
+        .pw-msg {
+          animation: pw-msg-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation-delay: 0.12s;
+        }
+        @keyframes pw-msg-in {
+          0% {
+            opacity: 0;
+            transform: translateY(8px);
+            filter: blur(3px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+          }
+        }
+        .card-sheen {
+          background: linear-gradient(
+            115deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.65) 48%,
+            transparent 66%
+          );
+          transform: translateX(-140%);
+          animation: sheen-run 4.5s ease-in-out infinite;
+        }
+        @keyframes sheen-run {
+          0%,
+          55% {
+            transform: translateX(-140%);
+          }
+          78%,
+          100% {
+            transform: translateX(140%);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .pw-arm,
+          .pw-card,
+          .pw-front,
+          .pw-leaving,
+          .pw-front > .wallet-card-body,
+          .pw-glow,
+          .pw-msg,
+          .card-sheen {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
+      `;
+
+const PAGE_CSS = `
         .dish-slot {
           position: relative;
           animation: card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
@@ -1724,9 +1733,11 @@ export default function BuyerMenuDiscoveryPage() {
           pointer-events: none;
           z-index: 0;
         }
-        .dish-slot:hover::after {
-          opacity: 1;
-          transform: scaleX(1);
+        @media (hover: hover) {
+          .dish-slot:hover::after {
+            opacity: 1;
+            transform: scaleX(1);
+          }
         }
         .dish-card {
           z-index: 1;
@@ -1737,11 +1748,13 @@ export default function BuyerMenuDiscoveryPage() {
             border-color 0.45s ease;
           will-change: transform;
         }
-        .dish-card:hover {
-          transform: translateY(-9px) rotate(-0.6deg) scale(1.015);
-          box-shadow:
-            0 18px 30px -18px rgba(0, 0, 0, 0.45),
-            0 10px 22px -14px rgba(201, 162, 39, 0.35);
+        @media (hover: hover) {
+          .dish-card:hover {
+            transform: translateY(-9px) rotate(-0.6deg) scale(1.015);
+            box-shadow:
+              0 18px 30px -18px rgba(0, 0, 0, 0.45),
+              0 10px 22px -14px rgba(201, 162, 39, 0.35);
+          }
         }
         .dish-card:active {
           transform: translateY(-4px) scale(0.995);
@@ -1766,9 +1779,11 @@ export default function BuyerMenuDiscoveryPage() {
             transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
             opacity 0.3s ease;
         }
-        .dish-card:hover .dish-sheen {
-          transform: translateX(130%);
-          opacity: 1;
+        @media (hover: hover) {
+          .dish-card:hover .dish-sheen {
+            transform: translateX(130%);
+            opacity: 1;
+          }
         }
         @keyframes drift-a {
           0%,
@@ -1806,7 +1821,4 @@ export default function BuyerMenuDiscoveryPage() {
             transition: none !important;
           }
         }
-      `}</style>
-    </div>
-  );
-}
+      `;

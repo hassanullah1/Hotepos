@@ -250,7 +250,7 @@ export default function AboutPage() {
             </Link>
 
             <Link
-              href="/login"
+              href="/hotel/login"
               className="inline-flex items-center gap-2 rounded-lg border border-[#332C3E] px-6 py-3 text-sm font-semibold text-[#F0EAE2] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A227] hover:text-[#C9A227]"
             >
               {t.ctaSecondary}

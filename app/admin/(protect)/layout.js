@@ -64,7 +64,7 @@ async function getSession() {
 
 export default async function AdminLayout({ children }) {
   const { role, subscription } = await getSession();
-  if (!role) redirect("/login");
+  if (!role) redirect("/hotel/login");
 
   return (
     <AdminPreferencesProvider>

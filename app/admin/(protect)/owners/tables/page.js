@@ -173,7 +173,7 @@ export default function TablesPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -192,7 +192,7 @@ export default function TablesPage() {
       try {
         const res = await fetchWithAuth("/api/owners/hotel");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.tables.loadHotelsError || "Failed to load hotels");
         }
         const data = await res.json();
@@ -216,7 +216,7 @@ export default function TablesPage() {
     try {
       const res = await fetchWithAuth(`/api/branches?hotel_id=${hotelId}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(
           t.tables.loadBranchesError || "Failed to load branches",
         );
@@ -271,7 +271,7 @@ export default function TablesPage() {
         `/api/owners/dining-areas?branch_id=${branchId}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.tables.loadAreasError || "Failed to load areas");
       }
       const data = await res.json();
@@ -289,7 +289,7 @@ export default function TablesPage() {
         `/api/owners/dining-tables?branch_id=${branchId}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.tables.loadTablesError || "Failed to load tables");
       }
       const data = await res.json();
@@ -338,7 +338,7 @@ export default function TablesPage() {
         body: JSON.stringify({ ...areaForm, branch_id: branchId }),
       });
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         const data = await res.json();
         setError(
           data.error || t.tables.errors.saveArea || "Failed to save area",
@@ -367,7 +367,7 @@ export default function TablesPage() {
         method: "DELETE",
       });
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         const data = await res.json();
         alert(
           data.error || t.tables.errors.deleteArea || "Failed to delete area",
@@ -426,7 +426,7 @@ export default function TablesPage() {
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         const data = await res.json();
         setError(
           data.error || t.tables.errors.saveTable || "Failed to save table",
@@ -458,7 +458,7 @@ export default function TablesPage() {
         method: "DELETE",
       });
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         const data = await res.json();
         alert(
           data.error || t.tables.errors.deleteTable || "Failed to delete table",

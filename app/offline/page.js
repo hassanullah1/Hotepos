@@ -54,7 +54,7 @@ export default function OfflinePage() {
       </a>
 
       <a
-        href="/buy/order"
+        href="/order"
         className="mt-3 text-xs text-[#6E687A] underline-offset-2 hover:text-[#E0B93A] hover:underline"
       >
         Go to menu

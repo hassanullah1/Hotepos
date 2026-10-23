@@ -112,7 +112,7 @@ export default function ExpensesPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/owner/login");
+          if (res.status === 401) return router.push("/");
           throw new Error(t.expenses.loadUserError);
         }
         const data = await res.json();
@@ -131,7 +131,7 @@ export default function ExpensesPage() {
       try {
         const res = await fetchWithAuth("/api/owners/hotel");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/owner/login");
+          if (res.status === 401) return router.push("/");
           throw new Error(t.expenses.loadHotelsError);
         }
         const data = await res.json();
@@ -153,7 +153,7 @@ export default function ExpensesPage() {
     try {
       const res = await fetchWithAuth(`/api/branches?hotel_id=${hotelId}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/owner/login");
+        if (res.status === 401) return router.push("/");
         throw new Error(t.expenses.loadBranchesError);
       }
       const data = await res.json();
@@ -307,7 +307,7 @@ export default function ExpensesPage() {
 
       const res = await fetchWithAuth(`/api/expenses?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/owner/login");
+        if (res.status === 401) return router.push("/");
         throw new Error(t.expenses.loadExpensesError);
       }
       const data = await res.json();
@@ -409,7 +409,7 @@ export default function ExpensesPage() {
         method: isEdit ? "PATCH" : "POST",
         body: JSON.stringify(payload),
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/");
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || t.expenses.saveExpenseError);
@@ -430,7 +430,7 @@ export default function ExpensesPage() {
       const res = await fetchWithAuth(`/api/expenses/${e.id}`, {
         method: "DELETE",
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/");
       const data = await res.json();
       if (!res.ok) return alert(data.error || t.expenses.deleteExpenseError);
       loadExpenses();
@@ -445,7 +445,7 @@ export default function ExpensesPage() {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/");
       const data = await res.json();
       if (!res.ok) return alert(data.error || t.expenses.statusUpdateError);
       loadExpenses();

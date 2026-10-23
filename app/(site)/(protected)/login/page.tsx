@@ -1,4 +1,4 @@
-// app/buy/login/page.tsx
+// app/login/page.tsx
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import LoginForm from "./login-form";

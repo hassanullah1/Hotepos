@@ -203,7 +203,7 @@ export default function StaffDetailPage({ params }) {
   async function loadStaff() {
     try {
       const res = await fetchWithAuth(`/api/owners/staff/${id}`);
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok) throw new Error(errText(t, data.error));
       setStaff(data.staff);
@@ -350,7 +350,7 @@ function SalaryTab({ staffId, router, t }) {
     setLoading(true);
     try {
       const res = await fetchWithAuth(`/api/owners/staff/${staffId}/salary`);
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setData(body);
@@ -380,7 +380,7 @@ function SalaryTab({ staffId, router, t }) {
           bonus_amount: form.bonus_amount === "" ? null : form.bonus_amount,
         }),
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setShowForm(false);
@@ -579,7 +579,7 @@ function AdvancesTab({ staffId, router, t }) {
     setLoading(true);
     try {
       const res = await fetchWithAuth(`/api/owners/staff/${staffId}/advances`);
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setData(body);
@@ -604,7 +604,7 @@ function AdvancesTab({ staffId, router, t }) {
         method: "POST",
         body: JSON.stringify(form),
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setShowForm(false);
@@ -623,7 +623,7 @@ function AdvancesTab({ staffId, router, t }) {
         `/api/owners/staff/${staffId}/advances/${advanceId}`,
         { method: "PATCH", body: JSON.stringify({ status }) },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       load();
@@ -759,7 +759,7 @@ function PayrollTab({ staffId, router, t }) {
   async function load() {
     try {
       const res = await fetchWithAuth(`/api/owners/staff/${staffId}/payslips`);
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setData(body);
@@ -784,7 +784,7 @@ function PayrollTab({ staffId, router, t }) {
         `/api/owners/staff/${staffId}/payslips/${payslipId}`,
         { method: "PATCH", body: JSON.stringify({ status: "paid" }) },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       load();

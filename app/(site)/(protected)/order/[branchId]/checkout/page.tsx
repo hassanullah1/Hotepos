@@ -27,9 +27,6 @@ import {
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
 
-
-
-
 const checkoutText = {
   en: {
     dir: "ltr",
@@ -299,9 +296,7 @@ export default function CheckoutPage() {
   async function submit() {
     if (!buyer) {
       router.push(
-        `/buy/login?next=${encodeURIComponent(
-          `/buy/order/${branchId}/checkout`,
-        )}`,
+        `/login?next=${encodeURIComponent(`/order/${branchId}/checkout`)}`,
       );
       return;
     }
@@ -342,7 +337,7 @@ export default function CheckoutPage() {
         /* ignore */
       }
 
-      router.replace(`/buy/order/track/${d.order.public_token}`);
+      router.replace(`/order/track/${d.order.public_token}`);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -401,7 +396,7 @@ export default function CheckoutPage() {
           {t.emptyCartHint}
         </p>
         <Link
-          href={`/buy/order/${branchId}`}
+          href={`/order/${branchId}`}
           className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-2.5 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5"
         >
           <ArrowLeft size={14} className="rtl:rotate-180" />
@@ -457,8 +452,6 @@ export default function CheckoutPage() {
       />
 
       <div className="relative mx-auto max-w-2xl px-4 py-5">
-    
-
         {/* ═══════════════════════════════════════════ */}
         {/* STEP 1 — CUSTOMER (display card, no inputs) */}
         {/* ═══════════════════════════════════════════ */}
@@ -525,7 +518,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <Link
-                    href="/buy/account"
+                    href="/account"
                     className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition ${
                       isDark
                         ? "border-[#332C3E] text-[#B7B2C4] hover:border-[#C9A227]/40 hover:text-[#E0B93A]"
@@ -547,7 +540,7 @@ export default function CheckoutPage() {
                   >
                     <span className="flex-1">{t.missingContact}</span>
                     <Link
-                      href="/buy/account"
+                      href="/account"
                       className="shrink-0 font-semibold underline"
                     >
                       {t.updateAccount}
@@ -557,8 +550,8 @@ export default function CheckoutPage() {
               </>
             ) : (
               <Link
-                href={`/buy/login?next=${encodeURIComponent(
-                  `/buy/order/${branchId}/checkout`,
+                href={`/login?next=${encodeURIComponent(
+                  `/order/${branchId}/checkout`,
                 )}`}
                 className={`flex items-center justify-center gap-2 px-4 py-4 text-sm font-semibold transition ${
                   isDark
@@ -606,7 +599,7 @@ export default function CheckoutPage() {
               </span>
             </div>
             <Link
-              href={`/buy/order/${branchId}`}
+              href={`/order/${branchId}`}
               className={`text-[11px] font-semibold underline ${
                 isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
               }`}

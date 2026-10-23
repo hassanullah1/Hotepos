@@ -132,7 +132,7 @@ export default function HeaderClient() {
     setBuyer(null);
     setIsAccountOpen(false);
     setIsMobileMenuOpen(false);
-    router.push("/buy/order");
+    router.push("/order");
     router.refresh();
   }
 
@@ -144,7 +144,11 @@ export default function HeaderClient() {
 
   const navLinks = [
     { href: "/", label: t("home"), icon: Home },
-    { href: "/buy/order", label: t("order") || "Order", icon: ShoppingBag },
+    {
+      href: "/hotel",
+      label: t("hotelRegister") || "Rgister hotel",
+      icon: ShoppingBag,
+    },
     { href: "/about", label: t("about"), icon: Info },
     { href: "/pricing", label: t("pricing"), icon: Tag },
     { href: "/tutorials", label: t("tutorials"), icon: Book },
@@ -211,15 +215,13 @@ export default function HeaderClient() {
           </div>
 
           <Link
-            href="/buy/account"
+            href="/account"
             onClick={() => setIsAccountOpen(false)}
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#CFCADB] transition-colors hover:bg-[#2A2534]"
           >
             <UserIcon size={15} className="text-[#C9A227]" />
             My account
           </Link>
-
-        
 
           <button
             onClick={handleBuyerLogout}
@@ -238,7 +240,7 @@ export default function HeaderClient() {
           </div>
 
           <Link
-            href={`/buy/login?next=${encodeURIComponent(pathname || "/buy/order")}`}
+            href={`/login?next=${encodeURIComponent(pathname || "/order")}`}
             onClick={() => setIsAccountOpen(false)}
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-[#E0B93A] transition-colors hover:bg-[#C9A227]/10"
           >
@@ -247,7 +249,7 @@ export default function HeaderClient() {
           </Link>
 
           <Link
-            href="/buy/login?mode=signup&next=%2Fbuy%2Forder"
+            href="/login?mode=signup&next=%2Fbuy%2Forder"
             onClick={() => setIsAccountOpen(false)}
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#CFCADB] transition-colors hover:bg-[#2A2534]"
           >
@@ -274,7 +276,7 @@ export default function HeaderClient() {
     if (buyer) {
       return (
         <Link
-          href="/buy/account"
+          href="/account"
           aria-label="Account"
           className="flex items-center gap-2 rounded-full border border-[#C9A227]/40 bg-[#1B1823]/80 px-3 py-2 text-[#E0B93A] transition-colors hover:border-[#C9A227] hover:bg-[#C9A227]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
         >
@@ -290,7 +292,7 @@ export default function HeaderClient() {
 
     return (
       <Link
-        href={`/buy/login?next=${encodeURIComponent(pathname || "/buy/order")}`}
+        href={`/login?next=${encodeURIComponent(pathname || "/order")}`}
         className="flex items-center gap-2 rounded-full border border-[#2E2938] bg-[#1B1823]/80 px-3 py-2 text-[#CFCADB] transition-colors hover:border-[#C9A227]/60 hover:text-[#E0B93A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
       >
         <LogIn size={15} className="text-[#C9A227]" />
@@ -577,7 +579,7 @@ export default function HeaderClient() {
                   </div>
 
                   <Link
-                    href="/buy/account"
+                    href="/account"
                     onClick={closeMobileMenu}
                     className="flex items-center gap-3 rounded-xl border border-transparent px-3.5 py-2.5 text-[15px] font-medium text-[#CFCADB] hover:bg-[#1B1823]"
                   >
@@ -599,7 +601,7 @@ export default function HeaderClient() {
                 </div>
               ) : buyerLoaded ? (
                 <Link
-                  href={`/buy/login?next=${encodeURIComponent(pathname || "/buy/order")}`}
+                  href={`/login?next=${encodeURIComponent(pathname || "/order")}`}
                   onClick={closeMobileMenu}
                   className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#C9A227] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/20"
                 >

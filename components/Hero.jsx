@@ -21,8 +21,7 @@ export default function Hero({
   isRTL,
   onPrimaryCta,
   onSecondaryCta,
-  onOrderCta,
-  onLoginCta,
+ 
 }) {
   const t = useTranslation();
   const [loaded, setLoaded] = useState(false);
@@ -181,24 +180,10 @@ export default function Hero({
             />
           </button>
 
-          {/* Order Food — emerald */}
-          <button
-            type="button"
-            onClick={onOrderCta}
-            className="group inline-flex items-center gap-2 rounded-xl border border-emerald-500/50 bg-gradient-to-b from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/35"
-          >
-            <ShoppingBag size={16} strokeWidth={2.25} />
-            <span>{t.heroOrder || "Order food"}</span>
-            <Arrow
-              size={14}
-              className="transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5"
-            />
-          </button>
-
           {/* Login as Admin — outlined */}
           <button
             type="button"
-            onClick={onLoginCta || onSecondaryCta}
+            onClick={onSecondaryCta}
             className="group inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/[0.08]"
           >
             <LogIn size={16} strokeWidth={2.25} />

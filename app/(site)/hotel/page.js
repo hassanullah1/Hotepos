@@ -41,8 +41,8 @@ export default function Home() {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   const goToRegister = () => router.push("/pricing");
-  const goToOrder = () => router.push("/buy/order");
-  const scrollToHow = () => router.push("/login");
+
+  const scrollToHow = () => router.push("/hotel/login");
 
   return (
     <div className="min-h-screen">
@@ -51,7 +51,7 @@ export default function Home() {
         stats={stats}
         ArrowIcon={ArrowIcon}
         onPrimaryCta={goToRegister}
-        onOrderCta={goToOrder}
+
         onSecondaryCta={scrollToHow}
       />
       <div id="how-it-works">

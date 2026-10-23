@@ -8,7 +8,7 @@ const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 // POST /api/payments/hesabpay/order/confirm
 // Body: { ref, transaction_id, success }
 //
-// Called by /buy/order/track/[token] when HesabPay redirects the buyer back
+// Called by /order/track/[token] when HesabPay redirects the buyer back
 // with ?data={"success":true,...,"transaction_id":"..."} in the URL.
 //
 // The webhook is the authoritative source of truth, but on localhost /

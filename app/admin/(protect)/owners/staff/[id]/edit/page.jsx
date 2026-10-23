@@ -51,7 +51,7 @@ export default function ManageUserPage() {
         ]);
 
         if (userRes.status === 401 || rolesRes.status === 401) {
-          router.push("/login");
+          router.push("/hotel/login");
           return;
         }
         if (!userRes.ok) throw new Error(t.users.loadError);

@@ -505,7 +505,7 @@ export default function SignupSuccessPage() {
 
               <button
                 type="button"
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/hotel/login")}
                 className="group mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#C9A227] to-[#A9821E] px-4 py-3 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/30 active:translate-y-0 active:scale-[0.98]"
               >
                 <LogIn size={15} />

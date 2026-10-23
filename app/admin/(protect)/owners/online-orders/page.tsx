@@ -168,7 +168,8 @@ function buildMapUrl(
   lng: number | null,
   address: string | null,
 ): string | null {
-  const hasPin = lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng);
+  const hasPin =
+    lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng);
   if (hasPin) {
     return `https://www.google.com/maps?q=${lat},${lng}`;
   }
@@ -183,7 +184,8 @@ function buildDirectionsUrl(
   lng: number | null,
   address: string | null,
 ): string | null {
-  const hasPin = lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng);
+  const hasPin =
+    lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng);
   if (hasPin) {
     return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
   }
@@ -655,7 +657,7 @@ function OnlineOrderCard({
   const moreCount = Math.max(0, items.length - 3);
 
   const trackHref = order.public_token
-    ? `/buy/order/track/${order.public_token}`
+    ? `/order/track/${order.public_token}`
     : null;
 
   const isDelivery = order.order_type === "delivery";
@@ -663,10 +665,8 @@ function OnlineOrderCard({
   const contactName = d?.contact_name || buyer.full_name || "Guest";
   const contactPhone = d?.contact_phone || buyer.phone || "";
 
-  const lat =
-    d?.delivery_lat != null ? Number(d.delivery_lat) : null;
-  const lng =
-    d?.delivery_lng != null ? Number(d.delivery_lng) : null;
+  const lat = d?.delivery_lat != null ? Number(d.delivery_lat) : null;
+  const lng = d?.delivery_lng != null ? Number(d.delivery_lng) : null;
   const fullAddress = d?.delivery_address
     ? `${d.delivery_address}${d.delivery_city ? `, ${d.delivery_city}` : ""}`
     : "";
