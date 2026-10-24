@@ -603,113 +603,122 @@ export default function StaffPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-teal-200 dark:border-teal-800 overflow-hidden">
-            <table className="w-full min-w-[720px] border-collapse text-sm">
-              <thead>
-                <tr className="bg-teal-600 dark:bg-teal-700 text-white">
-                  <th className="text-start font-medium px-4 py-3">
-                    {t.staff.columns.name}
-                  </th>
-                  <th className="text-start font-medium px-4 py-3">
-                    {t.staff.columns.role}
-                  </th>
-                  <th className="text-start font-medium px-4 py-3">
-                    {t.staff.columns.branch}
-                  </th>
-                  <th className="text-start font-medium px-4 py-3">
-                    {t.staff.columns.contact}
-                  </th>
-                  <th className="text-start font-medium px-4 py-3">
-                    {t.staff.columns.status}
-                  </th>
-                  <th className="px-4 py-3 text-end w-20">
-                    {t.common.actions || "Actions"}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {staff.map((s, idx) => {
-                  const roleUuid =
-                    roles.find((r) => r.name === s.role)?.id || "";
-                  return (
-                    <tr
-                      key={s.id}
-                      className={`group border-t border-teal-100 dark:border-teal-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors ${
-                        idx % 2 === 1
-                          ? "bg-teal-50/50 dark:bg-teal-950/30"
-                          : "bg-white dark:bg-transparent"
-                      }`}
-                    >
-                      <td className="px-4 py-3 font-medium">
-                     
-                          {s.full_name}
-                       
-                      </td>
-                      <td className="px-4 py-3">
-                        <select
-                          value={roleUuid}
-                          onChange={(e) =>
-                            handleRoleChange(s.id, e.target.value)
-                          }
-                          className="rounded-lg border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950/40 px-2 py-1 text-sm text-teal-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        >
-                          {roles.map((role) => (
-                            <option key={role.id} value={role.id}>
-                              {role.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-4 py-3 ">{s.branch?.name || "—"}</td>
-                      <td className="px-4 py-3 ">
-                        {s.email || s.phone || "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleToggleStatus(s.id, s.is_active)}
-                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
-                            s.is_active
-                              ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400"
-                              : "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
+            {/* Inner scroll container — makes the wide table swipeable on mobile */}
+            <div className="staff-table-scroll overflow-x-auto">
+              <table className="w-full min-w-[720px] border-collapse text-sm">
+                <thead>
+                  <tr className="bg-teal-600 dark:bg-teal-700 text-white">
+                    <th className="sticky left-0 z-20 bg-teal-600 dark:bg-teal-700 text-start font-medium px-4 py-3">
+                      {t.staff.columns.name}
+                    </th>
+                    <th className="text-start font-medium px-4 py-3">
+                      {t.staff.columns.role}
+                    </th>
+                    <th className="text-start font-medium px-4 py-3">
+                      {t.staff.columns.branch}
+                    </th>
+                    <th className="hidden sm:table-cell text-start font-medium px-4 py-3">
+                      {t.staff.columns.contact}
+                    </th>
+                    <th className="text-start font-medium px-4 py-3">
+                      {t.staff.columns.status}
+                    </th>
+                    <th className="px-4 py-3 text-end w-20">
+                      {t.common.actions || "Actions"}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {staff.map((s, idx) => {
+                    const roleUuid =
+                      roles.find((r) => r.name === s.role)?.id || "";
+                    return (
+                      <tr
+                        key={s.id}
+                        className={`group border-t border-teal-100 dark:border-teal-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors ${
+                          idx % 2 === 1
+                            ? "bg-teal-50/50 dark:bg-teal-950/30"
+                            : "bg-white dark:bg-transparent"
+                        }`}
+                      >
+                        <td
+                          className={`sticky left-0 z-10 px-4 py-3 font-medium ${
+                            idx % 2 === 1
+                              ? "bg-teal-50 dark:bg-teal-950/30"
+                              : "bg-white dark:bg-[#0F1C2E]"
                           }`}
                         >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${
-                              s.is_active ? "bg-emerald-500" : "bg-red-500"
-                            }`}
-                          />
-                          {s.is_active ? "Active" : "Inactive"}
-                        </button>
-                      </td>
-                      <td className="px-4 py-3 text-end">
-                        <div className="flex justify-end gap-1">
-                          <IconButton
-                            onClick={() =>
-                              router.push(`/admin/owners/staff/${s.id}`)
+                          {s.full_name}
+                        </td>
+                        <td className="px-4 py-3">
+                          <select
+                            value={roleUuid}
+                            onChange={(e) =>
+                              handleRoleChange(s.id, e.target.value)
                             }
-                            title={t.common.view || "View"}
+                            className="rounded-lg border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950/40 px-2 py-1 text-sm text-teal-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-400"
                           >
-                            <Eye size={16} />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => openEdit(s)}
-                            title={t.common.edit}
+                            {roles.map((role) => (
+                              <option key={role.id} value={role.id}>
+                                {role.name}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-4 py-3 ">{s.branch?.name || "—"}</td>
+                        <td className="hidden sm:table-cell px-4 py-3 ">
+                          {s.email || s.phone || "—"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() =>
+                              handleToggleStatus(s.id, s.is_active)
+                            }
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                              s.is_active
+                                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400"
+                                : "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
+                            }`}
                           >
-                            <Pencil size={16} />
-                          </IconButton>
-                          <IconButton
-                            tone="danger"
-                            onClick={() => remove(s)}
-                            title={t.common.delete}
-                          >
-                            <Trash2 size={16} />
-                          </IconButton>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${
+                                s.is_active ? "bg-emerald-500" : "bg-red-500"
+                              }`}
+                            />
+                            {s.is_active ? "Active" : "Inactive"}
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-end">
+                          <div className="flex justify-end gap-1">
+                            <IconButton
+                              onClick={() =>
+                                router.push(`/admin/owners/staff/${s.id}`)
+                              }
+                              title={t.common.view || "View"}
+                            >
+                              <Eye size={16} />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => openEdit(s)}
+                              title={t.common.edit}
+                            >
+                              <Pencil size={16} />
+                            </IconButton>
+                            <IconButton
+                              tone="danger"
+                              onClick={() => remove(s)}
+                              title={t.common.delete}
+                            >
+                              <Trash2 size={16} />
+                            </IconButton>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
@@ -902,6 +911,23 @@ export default function StaffPage() {
           }}
         />
       )}
+
+      {/* Thin scrollbar styling for the swipeable table */}
+      <style jsx global>{`
+        .staff-table-scroll::-webkit-scrollbar {
+          height: 6px;
+        }
+        .staff-table-scroll::-webkit-scrollbar-thumb {
+          background: rgba(13, 148, 136, 0.35);
+          border-radius: 9999px;
+        }
+        .staff-table-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .dark .staff-table-scroll::-webkit-scrollbar-thumb {
+          background: rgba(45, 212, 191, 0.35);
+        }
+      `}</style>
     </div>
   );
 }

@@ -109,13 +109,13 @@ const NAV_ITEMS = [
     roles: ["hotel_owner", "branch_manager"],
     icon: ClipboardList,
   },
-  {
-    href: "/admin/order/create",
-    key: "createOrder",
-    section: "ops",
-    roles: ["waiter", "branch_manager"],
-    icon: PlusCircle,
-  },
+  // {
+  //   href: "/admin/order/create",
+  //   key: "createOrder",
+  //   section: "ops",
+  //   roles: ["waiter", "branch_manager"],
+  //   icon: PlusCircle,
+  // },
   {
     href: "/admin/expenses",
     key: "expenses",
