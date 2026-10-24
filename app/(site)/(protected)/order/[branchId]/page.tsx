@@ -36,6 +36,8 @@ const branchText = {
     deliveryMode: "Delivery order",
     myOrders: "My orders",
     menu: "Menu",
+    needMore:
+      "Need anything else from this restaurant? Select it, then tap Checkout.",
   },
   ps: {
     dir: "rtl",
@@ -54,6 +56,7 @@ const branchText = {
     deliveryMode: "د تحویل فرمایش",
     myOrders: "زما فرمایشونه",
     menu: "مینو",
+    needMore: "له دې رستورانت څخه بل څه غواړئ؟ هغه وټاکئ، بیا چیک آوټ کېکاږئ.",
   },
   prs: {
     dir: "rtl",
@@ -72,6 +75,8 @@ const branchText = {
     deliveryMode: "سفارش تحویل",
     myOrders: "سفارش‌های من",
     menu: "منو",
+    needMore:
+      "از این رستورانت چیز دیگری می‌خواهید؟ آن را انتخاب کنید، سپس روی پرداخت بزنید.",
   },
 };
 
@@ -349,43 +354,12 @@ export default function BranchOrderPage() {
   return (
     <div
       className={`${displayFont.variable} relative transition-colors duration-300 ${
+        cartCount > 0 ? "pb-36" : ""
+      } ${
         isDark ? "bg-[#15121C] text-[#F0EAE2]" : "bg-[#F7F4EE] text-[#1D1A22]"
       }`}
       dir={t.dir}
     >
-      {/* Grid texture (viewport-fixed) */}
-      <svg
-        className={`pointer-events-none fixed inset-0 -z-10 h-full w-full transition-opacity duration-300 ${
-          isDark ? "opacity-[0.04]" : "opacity-[0.05]"
-        }`}
-        viewBox="0 0 300 300"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        {Array.from({ length: 16 }).map((_, row) =>
-          Array.from({ length: 16 }).map((_, col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={10 + col * 36}
-              y={10 + row * 36}
-              width="18"
-              height="18"
-              rx="4"
-              fill="none"
-              stroke={isDark ? "#F0EAE2" : "#1D1A22"}
-              strokeWidth="1"
-            />
-          )),
-        )}
-      </svg>
-
-      <div
-        className={`pointer-events-none fixed -top-32 -left-32 -z-10 h-96 w-96 rounded-full blur-3xl ${
-          isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
-        }`}
-        aria-hidden="true"
-      />
-
       <div className="mx-auto max-w-3xl px-4 pt-3 pb-2">
         {/* Branch name row */}
         <div className="mb-3 flex items-center gap-2.5">
@@ -781,36 +755,54 @@ export default function BranchOrderPage() {
       </div>
 
       {/* ════════════════════════════════════════ */}
-      {/* CART BUTTON */}
+      {/* STICKY CART BAR */}
       {/* ════════════════════════════════════════ */}
       {cartCount > 0 && (
-        <div className="mx-auto max-w-2xl space-y-2 px-4 pb-4">
-          <button
-            onClick={goToCheckout}
-            className="group flex w-full items-center gap-3 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-1 text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50 sm:px-3 sm:py-2"
-          >
-            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1D1707]/15 sm:h-10 sm:w-10">
-              <ShoppingBag className="h-4 w-4" />
-              <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
-                {cartCount}
+        <div
+          className={`fixed inset-x-0 bottom-0 z-40 pt-6 ${
+            isDark
+              ? "bg-gradient-to-t from-[#15121C] via-[#15121C]/95 to-transparent"
+              : "bg-gradient-to-t from-[#F7F4EE] via-[#F7F4EE]/95 to-transparent"
+          }`}
+          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+        >
+          <div className="mx-auto max-w-2xl space-y-2 px-4">
+            {/* Hint */}
+            <p
+              className={`text-center text-[11px] font-medium ${
+                isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
+              }`}
+            >
+              {t.needMore}
+            </p>
+
+            <button
+              onClick={goToCheckout}
+              className="group flex w-full items-center gap-3 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-1 text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50 active:translate-y-0 sm:px-3 sm:py-2"
+            >
+              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1D1707]/15 sm:h-10 sm:w-10">
+                <ShoppingBag className="h-4 w-4" />
+                <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
+                  {cartCount}
+                </span>
               </span>
-            </span>
-            <div className="flex-1 text-start">
-              <p className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-80 sm:text-[11px]">
-                {cartCount} {t.items}
-              </p>
-              <p
-                className="text-sm font-bold tabular-nums sm:text-base"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {cartTotal.toFixed(2)} {currency}
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#1D1707] px-3 py-2 text-[11px] font-bold text-[#E0B93A] transition group-hover:bg-[#1D1707]/90 sm:px-4 sm:text-xs">
-              {t.checkout}
-              <ChevronRight className="h-3 w-3 rtl:rotate-180 sm:h-3.5 sm:w-3.5" />
-            </span>
-          </button>
+              <div className="flex-1 text-start">
+                <p className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-80 sm:text-[11px]">
+                  {cartCount} {t.items}
+                </p>
+                <p
+                  className="text-sm font-bold tabular-nums sm:text-base"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {cartTotal.toFixed(2)} {currency}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#1D1707] px-3 py-2 text-[11px] font-bold text-[#E0B93A] transition group-hover:bg-[#1D1707]/90 sm:px-4 sm:text-xs">
+                {t.checkout}
+                <ChevronRight className="h-3 w-3 rtl:rotate-180 sm:h-3.5 sm:w-3.5" />
+              </span>
+            </button>
+          </div>
         </div>
       )}
 

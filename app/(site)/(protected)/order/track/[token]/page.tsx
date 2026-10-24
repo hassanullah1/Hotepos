@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -19,6 +19,7 @@ import {
   Receipt,
   MapPin,
   ShoppingBag,
+  AlertTriangle,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -132,6 +133,47 @@ function buildStatusSteps(order: any): StatusStep[] {
   ];
 }
 
+function AfPayIcon({ className = "" }: { className?: string }) {
+  return (
+    <img src="/afpay.png" alt="AfPay" className={className} loading="lazy" />
+  );
+}
+
+function VisaIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 20" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="31" height="19" rx="3.5" fill="#1A1F71" />
+      <text
+        x="16"
+        y="14"
+        textAnchor="middle"
+        fontFamily="system-ui, sans-serif"
+        fontWeight="700"
+        fontStyle="italic"
+        fontSize="9"
+        fill="#FFFFFF"
+        letterSpacing="0.5"
+      >
+        VISA
+      </text>
+    </svg>
+  );
+}
+
+function MastercardIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 20" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="31" height="19" rx="3.5" fill="#1A1A1A" />
+      <circle cx="13" cy="10" r="4.5" fill="#EB001B" />
+      <circle cx="19" cy="10" r="4.5" fill="#F79E1B" fillOpacity="0.9" />
+      <path
+        d="M16 6.7a4.5 4.5 0 0 0 0 6.6 4.5 4.5 0 0 0 0-6.6Z"
+        fill="#FF5F00"
+      />
+    </svg>
+  );
+}
+
 const trackText = {
   en: {
     dir: "ltr",
@@ -142,9 +184,9 @@ const trackText = {
     subtotal: "Subtotal",
     total: "Total",
     paymentSection: "Payment",
-    payButton: "Pay with HesabPay",
-    paying: "Opening HesabPay…",
-    payHint: "You'll be redirected to HesabPay to complete payment.",
+    payButton: "Pay now",
+    paying: "Opening payment…",
+    payHint: "You'll be redirected to a secure page to complete payment.",
     confirmingPayment: "Confirming…",
     paidLabel: "Paid",
     unpaidLabel: "Unpaid",
@@ -161,6 +203,18 @@ const trackText = {
     placedAt: "Placed",
     progress: "Progress",
     restaurant: "Restaurant",
+    payRequiredTitle: "Payment required",
+    payRequiredBody:
+      "Please pay now. Once your payment is confirmed, we will receive your order and start preparing it. If you don't pay, your order will not be processed and you will not get it.",
+    payStickyHint: "Pay now so we can start your order.",
+    congratsTitle: "Congratulations!",
+    congratsSub: "Your payment was successful",
+    congratsBody:
+      "Thank you! Please wait a little while — your order will be brought to you soon.",
+    congratsClose: "OK, got it",
+    paidWaitTitle: "Payment received",
+    paidWaitBody:
+      "Thank you! Please wait a little while — your order will be brought to you soon.",
   },
   ps: {
     dir: "rtl",
@@ -171,9 +225,9 @@ const trackText = {
     subtotal: "فرعي مجموعه",
     total: "ټول",
     paymentSection: "تادیه",
-    payButton: "د حساب پی سره تادیه وکړئ",
-    paying: "حساب پی پرانیستل کیږي…",
-    payHint: "د تادیې بشپړولو لپاره به حساب پی ته یوړل شئ.",
+    payButton: "اوس تادیه وکړئ",
+    paying: "تادیه پرانیستل کیږي…",
+    payHint: "د تادیې بشپړولو لپاره به یوې خوندي پاڼې ته یوړل شئ.",
     confirmingPayment: "تصدیق کیږي…",
     paidLabel: "تادیه شو",
     unpaidLabel: "نه تادیه شو",
@@ -190,6 +244,18 @@ const trackText = {
     placedAt: "وخت",
     progress: "پرمختګ",
     restaurant: "رستورانت",
+    payRequiredTitle: "تادیه اړینه ده",
+    payRequiredBody:
+      "مهرباني وکړئ همدا اوس تادیه وکړئ. کله چې ستاسو تادیه تایید شي، موږ به ستاسو فرمایش ترلاسه کړو او چمتو کول به یې پیل کړو. که تادیه ونه کړئ، ستاسو فرمایش به نه پروسس کیږي او تاسو به یې ونه ترلاسه کړئ.",
+    payStickyHint: "همدا اوس تادیه وکړئ چې فرمایش مو پیل کړو.",
+    congratsTitle: "مبارک شه!",
+    congratsSub: "ستاسو تادیه بریالۍ شوه",
+    congratsBody:
+      "مننه! مهرباني وکړئ لږ انتظار وکړئ — ستاسو فرمایش به ډیر ژر تاسو ته راوړل شي.",
+    congratsClose: "ښه، پوه شوم",
+    paidWaitTitle: "تادیه ترلاسه شوه",
+    paidWaitBody:
+      "مننه! مهرباني وکړئ لږ انتظار وکړئ — ستاسو فرمایش به ډیر ژر تاسو ته راوړل شي.",
   },
   prs: {
     dir: "rtl",
@@ -200,9 +266,9 @@ const trackText = {
     subtotal: "جمع فرعی",
     total: "مجموع",
     paymentSection: "پرداخت",
-    payButton: "پرداخت با حساب پی",
-    paying: "در حال باز کردن حساب پی…",
-    payHint: "برای تکمیل پرداخت به حساب پی هدایت می‌شوید.",
+    payButton: "اکنون پرداخت کنید",
+    paying: "در حال باز کردن پرداخت…",
+    payHint: "برای تکمیل پرداخت به یک صفحه امن هدایت می‌شوید.",
     confirmingPayment: "در حال تأیید…",
     paidLabel: "پرداخت شد",
     unpaidLabel: "پرداخت نشده",
@@ -219,6 +285,18 @@ const trackText = {
     placedAt: "زمان",
     progress: "پیشرفت",
     restaurant: "رستورانت",
+    payRequiredTitle: "پرداخت لازم است",
+    payRequiredBody:
+      "لطفاً همین حالا پرداخت کنید. پس از تأیید پرداخت، سفارش شما دریافت شده و آماده‌سازی آن آغاز می‌شود. اگر پرداخت نکنید، سفارش شما پردازش نمی‌شود و آن را دریافت نخواهید کرد.",
+    payStickyHint: "همین حالا پرداخت کنید تا سفارش شما را شروع کنیم.",
+    congratsTitle: "تبریک!",
+    congratsSub: "پرداخت شما با موفقیت انجام شد",
+    congratsBody:
+      "متشکریم! لطفاً کمی صبر کنید — سفارش شما به زودی برای شما آورده می‌شود.",
+    congratsClose: "باشه، متوجه شدم",
+    paidWaitTitle: "پرداخت دریافت شد",
+    paidWaitBody:
+      "متشکریم! لطفاً کمی صبر کنید — سفارش شما به زودی برای شما آورده می‌شود.",
   },
 };
 
@@ -245,6 +323,28 @@ export default function TrackPage() {
   const [comments, setComments] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // ── Congratulation popup ──
+  const [showCongrats, setShowCongrats] = useState(false);
+  const cameFromPayment = useRef(searchParams.get("paid") === "1");
+  const prevPaid = useRef<boolean | null>(null);
+
+  useEffect(() => {
+    if (!order) return;
+    const paidNow = order.payment_status === "paid";
+    if (paidNow && (prevPaid.current === false || cameFromPayment.current)) {
+      const key = `paid-popup-${token}`;
+      try {
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, "1");
+          setShowCongrats(true);
+        }
+      } catch {
+        setShowCongrats(true);
+      }
+    }
+    prevPaid.current = paidNow;
+  }, [order, token]);
 
   useEffect(() => {
     let active = true;
@@ -412,10 +512,15 @@ export default function TrackPage() {
   const isCancelled =
     order.status === "cancelled" || order.status === "rejected";
   const steps = buildStatusSteps(order);
+  const needsPayment = !isPaid && !isCancelled;
+  const orderFinished = ["completed", "paid", "closed"].includes(order.status);
+  const showPaidWait = isPaid && !isCancelled && !orderFinished;
 
   return (
     <div
       className={`${displayFont.variable} relative min-h-screen overflow-hidden transition-colors duration-300 ${
+        needsPayment ? "pb-44" : ""
+      } ${
         isDark ? "bg-[#15121C] text-[#F0EAE2]" : "bg-[#F7F4EE] text-[#1D1A22]"
       }`}
       dir={t.dir}
@@ -556,6 +661,76 @@ export default function TrackPage() {
             </div>
           </div>
         </div>
+
+        {/* ============ Unpaid notice ============ */}
+        {needsPayment && (
+          <div
+            role="alert"
+            className={`mt-5 flex items-start gap-3 rounded-2xl border p-4 sm:p-5 ${
+              isDark
+                ? "border-amber-500/40 bg-amber-500/10"
+                : "border-amber-300 bg-amber-50"
+            }`}
+          >
+            <AlertTriangle
+              className={`mt-0.5 h-5 w-5 shrink-0 ${
+                isDark ? "text-amber-300" : "text-amber-600"
+              }`}
+            />
+            <div className="min-w-0">
+              <p
+                className={`text-sm font-bold ${
+                  isDark ? "text-amber-200" : "text-amber-800"
+                }`}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {t.payRequiredTitle}
+              </p>
+              <p
+                className={`mt-1 text-[13px] leading-relaxed ${
+                  isDark ? "text-amber-100/90" : "text-amber-900/90"
+                }`}
+              >
+                {t.payRequiredBody}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ============ Paid: please wait notice ============ */}
+        {showPaidWait && (
+          <div
+            role="status"
+            className={`mt-5 flex items-start gap-3 rounded-2xl border p-4 sm:p-5 ${
+              isDark
+                ? "border-emerald-500/40 bg-emerald-500/10"
+                : "border-emerald-300 bg-emerald-50"
+            }`}
+          >
+            <CheckCircle2
+              className={`mt-0.5 h-5 w-5 shrink-0 ${
+                isDark ? "text-emerald-300" : "text-emerald-600"
+              }`}
+            />
+            <div className="min-w-0">
+              <p
+                className={`text-sm font-bold ${
+                  isDark ? "text-emerald-200" : "text-emerald-800"
+                }`}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {t.paidWaitTitle}
+              </p>
+              <p
+                className={`mt-1 text-[13px] leading-relaxed ${
+                  isDark ? "text-emerald-100/90" : "text-emerald-900/90"
+                }`}
+              >
+                {t.paidWaitBody}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ============ Progress stepper (5 steps) ============ */}
         <div
@@ -876,7 +1051,7 @@ export default function TrackPage() {
             )}
           </div>
 
-          {/* RIGHT: summary + payment */}
+          {/* RIGHT: summary + payment status */}
           <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
             {/* Summary card */}
             <div
@@ -986,53 +1161,6 @@ export default function TrackPage() {
               </div>
             </div>
 
-            {/* Pay CTA card */}
-            {!isPaid && !isCancelled && (
-              <div
-                className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
-                  isDark
-                    ? "border-[#C9A227]/40 bg-gradient-to-br from-[#C9A227]/10 to-[#1E1B26]/90"
-                    : "border-[#A9821E]/40 bg-gradient-to-br from-[#C9A227]/10 to-white/90"
-                }`}
-              >
-                <div className="p-5 sm:p-6">
-                  <div className="mb-3 flex items-center gap-2">
-                    <ShieldCheck
-                      size={15}
-                      className={isDark ? "text-[#C9A227]" : "text-[#A9821E]"}
-                    />
-                    <p
-                      className="text-sm font-semibold"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      {t.paymentSection}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={payNow}
-                    disabled={paying || confirming}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
-                  >
-                    {paying ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <CreditCard className="h-4 w-4" />
-                    )}
-                    {paying ? t.paying : t.payButton}
-                  </button>
-
-                  <p
-                    className={`mt-2.5 text-center text-[11px] leading-relaxed ${
-                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                    }`}
-                  >
-                    {t.payHint}
-                  </p>
-                </div>
-              </div>
-            )}
-
             {isPaid && (
               <div
                 className={`flex items-center justify-center gap-2 rounded-2xl border py-4 text-sm font-semibold ${
@@ -1057,7 +1185,167 @@ export default function TrackPage() {
         </p>
       </div>
 
+      {/* ============ Sticky HesabPay bar ============ */}
+      {needsPayment && (
+        <div
+          className={`fixed inset-x-0 bottom-0 z-40 pt-6 ${
+            isDark
+              ? "bg-gradient-to-t from-[#15121C] via-[#15121C]/95 to-transparent"
+              : "bg-gradient-to-t from-[#F7F4EE] via-[#F7F4EE]/95 to-transparent"
+          }`}
+          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+        >
+          <div className="mx-auto max-w-2xl space-y-2 px-4">
+            <p
+              className={`flex items-center justify-center gap-1.5 text-center text-[11px] font-semibold ${
+                isDark ? "text-amber-300" : "text-amber-700"
+              }`}
+            >
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+              {t.payStickyHint}
+            </p>
+
+            <button
+              onClick={payNow}
+              disabled={paying || confirming}
+              className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-5 py-3 text-sm font-bold text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+            >
+              <span className="inline-flex items-center gap-2">
+                {paying && <Loader2 className="h-4 w-4 animate-spin" />}
+                {paying ? t.paying : t.payButton}
+                <span className="tabular-nums opacity-80">
+                  · {order.total_amount.toFixed(2)} {order.currency}
+                </span>
+              </span>
+
+              <span className="flex w-full items-center justify-center gap-3">
+                <AfPayIcon className="h-5 w-8 shrink-0" />
+                <VisaIcon className="h-5 w-8 shrink-0" />
+                <MastercardIcon className="h-5 w-8 shrink-0" />
+              </span>
+            </button>
+
+            <p
+              className={`text-center text-[10px] ${
+                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+              }`}
+            >
+              {t.payHint}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ============ Congratulation popup ============ */}
+      {showCongrats && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowCongrats(false)}
+        >
+          {/* Confetti */}
+          <div
+            className="pointer-events-none fixed inset-0 overflow-hidden"
+            aria-hidden="true"
+          >
+            {Array.from({ length: 30 }).map((_, i) => (
+              <span
+                key={i}
+                className="confetti"
+                style={{
+                  left: `${(i * 37) % 100}%`,
+                  background: [
+                    "#E0B93A",
+                    "#34D399",
+                    "#F472B6",
+                    "#60A5FA",
+                    "#FBBF24",
+                  ][i % 5],
+                  animationDelay: `${(i % 7) * 0.12}s`,
+                  animationDuration: `${2.4 + (i % 5) * 0.35}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`congrats-card relative w-full max-w-sm rounded-3xl border p-7 text-center shadow-2xl ${
+              isDark
+                ? "border-[#2E2938] bg-[#1E1B26] text-[#F0EAE2]"
+                : "border-[#E4DFD4] bg-white text-[#1D1A22]"
+            }`}
+          >
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/30">
+              <CheckCircle2 className="h-11 w-11" strokeWidth={2.25} />
+            </div>
+
+            <h2
+              className="text-2xl font-bold"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {t.congratsTitle}
+            </h2>
+            <p
+              className={`mt-1 text-sm font-semibold ${
+                isDark ? "text-emerald-300" : "text-emerald-700"
+              }`}
+            >
+              {t.congratsSub}
+            </p>
+            <p
+              className={`mt-3 text-[13px] leading-relaxed ${
+                isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
+              }`}
+            >
+              {t.congratsBody}
+            </p>
+
+            <button
+              onClick={() => setShowCongrats(false)}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {t.congratsClose}
+            </button>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
+        .congrats-card {
+          animation: pop-in 0.45s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+        }
+        .confetti {
+          position: absolute;
+          top: -16px;
+          width: 8px;
+          height: 14px;
+          border-radius: 2px;
+          animation-name: confetti-fall;
+          animation-timing-function: ease-in;
+          animation-fill-mode: forwards;
+        }
+        @keyframes pop-in {
+          from {
+            opacity: 0;
+            transform: scale(0.8) translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        @keyframes confetti-fall {
+          from {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+          }
+          to {
+            transform: translateY(105vh) rotate(600deg);
+            opacity: 0.9;
+          }
+        }
         @keyframes drift-a {
           0%,
           100% {
@@ -1084,8 +1372,13 @@ export default function TrackPage() {
         }
         @media (prefers-reduced-motion: reduce) {
           .blob-a,
-          .blob-b {
+          .blob-b,
+          .confetti,
+          .congrats-card {
             animation: none !important;
+          }
+          .confetti {
+            display: none;
           }
         }
       `}</style>
