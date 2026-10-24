@@ -3,23 +3,46 @@ import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { resolveDashboardScope } from "@/lib/dashboard-scope";
 
-// ---------- small date helpers (server local time; see README note on timezones) ----------
-function startOfDay(d = new Date()) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
+// ---------------------------------------------------------------------------
+// Timezone helpers — the platform operates on Kabul time (UTC+4:30, no DST).
+// "Today" always means "today in Afghanistan", regardless of where the Node
+// process happens to run (Railway = UTC by default).
+// ---------------------------------------------------------------------------
+const KABUL_OFFSET_MS = 4.5 * 60 * 60 * 1000; // +04:30, fixed — no DST
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** UTC instant corresponding to 00:00 Kabul on the day containing `now`. */
+function kabulStartOfDay(now = new Date()) {
+  const kabul = new Date(now.getTime() + KABUL_OFFSET_MS);
+  const y = kabul.getUTCFullYear();
+  const m = kabul.getUTCMonth();
+  const d = kabul.getUTCDate();
+  return new Date(Date.UTC(y, m, d) - KABUL_OFFSET_MS);
 }
+
 function addDays(d, n) {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
+  return new Date(d.getTime() + n * DAY_MS);
 }
+
+/** "YYYY-MM-DD" for the Kabul calendar day containing `instant`. */
+function kabulDateKey(instant) {
+  return new Date(instant.getTime() + KABUL_OFFSET_MS)
+    .toISOString()
+    .slice(0, 10);
+}
+
 function toNum(v) {
   if (v === null || v === undefined) return 0;
   return typeof v === "object" && typeof v.toNumber === "function"
     ? v.toNumber()
     : Number(v);
 }
+
+// A row counts as "paid" if the explicit payment_status is 'paid'
+// OR the order lifecycle reached 'paid'. paid_at is used when set,
+// otherwise updated_at / created_at as the effective paid instant.
+const PAID_TIME_EXPR = `COALESCE(paid_at, updated_at, created_at)`;
+const PAID_FILTER = `(payment_status = 'paid' OR status = 'paid')`;
 
 export async function GET(request) {
   const user = await getAuthUser(request);
@@ -40,7 +63,6 @@ export async function GET(request) {
 
   const { branchIds } = scope;
 
-  // Nothing to query yet (e.g. brand-new hotel with zero branches)
   if (branchIds.length === 0) {
     return NextResponse.json({
       scope,
@@ -63,14 +85,17 @@ export async function GET(request) {
     });
   }
 
-  const today = startOfDay();
+  // Kabul calendar day boundaries, expressed as absolute UTC instants.
+  const today = kabulStartOfDay();
   const tomorrow = addDays(today, 1);
   const trendStart = addDays(today, -(trendDays - 1));
+  const todayDateStr = kabulDateKey(today);
+  const trendStartDateStr = kabulDateKey(trendStart);
 
   const [
-    salesAggToday,
+    salesTodayRaw,
     ordersCountToday,
-    expensesAggToday,
+    expensesTodayRaw,
     salesTrendRaw,
     hourlyRaw,
     topMenuItemsRaw,
@@ -80,17 +105,19 @@ export async function GET(request) {
     activeShifts,
     branchPerformanceRaw,
   ] = await Promise.all([
-    // Today's completed-payment sales total
-    prisma.payments.aggregate({
-      where: {
-        status: "completed",
-        paid_at: { gte: today, lt: tomorrow },
-        orders: { branch_id: { in: branchIds } },
-      },
-      _sum: { amount: true },
-    }),
+    // Today's sales — from orders marked paid, regardless of whether a
+    // `payments` row was written for them.
+    prisma.$queryRaw`
+      SELECT COALESCE(SUM(total_amount), 0) AS total,
+             COUNT(*)::int AS paid_count
+      FROM orders
+      WHERE branch_id = ANY(${branchIds}::uuid[])
+        AND (payment_status = 'paid' OR status = 'paid')
+        AND COALESCE(paid_at, updated_at, created_at) >= ${today}
+        AND COALESCE(paid_at, updated_at, created_at) < ${tomorrow}
+    `,
 
-    // Today's order count (all statuses — gives a sense of floor traffic)
+    // Today's order count — every order created today (paid or not)
     prisma.orders.count({
       where: {
         branch_id: { in: branchIds },
@@ -98,41 +125,42 @@ export async function GET(request) {
       },
     }),
 
-    // Today's approved/paid expenses
-    prisma.expenses.aggregate({
-      where: {
-        branch_id: { in: branchIds },
-        expense_date: { gte: today, lt: tomorrow },
-        status: { in: ["approved", "paid"] },
-      },
-      _sum: { amount: true },
-    }),
-
-    // Daily sales for the trend chart
+    // Today's approved/paid expenses (date column compares on Kabul day)
     prisma.$queryRaw`
-      SELECT date_trunc('day', p.paid_at) AS day, COALESCE(SUM(p.amount), 0) AS total
-      FROM payments p
-      JOIN orders o ON o.id = p.order_id
-      WHERE o.branch_id = ANY(${branchIds}::uuid[])
-        AND p.status = 'completed'
-        AND p.paid_at >= ${trendStart}
+      SELECT COALESCE(SUM(amount), 0) AS total
+      FROM expenses
+      WHERE branch_id = ANY(${branchIds}::uuid[])
+        AND expense_date = ${todayDateStr}::date
+        AND status IN ('approved', 'paid')
+    `,
+
+    // Daily sales trend — grouped by KABUL calendar day, from orders
+    prisma.$queryRaw`
+      SELECT (COALESCE(paid_at, updated_at, created_at) AT TIME ZONE 'Asia/Kabul')::date::text AS day,
+             COALESCE(SUM(total_amount), 0) AS total
+      FROM orders
+      WHERE branch_id = ANY(${branchIds}::uuid[])
+        AND (payment_status = 'paid' OR status = 'paid')
+        AND COALESCE(paid_at, updated_at, created_at) >= ${trendStart}
       GROUP BY 1
       ORDER BY 1
     `,
 
-    // Hour-by-hour sales for today
+    // Hour-by-hour sales for today (Kabul wall clock, 0..23)
     prisma.$queryRaw`
-      SELECT date_trunc('hour', p.paid_at) AS hour, COALESCE(SUM(p.amount), 0) AS total
-      FROM payments p
-      JOIN orders o ON o.id = p.order_id
-      WHERE o.branch_id = ANY(${branchIds}::uuid[])
-        AND p.status = 'completed'
-        AND p.paid_at >= ${today} AND p.paid_at < ${tomorrow}
+      SELECT EXTRACT(HOUR FROM (COALESCE(paid_at, updated_at, created_at) AT TIME ZONE 'Asia/Kabul'))::int AS hour,
+             COALESCE(SUM(total_amount), 0) AS total
+      FROM orders
+      WHERE branch_id = ANY(${branchIds}::uuid[])
+        AND (payment_status = 'paid' OR status = 'paid')
+        AND COALESCE(paid_at, updated_at, created_at) >= ${today}
+        AND COALESCE(paid_at, updated_at, created_at) < ${tomorrow}
       GROUP BY 1
       ORDER BY 1
     `,
 
-    // Best sellers over the trend window
+    // Best sellers over the trend window (all order items, paid or not —
+    // this is a "what's popular" view, not a revenue view)
     prisma.$queryRaw`
       SELECT mi.name AS name,
              SUM(oi.quantity) AS qty,
@@ -154,7 +182,7 @@ export async function GET(request) {
       FROM expenses e
       LEFT JOIN expense_categories ec ON ec.id = e.category_id
       WHERE e.branch_id = ANY(${branchIds}::uuid[])
-        AND e.expense_date >= ${trendStart}
+        AND e.expense_date >= ${trendStartDateStr}::date
         AND e.status IN ('approved', 'paid')
       GROUP BY 1
       ORDER BY total DESC
@@ -170,16 +198,17 @@ export async function GET(request) {
         id: true,
         order_number: true,
         status: true,
+        payment_status: true,
         order_type: true,
         total_amount: true,
         created_at: true,
+        paid_at: true,
         branches: { select: { name: true } },
         users: { select: { full_name: true } },
       },
     }),
 
-    // Low stock alerts (quantity_on_hand <= reorder_level needs raw SQL:
-    // Prisma can't compare two columns to each other in `where`)
+    // Low stock alerts (quantity_on_hand <= reorder_level needs raw SQL)
     prisma.$queryRaw`
       SELECT id, name, unit, quantity_on_hand, reorder_level
       FROM inventory_items
@@ -194,10 +223,7 @@ export async function GET(request) {
       where: { branch_id: { in: branchIds }, status: "open" },
     }),
 
-    // Per-branch sales vs expenses over the trend window — powers the
-    // "every branch" comparison chart and the top-branch highlight.
-    // Only meaningful when more than one branch is in view, but it's cheap
-    // to compute regardless.
+    // Per-branch sales vs expenses over the trend window
     prisma.$queryRaw`
       SELECT b.id AS branch_id,
              b.name AS branch_name,
@@ -205,19 +231,18 @@ export async function GET(request) {
              COALESCE(exp.total, 0) AS expenses
       FROM branches b
       LEFT JOIN (
-        SELECT o.branch_id, SUM(p.amount) AS total
-        FROM payments p
-        JOIN orders o ON o.id = p.order_id
-        WHERE p.status = 'completed'
-          AND p.paid_at >= ${trendStart}
-          AND o.branch_id = ANY(${branchIds}::uuid[])
-        GROUP BY o.branch_id
+        SELECT branch_id, SUM(total_amount) AS total
+        FROM orders
+        WHERE (payment_status = 'paid' OR status = 'paid')
+          AND COALESCE(paid_at, updated_at, created_at) >= ${trendStart}
+          AND branch_id = ANY(${branchIds}::uuid[])
+        GROUP BY branch_id
       ) sales ON sales.branch_id = b.id
       LEFT JOIN (
         SELECT branch_id, SUM(amount) AS total
         FROM expenses
         WHERE status IN ('approved', 'paid')
-          AND expense_date >= ${trendStart}
+          AND expense_date >= ${trendStartDateStr}::date
           AND branch_id = ANY(${branchIds}::uuid[])
         GROUP BY branch_id
       ) exp ON exp.branch_id = b.id
@@ -228,35 +253,36 @@ export async function GET(request) {
 
   // ---------- shape the response ----------
 
-  const sales = toNum(salesAggToday._sum.amount);
-  const expenses = toNum(expensesAggToday._sum.amount);
+  const salesRow = salesTodayRaw[0] || { total: 0, paid_count: 0 };
+  const sales = toNum(salesRow.total);
+  const paidOrderCount = Number(salesRow.paid_count) || 0;
+
+  const expensesRow = expensesTodayRaw[0] || { total: 0 };
+  const expenses = toNum(expensesRow.total);
 
   const todaySummary = {
     sales,
     orders: ordersCountToday,
     expenses,
     net: sales - expenses,
-    avgOrderValue: ordersCountToday > 0 ? sales / ordersCountToday : 0,
+    // Average of PAID orders only (not all orders)
+    avgOrderValue: paidOrderCount > 0 ? sales / paidOrderCount : 0,
   };
 
-  // Fill every day in the trend window, even days with 0 sales, so the
-  // chart doesn't silently skip gaps.
+  // Fill every day in the trend window, even days with 0 sales.
   const trendMap = new Map(
-    salesTrendRaw.map((r) => [
-      new Date(r.day).toISOString().slice(0, 10),
-      toNum(r.total),
-    ]),
+    salesTrendRaw.map((r) => [String(r.day).slice(0, 10), toNum(r.total)]),
   );
   const salesTrend = [];
   for (let i = 0; i < trendDays; i++) {
-    const dte = addDays(trendStart, i);
-    const key = dte.toISOString().slice(0, 10);
+    const dayInstant = addDays(trendStart, i);
+    const key = kabulDateKey(dayInstant);
     salesTrend.push({ date: key, sales: trendMap.get(key) || 0 });
   }
 
-  // Fill every hour 0-23 for today
+  // Fill every hour 0-23 for today.
   const hourlyMap = new Map(
-    hourlyRaw.map((r) => [new Date(r.hour).getHours(), toNum(r.total)]),
+    hourlyRaw.map((r) => [Number(r.hour), toNum(r.total)]),
   );
   const todayHourly = Array.from({ length: 24 }, (_, hour) => ({
     hour,
@@ -314,6 +340,55 @@ export async function GET(request) {
               : 0,
         }
       : null;
+
+  // ---------- diagnostics (server logs only, no UI impact) ----------
+  if (sales === 0 && ordersCountToday > 0) {
+    try {
+      const [statusRows, payRows, paymentRows] = await Promise.all([
+        prisma.orders.groupBy({
+          by: ["status"],
+          where: {
+            branch_id: { in: branchIds },
+            created_at: { gte: today, lt: tomorrow },
+          },
+          _count: { _all: true },
+        }),
+        prisma.orders.groupBy({
+          by: ["payment_status"],
+          where: {
+            branch_id: { in: branchIds },
+            created_at: { gte: today, lt: tomorrow },
+          },
+          _count: { _all: true },
+        }),
+        prisma.payments.groupBy({
+          by: ["status"],
+          where: {
+            orders: { branch_id: { in: branchIds } },
+            paid_at: { gte: today, lt: tomorrow },
+          },
+          _count: { _all: true },
+        }),
+      ]);
+      console.warn("[dashboard] sales=0 with orders today — inspection", {
+        todayCount: ordersCountToday,
+        orders_by_status: statusRows.map((r) => ({
+          status: r.status,
+          n: r._count._all,
+        })),
+        orders_by_payment_status: payRows.map((r) => ({
+          payment_status: r.payment_status,
+          n: r._count._all,
+        })),
+        payments_by_status: paymentRows.map((r) => ({
+          status: r.status,
+          n: r._count._all,
+        })),
+      });
+    } catch (e) {
+      console.warn("[dashboard] diagnostic failed:", e?.message);
+    }
+  }
 
   return NextResponse.json({
     scope,
