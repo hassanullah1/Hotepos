@@ -1,39 +1,63 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Check, Sparkles, ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Check, ArrowRight } from "lucide-react";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
-const AUTO_DISMISS_MS = 4500;
+const AUTO_DISMISS_MS = 6000;
 
 const CONFETTI_COLORS = [
-  "#0d9488", // teal-600
-  "#10b981", // emerald-500
-  "#f59e0b", // amber-500
-  "#fbbf24", // amber-400
-  "#14b8a6", // teal-500
-  "#34d399", // emerald-400
+  "#14b8a6", // teal
+  "#34d399", // mint
+  "#fbbf24", // sunny
+  "#fb7185", // rose
+  "#a78bfa", // lilac
+  "#38bdf8", // sky
 ];
+
+type Piece = {
+  style: CSSProperties;
+  shape: "dot" | "bar" | "star";
+};
 
 export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
   const { t, dir } = useAdminPreferences();
   const s = t?.setup?.successModal || {};
 
   const [exiting, setExiting] = useState(false);
+  const [paused, setPaused] = useState(false);
 
-  // Deterministic confetti — no Math.random, so it renders identically
-  // on every mount and never triggers a hydration warning.
-  const confetti = useMemo(
+  const steps: string[] =
+    Array.isArray(s.steps) && s.steps.length
+      ? s.steps
+      : ["Account created", "Workspace ready", "Dashboard unlocked"];
+
+  // Deterministic confetti burst: no Math.random, so server and client
+  // always render the same markup (no hydration warnings).
+  const confetti = useMemo<Piece[]>(
     () =>
-      Array.from({ length: 44 }, (_, i) => ({
-        left: `${(i * 47 + 13) % 100}%`,
-        delay: `${((i * 0.17) % 3).toFixed(2)}s`,
-        duration: `${(2.8 + ((i * 0.29) % 1.6)).toFixed(2)}s`,
-        color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-        width: 5 + (i % 4) * 2,
-        height: 8 + (i % 3) * 3,
-        borderRadius: i % 3 === 0 ? "50%" : "1px",
-      })),
+      Array.from({ length: 38 }, (_, i) => {
+        const angle = (i * 137.5 * Math.PI) / 180; // golden angle spread
+        const dist = 130 + ((i * 37) % 170);
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist * 0.8 - 90;
+        const shape: Piece["shape"] =
+          i % 5 === 0 ? "star" : i % 3 === 0 ? "bar" : "dot";
+        const size = shape === "star" ? 14 + (i % 3) * 4 : 6 + (i % 4) * 2;
+        return {
+          shape,
+          style: {
+            "--dx": `${dx.toFixed(1)}px`,
+            "--dy": `${dy.toFixed(1)}px`,
+            "--rot": `${(i * 83) % 720}deg`,
+            width: shape === "bar" ? size * 0.55 : size,
+            height: shape === "bar" ? size * 1.6 : size,
+            backgroundColor: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+            animationDelay: `${(0.25 + ((i * 0.031) % 0.35)).toFixed(2)}s`,
+            animationDuration: `${(2.4 + ((i * 0.23) % 1.4)).toFixed(2)}s`,
+          } as CSSProperties,
+        };
+      }),
     [],
   );
 
@@ -43,35 +67,34 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
     setTimeout(onDone, 320);
   }
 
+  // Close with Escape
   useEffect(() => {
-    const timer = setTimeout(dismiss, AUTO_DISMISS_MS);
-    return () => clearTimeout(timer);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") dismiss();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [exiting]);
 
   return (
     <div
       dir={dir}
+      role="dialog"
+      aria-modal="true"
+      aria-live="polite"
       onClick={dismiss}
-      className={`fixed inset-0 z-[110] flex items-center justify-center overflow-hidden bg-[#0a1f2e]/70 backdrop-blur-md p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[110] flex items-center justify-center overflow-hidden bg-[#06222b]/70 p-4 backdrop-blur-md transition-opacity duration-300 ${
         exiting ? "opacity-0" : "opacity-100"
       }`}
     >
-      {/* ── Confetti layer ── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* ── Confetti burst from the middle of the screen ── */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 z-20">
         {confetti.map((c, i) => (
           <span
             key={i}
-            className="confetti-piece absolute top-0"
-            style={{
-              left: c.left,
-              width: c.width,
-              height: c.height,
-              backgroundColor: c.color,
-              borderRadius: c.borderRadius,
-              animationDelay: c.delay,
-              animationDuration: c.duration,
-            }}
+            className={`piece piece-${c.shape} absolute`}
+            style={c.style}
           />
         ))}
       </div>
@@ -79,95 +102,256 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
       {/* ── Card ── */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`card-enter relative w-full max-w-md rounded-3xl border border-white/20 bg-gradient-to-br from-white to-teal-50 p-7 text-center shadow-2xl shadow-teal-900/40 transition-transform duration-300 dark:from-teal-950 dark:to-teal-900 ${
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        className={`card-enter relative z-10 w-full max-w-sm rounded-[2rem] border-4 border-white bg-gradient-to-b from-[#ecfdf5] via-white to-[#f0fdfa] px-7 pb-7 pt-16 text-center shadow-[0_24px_0_-8px_rgba(13,148,136,0.25),0_30px_60px_-12px_rgba(6,34,43,0.55)] transition-transform duration-300 dark:border-teal-800 dark:from-teal-950 dark:via-teal-950 dark:to-teal-900 ${
           exiting ? "scale-95" : "scale-100"
         }`}
       >
-        {/* Icon with pulsing rings + sparkles */}
-        <div className="relative mx-auto mb-5 h-24 w-24">
-          <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/30 [animation-duration:1.8s]" />
-          <div className="absolute inset-2 animate-pulse rounded-full bg-emerald-400/20" />
-          <div className="relative grid h-full w-full place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/50">
-            <Check size={44} strokeWidth={3} />
-          </div>
-          <Sparkles
-            size={20}
-            className="absolute -end-1 -top-1 animate-pulse text-amber-400"
-          />
-          <Sparkles
-            size={14}
-            className="absolute -bottom-1 -start-1 animate-pulse text-amber-400 [animation-delay:400ms]"
-          />
+        {/* Mascot pops out of the top of the card */}
+        <div className="mascot absolute -top-14 left-1/2 h-28 w-28 -translate-x-1/2">
+          <svg viewBox="0 0 120 120" className="h-full w-full overflow-visible">
+            <defs>
+              <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#5eead4" />
+                <stop offset="1" stopColor="#0d9488" />
+              </linearGradient>
+              <linearGradient id="hat" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#fcd34d" />
+                <stop offset="1" stopColor="#f59e0b" />
+              </linearGradient>
+            </defs>
+
+            {/* ground shadow */}
+            <ellipse
+              cx="60"
+              cy="112"
+              rx="30"
+              ry="4"
+              fill="#0f766e"
+              opacity="0.18"
+            />
+
+            {/* body */}
+            <circle
+              cx="60"
+              cy="66"
+              r="42"
+              fill="url(#body)"
+              stroke="#fff"
+              strokeWidth="4"
+            />
+            <ellipse
+              cx="44"
+              cy="46"
+              rx="12"
+              ry="7"
+              fill="#fff"
+              opacity="0.28"
+              transform="rotate(-25 44 46)"
+            />
+
+            {/* party hat */}
+            <g className="hat">
+              <path
+                d="M44 32 L60 2 L76 32 Z"
+                fill="url(#hat)"
+                stroke="#fff"
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M51 20 L69 20"
+                stroke="#fff"
+                strokeWidth="3"
+                strokeLinecap="round"
+                opacity="0.8"
+              />
+              <circle
+                cx="60"
+                cy="3"
+                r="5"
+                fill="#fb7185"
+                stroke="#fff"
+                strokeWidth="2"
+              />
+            </g>
+
+            {/* eyes */}
+            <g className="eyes">
+              <ellipse cx="45" cy="64" rx="5" ry="6.5" fill="#06222b" />
+              <ellipse cx="75" cy="64" rx="5" ry="6.5" fill="#06222b" />
+              <circle cx="46.8" cy="61.5" r="1.8" fill="#fff" />
+              <circle cx="76.8" cy="61.5" r="1.8" fill="#fff" />
+            </g>
+
+            {/* cheeks + smile */}
+            <ellipse
+              cx="34"
+              cy="76"
+              rx="7"
+              ry="4.5"
+              fill="#fb7185"
+              opacity="0.55"
+            />
+            <ellipse
+              cx="86"
+              cy="76"
+              rx="7"
+              ry="4.5"
+              fill="#fb7185"
+              opacity="0.55"
+            />
+            <path
+              d="M50 76 Q60 90 70 76 Q60 80 50 76 Z"
+              fill="#06222b"
+              stroke="#06222b"
+              strokeWidth="3"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M54 82 Q60 87 66 82"
+              fill="none"
+              stroke="#fb7185"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* success tick badge */}
+          <span className="badge absolute -bottom-1 -end-1 grid h-9 w-9 place-items-center rounded-full border-[3px] border-white bg-emerald-500 text-white shadow-lg shadow-emerald-500/40 dark:border-teal-950">
+            <Check size={18} strokeWidth={3.5} />
+          </span>
+
+          {/* tiny floating sparkles */}
+          <span className="spark spark-a" aria-hidden>
+            ✦
+          </span>
+          <span className="spark spark-b" aria-hidden>
+            ✦
+          </span>
+          <span className="spark spark-c" aria-hidden>
+            ✦
+          </span>
         </div>
 
         <h2
-          className="text-2xl font-bold text-teal-950 dark:text-teal-50"
+          className="text-[1.65rem] font-extrabold leading-tight text-teal-950 dark:text-teal-50"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          {s.title || "Congratulations! 🎉"}
+          {s.title || "Yay, you did it! 🎉"}
         </h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-teal-700/80 dark:text-teal-300/80">
+        <p className="mx-auto mt-2 max-w-[18rem] text-sm leading-relaxed text-teal-800/80 dark:text-teal-200/80">
           {s.body ||
-            "You're all set. Now you can work digitally and grow with the Melmah app."}
+            "Your setup is complete. Time to work digitally and grow with Melmah."}
         </p>
 
-        {/* Auto-dismiss progress bar */}
-        <div className="mt-6 h-1 w-full overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/60">
+        {/* Checklist chips pop in one by one */}
+        <ul className="mt-5 flex flex-wrap justify-center gap-2">
+          {steps.slice(0, 3).map((label, i) => (
+            <li
+              key={label}
+              className="chip inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-teal-800 shadow-sm ring-1 ring-teal-100 dark:bg-teal-900 dark:text-teal-100 dark:ring-teal-800"
+              style={{ animationDelay: `${0.7 + i * 0.35}s` }}
+            >
+              <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald-500 text-white">
+                <Check size={10} strokeWidth={4} />
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA */}
+        <button
+          type="button"
+          onClick={dismiss}
+          autoFocus
+          className="cta group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_0_0_#0f766e] transition-all hover:bg-teal-500 active:translate-y-[3px] active:shadow-[0_2px_0_0_#0f766e] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
+        >
+          {s.goNow || "Let's go"}
+          <ArrowRight
+            size={16}
+            className="transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
+          />
+        </button>
+
+        {/* Auto-dismiss progress (pauses while the card is hovered) */}
+        <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/60">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+            className="progress h-full rounded-full bg-gradient-to-r from-emerald-400 via-teal-500 to-sky-400"
             style={{
-              animation: `progress ${AUTO_DISMISS_MS}ms linear forwards`,
+              animationDuration: `${AUTO_DISMISS_MS}ms`,
+              animationPlayState: paused ? "paused" : "running",
             }}
+            onAnimationEnd={dismiss}
           />
         </div>
         <p className="mt-2 text-[11px] text-teal-700/60 dark:text-teal-300/60">
           {s.opening || "Opening your dashboard…"}
         </p>
-
-        <button
-          type="button"
-          onClick={dismiss}
-          className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-700"
-        >
-          {s.goNow || "Go now"}
-          <ArrowRight size={15} className="rtl:-scale-x-100" />
-        </button>
       </div>
 
       <style jsx>{`
-        @keyframes confetti-fall {
+        /* ── Confetti ── */
+        .piece {
+          left: 0;
+          top: 0;
+          opacity: 0;
+          animation-name: burst;
+          animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+          animation-fill-mode: both;
+        }
+        .piece-dot {
+          border-radius: 50%;
+        }
+        .piece-bar {
+          border-radius: 2px;
+        }
+        .piece-star {
+          clip-path: polygon(
+            50% 0%,
+            61% 35%,
+            98% 35%,
+            68% 57%,
+            79% 91%,
+            50% 70%,
+            21% 91%,
+            32% 57%,
+            2% 35%,
+            39% 35%
+          );
+        }
+        @keyframes burst {
           0% {
-            transform: translateY(-10vh) rotate(0deg);
             opacity: 0;
+            transform: translate(0, 0) scale(0) rotate(0deg);
           }
-          10% {
+          12% {
             opacity: 1;
           }
-          90% {
-            opacity: 1;
+          45% {
+            transform: translate(var(--dx), var(--dy)) scale(1)
+              rotate(var(--rot));
           }
           100% {
-            transform: translateY(110vh) rotate(720deg);
             opacity: 0;
+            transform: translate(
+                calc(var(--dx) * 1.15),
+                calc(var(--dy) + 340px)
+              )
+              scale(0.9) rotate(calc(var(--rot) * 2));
           }
         }
-        .confetti-piece {
-          animation-name: confetti-fall;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-        }
-        @keyframes progress {
-          from {
-            width: 0%;
-          }
-          to {
-            width: 100%;
-          }
+
+        /* ── Card entrance ── */
+        .card-enter {
+          animation: card-enter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
         @keyframes card-enter {
           0% {
             opacity: 0;
-            transform: scale(0.85) translateY(8px);
+            transform: scale(0.8) translateY(24px);
           }
           60% {
             opacity: 1;
@@ -177,16 +361,157 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
             transform: scale(1) translateY(0);
           }
         }
-        .card-enter {
-          animation: card-enter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+        /* ── Mascot ── */
+        .mascot {
+          animation: hop 2.2s ease-in-out 0.6s infinite;
         }
+        @keyframes hop {
+          0%,
+          100% {
+            transform: translate(-50%, 0) rotate(0deg);
+          }
+          12% {
+            transform: translate(-50%, -14px) rotate(-4deg);
+          }
+          24% {
+            transform: translate(-50%, 0) rotate(0deg) scale(1.04, 0.96);
+          }
+          36% {
+            transform: translate(-50%, -7px) rotate(3deg);
+          }
+          48% {
+            transform: translate(-50%, 0) rotate(0deg);
+          }
+        }
+        .hat {
+          transform-origin: 60px 34px;
+          animation: hat-wobble 2.2s ease-in-out 0.6s infinite;
+        }
+        @keyframes hat-wobble {
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          20% {
+            transform: rotate(-8deg);
+          }
+          40% {
+            transform: rotate(6deg);
+          }
+          60% {
+            transform: rotate(0deg);
+          }
+        }
+        .eyes {
+          transform-origin: 60px 64px;
+          animation: blink 3.6s infinite;
+        }
+        @keyframes blink {
+          0%,
+          92%,
+          100% {
+            transform: scaleY(1);
+          }
+          96% {
+            transform: scaleY(0.1);
+          }
+        }
+        .badge {
+          animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+        }
+        @keyframes pop {
+          from {
+            transform: scale(0) rotate(-90deg);
+          }
+          to {
+            transform: scale(1) rotate(0deg);
+          }
+        }
+        .spark {
+          position: absolute;
+          color: #fbbf24;
+          animation: twinkle 1.6s ease-in-out infinite;
+        }
+        .spark-a {
+          top: -4px;
+          inset-inline-end: -12px;
+          font-size: 18px;
+        }
+        .spark-b {
+          top: 26px;
+          inset-inline-start: -18px;
+          font-size: 12px;
+          animation-delay: 0.5s;
+          color: #fb7185;
+        }
+        .spark-c {
+          bottom: 8px;
+          inset-inline-start: -8px;
+          font-size: 10px;
+          animation-delay: 1s;
+          color: #a78bfa;
+        }
+        @keyframes twinkle {
+          0%,
+          100% {
+            transform: scale(0.4) rotate(0deg);
+            opacity: 0.3;
+          }
+          50% {
+            transform: scale(1.2) rotate(25deg);
+            opacity: 1;
+          }
+        }
+
+        /* ── Chips ── */
+        .chip {
+          opacity: 0;
+          animation: chip-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes chip-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px) scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        /* ── Progress ── */
+        .progress {
+          width: 0%;
+          animation-name: progress;
+          animation-timing-function: linear;
+          animation-fill-mode: forwards;
+        }
+        @keyframes progress {
+          from {
+            width: 0%;
+          }
+          to {
+            width: 100%;
+          }
+        }
+
+        /* ── Respect reduced motion ── */
         @media (prefers-reduced-motion: reduce) {
-          .confetti-piece {
-            animation: none !important;
+          .piece {
             display: none;
           }
-          .card-enter {
+          .card-enter,
+          .mascot,
+          .hat,
+          .eyes,
+          .badge,
+          .spark {
             animation: none !important;
+          }
+          .chip {
+            animation: none !important;
+            opacity: 1;
           }
         }
       `}</style>
