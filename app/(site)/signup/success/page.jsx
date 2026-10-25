@@ -1,7 +1,7 @@
 // app/signup/success/page.js
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
@@ -20,20 +20,39 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-;
-
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
-function parseHesabData(raw) {
-  if (!raw) return {};
-  const idx = raw.indexOf("?data=");
-  if (idx === -1) return {};
-  try {
-    const json = decodeURIComponent(raw.slice(idx + 6));
-    return JSON.parse(json);
-  } catch {
-    return {};
+/**
+ * Extract the payment payload.
+ *
+ * Current flow (HesabPay redirect):
+ *   /signup/success?ref=<uuid>&data=<url-encoded-json>
+ *   → data is a SEPARATE query param.
+ *
+ * Legacy flow (older provider):
+ *   /signup/success?ref=<uuid>?data=<url-encoded-json>
+ *   → data was embedded inside ref.
+ *
+ * We try the current form first, then fall back to the legacy form.
+ */
+function parseHesabData(rawRef, rawData) {
+  if (rawData) {
+    try {
+      const parsed = JSON.parse(rawData);
+      if (parsed && typeof parsed === "object") return parsed;
+    } catch {
+      /* fall through */
+    }
   }
+  if (rawRef && rawRef.indexOf("?data=") !== -1) {
+    try {
+      const idx = rawRef.indexOf("?data=");
+      return JSON.parse(decodeURIComponent(rawRef.slice(idx + 6)));
+    } catch {
+      /* fall through */
+    }
+  }
+  return {};
 }
 
 const successText = {
@@ -145,7 +164,11 @@ const successText = {
   },
 };
 
-export default function SignupSuccessPage() {
+/* ─────────────────────────────────────────────────────────────────
+   Inner component — uses useSearchParams, MUST be inside <Suspense>.
+   ───────────────────────────────────────────────────────────────── */
+
+function SignupSuccessInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { language } = useLanguage();
@@ -156,7 +179,9 @@ export default function SignupSuccessPage() {
   const refMatch = rawRef.match(UUID_RE);
   const ref = refMatch ? refMatch[0] : "";
 
-  const hesabData = parseHesabData(rawRef);
+  // `data` is its own query param in the current flow.
+  const rawData = searchParams.get("data") || "";
+  const hesabData = parseHesabData(rawRef, rawData);
   const transaction_id = hesabData.transaction_id;
 
   const [state, setState] = useState("checking"); // checking | waiting | ready | error
@@ -183,9 +208,10 @@ export default function SignupSuccessPage() {
       setMessage(t.errorMissingRef);
       return;
     }
+
     let cancelled = false;
     let attempts = 0;
-    const MAX = 15; // 30 s total (15 × 2 s) — down from 20 × 2 s
+    const MAX = 15; // 30 s total (15 × 2 s)
     let firedConfirm = false;
 
     async function poll() {
@@ -203,14 +229,12 @@ export default function SignupSuccessPage() {
           return;
         }
 
-        // ── Expired / failed ─────────────────────────────
         if (data.status === "expired" || data.status === "failed") {
           setState("error");
           setMessage(t.errorExpired);
           return;
         }
 
-        // ── Paid → show creds ────────────────────────────
         if (data.status === "paid") {
           setCreds({
             email: data.email,
@@ -221,10 +245,6 @@ export default function SignupSuccessPage() {
           return;
         }
 
-        // ── Fire confirm on the FIRST poll ───────────────
-        // We're at /signup/success with a real hotel_id created
-        // <30 min ago — that's enough signal. Webhook is optional;
-        // this call activates the hotel directly if still expired.
         if (!firedConfirm) {
           firedConfirm = true;
           try {
@@ -238,7 +258,6 @@ export default function SignupSuccessPage() {
               }),
             });
           } catch {
-            /* fall through — next poll will try again */
             firedConfirm = false;
           }
         }
@@ -288,9 +307,7 @@ export default function SignupSuccessPage() {
       : t.warningBody;
 
   return (
-    <div
-      className={`${displayFont.variable} relative min-h-screen overflow-x-hidden bg-[#15121C] text-[#F0EAE2]`}
-    >
+    <div className="relative min-h-screen overflow-x-hidden bg-[#15121C] text-[#F0EAE2]">
       {/* Table-grid pattern */}
       <svg
         className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
@@ -491,7 +508,7 @@ export default function SignupSuccessPage() {
                 </div>
               )}
 
-              {/* Forgot / change password hint — shown in both states */}
+              {/* Forgot / change password hint */}
               <div className="mt-5 flex flex-col items-center gap-1 rounded-xl border border-[#2E2938] bg-[#161320]/60 px-3.5 py-3 text-center">
                 <p className="text-xs text-[#B7B2C4]">{t.forgotHint}</p>
                 <Link
@@ -567,5 +584,20 @@ export default function SignupSuccessPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Default export wraps the inner component in <Suspense> so that
+   useSearchParams() works under Next.js 15.
+   ───────────────────────────────────────────────────────────────── */
+
+export default function SignupSuccessPage() {
+  return (
+    <Suspense
+      fallback={<LoadingScreen text={successText.en.loading} fullScreen />}
+    >
+      <SignupSuccessInner />
+    </Suspense>
   );
 }
