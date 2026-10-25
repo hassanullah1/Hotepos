@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Building2,
   Store,
@@ -16,7 +16,7 @@ import type { SetupStep } from "./AdminSetupGate";
 export type { SetupStep };
 
 const HESABPAY_PATTERN = /^07\d{8}$/;
-const STEPS: SetupStep[] = ["hotel", "branch", "hesabpay"];
+const ALL_STEPS: SetupStep[] = ["hotel", "branch", "hesabpay"];
 
 const STEP_ICON: Record<
   SetupStep,
@@ -37,31 +37,42 @@ function hesabpaySkipKey(hotelId: string) {
   return `hesabpay_setup_skipped_${hotelId}`;
 }
 
+type Province = { id: string; name: string };
+
 /* ── Modal ──────────────────────────────────────────────────────── */
 
 export default function AdminSetupModal({
   initialStep,
   initialHotelId,
+  includeHesabpay = true,
   onAllComplete,
 }: {
   initialStep: SetupStep;
   initialHotelId: string;
+  includeHesabpay?: boolean;
   onAllComplete: () => void;
 }) {
   const { t, dir } = useAdminPreferences();
   const s = t?.setup || {};
 
-  const startIndex = Math.max(0, STEPS.indexOf(initialStep));
+  // When the hotel isn't doing online ordering, step 3 is skipped entirely.
+  const steps = useMemo(
+    () =>
+      includeHesabpay ? ALL_STEPS : ALL_STEPS.filter((x) => x !== "hesabpay"),
+    [includeHesabpay],
+  );
+
+  const startIndex = Math.max(0, steps.indexOf(initialStep));
 
   const [stepIndex, setStepIndex] = useState(startIndex);
   const [hotelId, setHotelId] = useState(initialHotelId || "");
   const [done, setDone] = useState<Set<SetupStep>>(
-    new Set(STEPS.slice(0, startIndex)),
+    new Set(steps.slice(0, startIndex)),
   );
   const [finishing, setFinishing] = useState(false);
 
-  const currentStep = STEPS[stepIndex];
-  const total = STEPS.length;
+  const currentStep = steps[stepIndex];
+  const total = steps.length;
   const stepMeta = s.steps?.[currentStep] || {};
   const Icon = STEP_ICON[currentStep];
   const isOptionalStep = currentStep === "hesabpay";
@@ -89,9 +100,6 @@ export default function AdminSetupModal({
     }
   }
 
-  /* Called when the user saves a VALID HesabPay number. Clears any
-     previous skip flag for this hotel so future saves don’t hit stale
-     state. */
   function handleHesabpaySaved() {
     try {
       localStorage.removeItem(hesabpaySkipKey(hotelId));
@@ -101,14 +109,11 @@ export default function AdminSetupModal({
     handleStepDone();
   }
 
-  /* Called when the user clicks “Skip for now”. Persists the skip flag
-     so the gate doesn’t reopen the modal on next page load, then
-     advances. */
   function handleHesabpaySkip() {
     try {
       localStorage.setItem(hesabpaySkipKey(hotelId), "1");
     } catch {
-      /* ignore — worst case they see the modal again next load */
+      /* ignore */
     }
     handleStepDone();
   }
@@ -128,7 +133,7 @@ export default function AdminSetupModal({
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4"
     >
       <div className="flex max-h-[94vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-teal-200 bg-white shadow-2xl dark:border-teal-800 dark:bg-teal-950">
-        {/* ── Header: title + progress ── */}
+        {/* ── Header ── */}
         <div className="border-b border-teal-100 px-5 py-4 dark:border-teal-800/60">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50">
@@ -142,7 +147,7 @@ export default function AdminSetupModal({
           </div>
 
           <div className="flex items-center">
-            {STEPS.map((step, i) => {
+            {steps.map((step, i) => {
               const isDone = done.has(step) || i < stepIndex;
               const isActive = i === stepIndex;
               return (
@@ -176,7 +181,7 @@ export default function AdminSetupModal({
           </div>
         </div>
 
-        {/* ── Body: current step ── */}
+        {/* ── Body ── */}
         <div className="flex-1 overflow-y-auto px-5 py-5">
           {finishing ? (
             <FinishingState
@@ -233,7 +238,7 @@ export default function AdminSetupModal({
           )}
         </div>
 
-        {/* ── Footer: log out escape hatch ── */}
+        {/* ── Footer ── */}
         {!finishing && (
           <div className="flex items-center justify-between gap-3 border-t border-teal-100 px-5 py-3 dark:border-teal-800/60">
             <p className="text-[11px] text-teal-700/60 dark:text-teal-300/60">
@@ -353,7 +358,7 @@ function HotelStep({ onSuccess }: { onSuccess: (id: string) => void }) {
   );
 }
 
-/* ── Step 2: Create main branch ─────────────────────────────────── */
+/* ── Step 2: Create main branch (with province) ─────────────────── */
 
 function BranchStep({
   hotelId,
@@ -368,8 +373,30 @@ function BranchStep({
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [provinceId, setProvinceId] = useState("");
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [loadingProvinces, setLoadingProvinces] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/provinces");
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled) setProvinces(data.provinces || []);
+        }
+      } catch {
+        /* non-fatal — form will show "Loading…" option */
+      }
+      if (!cancelled) setLoadingProvinces(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -378,6 +405,10 @@ function BranchStep({
         s.errors?.missingHotelId ||
           "Missing hotel id. Please reload and try again.",
       );
+      return;
+    }
+    if (!provinceId) {
+      setError(b.provinceRequired || "Please select a province.");
       return;
     }
     setSaving(true);
@@ -389,14 +420,20 @@ function BranchStep({
           hotel_id: hotelId,
           name: name.trim(),
           address: address.trim(),
+          province_id: provinceId,
           is_main: true,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(
-          data.error || s.errors?.createBranch || "Failed to create branch.",
-        );
+        // API enforces province: surface its specific error code nicely
+        const msg =
+          data.error === "PROVINCE_REQUIRED"
+            ? b.provinceRequired || "Please select a province."
+            : data.error ||
+              s.errors?.createBranch ||
+              "Failed to create branch.";
+        setError(msg);
         return;
       }
       onSuccess();
@@ -427,6 +464,28 @@ function BranchStep({
       </div>
 
       <div>
+        <label className={labelClass}>{b.provinceLabel || "Province"} *</label>
+        <select
+          required
+          value={provinceId}
+          onChange={(e) => setProvinceId(e.target.value)}
+          disabled={loadingProvinces}
+          className={inputClass}
+        >
+          <option value="">
+            {loadingProvinces
+              ? b.provinceLoading || "Loading…"
+              : b.provincePlaceholder || "Select a province…"}
+          </option>
+          {provinces.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
         <label className={labelClass}>{b.addressLabel || "Address"}</label>
         <textarea
           rows={2}
@@ -441,12 +500,13 @@ function BranchStep({
         saving={saving}
         savingLabel={s.saving || "Saving…"}
         label={b.submit || "Add branch & continue"}
+        disabled={!provinceId || loadingProvinces}
       />
     </form>
   );
 }
 
-/* ── Step 3: HesabPay number — OPTIONAL ─────────────────────────── */
+/* ── Step 3: HesabPay (optional) ────────────────────────────────── */
 
 function HesabpayStep({
   hotelId,
@@ -510,7 +570,6 @@ function HesabpayStep({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      {/* Optional-step notice */}
       <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
         <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <span>

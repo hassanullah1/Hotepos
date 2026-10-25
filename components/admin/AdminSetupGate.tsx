@@ -13,8 +13,6 @@ export type SetupStep = "hotel" | "branch" | "hesabpay";
 
 type GateState = "checking" | "needs_setup" | "allowed";
 
-/* localStorage key so that a user who clicks “Skip for now” on the
-   HesabPay step isn't asked about it again on every page load. */
 function hesabpaySkipKey(hotelId: string) {
   return `hesabpay_setup_skipped_${hotelId}`;
 }
@@ -30,6 +28,7 @@ export default function AdminSetupGate({
   const [state, setState] = useState<GateState>("checking");
   const [initialStep, setInitialStep] = useState<SetupStep>("hotel");
   const [initialHotelId, setInitialHotelId] = useState<string>("");
+  const [includeHesabpay, setIncludeHesabpay] = useState(true);
   const [recheckKey, setRecheckKey] = useState(0);
 
   const isExempt = EXEMPT_ROLES.includes(role);
@@ -72,8 +71,11 @@ export default function AdminSetupGate({
         const hotels: any[] = hotelsData.hotels || [];
 
         if (hotels.length === 0) {
+          // Brand-new hotel — is_online defaults to false in the schema,
+          // so HesabPay step is not needed.
           setInitialStep("hotel");
           setInitialHotelId("");
+          setIncludeHesabpay(false);
           setState("needs_setup");
           return;
         }
@@ -83,9 +85,25 @@ export default function AdminSetupGate({
         if (!hotelId) {
           setInitialStep("hotel");
           setInitialHotelId("");
+          setIncludeHesabpay(false);
           setState("needs_setup");
           return;
         }
+
+        /* ── Fetch hotel (is_online + hesabpay) ── */
+        const hotelRes = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
+        if (cancelled) return;
+        if (!hotelRes.ok) {
+          setState("allowed");
+          return;
+        }
+        const hotelData = await hotelRes.json();
+        const hotelObj = hotelData.hotel || {};
+        const hp = String(hotelObj.hesabpay_account_number || "").trim();
+
+        // Only skip HesabPay when we positively know the hotel is offline.
+        // Undefined (API doesn't return it) → keep the step for backward compat.
+        const needsHesabpay = hotelObj.is_online !== false;
 
         /* ── Step 2: any branch? ── */
         const branchesRes = await fetchWithAuth(
@@ -102,31 +120,24 @@ export default function AdminSetupGate({
         if (branches.length === 0) {
           setInitialStep("branch");
           setInitialHotelId(hotelId);
+          setIncludeHesabpay(needsHesabpay);
           setState("needs_setup");
           return;
         }
 
-        /* ── Step 3: valid HesabPay? (OPTIONAL) ── */
-        const hotelRes = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
-        if (cancelled) return;
-        if (!hotelRes.ok) {
+        /* ── Step 3: HesabPay (only if hotel does online ordering) ── */
+        if (!needsHesabpay) {
           setState("allowed");
           return;
         }
-        const hotelData = await hotelRes.json();
-        const hp = String(
-          hotelData.hotel?.hesabpay_account_number || "",
-        ).trim();
 
         if (!HESABPAY_PATTERN.test(hp)) {
-          /* Respect the user's choice to skip this step for this hotel. */
           let skipped = false;
           try {
             skipped = localStorage.getItem(hesabpaySkipKey(hotelId)) === "1";
           } catch {
-            /* localStorage unavailable — treat as not skipped */
+            /* ignore */
           }
-
           if (skipped) {
             setState("allowed");
             return;
@@ -134,11 +145,11 @@ export default function AdminSetupGate({
 
           setInitialStep("hesabpay");
           setInitialHotelId(hotelId);
+          setIncludeHesabpay(true);
           setState("needs_setup");
           return;
         }
 
-        /* ── All good ── */
         setState("allowed");
       } catch {
         if (!cancelled) setState("allowed");
@@ -172,6 +183,7 @@ export default function AdminSetupGate({
         <AdminSetupModal
           initialStep={initialStep}
           initialHotelId={initialHotelId}
+          includeHesabpay={includeHesabpay}
           onAllComplete={() => setRecheckKey((k) => k + 1)}
         />
       )}
