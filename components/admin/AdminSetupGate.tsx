@@ -5,6 +5,7 @@ import { useAdminAuth } from "@/providers/AdminAuthProvider";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import AdminSetupModal from "./AdminSetupModal";
+import AdminSetupSuccess from "./AdminSetupSuccess";
 
 const EXEMPT_ROLES = ["super_admin", "admin"];
 const HESABPAY_PATTERN = /^07\d{8}$/;
@@ -28,9 +29,10 @@ export default function AdminSetupGate({
   const [state, setState] = useState<GateState>("checking");
   const [initialStep, setInitialStep] = useState<SetupStep>("hotel");
   const [initialHotelId, setInitialHotelId] = useState<string>("");
-  // allowSkip = true  → hotel is NOT online → HesabPay optional (Skip visible)
-  // allowSkip = false → hotel IS online     → HesabPay required (Skip hidden)
+  // allowSkip = true  → hotel NOT online → HesabPay optional (Skip visible)
+  // allowSkip = false → hotel IS online  → HesabPay required (Skip hidden)
   const [allowSkip, setAllowSkip] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [recheckKey, setRecheckKey] = useState(0);
 
   const isExempt = EXEMPT_ROLES.includes(role);
@@ -50,7 +52,6 @@ export default function AdminSetupGate({
 
     (async () => {
       try {
-        /* ── Safety net: skip if owner isn't verified ── */
         const verifRes = await fetchWithAuth("/api/owner/verification");
         if (cancelled) return;
         if (verifRes.ok) {
@@ -62,7 +63,6 @@ export default function AdminSetupGate({
           }
         }
 
-        /* ── Step 1: any hotel? ── */
         const hotelsRes = await fetchWithAuth("/api/owners/hotel");
         if (cancelled) return;
         if (!hotelsRes.ok) {
@@ -73,8 +73,6 @@ export default function AdminSetupGate({
         const hotels: any[] = hotelsData.hotels || [];
 
         if (hotels.length === 0) {
-          // Brand-new hotel — schema default is is_online = false,
-          // so Skip will be available once we reach the HesabPay step.
           setInitialStep("hotel");
           setInitialHotelId("");
           setAllowSkip(true);
@@ -92,7 +90,6 @@ export default function AdminSetupGate({
           return;
         }
 
-        /* ── Fetch hotel (is_online + hesabpay) ── */
         const hotelRes = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
         if (cancelled) return;
         if (!hotelRes.ok) {
@@ -103,10 +100,9 @@ export default function AdminSetupGate({
         const hotelObj = hotelData.hotel || {};
         const hp = String(hotelObj.hesabpay_account_number || "").trim();
 
-        // Skip allowed only when hotel is NOT online.
+        // Flipped rule: skip is allowed only when hotel is NOT online.
         const skipAllowed = hotelObj.is_online !== true;
 
-        /* ── Step 2: any branch? ── */
         const branchesRes = await fetchWithAuth(
           `/api/branches?hotel_id=${hotelId}`,
         );
@@ -126,7 +122,6 @@ export default function AdminSetupGate({
           return;
         }
 
-        /* ── Step 3: HesabPay ── */
         if (!HESABPAY_PATTERN.test(hp)) {
           if (skipAllowed) {
             let skipped = false;
@@ -159,11 +154,25 @@ export default function AdminSetupGate({
     };
   }, [authLoading, role, isExempt, isOwner, isBranchManager, recheckKey]);
 
+  /* ── Called when the last setup step is saved ── */
+  function handleAllComplete() {
+    // Unmount the setup modal, reveal the dashboard behind, and play
+    // the celebration. We do NOT re-check yet — that happens after the
+    // celebration closes, to avoid a modal/celebration race.
+    setState("allowed");
+    setShowSuccess(true);
+  }
+
+  function handleSuccessDone() {
+    setShowSuccess(false);
+    setRecheckKey((k) => k + 1);
+  }
+
   return (
     <>
       {children}
 
-      {state === "checking" && (
+      {state === "checking" && !showSuccess && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-[#15121C]/95 px-6 py-5 ring-1 ring-white/10">
             <div className="h-7 w-7 animate-spin rounded-full border-2 border-[#C9A227]/30 border-t-[#C9A227]" />
@@ -177,14 +186,16 @@ export default function AdminSetupGate({
         </div>
       )}
 
-      {state === "needs_setup" && (
+      {state === "needs_setup" && !showSuccess && (
         <AdminSetupModal
           initialStep={initialStep}
           initialHotelId={initialHotelId}
           allowSkip={allowSkip}
-          onAllComplete={() => setRecheckKey((k) => k + 1)}
+          onAllComplete={handleAllComplete}
         />
       )}
+
+      {showSuccess && <AdminSetupSuccess onDone={handleSuccessDone} />}
     </>
   );
 }

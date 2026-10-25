@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Building2,
   Store,
@@ -10,8 +10,6 @@ import {
   Check,
   LogOut,
   Info,
-  PartyPopper,
-  ArrowRight,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -42,8 +40,6 @@ function hesabpaySkipKey(hotelId: string) {
 
 type Province = { id: string; name: string };
 
-/* ── Modal ──────────────────────────────────────────────────────── */
-
 export default function AdminSetupModal({
   initialStep,
   initialHotelId,
@@ -65,8 +61,6 @@ export default function AdminSetupModal({
   const [done, setDone] = useState<Set<SetupStep>>(
     new Set(STEPS.slice(0, startIndex)),
   );
-  const [success, setSuccess] = useState(false);
-  const successTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentStep = STEPS[stepIndex];
   const total = STEPS.length;
@@ -79,7 +73,6 @@ export default function AdminSetupModal({
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
-      if (successTimer.current) clearTimeout(successTimer.current);
     };
   }, []);
 
@@ -92,22 +85,10 @@ export default function AdminSetupModal({
 
     if (stepIndex < total - 1) {
       setStepIndex(stepIndex + 1);
-      return;
-    }
-
-    // Last step — show success screen, then let the gate re-check.
-    setSuccess(true);
-    successTimer.current = setTimeout(() => {
+    } else {
+      // Last step saved → hand off to the celebration popup immediately.
       onAllComplete();
-    }, 2000);
-  }
-
-  function handleContinueNow() {
-    if (successTimer.current) {
-      clearTimeout(successTimer.current);
-      successTimer.current = null;
     }
-    onAllComplete();
   }
 
   function handleHesabpaySaved() {
@@ -143,184 +124,118 @@ export default function AdminSetupModal({
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4"
     >
       <div className="flex max-h-[94vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-teal-200 bg-white shadow-2xl dark:border-teal-800 dark:bg-teal-950">
-        {/* ── Header (hidden on success screen) ── */}
-        {!success && (
-          <div className="border-b border-teal-100 px-5 py-4 dark:border-teal-800/60">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50">
-                {s.title || "Finish setting up your account"}
-              </h2>
-              <span className="shrink-0 text-[11px] font-medium uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
-                {(s.stepCounter || "Step {current} of {total}")
-                  .replace("{current}", String(stepIndex + 1))
-                  .replace("{total}", String(total))}
-              </span>
-            </div>
+        {/* Header */}
+        <div className="border-b border-teal-100 px-5 py-4 dark:border-teal-800/60">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50">
+              {s.title || "Finish setting up your account"}
+            </h2>
+            <span className="shrink-0 text-[11px] font-medium uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
+              {(s.stepCounter || "Step {current} of {total}")
+                .replace("{current}", String(stepIndex + 1))
+                .replace("{total}", String(total))}
+            </span>
+          </div>
 
-            <div className="flex items-center">
-              {STEPS.map((step, i) => {
-                const isDone = done.has(step) || i < stepIndex;
-                const isActive = i === stepIndex;
-                return (
+          <div className="flex items-center">
+            {STEPS.map((step, i) => {
+              const isDone = done.has(step) || i < stepIndex;
+              const isActive = i === stepIndex;
+              return (
+                <div
+                  key={step}
+                  className="flex flex-1 items-center last:flex-none"
+                >
                   <div
-                    key={step}
-                    className="flex flex-1 items-center last:flex-none"
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition ${
+                      isDone
+                        ? "bg-emerald-500 text-white"
+                        : isActive
+                          ? "bg-teal-600 text-white ring-4 ring-teal-500/20"
+                          : "bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300"
+                    }`}
                   >
-                    <div
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition ${
-                        isDone
-                          ? "bg-emerald-500 text-white"
-                          : isActive
-                            ? "bg-teal-600 text-white ring-4 ring-teal-500/20"
-                            : "bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300"
-                      }`}
-                    >
-                      {isDone ? <Check size={13} /> : i + 1}
-                    </div>
-                    {i < total - 1 && (
-                      <div
-                        className={`mx-1 h-0.5 flex-1 rounded-full transition ${
-                          isDone
-                            ? "bg-emerald-500"
-                            : "bg-teal-200 dark:bg-teal-800"
-                        }`}
-                      />
-                    )}
+                    {isDone ? <Check size={13} /> : i + 1}
                   </div>
-                );
-              })}
+                  {i < total - 1 && (
+                    <div
+                      className={`mx-1 h-0.5 flex-1 rounded-full transition ${
+                        isDone
+                          ? "bg-emerald-500"
+                          : "bg-teal-200 dark:bg-teal-800"
+                      }`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-5 py-5">
+          <div className="mb-4 flex items-start gap-3">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${
+                isHesabpayStep && allowSkip
+                  ? "bg-gradient-to-br from-amber-500 to-yellow-500"
+                  : "bg-gradient-to-br from-teal-500 to-emerald-500"
+              }`}
+            >
+              <Icon size={18} />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-teal-950 dark:text-teal-50">
+                {stepMeta.title || ""}
+              </h3>
+              <p className="mt-0.5 text-xs leading-relaxed text-teal-700/70 dark:text-teal-300/70">
+                {stepMeta.subtitle || ""}
+              </p>
             </div>
           </div>
-        )}
 
-        {/* ── Body ── */}
-        <div className="flex-1 overflow-y-auto px-5 py-5">
-          {success ? (
-            <SuccessState
-              title={s.success?.title || "You're all set! 🎉"}
-              body={
-                s.success?.body ||
-                "Setup is complete. Your dashboard is ready to use."
-              }
-              continueLabel={s.success?.continue || "Continue to dashboard"}
-              onContinue={handleContinueNow}
+          {currentStep === "hotel" && (
+            <HotelStep
+              onSuccess={(id) => {
+                setHotelId(id);
+                handleStepDone();
+              }}
             />
-          ) : (
-            <>
-              <div className="mb-4 flex items-start gap-3">
-                <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${
-                    isHesabpayStep && !allowSkip
-                      ? "bg-gradient-to-br from-teal-500 to-emerald-500"
-                      : isHesabpayStep && allowSkip
-                        ? "bg-gradient-to-br from-amber-500 to-yellow-500"
-                        : "bg-gradient-to-br from-teal-500 to-emerald-500"
-                  }`}
-                >
-                  <Icon size={18} />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-sm font-semibold text-teal-950 dark:text-teal-50">
-                    {stepMeta.title || ""}
-                  </h3>
-                  <p className="mt-0.5 text-xs leading-relaxed text-teal-700/70 dark:text-teal-300/70">
-                    {stepMeta.subtitle || ""}
-                  </p>
-                </div>
-              </div>
-
-              {currentStep === "hotel" && (
-                <HotelStep
-                  onSuccess={(id) => {
-                    setHotelId(id);
-                    handleStepDone();
-                  }}
-                />
-              )}
-              {currentStep === "branch" && (
-                <BranchStep
-                  hotelId={hotelId}
-                  onSuccess={() => handleStepDone()}
-                />
-              )}
-              {currentStep === "hesabpay" && (
-                <HesabpayStep
-                  hotelId={hotelId}
-                  allowSkip={allowSkip}
-                  onSuccess={handleHesabpaySaved}
-                  onSkip={handleHesabpaySkip}
-                />
-              )}
-            </>
+          )}
+          {currentStep === "branch" && (
+            <BranchStep hotelId={hotelId} onSuccess={() => handleStepDone()} />
+          )}
+          {currentStep === "hesabpay" && (
+            <HesabpayStep
+              hotelId={hotelId}
+              allowSkip={allowSkip}
+              onSuccess={handleHesabpaySaved}
+              onSkip={handleHesabpaySkip}
+            />
           )}
         </div>
 
-        {/* ── Footer (hidden on success screen) ── */}
-        {!success && (
-          <div className="flex items-center justify-between gap-3 border-t border-teal-100 px-5 py-3 dark:border-teal-800/60">
-            <p className="text-[11px] text-teal-700/60 dark:text-teal-300/60">
-              {s.footer?.requiredNote ||
-                "These steps are required before using the dashboard."}
-            </p>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
-            >
-              <LogOut size={12} className="rtl:-scale-x-100" />
-              {s.footer?.logout || "Log out"}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ── Success screen ─────────────────────────────────────────────── */
-
-function SuccessState({
-  title,
-  body,
-  continueLabel,
-  onContinue,
-}: {
-  title: string;
-  body: string;
-  continueLabel: string;
-  onContinue: () => void;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-4 py-6 text-center">
-      <div className="relative">
-        <div className="grid h-20 w-20 place-items-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400">
-          <PartyPopper size={36} />
+        {/* Footer */}
+        <div className="flex items-center justify-between gap-3 border-t border-teal-100 px-5 py-3 dark:border-teal-800/60">
+          <p className="text-[11px] text-teal-700/60 dark:text-teal-300/60">
+            {s.footer?.requiredNote ||
+              "These steps are required before using the dashboard."}
+          </p>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
+          >
+            <LogOut size={12} className="rtl:-scale-x-100" />
+            {s.footer?.logout || "Log out"}
+          </button>
         </div>
-        <span className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full bg-emerald-500 text-white shadow-lg">
-          <Check size={15} strokeWidth={3} />
-        </span>
       </div>
-
-      <h2 className="text-xl font-bold text-teal-950 dark:text-teal-50">
-        {title}
-      </h2>
-      <p className="max-w-sm text-sm leading-relaxed text-teal-700/80 dark:text-teal-300/80">
-        {body}
-      </p>
-
-      <button
-        type="button"
-        onClick={onContinue}
-        className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-700"
-      >
-        {continueLabel}
-        <ArrowRight size={15} className="rtl:-scale-x-100" />
-      </button>
     </div>
   );
 }
 
-/* ── Step 1: Create hotel ───────────────────────────────────────── */
+/* ── Step 1: hotel ──────────────────────────────────────────────── */
 
 function HotelStep({ onSuccess }: { onSuccess: (id: string) => void }) {
   const { t } = useAdminPreferences();
@@ -418,7 +333,7 @@ function HotelStep({ onSuccess }: { onSuccess: (id: string) => void }) {
   );
 }
 
-/* ── Step 2: Create main branch ─────────────────────────────────── */
+/* ── Step 2: branch ─────────────────────────────────────────────── */
 
 function BranchStep({
   hotelId,
@@ -631,7 +546,6 @@ function HesabpayStep({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      {/* Banner — optional vs required */}
       {allowSkip ? (
         <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
           <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
@@ -699,7 +613,6 @@ function HesabpayStep({
           label={hp.submit || "Save & finish setup"}
         />
 
-        {/* Skip is rendered ONLY when the hotel is NOT online */}
         {allowSkip && (
           <button
             type="button"
