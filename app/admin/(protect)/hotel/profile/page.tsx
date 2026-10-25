@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Building2,
@@ -15,6 +15,37 @@ import {
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
+
+/* ------------------------------------------------------------------ */
+/*  HesabPay validation                                                */
+/* ------------------------------------------------------------------ */
+// Format: 07XXXXXXXX (10 digits, must start with 07)
+const HESABPAY_PATTERN = /^07\d{8}$/;
+
+function validateHesabpay(value: string, t: any): string {
+  const v = (value || "").trim();
+  if (!v) return ""; // optional field
+  if (!/^\d+$/.test(v)) {
+    return (
+      t.hotel?.hesabpayDigitsOnly || "HesabPay number must contain digits only."
+    );
+  }
+  if (v.length !== 10) {
+    return (
+      t.hotel?.hesabpayLength || "HesabPay number must be exactly 10 digits."
+    );
+  }
+  if (!v.startsWith("07")) {
+    return t.hotel?.hesabpayPrefix || "HesabPay number must start with 07.";
+  }
+  if (!HESABPAY_PATTERN.test(v)) {
+    return (
+      t.hotel?.hesabpayInvalid ||
+      "Invalid HesabPay number. Expected format: 07XXXXXXXX."
+    );
+  }
+  return "";
+}
 
 export default function HotelProfilePage() {
   const router = useRouter();
@@ -32,6 +63,14 @@ export default function HotelProfilePage() {
     address: "",
     hesabpay_account_number: "",
   });
+
+  /* live validation for the HesabPay field */
+  const hesabpayError = useMemo(
+    () => validateHesabpay(form.hesabpay_account_number, t),
+    [form.hesabpay_account_number, t],
+  );
+  const hesabpayValid =
+    form.hesabpay_account_number.length === 0 || hesabpayError === "";
 
   function handle401(res: Response) {
     if (res.status === 401) {
@@ -87,6 +126,14 @@ export default function HotelProfilePage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!hotel) return;
+
+    // block save if HesabPay number is invalid
+    const hpErr = validateHesabpay(form.hesabpay_account_number, t);
+    if (hpErr) {
+      setError(hpErr);
+      return;
+    }
+
     setSaving(true);
     setError("");
     setSuccess("");
@@ -218,7 +265,7 @@ export default function HotelProfilePage() {
         {/* form */}
         <form
           onSubmit={save}
-          className="rounded-2xl border border-teal-200 dark:border-teal-800shadow-sm p-5 space-y-4"
+          className="rounded-2xl border border-teal-200 dark:border-teal-800 shadow-sm p-5 space-y-4"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label={t.hotel?.name || "Hotel name"}>
@@ -270,24 +317,60 @@ export default function HotelProfilePage() {
               }
               hint={
                 t.hotel?.hesabpayHint ||
-                "Where the owner's share of online orders gets paid."
+                "Where the owner's share of online orders gets paid. Format: 07XXXXXXXX."
               }
+              error={hesabpayError}
             >
-              <input
-                value={form.hesabpay_account_number}
-                onChange={(e) =>
-                  setForm({ ...form, hesabpay_account_number: e.target.value })
-                }
-                dir="ltr"
-                className="w-full text-sm border border-teal-200 dark:border-teal-800 rounded-lg px-3 py-2 bg-white dark:bg-teal-900/40 text-teal-900 dark:text-teal-100 placeholder:text-teal-400/70 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500"
-              />
+              <div className="relative">
+                <input
+                  value={form.hesabpay_account_number}
+                  onChange={(e) => {
+                    // keep digits only, cap at 10 characters
+                    const digits = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 10);
+                    setForm({
+                      ...form,
+                      hesabpay_account_number: digits,
+                    });
+                  }}
+                  inputMode="numeric"
+                  pattern="07[0-9]{8}"
+                  maxLength={10}
+                  placeholder="07XXXXXXXX"
+                  dir="ltr"
+                  aria-invalid={!!hesabpayError}
+                  className={`w-full text-sm border rounded-lg px-3 py-2 pr-9 bg-white dark:bg-teal-900/40 text-teal-900 dark:text-teal-100 placeholder:text-teal-400/70 focus:outline-none focus:ring-2 transition-colors ${
+                    hesabpayError
+                      ? "border-red-400 dark:border-red-700 focus:ring-red-500/30 focus:border-red-500"
+                      : "border-teal-200 dark:border-teal-800 focus:ring-teal-500/30 focus:border-teal-500"
+                  }`}
+                />
+                {/* right-side status indicator */}
+                <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                  {form.hesabpay_account_number.length > 0 &&
+                    (hesabpayValid ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 text-sm">
+                        ✓
+                      </span>
+                    ) : (
+                      <AlertCircle className="h-4 w-4 text-red-500" />
+                    ))}
+                </span>
+              </div>
             </Field>
           </div>
 
           <div className="flex justify-end pt-3 border-t border-teal-100 dark:border-teal-800/60">
             <button
               type="submit"
-              disabled={saving}
+              disabled={saving || !hesabpayValid}
+              title={
+                !hesabpayValid
+                  ? hesabpayError ||
+                    "Please enter a valid HesabPay number (07XXXXXXXX)."
+                  : undefined
+              }
               className="inline-flex items-center gap-1.5 px-5 py-2 text-sm rounded-full bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="h-3.5 w-3.5" />
@@ -352,9 +435,7 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
   const hasRooms = plan?.is_rooms === true;
 
   return (
-    <div
-      className={`rounded-2xl border ${ring}  shadow-sm p-3 mb-4`}
-    >
+    <div className={`rounded-2xl border ${ring}  shadow-sm p-3 mb-4`}>
       {/* top row: plan name + status + action button */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2 min-w-0">
@@ -503,10 +584,12 @@ function LabeledStat({
 function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: React.ReactNode;
   hint?: string;
+  error?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -515,10 +598,17 @@ function Field({
         {label}
       </label>
       {children}
-      {hint && (
-        <p className="mt-1.5 text-[11px] text-teal-700/60 dark:text-teal-300/60">
-          {hint}
+      {error ? (
+        <p className="mt-1.5 text-[11px] text-red-600 dark:text-red-400 inline-flex items-center gap-1">
+          <AlertCircle className="h-3 w-3 shrink-0" />
+          {error}
         </p>
+      ) : (
+        hint && (
+          <p className="mt-1.5 text-[11px] text-teal-700/60 dark:text-teal-300/60">
+            {hint}
+          </p>
+        )
       )}
     </div>
   );

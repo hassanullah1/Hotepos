@@ -11,9 +11,15 @@ import {
   Store,
   X,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
+
+// Adjust if your hotel-profile route is different
+const HOTEL_PROFILE_PATH = "/admin/profile";
+
+const HESABPAY_PATTERN = /^07\d{8}$/;
 
 const EMPTY_CATEGORY = { id: null, name: "", sort_order: 0, is_active: true };
 const EMPTY_ITEM = {
@@ -61,6 +67,12 @@ export default function MenuPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  /* ---- HesabPay guard state ---- */
+  const [hesabpayStatus, setHesabpayStatus] = useState<
+    "loading" | "valid" | "missing"
+  >("loading");
+  const [showHesabpayModal, setShowHesabpayModal] = useState(false);
 
   const branchesReady = !loadingBranches && branchesHotelId === selectedHotelId;
 
@@ -161,6 +173,29 @@ export default function MenuPage() {
     }
   }
 
+  /* ---- Load hotel's HesabPay status (guard source) ---- */
+  async function loadHesabpayStatus(hotelId: string) {
+    if (!hotelId) {
+      setHesabpayStatus("missing");
+      return;
+    }
+    try {
+      const res = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
+      if (handle401(res)) return;
+      if (!res.ok) {
+        // can't determine (e.g. branch manager without access) — permissive
+        setHesabpayStatus("valid");
+        return;
+      }
+      const data = await res.json();
+      const hp = String(data.hotel?.hesabpay_account_number || "").trim();
+      setHesabpayStatus(HESABPAY_PATTERN.test(hp) ? "valid" : "missing");
+    } catch {
+      // network/other — permissive to avoid breaking the page
+      setHesabpayStatus("valid");
+    }
+  }
+
   useEffect(() => {
     if (isOwner) {
       loadHotels();
@@ -202,6 +237,28 @@ export default function MenuPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId, activeCategory]);
+
+  /* resolve hotel id for the HesabPay check */
+  const hotelIdForHesabpay = isOwner
+    ? selectedHotelId
+    : me?.branch?.hotel_id || me?.hotel_id || "";
+
+  /* fetch HesabPay status when the hotel context is ready */
+  useEffect(() => {
+    if (!me) return;
+    loadHesabpayStatus(hotelIdForHesabpay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [me, isOwner, hotelIdForHesabpay]);
+
+  /* ---- Guard helper ---- */
+  function guardOnline(desired: boolean): boolean {
+    if (!desired) return true; // turning off is always allowed
+    if (hesabpayStatus === "missing") {
+      setShowHesabpayModal(true);
+      return false;
+    }
+    return true;
+  }
 
   async function saveCategory(e: React.FormEvent) {
     e.preventDefault();
@@ -287,6 +344,10 @@ export default function MenuPage() {
 
   async function saveItem(e: React.FormEvent) {
     e.preventDefault();
+
+    // Final safety net — block if trying to save an online item without HesabPay
+    if (itemForm.is_online && !guardOnline(true)) return;
+
     setSaving(true);
     setError("");
     const isEdit = !!itemForm.id;
@@ -351,19 +412,20 @@ export default function MenuPage() {
   }
 
   async function toggleOnline(item: any) {
+    const desired = !item.is_online;
+    if (!guardOnline(desired)) return;
+
     setTogglingId(item.id);
     try {
       const res = await fetchWithAuth(`/api/owners/menu-items/${item.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ is_online: !item.is_online }),
+        body: JSON.stringify({ is_online: desired }),
       });
       if (handle401(res)) return;
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update");
       setItems((prev) =>
-        prev.map((i) =>
-          i.id === item.id ? { ...i, is_online: !item.is_online } : i,
-        ),
+        prev.map((i) => (i.id === item.id ? { ...i, is_online: desired } : i)),
       );
     } catch (err: any) {
       alert(err.message);
@@ -476,7 +538,9 @@ export default function MenuPage() {
                       disabled={!branchesReady || branches.length === 0}
                       className="bg-transparent border-0 p-0 pr-4 text-xs text-teal-700/70 dark:text-teal-300/70 focus:outline-none disabled:opacity-50"
                     >
-                      {!branchesReady && <option>{t.branch.branchLoading}</option>}
+                      {!branchesReady && (
+                        <option>{t.branch.branchLoading}</option>
+                      )}
                       {branchesReady && branches.length === 0 && (
                         <option>{t.branch.noBranches}</option>
                       )}
@@ -674,7 +738,11 @@ export default function MenuPage() {
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
                         }`}
                       >
-                        {i.is_online ? <Globe size={11} /> : <Store size={11} />}
+                        {i.is_online ? (
+                          <Globe size={11} />
+                        ) : (
+                          <Store size={11} />
+                        )}
                         {i.is_online ? "Online" : "POS only"}
                       </button>
 
@@ -733,8 +801,105 @@ export default function MenuPage() {
           handleImageSelect={handleImageSelect}
           removeImage={removeImage}
           fileInputRef={fileInputRef}
+          guardOnline={guardOnline}
         />
       )}
+
+      {/* ---------- HesabPay required popup ---------- */}
+      {showHesabpayModal && (
+        <HesabpayRequiredModal
+          t={t}
+          dir={dir}
+          isOwner={isOwner}
+          onClose={() => setShowHesabpayModal(false)}
+          onGoToProfile={() => router.push(HOTEL_PROFILE_PATH)}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  HesabPay required popup                                            */
+/* ------------------------------------------------------------------ */
+function HesabpayRequiredModal({
+  t,
+  dir,
+  isOwner,
+  onClose,
+  onGoToProfile,
+}: {
+  t: any;
+  dir: string;
+  isOwner: boolean;
+  onClose: () => void;
+  onGoToProfile: () => void;
+}) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      dir={dir}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="w-full max-w-md rounded-2xl border border-amber-200 dark:border-amber-800 bg-white dark:bg-teal-950 shadow-2xl overflow-hidden">
+        <div className="flex items-start gap-3 px-5 py-4">
+          <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <AlertCircle className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50">
+              {t.hotel?.hesabpayRequiredTitle || "HesabPay number required"}
+            </h2>
+            <p className="mt-1 text-sm text-teal-700/80 dark:text-teal-300/80 leading-relaxed">
+              {isOwner
+                ? t.hotel?.hesabpayRequiredMessage ||
+                  "You can't make menu items available online until you set a valid HesabPay account number (format: 07XXXXXXXX). Please update your hotel profile first."
+                : t.hotel?.hesabpayRequiredMessageBranch ||
+                  "You can't make menu items available online until the hotel owner sets a valid HesabPay account number. Please contact your hotel owner."}
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="h-8 w-8 -mr-1 -mt-1 rounded-full flex items-center justify-center text-teal-700/70 dark:text-teal-200 hover:bg-teal-100 dark:hover:bg-teal-900 shrink-0"
+            aria-label={t.common?.close || "Close"}
+          >
+            <X size={16} />
+          </button>
+        </div>
+        <div className="flex justify-end gap-2 border-t border-teal-100 dark:border-teal-800/60 px-5 py-3 bg-teal-50/40 dark:bg-teal-900/20">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-sm rounded-full border border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/50"
+          >
+            {t.common?.close || "Close"}
+          </button>
+          {isOwner && (
+            <button
+              type="button"
+              onClick={onGoToProfile}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-full bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-sm"
+            >
+              {t.hotel?.goToProfile || "Go to hotel profile"}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -777,7 +942,6 @@ function CategoryModal({
         onSubmit={onSubmit}
         className="w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950 shadow-2xl overflow-hidden"
       >
-        {/* header */}
         <div className="flex items-center justify-between gap-3 border-b border-teal-100 dark:border-teal-800/60 px-5 py-3">
           <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50">
             {form.id
@@ -794,7 +958,6 @@ function CategoryModal({
           </button>
         </div>
 
-        {/* body */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           {error && (
             <div className="rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-900 px-3 py-2 text-sm text-red-700 dark:text-red-300">
@@ -802,7 +965,6 @@ function CategoryModal({
             </div>
           )}
 
-          {/* 2-col row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
@@ -845,7 +1007,6 @@ function CategoryModal({
           </label>
         </div>
 
-        {/* footer */}
         <div className="flex justify-end gap-2 border-t border-teal-100 dark:border-teal-800/60 px-5 py-3 bg-white dark:bg-teal-950">
           <button
             type="button"
@@ -886,6 +1047,7 @@ function ItemModal({
   handleImageSelect,
   removeImage,
   fileInputRef,
+  guardOnline,
 }: any) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -915,7 +1077,6 @@ function ItemModal({
         onSubmit={onSubmit}
         className="w-full max-w-2xl max-h-[92vh] flex flex-col rounded-2xl border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950 shadow-2xl overflow-hidden"
       >
-        {/* ---------- header ---------- */}
         <div className="flex items-center justify-between gap-3 border-b border-teal-100 dark:border-teal-800/60 px-5 py-3">
           <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50 truncate">
             {isEdit ? t.branch.items.editTitle : t.branch.items.addTitle}
@@ -930,7 +1091,6 @@ function ItemModal({
           </button>
         </div>
 
-        {/* ---------- body ---------- */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           {error && (
             <div className="rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-900 px-3 py-2 text-sm text-red-700 dark:text-red-300">
@@ -982,7 +1142,6 @@ function ItemModal({
             </div>
           </div>
 
-          {/* row 1: name + category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
@@ -1016,7 +1175,6 @@ function ItemModal({
             </div>
           </div>
 
-          {/* row 2: price + tax */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
@@ -1049,7 +1207,6 @@ function ItemModal({
             </div>
           </div>
 
-          {/* description (full width) */}
           <div>
             <label className={labelClass}>
               {t.branch.items.descriptionPlaceholder || "Description"}
@@ -1064,7 +1221,6 @@ function ItemModal({
             />
           </div>
 
-          {/* toggles row: 3 per row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
             <ToggleTile
               checked={form.is_available}
@@ -1078,7 +1234,16 @@ function ItemModal({
             />
             <ToggleTile
               checked={form.is_online}
-              onChange={(v) => setForm({ ...form, is_online: v })}
+              onChange={(v) => {
+                // Guard: block turning ON when HesabPay is missing
+                if (
+                  v &&
+                  typeof guardOnline === "function" &&
+                  !guardOnline(true)
+                )
+                  return;
+                setForm({ ...form, is_online: v });
+              }}
               label={t.branch.items.online || "Online"}
               icon={form.is_online ? <Globe size={12} /> : <Store size={12} />}
               accent={form.is_online ? "emerald" : undefined}
@@ -1086,7 +1251,6 @@ function ItemModal({
           </div>
         </div>
 
-        {/* ---------- footer ---------- */}
         <div className="flex justify-end gap-2 border-t border-teal-100 dark:border-teal-800/60 px-5 py-3 bg-white dark:bg-teal-950">
           <button
             type="button"
@@ -1111,7 +1275,7 @@ function ItemModal({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Toggle tile (used in item modal)                                   */
+/*  Toggle tile                                                        */
 /* ------------------------------------------------------------------ */
 function ToggleTile({
   checked,
@@ -1143,7 +1307,9 @@ function ToggleTile({
         className="h-4 w-4 rounded border-teal-300 text-teal-600 focus:ring-teal-500 shrink-0"
       />
       {icon && (
-        <span className="shrink-0 text-teal-700 dark:text-teal-300">{icon}</span>
+        <span className="shrink-0 text-teal-700 dark:text-teal-300">
+          {icon}
+        </span>
       )}
       <span className="text-sm text-teal-900 dark:text-teal-100 truncate">
         {label}

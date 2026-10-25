@@ -8,6 +8,7 @@ import { AdminAuthProvider } from "@/providers/AdminAuthProvider";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserFromCookies } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import AdminSetupGate from "@/components/admin/AdminSetupGate";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -71,10 +72,12 @@ export default async function AdminLayout({ children }) {
       <AdminAuthProvider initialRole={role} initialSubscription={subscription}>
         <AdminSubscriptionGate>
           <AdminVerificationGate>
+             <AdminSetupGate>  
             <AdminRootWrapper>
               <AdminSidebar />
               <AdminShell>{children}</AdminShell>
             </AdminRootWrapper>
+            </AdminSetupGate> 
           </AdminVerificationGate>
         </AdminSubscriptionGate>
       </AdminAuthProvider>
