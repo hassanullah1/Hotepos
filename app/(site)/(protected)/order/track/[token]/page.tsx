@@ -25,6 +25,9 @@ import { useLanguage } from "@/context/LanguageContext";
 
 import { fraunces as displayFont } from "@/app/fonts/fraunces";
 
+// New cute popup — keep PaymentSuccessPopup.tsx in the same folder as this file
+import PaymentSuccessPopup from "./PaymentSuccessPopup";
+
 type StatusStep = {
   key: string;
   labelEn: string;
@@ -211,7 +214,7 @@ const trackText = {
     congratsSub: "Your payment was successful",
     congratsBody:
       "Thank you! Please wait a little while — your order will be brought to you soon.",
-    congratsClose: "OK, got it",
+    congratsEnjoy: "Bon appétit!",
     paidWaitTitle: "Payment received",
     paidWaitBody:
       "Thank you! Please wait a little while — your order will be brought to you soon.",
@@ -252,7 +255,7 @@ const trackText = {
     congratsSub: "ستاسو تادیه بریالۍ شوه",
     congratsBody:
       "مننه! مهرباني وکړئ لږ انتظار وکړئ — ستاسو فرمایش به ډیر ژر تاسو ته راوړل شي.",
-    congratsClose: "ښه، پوه شوم",
+    congratsEnjoy: "نوش جان!",
     paidWaitTitle: "تادیه ترلاسه شوه",
     paidWaitBody:
       "مننه! مهرباني وکړئ لږ انتظار وکړئ — ستاسو فرمایش به ډیر ژر تاسو ته راوړل شي.",
@@ -293,7 +296,7 @@ const trackText = {
     congratsSub: "پرداخت شما با موفقیت انجام شد",
     congratsBody:
       "متشکریم! لطفاً کمی صبر کنید — سفارش شما به زودی برای شما آورده می‌شود.",
-    congratsClose: "باشه، متوجه شدم",
+    congratsEnjoy: "نوش جان!",
     paidWaitTitle: "پرداخت دریافت شد",
     paidWaitBody:
       "متشکریم! لطفاً کمی صبر کنید — سفارش شما به زودی برای شما آورده می‌شود.",
@@ -1236,116 +1239,16 @@ export default function TrackPage() {
         </div>
       )}
 
-      {/* ============ Congratulation popup ============ */}
+      {/* ============ Congratulation popup (cute burger mascot) ============ */}
       {showCongrats && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setShowCongrats(false)}
-        >
-          {/* Confetti */}
-          <div
-            className="pointer-events-none fixed inset-0 overflow-hidden"
-            aria-hidden="true"
-          >
-            {Array.from({ length: 30 }).map((_, i) => (
-              <span
-                key={i}
-                className="confetti"
-                style={{
-                  left: `${(i * 37) % 100}%`,
-                  background: [
-                    "#E0B93A",
-                    "#34D399",
-                    "#F472B6",
-                    "#60A5FA",
-                    "#FBBF24",
-                  ][i % 5],
-                  animationDelay: `${(i % 7) * 0.12}s`,
-                  animationDuration: `${2.4 + (i % 5) * 0.35}s`,
-                }}
-              />
-            ))}
-          </div>
-
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={`congrats-card relative w-full max-w-sm rounded-3xl border p-7 text-center shadow-2xl ${
-              isDark
-                ? "border-[#2E2938] bg-[#1E1B26] text-[#F0EAE2]"
-                : "border-[#E4DFD4] bg-white text-[#1D1A22]"
-            }`}
-          >
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/30">
-              <CheckCircle2 className="h-11 w-11" strokeWidth={2.25} />
-            </div>
-
-            <h2
-              className="text-2xl font-bold"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {t.congratsTitle}
-            </h2>
-            <p
-              className={`mt-1 text-sm font-semibold ${
-                isDark ? "text-emerald-300" : "text-emerald-700"
-              }`}
-            >
-              {t.congratsSub}
-            </p>
-            <p
-              className={`mt-3 text-[13px] leading-relaxed ${
-                isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
-              }`}
-            >
-              {t.congratsBody}
-            </p>
-
-            <button
-              onClick={() => setShowCongrats(false)}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 active:translate-y-0"
-            >
-              {t.congratsClose}
-            </button>
-          </div>
-        </div>
+        <PaymentSuccessPopup
+          isDark={isDark}
+          onClose={() => setShowCongrats(false)}
+          texts={t}
+        />
       )}
 
       <style jsx>{`
-        .congrats-card {
-          animation: pop-in 0.45s cubic-bezier(0.2, 1.2, 0.3, 1) both;
-        }
-        .confetti {
-          position: absolute;
-          top: -16px;
-          width: 8px;
-          height: 14px;
-          border-radius: 2px;
-          animation-name: confetti-fall;
-          animation-timing-function: ease-in;
-          animation-fill-mode: forwards;
-        }
-        @keyframes pop-in {
-          from {
-            opacity: 0;
-            transform: scale(0.8) translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-        @keyframes confetti-fall {
-          from {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-          }
-          to {
-            transform: translateY(105vh) rotate(600deg);
-            opacity: 0.9;
-          }
-        }
         @keyframes drift-a {
           0%,
           100% {
@@ -1372,13 +1275,8 @@ export default function TrackPage() {
         }
         @media (prefers-reduced-motion: reduce) {
           .blob-a,
-          .blob-b,
-          .confetti,
-          .congrats-card {
+          .blob-b {
             animation: none !important;
-          }
-          .confetti {
-            display: none;
           }
         }
       `}</style>
