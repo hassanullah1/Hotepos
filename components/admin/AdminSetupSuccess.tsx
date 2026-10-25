@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
-const AUTO_DISMISS_MS = 6000;
+// Long enough for the mascot, confetti and all 3 chips to play, then go.
+const AUTO_DISMISS_MS = 4500;
 
 const CONFETTI_COLORS = [
   "#14b8a6", // teal
@@ -25,12 +26,13 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
   const s = t?.setup?.successModal || {};
 
   const [exiting, setExiting] = useState(false);
-  const [paused, setPaused] = useState(false);
 
-  const steps: string[] =
-    Array.isArray(s.steps) && s.steps.length
-      ? s.steps
-      : ["Account created", "Workspace ready", "Dashboard unlocked"];
+  // Only use steps that the active language actually defines.
+  // Missing → render nothing (no English leaking into a localized screen).
+  const steps: string[] = useMemo(
+    () => (Array.isArray(s.steps) ? s.steps.filter(Boolean) : []),
+    [s.steps],
+  );
 
   // Deterministic confetti burst: no Math.random, so server and client
   // always render the same markup (no hydration warnings).
@@ -102,8 +104,6 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
       {/* ── Card ── */}
       <div
         onClick={(e) => e.stopPropagation()}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
         className={`card-enter relative z-10 w-full max-w-sm rounded-[2rem] border-4 border-white bg-gradient-to-b from-[#ecfdf5] via-white to-[#f0fdfa] px-7 pb-7 pt-16 text-center shadow-[0_24px_0_-8px_rgba(13,148,136,0.25),0_30px_60px_-12px_rgba(6,34,43,0.55)] transition-transform duration-300 dark:border-teal-800 dark:from-teal-950 dark:via-teal-950 dark:to-teal-900 ${
           exiting ? "scale-95" : "scale-100"
         }`}
@@ -246,43 +246,30 @@ export default function AdminSetupSuccess({ onDone }: { onDone: () => void }) {
             "Your setup is complete. Time to work digitally and grow with Melmah."}
         </p>
 
-        {/* Checklist chips pop in one by one */}
-        <ul className="mt-5 flex flex-wrap justify-center gap-2">
-          {steps.slice(0, 3).map((label, i) => (
-            <li
-              key={label}
-              className="chip inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-teal-800 shadow-sm ring-1 ring-teal-100 dark:bg-teal-900 dark:text-teal-100 dark:ring-teal-800"
-              style={{ animationDelay: `${0.7 + i * 0.35}s` }}
-            >
-              <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald-500 text-white">
-                <Check size={10} strokeWidth={4} />
-              </span>
-              {label}
-            </li>
-          ))}
-        </ul>
+        {/* Checklist chips — rendered only when the language defines them */}
+        {steps.length > 0 && (
+          <ul className="mt-5 flex flex-wrap justify-center gap-2">
+            {steps.slice(0, 3).map((label, i) => (
+              <li
+                key={`${label}-${i}`}
+                className="chip inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-teal-800 shadow-sm ring-1 ring-teal-100 dark:bg-teal-900 dark:text-teal-100 dark:ring-teal-800"
+                style={{ animationDelay: `${0.7 + i * 0.35}s` }}
+              >
+                <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald-500 text-white">
+                  <Check size={10} strokeWidth={4} />
+                </span>
+                {label}
+              </li>
+            ))}
+          </ul>
+        )}
 
-        {/* CTA */}
-        <button
-          type="button"
-          onClick={dismiss}
-          autoFocus
-          className="cta group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_0_0_#0f766e] transition-all hover:bg-teal-500 active:translate-y-[3px] active:shadow-[0_2px_0_0_#0f766e] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
-        >
-          {s.goNow || "Let's go"}
-          <ArrowRight
-            size={16}
-            className="transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
-          />
-        </button>
-
-        {/* Auto-dismiss progress (pauses while the card is hovered) */}
-        <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/60">
+        {/* Progress: when it fills, we go to the dashboard automatically */}
+        <div className="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/60">
           <div
             className="progress h-full rounded-full bg-gradient-to-r from-emerald-400 via-teal-500 to-sky-400"
             style={{
               animationDuration: `${AUTO_DISMISS_MS}ms`,
-              animationPlayState: paused ? "paused" : "running",
             }}
             onAnimationEnd={dismiss}
           />
