@@ -375,6 +375,10 @@ function interpolate(str: string, vars: Record<string, string | number>) {
     vars[k] !== undefined ? String(vars[k]) : `{${k}}`,
   );
 }
+function shorten(text: string, max = 80) {
+  const clean = text.trim();
+  return clean.length > max ? clean.slice(0, max).trimEnd() + "..." : clean;
+}
 
 const PAGE_SIZE = 24;
 const PROVINCE_STORAGE_KEY = "buyer_province_id";
@@ -926,13 +930,14 @@ const DishCard = memo(function DishCard({
           </div>
 
           {/* description only on bigger screens */}
+          {/* description only on bigger screens, cut with "..." if too long */}
           {it.description && (
             <p
               className={`mt-2 line-clamp-2 hidden text-xs leading-relaxed sm:block ${
                 isDark ? "text-[#9691A6]" : "text-[#8A8496]"
               }`}
             >
-              {it.description}
+              {shorten(it.description)}
             </p>
           )}
 

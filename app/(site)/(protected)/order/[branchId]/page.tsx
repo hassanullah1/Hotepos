@@ -1,6 +1,7 @@
 "use client";
 import { cartKey } from "../cart-storage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -37,7 +38,7 @@ const branchText = {
     myOrders: "My orders",
     menu: "Menu",
     needMore:
-      "Need anything else from this restaurant? Select it, then tap Checkout.",
+      "Need anything else from this restaurant? Add more dishes, then tap Checkout.",
   },
   ps: {
     dir: "rtl",
@@ -56,7 +57,8 @@ const branchText = {
     deliveryMode: "د تحویل فرمایش",
     myOrders: "زما فرمایشونه",
     menu: "مینو",
-    needMore: "له دې رستورانت څخه بل څه غواړئ؟ هغه وټاکئ، بیا چیک آوټ کېکاږئ.",
+    needMore:
+      "له دې رستورانت څخه بل څه غواړئ؟ نور خواړه اضافه کړئ، بیا چیک آوټ کېکاږئ.",
   },
   prs: {
     dir: "rtl",
@@ -76,7 +78,7 @@ const branchText = {
     myOrders: "سفارش‌های من",
     menu: "منو",
     needMore:
-      "از این رستورانت چیز دیگری می‌خواهید؟ آن را انتخاب کنید، سپس روی پرداخت بزنید.",
+      "از این رستورانت چیز دیگری می‌خواهید؟ غذای بیشتر اضافه کنید، سپس روی پرداخت بزنید.",
   },
 };
 
@@ -351,10 +353,13 @@ export default function BranchOrderPage() {
   const currency = branch.currency || "AFN";
   const menuIsEmpty = categories.length === 0 && total === 0;
 
+  const gold = isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]";
+  const muted = isDark ? "text-[#9691A6]" : "text-[#8A8496]";
+
   return (
     <div
       className={`${displayFont.variable} relative transition-colors duration-300 ${
-        cartCount > 0 ? "pb-36" : ""
+        cartCount > 0 ? "pb-48" : ""
       } ${
         isDark ? "bg-[#15121C] text-[#F0EAE2]" : "bg-[#F7F4EE] text-[#1D1A22]"
       }`}
@@ -374,9 +379,7 @@ export default function BranchOrderPage() {
               {branch?.name || "Restaurant"}
             </h1>
             <p
-              className={`mt-0.5 flex items-center gap-1.5 text-[11px] ${
-                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-              }`}
+              className={`mt-0.5 flex items-center gap-1.5 text-[11px] ${muted}`}
             >
               <Utensils className="h-3 w-3 shrink-0" />
               <span className="truncate">{t.menu}</span>
@@ -545,13 +548,7 @@ export default function BranchOrderPage() {
               />
             </div>
             <p className="text-sm font-medium">{t.noItems}</p>
-            <p
-              className={`mt-1 text-xs ${
-                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-              }`}
-            >
-              {t.noItemsHint}
-            </p>
+            <p className={`mt-1 text-xs ${muted}`}>{t.noItemsHint}</p>
           </div>
         )}
 
@@ -610,9 +607,7 @@ export default function BranchOrderPage() {
                         </h3>
                         {i.description && (
                           <p
-                            className={`mt-0.5 line-clamp-2 text-[11px] leading-snug ${
-                              isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                            }`}
+                            className={`mt-0.5 line-clamp-2 text-[11px] leading-snug ${muted}`}
                           >
                             {i.description}
                           </p>
@@ -634,17 +629,11 @@ export default function BranchOrderPage() {
 
                     <div className="mt-auto flex items-end justify-between gap-2 pt-2.5">
                       <span
-                        className={`text-[15px] font-bold ${
-                          isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
-                        }`}
+                        className={`text-[15px] font-bold ${gold}`}
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         {i.price.toFixed(2)}{" "}
-                        <span
-                          className={`text-[10px] font-medium ${
-                            isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                          }`}
-                        >
+                        <span className={`text-[10px] font-medium ${muted}`}>
                           {currency}
                         </span>
                       </span>
@@ -652,7 +641,7 @@ export default function BranchOrderPage() {
                       {qty === 0 ? (
                         <button
                           onClick={() => addToCart(i)}
-                          className="flex h-9 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-xs font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-[#C9A227]/35 active:translate-y-0"
+                          className="flex h-9 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-xs font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-[#C9A227]/35 active:translate-y-0 active:scale-95"
                         >
                           <Plus className="h-3.5 w-3.5" />
                           {t.add}
@@ -755,56 +744,67 @@ export default function BranchOrderPage() {
       </div>
 
       {/* ════════════════════════════════════════ */}
-      {/* STICKY CART BAR */}
+      {/* STICKY CART PILL (same style as dish page) */}
+      {/* Rendered in document.body so parent layouts can't break fixed. */}
       {/* ════════════════════════════════════════ */}
-      {cartCount > 0 && (
-        <div
-          className={`fixed inset-x-0 bottom-0 z-40 pt-6 ${
-            isDark
-              ? "bg-gradient-to-t from-[#15121C] via-[#15121C]/95 to-transparent"
-              : "bg-gradient-to-t from-[#F7F4EE] via-[#F7F4EE]/95 to-transparent"
-          }`}
-          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
-        >
-          <div className="mx-auto max-w-2xl space-y-2 px-4">
-            {/* Hint */}
-            <p
-              className={`text-center text-[11px] font-medium ${
-                isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
-              }`}
-            >
-              {t.needMore}
-            </p>
+      {mounted &&
+        cartCount > 0 &&
+        createPortal(
+          <div
+            dir={t.dir}
+            className={`${displayFont.variable} pointer-events-none fixed inset-x-0 bottom-0 z-[9999] flex justify-center px-4`}
+            style={{ paddingBottom: "max(env(safe-area-inset-bottom), 14px)" }}
+          >
+            <div className="pointer-events-auto w-full max-w-md space-y-2">
+              {/* Bigger question */}
+              <p
+                className={`rounded-2xl px-3 py-2 text-center text-sm font-bold leading-snug shadow-lg backdrop-blur-md sm:text-base ${
+                  isDark
+                    ? "bg-[#1E1B26]/95 text-[#F0EAE2] shadow-black/40"
+                    : "bg-white/95 text-[#1D1A22] shadow-[#8A6E1A]/20"
+                }`}
+              >
+                {t.needMore}
+              </p>
 
-            <button
-              onClick={goToCheckout}
-              className="group flex w-full items-center gap-3 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-2 py-1 text-[#1D1707] shadow-2xl shadow-[#C9A227]/30 transition hover:-translate-y-0.5 hover:shadow-[#C9A227]/50 active:translate-y-0 sm:px-3 sm:py-2"
-            >
-              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1D1707]/15 sm:h-10 sm:w-10">
-                <ShoppingBag className="h-4 w-4" />
-                <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
-                  {cartCount}
-                </span>
-              </span>
-              <div className="flex-1 text-start">
-                <p className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-80 sm:text-[11px]">
-                  {cartCount} {t.items}
-                </p>
-                <p
-                  className="text-sm font-bold tabular-nums sm:text-base"
-                  style={{ fontFamily: "var(--font-display)" }}
+              {/* Pill: same look as the dish page order pill */}
+              <div
+                className={`flex items-center gap-3 rounded-full border py-1.5 ps-4 pe-1.5 shadow-lg backdrop-blur-md ${
+                  isDark
+                    ? "border-[#C9A227]/40 bg-[#1E1B26]/95 shadow-black/40"
+                    : "border-[#A9821E]/30 bg-white/95 shadow-[#8A6E1A]/20"
+                }`}
+              >
+                <div className="flex shrink-0 items-center gap-2.5">
+                  <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#C9A227]/15">
+                    <ShoppingBag className={`h-4 w-4 ${gold}`} />
+                    <span className="absolute -end-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1D1707] px-1 text-[10px] font-bold text-[#E0B93A]">
+                      {cartCount}
+                    </span>
+                  </span>
+                  <p
+                    className={`text-base font-bold tabular-nums ${gold}`}
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {cartTotal.toFixed(2)}{" "}
+                    <span className={`text-[10px] font-medium ${muted}`}>
+                      {currency}
+                    </span>
+                  </p>
+                </div>
+
+                <button
+                  onClick={goToCheckout}
+                  className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-sm font-bold text-[#1D1707] transition hover:shadow-md hover:shadow-[#C9A227]/40 active:scale-95"
                 >
-                  {cartTotal.toFixed(2)} {currency}
-                </p>
+                  {t.checkout}
+                  <ChevronRight className="h-4 w-4 rtl:rotate-180" />
+                </button>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#1D1707] px-3 py-2 text-[11px] font-bold text-[#E0B93A] transition group-hover:bg-[#1D1707]/90 sm:px-4 sm:text-xs">
-                {t.checkout}
-                <ChevronRight className="h-3 w-3 rtl:rotate-180 sm:h-3.5 sm:w-3.5" />
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
+            </div>
+          </div>,
+          document.body,
+        )}
 
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {
