@@ -28,7 +28,9 @@ export default function AdminSetupGate({
   const [state, setState] = useState<GateState>("checking");
   const [initialStep, setInitialStep] = useState<SetupStep>("hotel");
   const [initialHotelId, setInitialHotelId] = useState<string>("");
-  const [includeHesabpay, setIncludeHesabpay] = useState(true);
+  // allowSkip = true  → hotel is online, HesabPay is optional (Skip visible)
+  // allowSkip = false → hotel is offline, HesabPay is required (Skip hidden)
+  const [allowSkip, setAllowSkip] = useState(false);
   const [recheckKey, setRecheckKey] = useState(0);
 
   const isExempt = EXEMPT_ROLES.includes(role);
@@ -71,11 +73,11 @@ export default function AdminSetupGate({
         const hotels: any[] = hotelsData.hotels || [];
 
         if (hotels.length === 0) {
-          // Brand-new hotel — is_online defaults to false in the schema,
-          // so HesabPay step is not needed.
+          // Brand-new hotel — is_online defaults to false in schema,
+          // so HesabPay step is REQUIRED (no skip).
           setInitialStep("hotel");
           setInitialHotelId("");
-          setIncludeHesabpay(false);
+          setAllowSkip(false);
           setState("needs_setup");
           return;
         }
@@ -85,7 +87,7 @@ export default function AdminSetupGate({
         if (!hotelId) {
           setInitialStep("hotel");
           setInitialHotelId("");
-          setIncludeHesabpay(false);
+          setAllowSkip(false);
           setState("needs_setup");
           return;
         }
@@ -101,9 +103,8 @@ export default function AdminSetupGate({
         const hotelObj = hotelData.hotel || {};
         const hp = String(hotelObj.hesabpay_account_number || "").trim();
 
-        // Only skip HesabPay when we positively know the hotel is offline.
-        // Undefined (API doesn't return it) → keep the step for backward compat.
-        const needsHesabpay = hotelObj.is_online !== false;
+        // Skip is allowed ONLY when the hotel is already online.
+        const skipAllowed = hotelObj.is_online === true;
 
         /* ── Step 2: any branch? ── */
         const branchesRes = await fetchWithAuth(
@@ -120,32 +121,30 @@ export default function AdminSetupGate({
         if (branches.length === 0) {
           setInitialStep("branch");
           setInitialHotelId(hotelId);
-          setIncludeHesabpay(needsHesabpay);
+          setAllowSkip(skipAllowed);
           setState("needs_setup");
           return;
         }
 
-        /* ── Step 3: HesabPay (only if hotel does online ordering) ── */
-        if (!needsHesabpay) {
-          setState("allowed");
-          return;
-        }
-
+        /* ── Step 3: HesabPay ── */
         if (!HESABPAY_PATTERN.test(hp)) {
-          let skipped = false;
-          try {
-            skipped = localStorage.getItem(hesabpaySkipKey(hotelId)) === "1";
-          } catch {
-            /* ignore */
-          }
-          if (skipped) {
-            setState("allowed");
-            return;
+          // Respect a previous skip ONLY if skipping is currently allowed
+          if (skipAllowed) {
+            let skipped = false;
+            try {
+              skipped = localStorage.getItem(hesabpaySkipKey(hotelId)) === "1";
+            } catch {
+              /* ignore */
+            }
+            if (skipped) {
+              setState("allowed");
+              return;
+            }
           }
 
           setInitialStep("hesabpay");
           setInitialHotelId(hotelId);
-          setIncludeHesabpay(true);
+          setAllowSkip(skipAllowed);
           setState("needs_setup");
           return;
         }
@@ -183,7 +182,7 @@ export default function AdminSetupGate({
         <AdminSetupModal
           initialStep={initialStep}
           initialHotelId={initialHotelId}
-          includeHesabpay={includeHesabpay}
+          allowSkip={allowSkip}
           onAllComplete={() => setRecheckKey((k) => k + 1)}
         />
       )}

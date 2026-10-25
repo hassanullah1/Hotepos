@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Building2,
   Store,
@@ -9,6 +9,7 @@ import {
   AlertCircle,
   Check,
   LogOut,
+  Info,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -16,7 +17,7 @@ import type { SetupStep } from "./AdminSetupGate";
 export type { SetupStep };
 
 const HESABPAY_PATTERN = /^07\d{8}$/;
-const ALL_STEPS: SetupStep[] = ["hotel", "branch", "hesabpay"];
+const STEPS: SetupStep[] = ["hotel", "branch", "hesabpay"];
 
 const STEP_ICON: Record<
   SetupStep,
@@ -44,38 +45,31 @@ type Province = { id: string; name: string };
 export default function AdminSetupModal({
   initialStep,
   initialHotelId,
-  includeHesabpay = true,
+  allowSkip = false,
   onAllComplete,
 }: {
   initialStep: SetupStep;
   initialHotelId: string;
-  includeHesabpay?: boolean;
+  allowSkip?: boolean;
   onAllComplete: () => void;
 }) {
   const { t, dir } = useAdminPreferences();
   const s = t?.setup || {};
 
-  // When the hotel isn't doing online ordering, step 3 is skipped entirely.
-  const steps = useMemo(
-    () =>
-      includeHesabpay ? ALL_STEPS : ALL_STEPS.filter((x) => x !== "hesabpay"),
-    [includeHesabpay],
-  );
-
-  const startIndex = Math.max(0, steps.indexOf(initialStep));
+  const startIndex = Math.max(0, STEPS.indexOf(initialStep));
 
   const [stepIndex, setStepIndex] = useState(startIndex);
   const [hotelId, setHotelId] = useState(initialHotelId || "");
   const [done, setDone] = useState<Set<SetupStep>>(
-    new Set(steps.slice(0, startIndex)),
+    new Set(STEPS.slice(0, startIndex)),
   );
   const [finishing, setFinishing] = useState(false);
 
-  const currentStep = steps[stepIndex];
-  const total = steps.length;
+  const currentStep = STEPS[stepIndex];
+  const total = STEPS.length;
   const stepMeta = s.steps?.[currentStep] || {};
   const Icon = STEP_ICON[currentStep];
-  const isOptionalStep = currentStep === "hesabpay";
+  const isHesabpayStep = currentStep === "hesabpay";
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -110,6 +104,8 @@ export default function AdminSetupModal({
   }
 
   function handleHesabpaySkip() {
+    // Defensive: only reachable when the Skip button is rendered,
+    // which is itself only rendered when allowSkip === true.
     try {
       localStorage.setItem(hesabpaySkipKey(hotelId), "1");
     } catch {
@@ -147,7 +143,7 @@ export default function AdminSetupModal({
           </div>
 
           <div className="flex items-center">
-            {steps.map((step, i) => {
+            {STEPS.map((step, i) => {
               const isDone = done.has(step) || i < stepIndex;
               const isActive = i === stepIndex;
               return (
@@ -196,9 +192,11 @@ export default function AdminSetupModal({
               <div className="mb-4 flex items-start gap-3">
                 <div
                   className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${
-                    isOptionalStep
-                      ? "bg-gradient-to-br from-amber-500 to-yellow-500"
-                      : "bg-gradient-to-br from-teal-500 to-emerald-500"
+                    isHesabpayStep && !allowSkip
+                      ? "bg-gradient-to-br from-teal-500 to-emerald-500"
+                      : isHesabpayStep && allowSkip
+                        ? "bg-gradient-to-br from-amber-500 to-yellow-500"
+                        : "bg-gradient-to-br from-teal-500 to-emerald-500"
                   }`}
                 >
                   <Icon size={18} />
@@ -230,6 +228,7 @@ export default function AdminSetupModal({
               {currentStep === "hesabpay" && (
                 <HesabpayStep
                   hotelId={hotelId}
+                  allowSkip={allowSkip}
                   onSuccess={handleHesabpaySaved}
                   onSkip={handleHesabpaySkip}
                 />
@@ -358,7 +357,7 @@ function HotelStep({ onSuccess }: { onSuccess: (id: string) => void }) {
   );
 }
 
-/* ── Step 2: Create main branch (with province) ─────────────────── */
+/* ── Step 2: Create main branch ─────────────────────────────────── */
 
 function BranchStep({
   hotelId,
@@ -389,7 +388,7 @@ function BranchStep({
           if (!cancelled) setProvinces(data.provinces || []);
         }
       } catch {
-        /* non-fatal — form will show "Loading…" option */
+        /* non-fatal */
       }
       if (!cancelled) setLoadingProvinces(false);
     })();
@@ -426,7 +425,6 @@ function BranchStep({
       });
       const data = await res.json();
       if (!res.ok) {
-        // API enforces province: surface its specific error code nicely
         const msg =
           data.error === "PROVINCE_REQUIRED"
             ? b.provinceRequired || "Please select a province."
@@ -506,14 +504,16 @@ function BranchStep({
   );
 }
 
-/* ── Step 3: HesabPay (optional) ────────────────────────────────── */
+/* ── Step 3: HesabPay ───────────────────────────────────────────── */
 
 function HesabpayStep({
   hotelId,
+  allowSkip,
   onSuccess,
   onSkip,
 }: {
   hotelId: string;
+  allowSkip: boolean;
   onSuccess: () => void;
   onSkip: () => void;
 }) {
@@ -570,19 +570,32 @@ function HesabpayStep({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
-        <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-        <span>
-          {hp.optionalWarning ||
-            "This step is optional. Online ordering will only work once you set a HesabPay number. You can add it later from your hotel profile."}
-        </span>
-      </div>
+      {/* Context banner — optional vs required */}
+      {allowSkip ? (
+        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
+          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>
+            {hp.optionalWarning ||
+              "This step is optional. Online ordering will only work once you set a HesabPay number. You can add it later from your hotel profile."}
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-start gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-xs leading-relaxed text-teal-800 dark:border-teal-800 dark:bg-teal-900/30 dark:text-teal-200">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>
+            {hp.requiredNotice ||
+              "A HesabPay account number is required to continue. Please add your number below."}
+          </span>
+        </div>
+      )}
 
       {error && <ErrorBanner msg={error} />}
 
       <div>
         <label className={labelClass}>
-          {hp.label || "HesabPay account number"}
+          {allowSkip
+            ? hp.label || "HesabPay account number"
+            : `${hp.label || "HesabPay account number"} *`}
         </label>
         <div className="relative" dir="ltr">
           <input
@@ -624,14 +637,18 @@ function HesabpayStep({
           disabled={!valid}
           label={hp.submit || "Save & finish setup"}
         />
-        <button
-          type="button"
-          onClick={onSkip}
-          disabled={saving}
-          className="w-full rounded-full border border-teal-200 px-5 py-2.5 text-sm font-medium text-teal-800 transition-colors hover:bg-teal-50 disabled:opacity-50 dark:border-teal-800 dark:text-teal-200 dark:hover:bg-teal-900/50"
-        >
-          {hp.skip || "Skip for now"}
-        </button>
+
+        {/* Skip is ONLY rendered when allowSkip === true */}
+        {allowSkip && (
+          <button
+            type="button"
+            onClick={onSkip}
+            disabled={saving}
+            className="w-full rounded-full border border-teal-200 px-5 py-2.5 text-sm font-medium text-teal-800 transition-colors hover:bg-teal-50 disabled:opacity-50 dark:border-teal-800 dark:text-teal-200 dark:hover:bg-teal-900/50"
+          >
+            {hp.skip || "Skip for now"}
+          </button>
+        )}
       </div>
     </form>
   );
