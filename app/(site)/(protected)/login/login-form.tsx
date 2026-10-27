@@ -15,7 +15,6 @@ import {
   ArrowRight,
   ArrowLeft,
   ShoppingBag,
-  Sparkles,
   Eye,
   EyeOff,
   Check,
@@ -68,7 +67,7 @@ const loginText = {
     sendingResend: "sending…",
     verificationFailed: "Verification failed",
     couldNotSend: "Could not send code",
-    forgotPassword: "Forgot password?", // ✅ NEW
+    forgotPassword: "Forgot password?",
   },
   ps: {
     dir: "rtl",
@@ -113,7 +112,7 @@ const loginText = {
     sendingResend: "لېږل کیږي…",
     verificationFailed: "تصدیق ناکام شو",
     couldNotSend: "کوډ نه شي لېږل شوی",
-    forgotPassword: "پټنوم مو هیر شو؟", // ✅ NEW
+    forgotPassword: "پټنوم مو هیر شو؟",
   },
   prs: {
     dir: "rtl",
@@ -158,7 +157,7 @@ const loginText = {
     sendingResend: "در حال ارسال…",
     verificationFailed: "تأیید ناموفق بود",
     couldNotSend: "کد ارسال نشد",
-    forgotPassword: "رمز عبور را فراموش کرده‌اید؟", // ✅ NEW
+    forgotPassword: "رمز عبور را فراموش کرده‌اید؟",
   },
 };
 
@@ -360,8 +359,9 @@ export default function LoginForm() {
     }
   }
 
-  function switchMode() {
-    setMode(mode === "login" ? "signup" : "login");
+  function changeMode(m: "login" | "signup") {
+    if (m === mode) return;
+    setMode(m);
     setError("");
     setOtpError("");
   }
@@ -376,16 +376,20 @@ export default function LoginForm() {
     );
   }
 
+  // shared colour helpers
+  const muted = isDark ? "text-[#B7B2C4]" : "text-[#6E687A]";
+  const gold = isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]";
+
   return (
     <div
-      className={`${displayFont.variable} relative min-h-screen overflow-hidden transition-colors duration-300 ${
+      className={`${displayFont.variable} relative min-h-screen w-full overflow-x-hidden transition-colors duration-300 ${
         isDark ? "bg-[#15121C] text-[#F0EAE2]" : "bg-[#F7F4EE] text-[#1D1A22]"
       }`}
       dir={t.dir}
     >
       {/* Grid texture */}
       <svg
-        className={`pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-300 ${
+        className={`pointer-events-none absolute inset-0 h-full w-full ${
           isDark ? "opacity-[0.04]" : "opacity-[0.05]"
         }`}
         viewBox="0 0 300 300"
@@ -409,25 +413,25 @@ export default function LoginForm() {
         )}
       </svg>
 
-      {/* Blobs */}
+      {/* Glow blobs (clipped by overflow-x-hidden on root) */}
       <div
-        className={`pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl ${
+        className={`pointer-events-none absolute -top-32 -start-32 h-96 w-96 rounded-full blur-3xl ${
           isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
         }`}
         aria-hidden="true"
       />
       <div
-        className={`pointer-events-none absolute bottom-0 -right-32 h-96 w-96 rounded-full blur-3xl ${
-          isDark ? "bg-[#C9A227]/8" : "bg-[#C9A227]/12"
+        className={`pointer-events-none absolute -end-32 bottom-0 h-96 w-96 rounded-full blur-3xl ${
+          isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/12"
         }`}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-8 sm:px-6">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8 sm:px-6">
         {/* Back link */}
         <Link
           href="/"
-          className={`group mb-6 inline-flex items-center gap-1.5 text-xs font-semibold transition ${
+          className={`group mb-5 inline-flex items-center gap-1.5 self-start text-xs font-semibold transition ${
             isDark
               ? "text-[#B7B2C4] hover:text-[#E0B93A]"
               : "text-[#6E687A] hover:text-[#8A6E1A]"
@@ -442,37 +446,39 @@ export default function LoginForm() {
 
         {/* Card */}
         <div
-          className={`overflow-hidden rounded-3xl border backdrop-blur-sm transition-colors ${
+          className={`overflow-hidden rounded-[28px] border backdrop-blur-md transition-colors ${
             isDark
-              ? "border-[#2E2938] bg-[#1E1B26]/90"
-              : "border-[#E4DFD4] bg-white/90"
+              ? "border-[#2E2938] bg-[#1E1B26]/90 shadow-2xl shadow-black/40"
+              : "border-[#E4DFD4] bg-white/90 shadow-xl shadow-[#C9A227]/10"
           }`}
         >
+          {/* Gold hairline on top */}
+          <div className="h-1 w-full bg-gradient-to-r from-[#A9821E] via-[#E0B93A] to-[#A9821E]" />
+
           {/* Header */}
-          <div className="relative p-6 sm:p-7">
+          <div className="relative px-5 pb-5 pt-6 sm:px-7">
             <div
               className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-[#C9A227]/15 blur-3xl"
               aria-hidden="true"
             />
 
-            <div className="relative flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-sm shadow-[#C9A227]/25">
-                <Utensils size={20} />
+            <div className="relative flex items-center gap-3.5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-lg shadow-[#C9A227]/30 ring-4 ring-[#C9A227]/10">
+                <Utensils size={22} />
               </div>
               <div className="min-w-0">
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.15em] ${
+                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
                     isDark
                       ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A]"
                       : "border-[#A9821E]/40 bg-[#C9A227]/15 text-[#8A6E1A]"
                   }`}
-                  style={{ fontFamily: "var(--font-geist-mono)" }}
                 >
-                  <Sparkles size={9} />
+                  <span aria-hidden="true">🍽️</span>
                   {t.badge}
                 </span>
                 <h1
-                  className="mt-1 text-2xl font-medium leading-tight"
+                  className="mt-1.5 text-[26px] font-medium leading-tight"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {mode === "login" ? t.loginTitle : t.signupTitle}
@@ -480,19 +486,52 @@ export default function LoginForm() {
               </div>
             </div>
 
-            <p
-              className={`relative mt-3 text-sm leading-relaxed ${
-                isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
-              }`}
-            >
+            <p className={`relative mt-3 text-sm leading-relaxed ${muted}`}>
               {mode === "login" ? t.loginSubtitle : t.signupSubtitle}
             </p>
+
+            {/* Segmented mode switch */}
+            <div
+              role="tablist"
+              className={`relative mt-5 grid grid-cols-2 gap-1 rounded-2xl border p-1 ${
+                isDark
+                  ? "border-[#2E2938] bg-[#15121C]"
+                  : "border-[#E4DFD4] bg-[#F3EFE6]"
+              }`}
+            >
+              {(["login", "signup"] as const).map((m) => {
+                const active = mode === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => changeMode(m)}
+                    className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-bold transition-all ${
+                      active
+                        ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25"
+                        : isDark
+                          ? "text-[#9691A6] hover:text-[#E0B93A]"
+                          : "text-[#6E687A] hover:text-[#8A6E1A]"
+                    }`}
+                  >
+                    <span aria-hidden="true">
+                      {m === "login" ? "👋" : "✨"}
+                    </span>
+                    <span className="truncate">
+                      {m === "login" ? t.loginButton : t.signupButton}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Form */}
           <form
             onSubmit={submit}
-            className={`space-y-3 border-t p-6 sm:p-7 ${
+            className={`space-y-3.5 border-t px-5 pb-6 pt-5 sm:px-7 ${
               isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
             }`}
           >
@@ -533,7 +572,7 @@ export default function LoginForm() {
                   action={
                     emailVerified ? (
                       <span
-                        className={`me-2 flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold ${
+                        className={`me-2 flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold ${
                           isDark
                             ? "bg-emerald-500/15 text-emerald-300"
                             : "bg-emerald-100 text-emerald-700"
@@ -551,7 +590,7 @@ export default function LoginForm() {
                           !form.email.includes("@") ||
                           form.email.trim().length < 5
                         }
-                        className={`me-2 shrink-0 rounded-md px-2.5 py-1 text-[10px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                        className={`me-2 shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                           isDark
                             ? "bg-[#C9A227]/15 text-[#E0B93A] hover:bg-[#C9A227]/25"
                             : "bg-[#C9A227]/15 text-[#8A6E1A] hover:bg-[#C9A227]/25"
@@ -563,34 +602,33 @@ export default function LoginForm() {
                   }
                 />
 
-                {/* OTP PANEL — only when code was sent and not yet verified */}
+                {/* OTP PANEL — mobile-safe: 6 equal columns + full-width button below */}
                 {otpSent && !emailVerified && (
                   <div
-                    className={`anim-in rounded-xl border p-3 ${
+                    className={`anim-in w-full min-w-0 rounded-2xl border p-3.5 ${
                       isDark
                         ? "border-[#C9A227]/30 bg-[#15121C]"
                         : "border-[#A9821E]/30 bg-[#FAF8F4]"
                     }`}
                   >
                     <p
-                      className={`flex items-center gap-1.5 text-[11px] ${
-                        isDark ? "text-[#B7B2C4]" : "text-[#6E687A]"
-                      }`}
+                      className={`flex items-start gap-1.5 text-xs leading-relaxed ${muted}`}
                     >
                       <ShieldCheck
-                        size={12}
-                        className={isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"}
+                        size={14}
+                        className={`mt-0.5 shrink-0 ${gold}`}
                       />
-                      {t.codeSentTo}{" "}
-                      <strong
-                        className={isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"}
-                      >
-                        {form.email}
-                      </strong>
+                      <span className="min-w-0 break-words">
+                        {t.codeSentTo}{" "}
+                        <strong className={`break-all ${gold}`}>
+                          {form.email}
+                        </strong>
+                      </span>
                     </p>
 
                     <div
-                      className="mt-2.5 flex items-center gap-1.5"
+                      dir="ltr"
+                      className="mt-3 grid grid-cols-6 gap-1.5 sm:gap-2"
                       onPaste={otpPaste}
                     >
                       {otpDigits.map((d, i) => (
@@ -605,40 +643,38 @@ export default function LoginForm() {
                           value={d}
                           onChange={(e) => setOtpDigit(i, e.target.value)}
                           onKeyDown={(e) => otpKeyDown(i, e)}
-                          className={`h-10 w-9 rounded-lg border text-center text-sm font-semibold tabular-nums outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/25 ${
+                          className={`h-12 w-full min-w-0 rounded-xl border text-center text-base font-bold tabular-nums outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/25 ${
                             isDark
                               ? "border-[#332C3E] bg-[#0F0D14] text-[#F0EAE2] focus:border-[#C9A227]"
                               : "border-[#E4DFD4] bg-white text-[#1D1A22] focus:border-[#A9821E]"
                           }`}
                         />
                       ))}
-
-                      <button
-                        type="button"
-                        onClick={verifyOtp}
-                        disabled={
-                          otpSubmitting || otpDigits.join("").length !== 6
-                        }
-                        className="ms-auto flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3 py-2 text-[11px] font-bold text-[#1D1707] shadow-sm shadow-[#C9A227]/20 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
-                      >
-                        {otpSubmitting ? (
-                          <Loader2 size={12} className="animate-spin" />
-                        ) : (
-                          <Check size={12} strokeWidth={3} />
-                        )}
-                        {t.verifyButton}
-                      </button>
                     </div>
 
+                    <button
+                      type="button"
+                      onClick={verifyOtp}
+                      disabled={
+                        otpSubmitting || otpDigits.join("").length !== 6
+                      }
+                      className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3 py-2.5 text-xs font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                    >
+                      {otpSubmitting ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Check size={14} strokeWidth={3} />
+                      )}
+                      {t.verifyButton}
+                    </button>
+
                     {otpError && (
-                      <p className="mt-1.5 text-[11px] text-red-500">
-                        {otpError}
-                      </p>
+                      <p className="mt-2 text-xs text-red-500">{otpError}</p>
                     )}
 
                     <p
-                      className={`mt-2 text-[10px] ${
-                        isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+                      className={`mt-2.5 text-[11px] leading-relaxed ${
+                        isDark ? "text-[#8A8496]" : "text-[#8A8496]"
                       }`}
                     >
                       {t.resendPrompt}{" "}
@@ -646,9 +682,7 @@ export default function LoginForm() {
                         type="button"
                         onClick={sendOtp}
                         disabled={sendingOtp}
-                        className={`font-semibold underline-offset-2 hover:underline disabled:opacity-50 ${
-                          isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
-                        }`}
+                        className={`font-semibold underline-offset-2 hover:underline disabled:opacity-50 ${gold}`}
                       >
                         {sendingOtp ? t.sendingResend : t.resendAction}
                       </button>
@@ -672,14 +706,25 @@ export default function LoginForm() {
 
             {/* Password with eye toggle */}
             <div>
-              <label
-                className={`mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                  isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                }`}
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                {t.passwordLabel}
-              </label>
+              <div className="mb-1.5 flex items-center justify-between gap-2">
+                <label
+                  className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
+                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  }`}
+                  style={{ fontFamily: "var(--font-geist-mono)" }}
+                >
+                  {t.passwordLabel}
+                </label>
+                {mode === "login" && (
+                  <Link
+                    href="/forgot-password"
+                    className={`inline-flex items-center gap-1 text-[11px] font-semibold transition hover:underline ${gold}`}
+                  >
+                    <span aria-hidden="true">🔑</span>
+                    {t.forgotPassword}
+                  </Link>
+                )}
+              </div>
               <div
                 className={`relative flex items-center gap-2 rounded-xl border transition-colors focus-within:ring-2 focus-within:ring-[#C9A227]/30 ${
                   isDark
@@ -701,7 +746,7 @@ export default function LoginForm() {
                   }
                   placeholder={t.passwordPlaceholder}
                   required
-                  className={`min-w-0 flex-1 bg-transparent py-2.5 text-sm outline-none ${
+                  className={`min-w-0 flex-1 bg-transparent py-3 text-sm outline-none ${
                     isDark
                       ? "text-[#F0EAE2] placeholder:text-[#5E5670]"
                       : "text-[#1D1A22] placeholder:text-[#A39D8F]"
@@ -737,13 +782,13 @@ export default function LoginForm() {
             {/* Signup hint when email not verified */}
             {mode === "signup" && !emailVerified && (
               <div
-                className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[11px] ${
+                className={`flex items-start gap-1.5 rounded-xl border px-3 py-2 text-[11px] leading-relaxed ${
                   isDark
                     ? "border-[#C9A227]/30 bg-[#C9A227]/5 text-[#E0B93A]"
                     : "border-[#A9821E]/30 bg-[#C9A227]/10 text-[#8A6E1A]"
                 }`}
               >
-                <ShieldCheck size={12} className="shrink-0" />
+                <ShieldCheck size={13} className="mt-0.5 shrink-0" />
                 {t.emailVerifyFirst}
               </div>
             )}
@@ -752,9 +797,13 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={loading || (mode === "signup" && !emailVerified)}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3.5 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <span aria-hidden="true">{mode === "login" ? "🍴" : "🎉"}</span>
+              )}
               {loading
                 ? mode === "login"
                   ? t.loginLoading
@@ -764,44 +813,47 @@ export default function LoginForm() {
                   : t.signupButton}
             </button>
 
-            {/* Forgot password — only meaningful on login mode, but kept visible */}
-            <div className="mt-6 flex items-center justify-center">
-              <Link
-                href="/forgot-password"
-                className={`inline-flex items-center gap-1.5 text-xs transition ${
-                  isDark
-                    ? "text-[#6E687A] hover:text-[#E0B93A]"
-                    : "text-[#A39D8F] hover:text-[#8A6E1A]"
+            {/* Divider */}
+            <div className="flex items-center gap-3 pt-1" aria-hidden="true">
+              <span
+                className={`h-px flex-1 ${
+                  isDark ? "bg-[#2E2938]" : "bg-[#E4DFD4]"
                 }`}
-              >
-                <ShoppingBag size={12} />
-                {t.forgotPassword}
-              </Link>
+              />
+              <span className="text-xs">🍕</span>
+              <span
+                className={`h-px flex-1 ${
+                  isDark ? "bg-[#2E2938]" : "bg-[#E4DFD4]"
+                }`}
+              />
             </div>
 
-            {/* Switch mode */}
+            {/* Switch mode — outlined button with emoji */}
             <button
               type="button"
-              onClick={switchMode}
-              className={`w-full text-center text-xs font-semibold transition-colors ${
+              onClick={() => changeMode(mode === "login" ? "signup" : "login")}
+              className={`flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-xs font-bold transition-colors ${
                 isDark
-                  ? "text-[#E0B93A] hover:text-[#F0C94A]"
-                  : "text-[#8A6E1A] hover:text-[#A9821E]"
+                  ? "border-[#C9A227]/40 text-[#E0B93A] hover:bg-[#C9A227]/10"
+                  : "border-[#A9821E]/40 text-[#8A6E1A] hover:bg-[#C9A227]/10"
               }`}
             >
-              {mode === "login" ? t.switchToSignup : t.switchToLogin}
+              <span aria-hidden="true">{mode === "login" ? "✨" : "👋"}</span>
+              <span className="min-w-0 text-center">
+                {mode === "login" ? t.switchToSignup : t.switchToLogin}
+              </span>
             </button>
           </form>
         </div>
 
         {/* Bottom hint */}
-        <div className="mt-6 flex items-center justify-center">
+        <div className="mt-5 flex items-center justify-center">
           <Link
             href="/"
             className={`inline-flex items-center gap-1.5 text-xs transition ${
               isDark
-                ? "text-[#6E687A] hover:text-[#E0B93A]"
-                : "text-[#A39D8F] hover:text-[#8A6E1A]"
+                ? "text-[#8A8496] hover:text-[#E0B93A]"
+                : "text-[#8A8496] hover:text-[#8A6E1A]"
             }`}
           >
             <ShoppingBag size={12} />
@@ -864,7 +916,7 @@ function Field({
   action?: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <label
         className={`mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${
           isDark ? "text-[#9691A6]" : "text-[#8A8496]"
@@ -874,7 +926,7 @@ function Field({
         {label}
         {sublabel && (
           <span
-            className={`text-[9px] font-normal normal-case tracking-normal ${
+            className={`text-[10px] font-normal normal-case tracking-normal ${
               isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
             }`}
             style={{ fontFamily: "inherit" }}
@@ -904,7 +956,7 @@ function Field({
           placeholder={placeholder}
           dir={dir}
           required={required}
-          className={`min-w-0 flex-1 bg-transparent py-2.5 pe-3 text-sm outline-none ${
+          className={`min-w-0 flex-1 bg-transparent py-3 pe-3 text-sm outline-none ${
             isDark
               ? "text-[#F0EAE2] placeholder:text-[#5E5670]"
               : "text-[#1D1A22] placeholder:text-[#A39D8F]"
