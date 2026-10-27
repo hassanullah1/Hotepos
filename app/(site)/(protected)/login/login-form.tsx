@@ -165,7 +165,7 @@ const loginText = {
 export default function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/order";
+  const next = params.get("next") || "/";
   const { refresh } = useBuyerAuth();
   const { language } = useLanguage();
   const { resolvedTheme } = useTheme();

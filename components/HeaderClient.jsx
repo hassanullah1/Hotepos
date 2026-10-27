@@ -202,7 +202,7 @@ export default function HeaderClient() {
         <>
           <div className="border-b border-[#2E2938] px-4 py-3">
             <p className="text-xs uppercase tracking-wide text-[#6E687A]">
-              Signed in as
+              Signed in
             </p>
             <p className="mt-0.5 truncate text-sm font-semibold text-[#F0EAE2]">
               {buyer.full_name || "Buyer"}
