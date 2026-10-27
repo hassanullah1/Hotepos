@@ -14,11 +14,10 @@ import {
   User as UserIcon,
   ArrowRight,
   ArrowLeft,
-  ShoppingBag,
   Eye,
   EyeOff,
   Check,
-  ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
 import { useBuyerAuth } from "@/providers/BuyerAuthProvider";
 import { useLanguage } from "@/context/LanguageContext";
@@ -311,7 +310,6 @@ export default function LoginForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Require email verification on signup
     if (mode === "signup") {
       if (!form.email.trim() || !form.email.includes("@")) {
         setError(t.emailRequired);
@@ -376,7 +374,6 @@ export default function LoginForm() {
     );
   }
 
-  // shared colour helpers
   const muted = isDark ? "text-[#B7B2C4]" : "text-[#6E687A]";
   const gold = isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]";
 
@@ -387,161 +384,81 @@ export default function LoginForm() {
       }`}
       dir={t.dir}
     >
-      {/* Grid texture */}
-      <svg
-        className={`pointer-events-none absolute inset-0 h-full w-full ${
-          isDark ? "opacity-[0.04]" : "opacity-[0.05]"
-        }`}
-        viewBox="0 0 300 300"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        {Array.from({ length: 16 }).map((_, row) =>
-          Array.from({ length: 16 }).map((_, col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={10 + col * 36}
-              y={10 + row * 36}
-              width="18"
-              height="18"
-              rx="4"
-              fill="none"
-              stroke={isDark ? "#F0EAE2" : "#1D1A22"}
-              strokeWidth="1"
-            />
-          )),
-        )}
-      </svg>
-
-      {/* Glow blobs (clipped by overflow-x-hidden on root) */}
+      {/* One soft glow, nothing else — keeps focus on the form */}
       <div
-        className={`pointer-events-none absolute -top-32 -start-32 h-96 w-96 rounded-full blur-3xl ${
-          isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
-        }`}
-        aria-hidden="true"
-      />
-      <div
-        className={`pointer-events-none absolute -end-32 bottom-0 h-96 w-96 rounded-full blur-3xl ${
-          isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/12"
+        className={`pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full blur-3xl ${
+          isDark ? "bg-[#C9A227]/15" : "bg-[#C9A227]/20"
         }`}
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8 sm:px-6">
-        {/* Back link */}
-        <Link
-          href="/"
-          className={`group mb-5 inline-flex items-center gap-1.5 self-start text-xs font-semibold transition ${
-            isDark
-              ? "text-[#B7B2C4] hover:text-[#E0B93A]"
-              : "text-[#6E687A] hover:text-[#8A6E1A]"
-          }`}
-        >
-          <ArrowBack
-            size={13}
-            className="transition-transform group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5"
-          />
-          {t.continueBrowsing}
-        </Link>
+      <main className="relative mx-auto flex min-h-screen w-full max-w-[420px] flex-col justify-center px-4 py-8">
+        {/* Logo + heading */}
+        <header className="mb-6 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[22px] bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-lg shadow-[#C9A227]/30">
+            <Utensils size={26} />
+          </div>
+          <p className={`mt-4 text-sm font-medium ${gold}`}>{t.badge}</p>
+          <h1
+            className="mt-1 text-[28px] font-medium leading-tight"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {mode === "login" ? t.loginTitle : t.signupTitle}
+          </h1>
+          <p
+            className={`mx-auto mt-2 max-w-[320px] text-sm leading-relaxed ${muted}`}
+          >
+            {mode === "login" ? t.loginSubtitle : t.signupSubtitle}
+          </p>
+        </header>
 
         {/* Card */}
         <div
-          className={`overflow-hidden rounded-[28px] border backdrop-blur-md transition-colors ${
+          className={`rounded-3xl border p-5 sm:p-6 ${
             isDark
-              ? "border-[#2E2938] bg-[#1E1B26]/90 shadow-2xl shadow-black/40"
-              : "border-[#E4DFD4] bg-white/90 shadow-xl shadow-[#C9A227]/10"
+              ? "border-[#2E2938] bg-[#1E1B26]"
+              : "border-[#E4DFD4] bg-white shadow-sm"
           }`}
         >
-          {/* Gold hairline on top */}
-          <div className="h-1 w-full bg-gradient-to-r from-[#A9821E] via-[#E0B93A] to-[#A9821E]" />
-
-          {/* Header */}
-          <div className="relative px-5 pb-5 pt-6 sm:px-7">
-            <div
-              className="pointer-events-none absolute -top-16 -end-16 h-40 w-40 rounded-full bg-[#C9A227]/15 blur-3xl"
-              aria-hidden="true"
-            />
-
-            <div className="relative flex items-center gap-3.5">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-lg shadow-[#C9A227]/30 ring-4 ring-[#C9A227]/10">
-                <Utensils size={22} />
-              </div>
-              <div className="min-w-0">
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
-                    isDark
-                      ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A]"
-                      : "border-[#A9821E]/40 bg-[#C9A227]/15 text-[#8A6E1A]"
-                  }`}
-                >
-                  <span aria-hidden="true">🍽️</span>
-                  {t.badge}
-                </span>
-                <h1
-                  className="mt-1.5 text-[26px] font-medium leading-tight"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {mode === "login" ? t.loginTitle : t.signupTitle}
-                </h1>
-              </div>
-            </div>
-
-            <p className={`relative mt-3 text-sm leading-relaxed ${muted}`}>
-              {mode === "login" ? t.loginSubtitle : t.signupSubtitle}
-            </p>
-
-            {/* Segmented mode switch */}
-            <div
-              role="tablist"
-              className={`relative mt-5 grid grid-cols-2 gap-1 rounded-2xl border p-1 ${
-                isDark
-                  ? "border-[#2E2938] bg-[#15121C]"
-                  : "border-[#E4DFD4] bg-[#F3EFE6]"
-              }`}
-            >
-              {(["login", "signup"] as const).map((m) => {
-                const active = mode === m;
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => changeMode(m)}
-                    className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-bold transition-all ${
-                      active
-                        ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25"
-                        : isDark
-                          ? "text-[#9691A6] hover:text-[#E0B93A]"
-                          : "text-[#6E687A] hover:text-[#8A6E1A]"
-                    }`}
-                  >
-                    <span aria-hidden="true">
-                      {m === "login" ? "👋" : "✨"}
-                    </span>
-                    <span className="truncate">
-                      {m === "login" ? t.loginButton : t.signupButton}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Form */}
-          <form
-            onSubmit={submit}
-            className={`space-y-3.5 border-t px-5 pb-6 pt-5 sm:px-7 ${
-              isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
+          {/* Mode switch */}
+          <div
+            role="tablist"
+            className={`mb-5 grid grid-cols-2 rounded-2xl p-1 ${
+              isDark ? "bg-[#15121C]" : "bg-[#F3EFE6]"
             }`}
           >
+            {(["login", "signup"] as const).map((m) => {
+              const active = mode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => changeMode(m)}
+                  className={`min-h-[44px] rounded-xl px-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/50 ${
+                    active
+                      ? isDark
+                        ? "bg-[#2A2534] text-[#F0EAE2] shadow-sm"
+                        : "bg-white text-[#1D1A22] shadow-sm"
+                      : muted
+                  }`}
+                >
+                  {m === "login" ? t.loginButton : t.signupButton}
+                </button>
+              );
+            })}
+          </div>
+
+          <form onSubmit={submit} className="space-y-4" noValidate={false}>
             {mode === "signup" && (
               <Field
-                icon={<UserIcon size={15} />}
+                icon={<UserIcon size={18} />}
                 label={t.nameLabel}
                 value={form.full_name}
                 onChange={(v) => updateField("full_name", v)}
                 placeholder={t.namePlaceholder}
+                autoComplete="name"
                 isDark={isDark}
                 required
               />
@@ -549,36 +466,37 @@ export default function LoginForm() {
 
             {mode === "login" ? (
               <Field
-                icon={<Mail size={15} />}
+                icon={<Mail size={18} />}
                 label={t.identifierLabel}
                 value={form.identifier}
                 onChange={(v) => updateField("identifier", v)}
                 placeholder={t.identifierPlaceholder}
+                autoComplete="username"
                 isDark={isDark}
                 required
               />
             ) : (
               <>
-                {/* EMAIL — with inline verify button / verified badge */}
                 <Field
-                  icon={<Mail size={15} />}
+                  icon={<Mail size={18} />}
                   label={t.emailLabel}
                   type="email"
                   value={form.email}
                   onChange={(v) => updateField("email", v)}
                   placeholder={t.emailPlaceholder}
+                  autoComplete="email"
                   isDark={isDark}
                   required
                   action={
                     emailVerified ? (
                       <span
-                        className={`me-2 flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold ${
+                        className={`me-2 flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold ${
                           isDark
                             ? "bg-emerald-500/15 text-emerald-300"
                             : "bg-emerald-100 text-emerald-700"
                         }`}
                       >
-                        <Check size={11} strokeWidth={3} />
+                        <Check size={13} strokeWidth={3} />
                         {t.verified}
                       </span>
                     ) : (
@@ -590,7 +508,7 @@ export default function LoginForm() {
                           !form.email.includes("@") ||
                           form.email.trim().length < 5
                         }
-                        className={`me-2 shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                        className={`me-2 shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                           isDark
                             ? "bg-[#C9A227]/15 text-[#E0B93A] hover:bg-[#C9A227]/25"
                             : "bg-[#C9A227]/15 text-[#8A6E1A] hover:bg-[#C9A227]/25"
@@ -602,33 +520,23 @@ export default function LoginForm() {
                   }
                 />
 
-                {/* OTP PANEL — mobile-safe: 6 equal columns + full-width button below */}
+                {/* OTP panel — 6 equal columns, button on its own row (no overflow on mobile) */}
                 {otpSent && !emailVerified && (
                   <div
-                    className={`anim-in w-full min-w-0 rounded-2xl border p-3.5 ${
-                      isDark
-                        ? "border-[#C9A227]/30 bg-[#15121C]"
-                        : "border-[#A9821E]/30 bg-[#FAF8F4]"
+                    className={`anim-in w-full min-w-0 rounded-2xl p-4 ${
+                      isDark ? "bg-[#15121C]" : "bg-[#F7F4EE]"
                     }`}
                   >
-                    <p
-                      className={`flex items-start gap-1.5 text-xs leading-relaxed ${muted}`}
-                    >
-                      <ShieldCheck
-                        size={14}
-                        className={`mt-0.5 shrink-0 ${gold}`}
-                      />
-                      <span className="min-w-0 break-words">
-                        {t.codeSentTo}{" "}
-                        <strong className={`break-all ${gold}`}>
-                          {form.email}
-                        </strong>
-                      </span>
+                    <p className={`text-sm leading-relaxed ${muted}`}>
+                      {t.codeSentTo}{" "}
+                      <strong className={`break-all font-semibold ${gold}`}>
+                        {form.email}
+                      </strong>
                     </p>
 
                     <div
                       dir="ltr"
-                      className="mt-3 grid grid-cols-6 gap-1.5 sm:gap-2"
+                      className="mt-3 grid grid-cols-6 gap-2"
                       onPaste={otpPaste}
                     >
                       {otpDigits.map((d, i) => (
@@ -643,14 +551,22 @@ export default function LoginForm() {
                           value={d}
                           onChange={(e) => setOtpDigit(i, e.target.value)}
                           onKeyDown={(e) => otpKeyDown(i, e)}
-                          className={`h-12 w-full min-w-0 rounded-xl border text-center text-base font-bold tabular-nums outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/25 ${
+                          aria-label={`Digit ${i + 1}`}
+                          className={`h-12 w-full min-w-0 rounded-xl border text-center text-lg font-semibold tabular-nums outline-none transition-colors focus:ring-2 focus:ring-[#C9A227]/30 ${
                             isDark
-                              ? "border-[#332C3E] bg-[#0F0D14] text-[#F0EAE2] focus:border-[#C9A227]"
+                              ? "border-[#332C3E] bg-[#1E1B26] text-[#F0EAE2] focus:border-[#C9A227]"
                               : "border-[#E4DFD4] bg-white text-[#1D1A22] focus:border-[#A9821E]"
                           }`}
                         />
                       ))}
                     </div>
+
+                    {otpError && (
+                      <p className="mt-2 flex items-center gap-1.5 text-sm text-red-500">
+                        <AlertCircle size={14} className="shrink-0" />
+                        {otpError}
+                      </p>
+                    )}
 
                     <button
                       type="button"
@@ -658,25 +574,15 @@ export default function LoginForm() {
                       disabled={
                         otpSubmitting || otpDigits.join("").length !== 6
                       }
-                      className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-3 py-2.5 text-xs font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                      className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-sm font-semibold text-[#1D1707] transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      {otpSubmitting ? (
-                        <Loader2 size={14} className="animate-spin" />
-                      ) : (
-                        <Check size={14} strokeWidth={3} />
+                      {otpSubmitting && (
+                        <Loader2 size={16} className="animate-spin" />
                       )}
                       {t.verifyButton}
                     </button>
 
-                    {otpError && (
-                      <p className="mt-2 text-xs text-red-500">{otpError}</p>
-                    )}
-
-                    <p
-                      className={`mt-2.5 text-[11px] leading-relaxed ${
-                        isDark ? "text-[#8A8496]" : "text-[#8A8496]"
-                      }`}
-                    >
+                    <p className={`mt-3 text-center text-xs ${muted}`}>
                       {t.resendPrompt}{" "}
                       <button
                         type="button"
@@ -686,54 +592,53 @@ export default function LoginForm() {
                       >
                         {sendingOtp ? t.sendingResend : t.resendAction}
                       </button>
-                      .
                     </p>
                   </div>
                 )}
 
                 <Field
-                  icon={<Phone size={15} />}
+                  icon={<Phone size={18} />}
                   label={t.phoneLabel}
                   sublabel={t.phoneOptional}
+                  type="tel"
                   value={form.phone}
                   onChange={(v) => updateField("phone", v)}
                   placeholder={t.phonePlaceholder}
+                  autoComplete="tel"
                   isDark={isDark}
                   dir="ltr"
                 />
               </>
             )}
 
-            {/* Password with eye toggle */}
+            {/* Password */}
             <div>
               <div className="mb-1.5 flex items-center justify-between gap-2">
                 <label
-                  className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
-                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  className={`text-sm font-medium ${
+                    isDark ? "text-[#D8D3E2]" : "text-[#3A3542]"
                   }`}
-                  style={{ fontFamily: "var(--font-geist-mono)" }}
                 >
                   {t.passwordLabel}
                 </label>
                 {mode === "login" && (
                   <Link
                     href="/forgot-password"
-                    className={`inline-flex items-center gap-1 text-[11px] font-semibold transition hover:underline ${gold}`}
+                    className={`text-sm font-medium hover:underline ${gold}`}
                   >
-                    <span aria-hidden="true">🔑</span>
                     {t.forgotPassword}
                   </Link>
                 )}
               </div>
               <div
-                className={`relative flex items-center gap-2 rounded-xl border transition-colors focus-within:ring-2 focus-within:ring-[#C9A227]/30 ${
+                className={`flex items-center gap-2 rounded-xl border transition-colors focus-within:ring-2 focus-within:ring-[#C9A227]/30 ${
                   isDark
                     ? "border-[#332C3E] bg-[#161320] focus-within:border-[#C9A227]"
                     : "border-[#E4DFD4] bg-[#FAF8F4] focus-within:border-[#A9821E]"
                 }`}
               >
                 <Lock
-                  size={15}
+                  size={18}
                   className={`ms-3 shrink-0 ${
                     isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
                   }`}
@@ -745,8 +650,11 @@ export default function LoginForm() {
                     setForm({ ...form, password: e.target.value })
                   }
                   placeholder={t.passwordPlaceholder}
+                  autoComplete={
+                    mode === "login" ? "current-password" : "new-password"
+                  }
                   required
-                  className={`min-w-0 flex-1 bg-transparent py-3 text-sm outline-none ${
+                  className={`min-h-[48px] min-w-0 flex-1 bg-transparent text-base outline-none ${
                     isDark
                       ? "text-[#F0EAE2] placeholder:text-[#5E5670]"
                       : "text-[#1D1A22] placeholder:text-[#A39D8F]"
@@ -755,55 +663,47 @@ export default function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className={`me-2 rounded-md p-1.5 transition-colors ${
+                  className={`me-1.5 flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
                     isDark
-                      ? "text-[#6E687A] hover:bg-[#2A2534] hover:text-[#E0B93A]"
-                      : "text-[#A39D8F] hover:bg-[#EDE8DE] hover:text-[#8A6E1A]"
+                      ? "text-[#8A8496] hover:bg-[#2A2534] hover:text-[#E0B93A]"
+                      : "text-[#8A8496] hover:bg-[#EDE8DE] hover:text-[#8A6E1A]"
                   }`}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            {error && (
+            {/* One message area: error first, otherwise the verify hint */}
+            {error ? (
               <div
-                className={`rounded-xl border px-3 py-2 text-xs ${
+                role="alert"
+                className={`flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm ${
                   isDark
-                    ? "border-red-500/40 bg-red-500/10 text-red-300"
-                    : "border-red-300 bg-red-50 text-red-700"
+                    ? "bg-red-500/10 text-red-300"
+                    : "bg-red-50 text-red-700"
                 }`}
               >
+                <AlertCircle size={16} className="mt-0.5 shrink-0" />
                 {error}
               </div>
+            ) : (
+              mode === "signup" &&
+              !emailVerified && (
+                <p className={`text-xs leading-relaxed ${muted}`}>
+                  {t.emailVerifyFirst}
+                </p>
+              )
             )}
 
-            {/* Signup hint when email not verified */}
-            {mode === "signup" && !emailVerified && (
-              <div
-                className={`flex items-start gap-1.5 rounded-xl border px-3 py-2 text-[11px] leading-relaxed ${
-                  isDark
-                    ? "border-[#C9A227]/30 bg-[#C9A227]/5 text-[#E0B93A]"
-                    : "border-[#A9821E]/30 bg-[#C9A227]/10 text-[#8A6E1A]"
-                }`}
-              >
-                <ShieldCheck size={13} className="mt-0.5 shrink-0" />
-                {t.emailVerifyFirst}
-              </div>
-            )}
-
-            {/* Submit */}
+            {/* Primary action */}
             <button
               type="submit"
               disabled={loading || (mode === "signup" && !emailVerified)}
-              className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 py-3.5 text-sm font-bold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/35 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-4 text-base font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/25 transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <span aria-hidden="true">{mode === "login" ? "🍴" : "🎉"}</span>
-              )}
+              {loading && <Loader2 className="h-5 w-5 animate-spin" />}
               {loading
                 ? mode === "login"
                   ? t.loginLoading
@@ -812,55 +712,31 @@ export default function LoginForm() {
                   ? t.loginButton
                   : t.signupButton}
             </button>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 pt-1" aria-hidden="true">
-              <span
-                className={`h-px flex-1 ${
-                  isDark ? "bg-[#2E2938]" : "bg-[#E4DFD4]"
-                }`}
-              />
-              <span className="text-xs">🍕</span>
-              <span
-                className={`h-px flex-1 ${
-                  isDark ? "bg-[#2E2938]" : "bg-[#E4DFD4]"
-                }`}
-              />
-            </div>
-
-            {/* Switch mode — outlined button with emoji */}
-            <button
-              type="button"
-              onClick={() => changeMode(mode === "login" ? "signup" : "login")}
-              className={`flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-xs font-bold transition-colors ${
-                isDark
-                  ? "border-[#C9A227]/40 text-[#E0B93A] hover:bg-[#C9A227]/10"
-                  : "border-[#A9821E]/40 text-[#8A6E1A] hover:bg-[#C9A227]/10"
-              }`}
-            >
-              <span aria-hidden="true">{mode === "login" ? "✨" : "👋"}</span>
-              <span className="min-w-0 text-center">
-                {mode === "login" ? t.switchToSignup : t.switchToLogin}
-              </span>
-            </button>
           </form>
         </div>
 
-        {/* Bottom hint */}
-        <div className="mt-5 flex items-center justify-center">
+        {/* Secondary actions */}
+        <div className="mt-5 flex flex-col items-center gap-3 text-sm">
+          <button
+            type="button"
+            onClick={() => changeMode(mode === "login" ? "signup" : "login")}
+            className={`min-h-[44px] px-3 font-semibold hover:underline ${gold}`}
+          >
+            {mode === "login" ? t.switchToSignup : t.switchToLogin}
+          </button>
+
           <Link
             href="/"
-            className={`inline-flex items-center gap-1.5 text-xs transition ${
-              isDark
-                ? "text-[#8A8496] hover:text-[#E0B93A]"
-                : "text-[#8A8496] hover:text-[#8A6E1A]"
-            }`}
+            className={`group inline-flex min-h-[44px] items-center gap-1.5 px-3 transition-colors ${muted} hover:text-[#E0B93A]`}
           >
-            <ShoppingBag size={12} />
+            <ArrowBack
+              size={15}
+              className="transition-transform group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5"
+            />
             {t.continueBrowsing}
           </Link>
         </div>
-      </div>
+      </main>
 
       <style jsx global>{`
         @keyframes anim-in {
@@ -874,7 +750,7 @@ export default function LoginForm() {
           }
         }
         .anim-in {
-          animation: anim-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation: anim-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
         @media (prefers-reduced-motion: reduce) {
           .anim-in {
@@ -902,6 +778,7 @@ function Field({
   dir,
   required,
   action,
+  autoComplete,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -914,24 +791,23 @@ function Field({
   dir?: "ltr" | "rtl";
   required?: boolean;
   action?: React.ReactNode;
+  autoComplete?: string;
 }) {
   return (
     <div className="min-w-0">
       <label
-        className={`mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${
-          isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+        className={`mb-1.5 flex items-baseline gap-1.5 text-sm font-medium ${
+          isDark ? "text-[#D8D3E2]" : "text-[#3A3542]"
         }`}
-        style={{ fontFamily: "var(--font-geist-mono)" }}
       >
         {label}
         {sublabel && (
           <span
-            className={`text-[10px] font-normal normal-case tracking-normal ${
-              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+            className={`text-xs font-normal ${
+              isDark ? "text-[#8A8496]" : "text-[#8A8496]"
             }`}
-            style={{ fontFamily: "inherit" }}
           >
-            · {sublabel}
+            ({sublabel})
           </span>
         )}
       </label>
@@ -956,7 +832,8 @@ function Field({
           placeholder={placeholder}
           dir={dir}
           required={required}
-          className={`min-w-0 flex-1 bg-transparent py-3 pe-3 text-sm outline-none ${
+          autoComplete={autoComplete}
+          className={`min-h-[48px] min-w-0 flex-1 bg-transparent pe-3 text-base outline-none ${
             isDark
               ? "text-[#F0EAE2] placeholder:text-[#5E5670]"
               : "text-[#1D1A22] placeholder:text-[#A39D8F]"
