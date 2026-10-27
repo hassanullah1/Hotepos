@@ -163,6 +163,8 @@ exports.Prisma.BuyersScalarFieldEnum = {
   phone: 'phone',
   password_hash: 'password_hash',
   is_active: 'is_active',
+  reset_token: 'reset_token',
+  reset_token_expires_at: 'reset_token_expires_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };

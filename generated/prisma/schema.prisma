@@ -105,19 +105,23 @@ model role_permissions {
 /// by staff, scoped per-hotel). A buyer logs in with email or phone
 /// and can order at ANY hotel on the platform.
 model buyers {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  full_name     String    @db.VarChar(150)
-  email         String?   @unique @db.VarChar(150)
-  phone         String?   @unique @db.VarChar(30)
-  password_hash String
-  is_active     Boolean?  @default(true)
-  created_at    DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  full_name              String    @db.VarChar(150)
+  email                  String?   @unique @db.VarChar(150)
+  phone                  String?   @unique @db.VarChar(30)
+  password_hash          String
+  is_active              Boolean?  @default(true)
+  reset_token            String?   @db.VarChar(64)
+  reset_token_expires_at DateTime? @db.Timestamptz(6)
+  created_at             DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime? @default(now()) @db.Timestamptz(6)
 
   orders     orders[]
   reviews    reviews[]
   room_stays room_stays[]
   payments   payments[]
+
+  @@index([reset_token], map: "idx_buyers_reset_token")
 }
 
 // =========================================================

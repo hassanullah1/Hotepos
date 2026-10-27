@@ -132,7 +132,7 @@ export default function HeaderClient() {
     setBuyer(null);
     setIsAccountOpen(false);
     setIsMobileMenuOpen(false);
-    router.push("/order");
+    router.push("/");
     router.refresh();
   }
 
@@ -240,7 +240,7 @@ export default function HeaderClient() {
           </div>
 
           <Link
-            href={`/login?next=${encodeURIComponent(pathname || "/order")}`}
+            href={`/login?next=${encodeURIComponent(pathname || "/")}`}
             onClick={() => setIsAccountOpen(false)}
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold text-[#E0B93A] transition-colors hover:bg-[#C9A227]/10"
           >

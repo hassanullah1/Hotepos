@@ -111,6 +111,8 @@ model buyers {
   phone         String?   @unique @db.VarChar(30)
   password_hash String
   is_active     Boolean?  @default(true)
+   reset_token            String?   @db.VarChar(64)
+  reset_token_expires_at DateTime? @db.Timestamptz(6)
   created_at    DateTime? @default(now()) @db.Timestamptz(6)
   updated_at    DateTime? @default(now()) @db.Timestamptz(6)
 
@@ -118,6 +120,7 @@ model buyers {
   reviews    reviews[]
   room_stays room_stays[]
   payments   payments[]
+   @@index([reset_token], map: "idx_buyers_reset_token")
 }
 
 // =========================================================

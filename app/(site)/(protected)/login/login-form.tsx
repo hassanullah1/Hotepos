@@ -68,6 +68,7 @@ const loginText = {
     sendingResend: "sending…",
     verificationFailed: "Verification failed",
     couldNotSend: "Could not send code",
+    forgotPassword: "Forgot password?", // ✅ NEW
   },
   ps: {
     dir: "rtl",
@@ -112,6 +113,7 @@ const loginText = {
     sendingResend: "لېږل کیږي…",
     verificationFailed: "تصدیق ناکام شو",
     couldNotSend: "کوډ نه شي لېږل شوی",
+    forgotPassword: "پټنوم مو هیر شو؟", // ✅ NEW
   },
   prs: {
     dir: "rtl",
@@ -156,6 +158,7 @@ const loginText = {
     sendingResend: "در حال ارسال…",
     verificationFailed: "تأیید ناموفق بود",
     couldNotSend: "کد ارسال نشد",
+    forgotPassword: "رمز عبور را فراموش کرده‌اید؟", // ✅ NEW
   },
 };
 
@@ -760,6 +763,21 @@ export default function LoginForm() {
                   ? t.loginButton
                   : t.signupButton}
             </button>
+
+            {/* Forgot password — only meaningful on login mode, but kept visible */}
+            <div className="mt-6 flex items-center justify-center">
+              <Link
+                href="/forgot-password"
+                className={`inline-flex items-center gap-1.5 text-xs transition ${
+                  isDark
+                    ? "text-[#6E687A] hover:text-[#E0B93A]"
+                    : "text-[#A39D8F] hover:text-[#8A6E1A]"
+                }`}
+              >
+                <ShoppingBag size={12} />
+                {t.forgotPassword}
+              </Link>
+            </div>
 
             {/* Switch mode */}
             <button

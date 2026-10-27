@@ -11870,6 +11870,8 @@ export namespace Prisma {
     phone: string | null
     password_hash: string | null
     is_active: boolean | null
+    reset_token: string | null
+    reset_token_expires_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11881,6 +11883,8 @@ export namespace Prisma {
     phone: string | null
     password_hash: string | null
     is_active: boolean | null
+    reset_token: string | null
+    reset_token_expires_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11892,6 +11896,8 @@ export namespace Prisma {
     phone: number
     password_hash: number
     is_active: number
+    reset_token: number
+    reset_token_expires_at: number
     created_at: number
     updated_at: number
     _all: number
@@ -11905,6 +11911,8 @@ export namespace Prisma {
     phone?: true
     password_hash?: true
     is_active?: true
+    reset_token?: true
+    reset_token_expires_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -11916,6 +11924,8 @@ export namespace Prisma {
     phone?: true
     password_hash?: true
     is_active?: true
+    reset_token?: true
+    reset_token_expires_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -11927,6 +11937,8 @@ export namespace Prisma {
     phone?: true
     password_hash?: true
     is_active?: true
+    reset_token?: true
+    reset_token_expires_at?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -12011,6 +12023,8 @@ export namespace Prisma {
     phone: string | null
     password_hash: string
     is_active: boolean | null
+    reset_token: string | null
+    reset_token_expires_at: Date | null
     created_at: Date | null
     updated_at: Date | null
     _count: BuyersCountAggregateOutputType | null
@@ -12039,6 +12053,8 @@ export namespace Prisma {
     phone?: boolean
     password_hash?: boolean
     is_active?: boolean
+    reset_token?: boolean
+    reset_token_expires_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     orders?: boolean | buyers$ordersArgs<ExtArgs>
@@ -12055,6 +12071,8 @@ export namespace Prisma {
     phone?: boolean
     password_hash?: boolean
     is_active?: boolean
+    reset_token?: boolean
+    reset_token_expires_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["buyers"]>
@@ -12066,6 +12084,8 @@ export namespace Prisma {
     phone?: boolean
     password_hash?: boolean
     is_active?: boolean
+    reset_token?: boolean
+    reset_token_expires_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["buyers"]>
@@ -12077,11 +12097,13 @@ export namespace Prisma {
     phone?: boolean
     password_hash?: boolean
     is_active?: boolean
+    reset_token?: boolean
+    reset_token_expires_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type buyersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "full_name" | "email" | "phone" | "password_hash" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["buyers"]>
+  export type buyersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "full_name" | "email" | "phone" | "password_hash" | "is_active" | "reset_token" | "reset_token_expires_at" | "created_at" | "updated_at", ExtArgs["result"]["buyers"]>
   export type buyersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | buyers$ordersArgs<ExtArgs>
     reviews?: boolean | buyers$reviewsArgs<ExtArgs>
@@ -12107,6 +12129,8 @@ export namespace Prisma {
       phone: string | null
       password_hash: string
       is_active: boolean | null
+      reset_token: string | null
+      reset_token_expires_at: Date | null
       created_at: Date | null
       updated_at: Date | null
     }, ExtArgs["result"]["buyers"]>
@@ -12542,6 +12566,8 @@ export namespace Prisma {
     readonly phone: FieldRef<"buyers", 'String'>
     readonly password_hash: FieldRef<"buyers", 'String'>
     readonly is_active: FieldRef<"buyers", 'Boolean'>
+    readonly reset_token: FieldRef<"buyers", 'String'>
+    readonly reset_token_expires_at: FieldRef<"buyers", 'DateTime'>
     readonly created_at: FieldRef<"buyers", 'DateTime'>
     readonly updated_at: FieldRef<"buyers", 'DateTime'>
   }
@@ -69386,6 +69412,8 @@ export namespace Prisma {
     phone: 'phone',
     password_hash: 'password_hash',
     is_active: 'is_active',
+    reset_token: 'reset_token',
+    reset_token_expires_at: 'reset_token_expires_at',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -70562,6 +70590,8 @@ export namespace Prisma {
     phone?: StringNullableFilter<"buyers"> | string | null
     password_hash?: StringFilter<"buyers"> | string
     is_active?: BoolNullableFilter<"buyers"> | boolean | null
+    reset_token?: StringNullableFilter<"buyers"> | string | null
+    reset_token_expires_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     created_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     orders?: OrdersListRelationFilter
@@ -70577,6 +70607,8 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     password_hash?: SortOrder
     is_active?: SortOrderInput | SortOrder
+    reset_token?: SortOrderInput | SortOrder
+    reset_token_expires_at?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     orders?: ordersOrderByRelationAggregateInput
@@ -70595,6 +70627,8 @@ export namespace Prisma {
     full_name?: StringFilter<"buyers"> | string
     password_hash?: StringFilter<"buyers"> | string
     is_active?: BoolNullableFilter<"buyers"> | boolean | null
+    reset_token?: StringNullableFilter<"buyers"> | string | null
+    reset_token_expires_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     created_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"buyers"> | Date | string | null
     orders?: OrdersListRelationFilter
@@ -70610,6 +70644,8 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     password_hash?: SortOrder
     is_active?: SortOrderInput | SortOrder
+    reset_token?: SortOrderInput | SortOrder
+    reset_token_expires_at?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     _count?: buyersCountOrderByAggregateInput
@@ -70627,6 +70663,8 @@ export namespace Prisma {
     phone?: StringNullableWithAggregatesFilter<"buyers"> | string | null
     password_hash?: StringWithAggregatesFilter<"buyers"> | string
     is_active?: BoolNullableWithAggregatesFilter<"buyers"> | boolean | null
+    reset_token?: StringNullableWithAggregatesFilter<"buyers"> | string | null
+    reset_token_expires_at?: DateTimeNullableWithAggregatesFilter<"buyers"> | Date | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"buyers"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"buyers"> | Date | string | null
   }
@@ -74916,6 +74954,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersCreateNestedManyWithoutBuyersInput
@@ -74931,6 +74971,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersUncheckedCreateNestedManyWithoutBuyersInput
@@ -74946,6 +74988,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUpdateManyWithoutBuyersNestedInput
@@ -74961,6 +75005,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUncheckedUpdateManyWithoutBuyersNestedInput
@@ -74976,6 +75022,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
   }
@@ -74987,6 +75035,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -74998,6 +75048,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -79639,6 +79691,8 @@ export namespace Prisma {
     phone?: SortOrder
     password_hash?: SortOrder
     is_active?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -79650,6 +79704,8 @@ export namespace Prisma {
     phone?: SortOrder
     password_hash?: SortOrder
     is_active?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -79661,6 +79717,8 @@ export namespace Prisma {
     phone?: SortOrder
     password_hash?: SortOrder
     is_active?: SortOrder
+    reset_token?: SortOrder
+    reset_token_expires_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -96430,6 +96488,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     reviews?: reviewsCreateNestedManyWithoutBuyersInput
@@ -96444,6 +96504,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     reviews?: reviewsUncheckedCreateNestedManyWithoutBuyersInput
@@ -97007,6 +97069,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reviews?: reviewsUpdateManyWithoutBuyersNestedInput
@@ -97021,6 +97085,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reviews?: reviewsUncheckedUpdateManyWithoutBuyersNestedInput
@@ -98355,6 +98421,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersCreateNestedManyWithoutBuyersInput
@@ -98369,6 +98437,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersUncheckedCreateNestedManyWithoutBuyersInput
@@ -98630,6 +98700,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUpdateManyWithoutBuyersNestedInput
@@ -98644,6 +98716,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUncheckedUpdateManyWithoutBuyersNestedInput
@@ -99745,6 +99819,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersCreateNestedManyWithoutBuyersInput
@@ -99759,6 +99835,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersUncheckedCreateNestedManyWithoutBuyersInput
@@ -100078,6 +100156,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUpdateManyWithoutBuyersNestedInput
@@ -100092,6 +100172,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUncheckedUpdateManyWithoutBuyersNestedInput
@@ -105023,6 +105105,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersCreateNestedManyWithoutBuyersInput
@@ -105037,6 +105121,8 @@ export namespace Prisma {
     phone?: string | null
     password_hash: string
     is_active?: boolean | null
+    reset_token?: string | null
+    reset_token_expires_at?: Date | string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     orders?: ordersUncheckedCreateNestedManyWithoutBuyersInput
@@ -105522,6 +105608,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUpdateManyWithoutBuyersNestedInput
@@ -105536,6 +105624,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     password_hash?: StringFieldUpdateOperationsInput | string
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     orders?: ordersUncheckedUpdateManyWithoutBuyersNestedInput
