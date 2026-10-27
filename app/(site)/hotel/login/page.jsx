@@ -468,7 +468,7 @@ function LoginForm() {
 
             <div className="mt-3 text-right">
               <Link
-                href="/forgot-password"
+                href="/hotel/forgot-password"
                 className={`text-xs underline-offset-2 hover:underline ${
                   isDark
                     ? "text-[#9691A6] hover:text-[#C9A227]"

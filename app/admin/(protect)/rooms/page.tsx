@@ -65,7 +65,7 @@ export default function RoomsPage() {
 
   function handle401(res) {
     if (res.status === 401) {
-      router.push("/login");
+      router.push("/hotel/login");
       return true;
     }
     return false;
@@ -77,7 +77,7 @@ export default function RoomsPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
         const data = await res.json();

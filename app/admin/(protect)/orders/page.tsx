@@ -111,7 +111,7 @@ export default function OrdersPage() {
 
   function handle401(res: Response) {
     if (res.status === 401) {
-      router.push("/login");
+      router.push("/hotel/login");
       return true;
     }
     return false;
@@ -122,7 +122,7 @@ export default function OrdersPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common?.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -226,7 +226,7 @@ export default function OrdersPage() {
         oRes.status === 401 ||
         (rRes && rRes.status === 401)
       )
-        return router.push("/login");
+        return router.push("/hotel/login");
 
       if (!tRes.ok) throw new Error("Failed to load tables");
       if (!mRes.ok) throw new Error("Failed to load menu");
@@ -777,7 +777,7 @@ export default function OrdersPage() {
 
           <div className="flex items-center gap-2">
             <Link
-              href="/owners/online-orders"
+              href="/admin/owners/online-orders"
               title="Online order history"
               className="inline-flex items-center gap-1.5 h-9 rounded-full px-3 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 text-xs font-semibold"
             >

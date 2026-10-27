@@ -234,7 +234,7 @@ export default function AdminOnlineOrdersPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error("Failed to load user");
         }
         const data = await res.json();
@@ -305,7 +305,7 @@ export default function AdminOnlineOrdersPage() {
       if (debouncedQuery) params.set("q", debouncedQuery);
 
       const res = await fetchWithAuth(`/api/owners/online-orders?${params}`);
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       if (!res.ok) throw new Error("Failed to load orders");
 
       const data = await res.json();
@@ -436,7 +436,7 @@ export default function AdminOnlineOrdersPage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
-              href="/owners/orders"
+              href="/admin/orders"
               className="h-9 w-9 rounded-full flex items-center justify-center border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/40 shrink-0"
               title="Back to orders"
             >

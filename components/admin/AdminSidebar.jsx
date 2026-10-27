@@ -771,7 +771,7 @@ export default function AdminSidebar() {
     if (!confirm(t?.logoutConfirm ?? "Log out?")) return;
     await fetch("/api/auth/logout", { method: "POST" });
     localStorage.removeItem("auth_token");
-    router.push("/login");
+    router.push("/hotel/login");
     router.refresh();
   }
 

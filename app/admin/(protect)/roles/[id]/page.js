@@ -28,7 +28,7 @@ export default function RoleDetailPage() {
         fetchWithAuth(`/api/permissions`),
       ]);
       if (roleRes.status === 401 || permRes.status === 401) {
-        return router.push("/login");
+        return router.push("/hotel/login");
       }
       if (!roleRes.ok) throw new Error("Failed to load role");
       if (!permRes.ok) throw new Error("Failed to load permissions");

@@ -98,7 +98,7 @@ export default function HotelsListPage() {
         params.set("verification", verificationFilter);
       const res = await fetchWithAuth(`/api/hotels?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.hotels.errorLoad);
       }
       const data = await res.json();

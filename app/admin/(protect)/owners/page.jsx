@@ -20,7 +20,7 @@ export default function OwnersListPage() {
       if (q) params.set("q", q);
       const res = await fetchWithAuth(`/api/owners?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error("Failed to load owners");
       }
       const data = await res.json();

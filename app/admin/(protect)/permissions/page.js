@@ -20,7 +20,7 @@ export default function PermissionsPage() {
     setError("");
     try {
       const res = await fetchWithAuth("/api/permissions");
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       if (!res.ok) throw new Error("Failed to load permissions");
       const data = await res.json();
       setGrouped(data.grouped || {});

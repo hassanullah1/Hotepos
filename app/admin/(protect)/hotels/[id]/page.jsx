@@ -85,7 +85,7 @@ export default function HotelDetailPage() {
     try {
       const res = await fetchWithAuth(`/api/hotels/${id}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         if (res.status === 404) return router.push("/admin/hotels");
         throw new Error(t.hotelDetail.error || "Failed to load hotel");
       }

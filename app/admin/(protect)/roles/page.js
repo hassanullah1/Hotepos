@@ -19,7 +19,7 @@ export default function RolesListPage() {
       if (q) params.set("q", q);
       const res = await fetchWithAuth(`/api/roles?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error("Failed to load roles");
       }
       const data = await res.json();

@@ -42,9 +42,23 @@ const emptyBranchForm = {
   tax_rate: 0,
   service_charge_rate: 0,
   status: "active",
+  opening_time: "", // "HH:mm"
+  closing_time: "", // "HH:mm"
 };
 
 type Province = { id: string; name: string };
+
+/** "HH:mm" ← Date / "HH:mm:ss" / null  (Prisma @db.Time returns Date at 1970-01-01) */
+function toHHmm(v: unknown): string {
+  if (!v) return "";
+  if (v instanceof Date) {
+    return `${String(v.getUTCHours()).padStart(2, "0")}:${String(
+      v.getUTCMinutes(),
+    ).padStart(2, "0")}`;
+  }
+  if (typeof v === "string") return v.slice(0, 5);
+  return "";
+}
 
 export default function OwnerBranchesPage() {
   const router = useRouter();
@@ -144,6 +158,8 @@ export default function OwnerBranchesPage() {
       tax_rate: branch.tax_rate ?? 0,
       service_charge_rate: branch.service_charge_rate ?? 0,
       status: branch.status || "active",
+      opening_time: toHHmm(branch.opening_time),
+      closing_time: toHHmm(branch.closing_time),
     });
     setFormError("");
     setModalOpen(true);
@@ -163,6 +179,18 @@ export default function OwnerBranchesPage() {
       setFormError(
         (t.branches.fields as any).provinceRequired ||
           "Please select a province.",
+      );
+      return;
+    }
+
+    if (
+      form.opening_time &&
+      form.closing_time &&
+      form.opening_time === form.closing_time
+    ) {
+      setFormError(
+        (t.branches.fields as any).sameTimeError ||
+          "Opening and closing time cannot be identical.",
       );
       return;
     }
@@ -302,7 +330,7 @@ export default function OwnerBranchesPage() {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#0F1C2E]">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1000px] border-collapse">
+            <table className="w-full min-w-[1100px] border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
                   <th className={thClass}>{t.branches.fields.name}</th>
@@ -317,6 +345,9 @@ export default function OwnerBranchesPage() {
                     {t.branches.fields.serviceChargeRate}
                   </th>
                   <th className={thClass}>{t.branches.fields.timezone}</th>
+                  <th className={thClass}>
+                    {(t.branches.fields as any).hours || "Hours"}
+                  </th>
                   <th className={thClass}>{t.branches.fields.status}</th>
                   <th className={thClass}>Location</th>
                   <th className={`${thClass} text-right`}>
@@ -328,6 +359,8 @@ export default function OwnerBranchesPage() {
                 {branches.map((b: any) => {
                   const pName =
                     b.provinces?.name || provinceName(b.province_id);
+                  const openHm = toHHmm(b.opening_time);
+                  const closeHm = toHHmm(b.closing_time);
                   return (
                     <tr
                       key={b.id}
@@ -423,6 +456,24 @@ export default function OwnerBranchesPage() {
                         {b.timezone ? (
                           <span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                             <Clock size={12} /> {b.timezone}
+                          </span>
+                        ) : (
+                          <span className="text-slate-300 dark:text-slate-600">
+                            —
+                          </span>
+                        )}
+                      </td>
+                      <td className={tdClass}>
+                        {openHm && closeHm ? (
+                          <span
+                            className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300"
+                            dir="ltr"
+                          >
+                            <Clock
+                              size={12}
+                              className="text-teal-700 dark:text-teal-500"
+                            />
+                            {openHm} – {closeHm}
                           </span>
                         ) : (
                           <span className="text-slate-300 dark:text-slate-600">
@@ -715,6 +766,42 @@ function BranchModal({
                 className={inputClass}
               />
             </div>
+
+            {/* ---- NEW: opening / closing time ---- */}
+            <div>
+              <label className={labelClass}>
+                {(f as any).openingTime || "Opens at"}
+              </label>
+              <input
+                type="time"
+                value={form.opening_time}
+                onChange={(e) =>
+                  setForm((v: any) => ({
+                    ...v,
+                    opening_time: e.target.value,
+                  }))
+                }
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>
+                {(f as any).closingTime || "Closes at"}
+              </label>
+              <input
+                type="time"
+                value={form.closing_time}
+                onChange={(e) =>
+                  setForm((v: any) => ({
+                    ...v,
+                    closing_time: e.target.value,
+                  }))
+                }
+                className={inputClass}
+              />
+            </div>
+            {/* ---- /NEW ---- */}
+
             <div>
               <label className={labelClass}>{f.taxRate}</label>
               <input

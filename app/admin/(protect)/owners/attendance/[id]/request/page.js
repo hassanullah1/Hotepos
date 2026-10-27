@@ -32,7 +32,7 @@ export default function RequestLeavePage({ params }) {
           body: JSON.stringify(form),
         },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit request");
       router.push(`/admin/owners/attendance/${id}`);

@@ -194,7 +194,7 @@ export default function RenewPage() {
         fetchWithAuth("/api/renew/info"),
       ]);
       if (plansRes.status === 401 || infoRes.status === 401) {
-        return router.push("/login");
+        return router.push("/hotel/login");
       }
 
       const plansData = await plansRes.json();

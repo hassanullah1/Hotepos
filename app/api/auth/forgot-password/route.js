@@ -53,7 +53,7 @@ export async function POST(request) {
   });
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ;
-  const link = `${baseUrl}/reset-password?token=${token}`;
+  const link = `${baseUrl}/hotel/reset-password?token=${token}`;
 
   try {
     await sendPasswordResetEmail({

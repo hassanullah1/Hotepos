@@ -67,7 +67,7 @@ export default function TakeTodayAttendancePage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -84,7 +84,7 @@ export default function TakeTodayAttendancePage() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendanceToday.errors.loadHotels);
       }
       const data = await res.json();
@@ -105,7 +105,7 @@ export default function TakeTodayAttendancePage() {
     try {
       const res = await fetchWithAuth(`/api/branches?hotel_id=${hotelId}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendanceToday.errors.loadBranches);
       }
       const data = await res.json();
@@ -155,7 +155,7 @@ export default function TakeTodayAttendancePage() {
         `/api/owners/attendance/today?${params.toString()}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendanceToday.errors.loadStaff);
       }
       const data = await res.json();
@@ -239,7 +239,7 @@ export default function TakeTodayAttendancePage() {
         method: "POST",
         body: JSON.stringify({ records }),
       });
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.error || t.attendanceToday.errors.saveAttendance);

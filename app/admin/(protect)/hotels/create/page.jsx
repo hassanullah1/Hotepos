@@ -311,7 +311,7 @@ export default function CreateHotelPage() {
       });
 
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || t.createHotel.errors.createFailed);
       }

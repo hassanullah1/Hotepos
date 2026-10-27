@@ -24,7 +24,7 @@ export default function OwnerDetailPage() {
     try {
       const res = await fetchWithAuth(`/api/owners/${id}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         if (res.status === 404) return router.push("/admin/owners");
         throw new Error("Failed to load owner");
       }

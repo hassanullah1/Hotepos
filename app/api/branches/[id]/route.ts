@@ -26,6 +26,29 @@ function parseLng(v: unknown): number | null | undefined {
   return Number(n.toFixed(7));
 }
 
+class InvalidTimeError extends Error {}
+
+/**
+ * "HH:mm" | "HH:mm:ss" | "" | null  →  Date at 1970-01-01 UTC (for @db.Time(6))
+ * Throws InvalidTimeError for anything else.
+ */
+function parseTime(v: unknown): Date | null {
+  if (v === null || v === undefined || v === "") return null;
+  if (typeof v !== "string")
+    throw new InvalidTimeError("Time must be a string");
+  const m = v.match(/^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/);
+  if (!m) throw new InvalidTimeError("Expected HH:mm");
+  return new Date(`1970-01-01T${m[1]}:${m[2]}:${m[3] ?? "00"}Z`);
+}
+
+/** Date at 1970-01-01 UTC  →  "HH:mm" | null */
+function formatTime(v: Date | null | undefined): string | null {
+  if (!v) return null;
+  return `${String(v.getUTCHours()).padStart(2, "0")}:${String(
+    v.getUTCMinutes(),
+  ).padStart(2, "0")}`;
+}
+
 async function assertBranchInScope(branchId: string, userId: string) {
   const hotelId = await getOwnerHotelId(userId);
   if (!hotelId) return null;
@@ -110,6 +133,28 @@ export async function PATCH(
         ? body.status.trim()
         : "active";
 
+  // ---- Time fields (only if provided) ----
+  if (body.opening_time !== undefined) {
+    try {
+      data.opening_time = parseTime(body.opening_time);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid opening_time, expected HH:mm" },
+        { status: 400 },
+      );
+    }
+  }
+  if (body.closing_time !== undefined) {
+    try {
+      data.closing_time = parseTime(body.closing_time);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid closing_time, expected HH:mm" },
+        { status: 400 },
+      );
+    }
+  }
+
   // ---- Province (required if provided) ----
   if (body.province_id !== undefined) {
     const pid =
@@ -160,6 +205,8 @@ export async function PATCH(
         ...updated,
         latitude: num(updated.latitude),
         longitude: num(updated.longitude),
+        opening_time: formatTime(updated.opening_time),
+        closing_time: formatTime(updated.closing_time),
       },
     });
   } catch (err) {

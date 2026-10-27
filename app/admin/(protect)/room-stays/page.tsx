@@ -61,7 +61,7 @@ export default function RoomStaysPage() {
 
   function handle401(res) {
     if (res.status === 401) {
-      router.push("/login");
+      router.push("/hotel/login");
       return true;
     }
     return false;
@@ -73,7 +73,7 @@ export default function RoomStaysPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common?.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -171,7 +171,7 @@ export default function RoomStaysPage() {
       ]);
 
       if (rRes.status === 401 || sRes.status === 401)
-        return router.push("/login");
+        return router.push("/hotel/login");
 
       if (!rRes.ok) throw new Error("Failed to load rooms");
       if (!sRes.ok) throw new Error("Failed to load stays");

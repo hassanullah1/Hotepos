@@ -48,7 +48,7 @@ export default function AttendancePage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -65,7 +65,7 @@ export default function AttendancePage() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendance.errors.loadHotels);
       }
       const data = await res.json();
@@ -86,7 +86,7 @@ export default function AttendancePage() {
     try {
       const res = await fetchWithAuth(`/api/branches?hotel_id=${hotelId}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendance.errors.loadBranches);
       }
       const data = await res.json();
@@ -136,7 +136,7 @@ export default function AttendancePage() {
         `/api/owners/attendance?${params.toString()}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.attendance.errors.loadAttendance);
       }
       const data = await res.json();

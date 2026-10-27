@@ -35,7 +35,7 @@ export default function TutorialsAdminPage() {
       if (langFilter) params.set("lang", langFilter);
       const res = await fetchWithAuth(`/api/admin/learn?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error("Failed to load tutorials");
       }
       const data = await res.json();

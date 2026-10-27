@@ -58,7 +58,7 @@ export default function PlansListPage() {
         `/api/subscription-plans?${params.toString()}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(
           getText("plansList.errors.loadFailed", "Failed to load plans"),
         );
@@ -90,7 +90,7 @@ export default function PlansListPage() {
         method: "DELETE",
       });
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(
           getText("plansList.errors.deleteFailed", "Failed to delete plan"),
         );

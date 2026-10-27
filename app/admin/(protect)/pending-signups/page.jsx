@@ -28,7 +28,7 @@ export default function PendingSignupsPage() {
         `/api/admin/pending-signups?status=${status}`,
       );
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error("Failed to load signups");
       }
       const data = await res.json();

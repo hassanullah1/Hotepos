@@ -205,7 +205,7 @@ export default function ForgotPasswordPage() {
               </p>
 
               <Link
-                href="/login"
+                href="/hotel/login"
                 className="group mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#C9A227] to-[#A9821E] px-4 py-2.5 text-sm font-semibold text-[#1D1707] shadow-md shadow-[#C9A227]/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#C9A227]/30 active:translate-y-0 active:scale-[0.98]"
               >
                 <BackArrow
@@ -285,7 +285,7 @@ export default function ForgotPasswordPage() {
                 </button>
 
                 <Link
-                  href="/login"
+                  href="/hotel/login"
                   className="flex items-center justify-center gap-1.5 text-xs text-[#9691A6] underline-offset-2 transition-colors hover:text-[#C9A227] hover:underline"
                 >
                   <BackArrow size={12} />

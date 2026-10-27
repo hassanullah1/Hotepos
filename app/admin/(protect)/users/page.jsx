@@ -32,7 +32,7 @@ export default function UsersPage() {
 
         if (!usersRes.ok || !rolesRes.ok) {
           if (usersRes.status === 401 || rolesRes.status === 401) {
-            router.push("/login");
+            router.push("/hotel/login");
             return;
           }
           throw new Error(t.users.loadError);
@@ -62,7 +62,7 @@ export default function UsersPage() {
 
       if (!res.ok) {
         if (res.status === 401) {
-          router.push("/login");
+          router.push("/hotel/login");
           return;
         }
         const data = await res.json().catch(() => ({}));
@@ -87,7 +87,7 @@ export default function UsersPage() {
       });
       if (!res.ok) {
         if (res.status === 401) {
-          router.push("/login");
+          router.push("/hotel/login");
           return;
         }
         const data = await res.json().catch(() => ({}));
@@ -111,7 +111,7 @@ export default function UsersPage() {
       });
       if (!res.ok) {
         if (res.status === 401) {
-          router.push("/login");
+          router.push("/hotel/login");
           return;
         }
         const data = await res.json().catch(() => ({}));

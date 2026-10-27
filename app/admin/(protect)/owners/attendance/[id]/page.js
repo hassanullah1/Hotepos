@@ -165,7 +165,7 @@ export default function StaffAttendancePage({ params }) {
       const res = await fetchWithAuth(
         `/api/owners/staff/${id}/attendance?month=${month}`,
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.error || t.staffAttendance.errors.loadFailed);
@@ -209,7 +209,7 @@ export default function StaffAttendancePage({ params }) {
         method: "POST",
         body: JSON.stringify({ date: selectedDate, status }),
       });
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.error || t.staffAttendance.errors.markFailed);
@@ -232,7 +232,7 @@ export default function StaffAttendancePage({ params }) {
           body: JSON.stringify({ status }),
         },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.error || t.staffAttendance.errors.updateFailed);

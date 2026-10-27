@@ -112,7 +112,7 @@ export default function StaffPage() {
       try {
         const res = await fetchWithAuth("/api/auth/me");
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
         const data = await res.json();
@@ -129,7 +129,7 @@ export default function StaffPage() {
     try {
       const res = await fetchWithAuth("/api/roles");
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error("Failed to load roles");
       }
       const data = await res.json();
@@ -144,7 +144,7 @@ export default function StaffPage() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.staff.loadHotelsError);
       }
       const data = await res.json();
@@ -165,7 +165,7 @@ export default function StaffPage() {
     try {
       const res = await fetchWithAuth(`/api/branches?hotel_id=${hotelId}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.staff.loadBranchesError);
       }
       const data = await res.json();
@@ -211,7 +211,7 @@ export default function StaffPage() {
 
       const res = await fetchWithAuth(`/api/owners/staff?${params.toString()}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         throw new Error(t.staff.loadStaffError);
       }
       const data = await res.json();
@@ -397,7 +397,7 @@ export default function StaffPage() {
         method: isEdit ? "PATCH" : "POST",
         body: JSON.stringify(payload),
       });
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || t.staff.saveError);
@@ -418,7 +418,7 @@ export default function StaffPage() {
       const res = await fetchWithAuth(`/api/owners/staff/${s.id}`, {
         method: "DELETE",
       });
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const data = await res.json();
       if (!res.ok) return alert(data.error || t.staff.deleteError);
       loadStaff();
@@ -434,7 +434,7 @@ export default function StaffPage() {
         method: "PATCH",
         body: JSON.stringify({ role_id: newRoleId }),
       });
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || t.staff.saveError);
@@ -452,7 +452,7 @@ export default function StaffPage() {
         method: "PATCH",
         body: JSON.stringify({ is_active: !currentStatus }),
       });
-      if (res.status === 401) return router.push("/login");
+      if (res.status === 401) return router.push("/hotel/login");
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || t.staff.saveError);

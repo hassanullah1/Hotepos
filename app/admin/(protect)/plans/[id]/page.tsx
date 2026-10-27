@@ -73,7 +73,7 @@ export default function PlanDetailPage() {
     try {
       const res = await fetchWithAuth(`/api/subscription-plans/${id}`);
       if (!res.ok) {
-        if (res.status === 401) return router.push("/login");
+        if (res.status === 401) return router.push("/hotel/login");
         if (res.status === 404) return router.push("/admin/plans");
         throw new Error(t.planDetail.errors.loadFailed);
       }

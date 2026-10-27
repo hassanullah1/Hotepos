@@ -43,7 +43,7 @@ export default function CreateUserPage() {
     async function load() {
       try {
         const rolesRes = await fetchWithAuth("/api/roles");
-        if (rolesRes.status === 401) return router.push("/login");
+        if (rolesRes.status === 401) return router.push("/hotel/login");
         if (!rolesRes.ok) throw new Error(t.users.loadError);
         const rolesData = await rolesRes.json();
         setRoles(rolesData.roles || []);

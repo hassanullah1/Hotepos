@@ -68,7 +68,7 @@ export default function BranchPayrollPage({ params }) {
       const res = await fetchWithAuth(
         `/api/owners/branches/${id}/payroll-runs`,
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setRuns(body.runs);
@@ -97,7 +97,7 @@ export default function BranchPayrollPage({ params }) {
           body: JSON.stringify(form),
         },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       if (body.skipped?.length) {
@@ -292,7 +292,7 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
       const res = await fetchWithAuth(
         `/api/owners/branches/${branchId}/payroll-runs/${runId}`,
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setRun(body.run);
@@ -315,7 +315,7 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         `/api/owners/branches/${branchId}/payroll-runs/${runId}`,
         { method: "PATCH", body: JSON.stringify({ status }) },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       setRun(body.run);
@@ -335,7 +335,7 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         `/api/owners/staff/${payslip.user.id}/payslips/${payslip.id}`,
         { method: "PATCH", body: JSON.stringify({ status: "paid" }) },
       );
-      if (res.status === 401) return router.push("/owner/login");
+      if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
       if (!res.ok) throw new Error(errText(t, body.error));
       load();

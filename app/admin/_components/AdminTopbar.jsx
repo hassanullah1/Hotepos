@@ -16,7 +16,7 @@ export default function AdminTopbar({ isDark, toggleTheme, currentUser }) {
    if (!confirm(t?.logoutConfirm ?? "Log out?")) return;
    await fetch("/api/auth/logout", { method: "POST" });
    localStorage.removeItem("auth_token"); // cleanup
-   router.push("/login");
+   router.push("/hotel/login");
    router.refresh();
  }
 

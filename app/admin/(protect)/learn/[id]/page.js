@@ -34,7 +34,7 @@ export default function EditTutorialPage() {
       try {
         const res = await fetchWithAuth(`/api/admin/learn?lang=`);
         if (!res.ok) {
-          if (res.status === 401) return router.push("/login");
+          if (res.status === 401) return router.push("/hotel/login");
           throw new Error("Could not load tutorial");
         }
         const data = await res.json();

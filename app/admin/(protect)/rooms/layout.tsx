@@ -7,7 +7,7 @@ const ALLOWED_ROLES = ["hotel_owner", "branch_manager"];
 /**
  * Server-side guard for every /admin/rooms/* page.
  * Blocks access when:
- *   - not logged in                    → /login
+ *   - not logged in                    → /hotel/login
  *   - role isn't hotel_owner/manager   → /admin
  *   - user has no hotel in scope       → /admin
  *   - the hotel's plan has is_rooms=false → /admin
@@ -22,7 +22,7 @@ export default async function RoomsLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUserFromCookies();
-  if (!user) redirect("/login");
+  if (!user) redirect("/hotel/login");
 
   const roleName = user.roles?.name ?? null;
 

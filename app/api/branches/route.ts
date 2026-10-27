@@ -26,6 +26,29 @@ function parseLng(v: unknown): number | null | undefined {
   return Number(n.toFixed(7));
 }
 
+class InvalidTimeError extends Error {}
+
+/**
+ * "HH:mm" | "HH:mm:ss" | "" | null  →  Date at 1970-01-01 UTC (for @db.Time(6))
+ * Throws InvalidTimeError for anything else.
+ */
+function parseTime(v: unknown): Date | null {
+  if (v === null || v === undefined || v === "") return null;
+  if (typeof v !== "string")
+    throw new InvalidTimeError("Time must be a string");
+  const m = v.match(/^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/);
+  if (!m) throw new InvalidTimeError("Expected HH:mm");
+  return new Date(`1970-01-01T${m[1]}:${m[2]}:${m[3] ?? "00"}Z`);
+}
+
+/** Date at 1970-01-01 UTC  →  "HH:mm" | null */
+function formatTime(v: Date | null | undefined): string | null {
+  if (!v) return null;
+  return `${String(v.getUTCHours()).padStart(2, "0")}:${String(
+    v.getUTCMinutes(),
+  ).padStart(2, "0")}`;
+}
+
 export async function GET(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
@@ -53,6 +76,8 @@ export async function GET(request: Request) {
       tax_rate: true,
       service_charge_rate: true,
       status: true,
+      opening_time: true,
+      closing_time: true,
     },
     orderBy: { name: "asc" },
   });
@@ -64,6 +89,8 @@ export async function GET(request: Request) {
       longitude: num(b.longitude),
       tax_rate: num(b.tax_rate),
       service_charge_rate: num(b.service_charge_rate),
+      opening_time: formatTime(b.opening_time),
+      closing_time: formatTime(b.closing_time),
     })),
   });
 }
@@ -116,6 +143,19 @@ export async function POST(request: Request) {
       { status: 400 },
     );
 
+  // ---- Parse time fields ----
+  let opening_time: Date | null = null;
+  let closing_time: Date | null = null;
+  try {
+    opening_time = parseTime(body.opening_time);
+    closing_time = parseTime(body.closing_time);
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid opening_time or closing_time, expected HH:mm" },
+      { status: 400 },
+    );
+  }
+
   try {
     const created = await prisma.branches.create({
       data: {
@@ -161,6 +201,8 @@ export async function POST(request: Request) {
           typeof body.status === "string" && body.status.trim()
             ? body.status.trim()
             : "active",
+        opening_time,
+        closing_time,
       },
       include: { provinces: { select: { id: true, name: true } } },
     });
@@ -171,6 +213,8 @@ export async function POST(request: Request) {
           ...created,
           latitude: num(created.latitude),
           longitude: num(created.longitude),
+          opening_time: formatTime(created.opening_time),
+          closing_time: formatTime(created.closing_time),
         },
       },
       { status: 201 },

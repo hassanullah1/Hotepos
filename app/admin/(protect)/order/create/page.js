@@ -106,7 +106,7 @@ export default function WaiterPOSPage() {
 
   function handle401(res) {
     if (res.status === 401) {
-      router.push("/login");
+      router.push("/hotel/login");
       return true;
     }
     return false;
