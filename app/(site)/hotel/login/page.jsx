@@ -1,7 +1,7 @@
 // app/login/page.js
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useId, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -14,6 +14,9 @@ import {
   ShieldCheck,
   BedDouble,
   BellRing,
+  CalendarDays,
+  Settings,
+  Wallet,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -46,6 +49,7 @@ const loginText = {
     heroPerk3: "Secure admin access",
     heroChip1: "Occupied today",
     heroChip2: "New booking just now",
+    popupTitle: "Manage your hotel with Melmah",
   },
   ps: {
     dir: "rtl",
@@ -71,6 +75,7 @@ const loginText = {
     heroPerk3: "خوندي د اډمین لاسرسی",
     heroChip1: "نن ونیول شوي",
     heroChip2: "همدا اوس نوی بکنګ",
+    popupTitle: "د ملمه سره خپل هوټل اداره کړئ",
   },
   prs: {
     dir: "rtl",
@@ -96,1419 +101,1420 @@ const loginText = {
     heroPerk3: "دسترسی امن ادمین",
     heroChip1: "اشغال امروز",
     heroChip2: "رزرو جدید همین حالا",
+    popupTitle: "هتل خود را با ملمه مدیریت کنید",
   },
 };
 
 const THEME_KEY = "kohistan-admin-theme";
 
 /* ------------------------------------------------------------------ */
-/* Overhead reception desk: guest ledger, bell, key, tablet, coffee    */
+/* Laptop: a cursor clicks the Melmah icon, the dashboard opens once   */
 /* ------------------------------------------------------------------ */
-function AdminArt() {
+function AdminArt({ t }) {
+  const uid = useId().replace(/:/g, "");
+  const u = (n) => `${n}cqw`;
+
+  // Replay the whole story every CYCLE ms (remounting restarts the CSS timeline).
+  const [cycle, setCycle] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setCycle((c) => c + 1), 17000);
+    return () => clearInterval(id);
+  }, []);
+
+  const bars = [45, 62, 38, 75, 58, 88, 70];
+  const days = ["M", "T", "W", "T", "F", "S", "S"];
+  const cells = Array.from({ length: 24 }).map((_, i) => i);
+  const occupied = new Set([1, 4, 5, 8, 10, 13, 16, 18, 21]);
+  const kpis = [
+    { Icon: BedDouble, value: "87%", delta: "+4%" },
+    { Icon: Users, value: "24", delta: "+2" },
+    { Icon: BellRing, value: "3", delta: "" },
+    { Icon: Wallet, value: "4.2k", delta: "+9%" },
+  ];
+  const nav = [LayoutDashboard, BedDouble, CalendarDays, Users, Settings];
+  const bookings = [
+    { n: "Ahmad Karimi", r: "207", c: "#4ADE80", i: "AK" },
+    { n: "Sara Noori", r: "112", c: "#E0B93A", i: "SN" },
+    { n: "Omar Wali", r: "305", c: "#60A5FA", i: "OW" },
+  ];
+  const card = {
+    background: "rgba(255,255,255,0.045)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: u(1),
+  };
+  const winBtn = { width: u(4.2), height: u(3), position: "relative" };
+
   return (
-    <svg
-      viewBox="0 0 560 460"
-      className="h-auto w-full"
-      fill="none"
+    <div
+      className="relative w-full"
+      style={{ containerType: "inline-size" }}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="ad-pad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7E553A" />
-          <stop offset="1" stopColor="#47301F" />
-        </linearGradient>
-        <radialGradient id="ad-padhi" cx="35%" cy="25%" r="70%">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="ad-paper" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FCF8EE" />
-          <stop offset="1" stopColor="#EBE2CA" />
-        </linearGradient>
-        <linearGradient id="ad-spine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#000" stopOpacity="0" />
-          <stop offset="0.5" stopColor="#000" stopOpacity="0.32" />
-          <stop offset="1" stopColor="#000" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="ad-brass" cx="35%" cy="30%" r="80%">
-          <stop offset="0" stopColor="#FFF3BC" />
-          <stop offset="0.45" stopColor="#E0B93A" />
-          <stop offset="1" stopColor="#8A6310" />
-        </radialGradient>
-        <linearGradient id="ad-brass2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#E7C65A" />
-          <stop offset="1" stopColor="#6B4E0C" />
-        </linearGradient>
-        <linearGradient id="ad-redtag" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#C2382F" />
-          <stop offset="1" stopColor="#7A1B18" />
-        </linearGradient>
-        <linearGradient id="ad-card" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#332D44" />
-          <stop offset="1" stopColor="#15121C" />
-        </linearGradient>
-        <linearGradient id="ad-chip" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#F4D77A" />
-          <stop offset="1" stopColor="#B8891A" />
-        </linearGradient>
-        <linearGradient id="ad-screen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#1D2438" />
-          <stop offset="1" stopColor="#0E1220" />
-        </linearGradient>
-        <radialGradient id="ad-cup" cx="40%" cy="35%" r="75%">
-          <stop offset="0" stopColor="#fff" />
-          <stop offset="1" stopColor="#D5CDBB" />
-        </radialGradient>
-        <radialGradient id="ad-coffee" cx="40%" cy="35%" r="80%">
-          <stop offset="0" stopColor="#8A5230" />
-          <stop offset="1" stopColor="#2B1508" />
-        </radialGradient>
-        <linearGradient id="ad-leaf" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#5DAE45" />
-          <stop offset="1" stopColor="#245F20" />
-        </linearGradient>
-        <linearGradient id="ad-pen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3B4A7A" />
-          <stop offset="1" stopColor="#141B38" />
-        </linearGradient>
-        <radialGradient id="ad-steam">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        <clipPath id="ad-cardclip">
-          <rect x="-48" y="-30" width="96" height="60" rx="7" />
-        </clipPath>
-        <filter id="ad-blur" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="8" />
-        </filter>
-      </defs>
-      <circle
-        className="ad-ring"
-        cx="280"
-        cy="230"
-        r="212"
-        stroke="#E0B93A"
-        strokeOpacity="0.35"
-        strokeWidth="1.4"
-        strokeDasharray="3 10"
-        strokeLinecap="round"
-      />
-      <circle
-        className="ad-ring ad-ring-rev"
-        cx="280"
-        cy="230"
-        r="226"
-        stroke="#E0B93A"
-        strokeOpacity="0.22"
-        strokeWidth="1"
-        strokeDasharray="14 18"
-      />
-      <rect
-        x="38"
-        y="44"
-        width="500"
-        height="400"
-        rx="24"
-        fill="#000"
-        opacity="0.4"
-        filter="url(#ad-blur)"
-      />
-      <rect
-        x="30"
-        y="30"
-        width="500"
-        height="400"
-        rx="22"
-        fill="url(#ad-pad)"
-      />
-      <rect
-        x="30"
-        y="30"
-        width="500"
-        height="400"
-        rx="22"
-        fill="url(#ad-padhi)"
-      />
-      <rect
-        x="40"
-        y="40"
-        width="480"
-        height="380"
-        rx="16"
+      <svg
+        viewBox="0 0 560 400"
+        className="block h-auto w-full"
         fill="none"
-        stroke="#E0B93A"
-        strokeOpacity="0.55"
-        strokeWidth="1.2"
-        strokeDasharray="5 5"
-      />
-      <rect
-        x="94"
-        y="72"
-        width="292"
-        height="222"
-        rx="8"
-        fill="#000"
-        opacity="0.4"
-        filter="url(#ad-blur)"
-      />
-      <rect x="86" y="56" width="288" height="218" rx="8" fill="#2B1F18" />
-      <rect
-        x="92"
-        y="62"
-        width="138"
-        height="206"
-        rx="3"
-        fill="url(#ad-paper)"
-      />
-      <rect
-        x="230"
-        y="62"
-        width="138"
-        height="206"
-        rx="3"
-        fill="url(#ad-paper)"
-      />
-      <rect x="206" y="62" width="48" height="206" fill="url(#ad-spine)" />
-      <path
-        d="M96 94H226M234 94H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 108H226M234 108H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 122H226M234 122H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 136H226M234 136H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 150H226M234 150H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 164H226M234 164H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 178H226M234 178H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 192H226M234 192H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 206H226M234 206H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 220H226M234 220H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 234H226M234 234H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M96 248H226M234 248H364"
-        stroke="#9DB4D6"
-        strokeOpacity="0.5"
-        strokeWidth="0.6"
-      />
-      <path
-        d="M133 76V262M186 76V262M271 76V262M324 76V262"
-        stroke="#C9788A"
-        strokeOpacity="0.45"
-        strokeWidth="0.7"
-      />
-      <rect
-        x="100"
-        y="79"
-        width="22"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <rect
-        x="140"
-        y="79"
-        width="30"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <rect
-        x="194"
-        y="79"
-        width="24"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <rect
-        x="238"
-        y="79"
-        width="22"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <rect
-        x="278"
-        y="79"
-        width="30"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <rect
-        x="332"
-        y="79"
-        width="22"
-        height="4"
-        rx="2"
-        fill="#6E687A"
-        opacity="0.7"
-      />
-      <path
-        d="M100.0 105.0q2.5 -5.1 5.0 0q2.5 3.8 5.0 0q2.5 -4.0 5.0 0q2.5 3.4 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 105.0q2.5 -6.0 5.0 0q2.5 2.5 5.0 0q2.5 -5.2 5.0 0q2.5 3.4 5.0 0q2.5 -4.7 5.0 0q2.5 4.1 5.0 0q2.5 -4.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 105.0q2.5 -6.1 5.0 0q2.5 3.4 5.0 0q2.5 -4.1 5.0 0q2.5 2.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 119.0q2.5 -3.3 5.0 0q2.5 3.3 5.0 0q2.5 -5.4 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 119.0q2.5 -5.8 5.0 0q2.5 4.0 5.0 0q2.5 -4.9 5.0 0q2.5 3.5 5.0 0q2.5 -3.5 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 119.0q2.5 -6.2 5.0 0q2.5 2.7 5.0 0q2.5 -3.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 133.0q2.5 -5.5 5.0 0q2.5 2.3 5.0 0q2.5 -4.1 5.0 0q2.5 2.6 5.0 0q2.5 -4.0 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 133.0q2.5 -4.8 5.0 0q2.5 2.7 5.0 0q2.5 -4.3 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 133.0q2.5 -3.5 5.0 0q2.5 2.1 5.0 0q2.5 -5.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 147.0q2.5 -4.9 5.0 0q2.5 2.3 5.0 0q2.5 -3.6 5.0 0q2.5 2.3 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 147.0q2.5 -3.3 5.0 0q2.5 2.7 5.0 0q2.5 -3.8 5.0 0q2.5 2.5 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 147.0q2.5 -4.5 5.0 0q2.5 3.1 5.0 0q2.5 -4.2 5.0 0q2.5 3.2 5.0 0q2.5 -5.6 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 161.0q2.5 -3.3 5.0 0q2.5 3.1 5.0 0q2.5 -4.3 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 161.0q2.5 -3.5 5.0 0q2.5 3.9 5.0 0q2.5 -3.2 5.0 0q2.5 3.2 5.0 0q2.5 -4.5 5.0 0q2.5 2.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 161.0q2.5 -5.3 5.0 0q2.5 2.4 5.0 0q2.5 -4.7 5.0 0q2.5 3.4 5.0 0q2.5 -3.2 5.0 0q2.5 2.3 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 175.0q2.5 -5.4 5.0 0q2.5 3.0 5.0 0q2.5 -4.4 5.0 0q2.5 3.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 175.0q2.5 -5.9 5.0 0q2.5 4.1 5.0 0q2.5 -4.6 5.0 0q2.5 2.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 175.0q2.5 -5.6 5.0 0q2.5 2.8 5.0 0q2.5 -3.4 5.0 0q2.5 2.5 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 189.0q2.5 -5.1 5.0 0q2.5 2.7 5.0 0q2.5 -5.1 5.0 0q2.5 3.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 189.0q2.5 -5.7 5.0 0q2.5 3.0 5.0 0q2.5 -5.6 5.0 0q2.5 4.0 5.0 0q2.5 -5.8 5.0 0q2.5 3.6 5.0 0q2.5 -5.0 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 189.0q2.5 -5.8 5.0 0q2.5 3.4 5.0 0q2.5 -5.4 5.0 0q2.5 2.6 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 203.0q2.5 -4.0 5.0 0q2.5 3.3 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 203.0q2.5 -3.7 5.0 0q2.5 2.5 5.0 0q2.5 -6.1 5.0 0q2.5 2.2 5.0 0q2.5 -6.0 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 203.0q2.5 -4.9 5.0 0q2.5 4.2 5.0 0q2.5 -5.2 5.0 0q2.5 2.1 5.0 0q2.5 -6.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 217.0q2.5 -6.0 5.0 0q2.5 3.8 5.0 0q2.5 -3.6 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 217.0q2.5 -3.2 5.0 0q2.5 3.7 5.0 0q2.5 -5.6 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 217.0q2.5 -3.5 5.0 0q2.5 2.8 5.0 0q2.5 -5.6 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 231.0q2.5 -5.8 5.0 0q2.5 4.1 5.0 0q2.5 -5.5 5.0 0q2.5 3.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 231.0q2.5 -3.1 5.0 0q2.5 3.9 5.0 0q2.5 -5.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 231.0q2.5 -3.5 5.0 0q2.5 2.8 5.0 0q2.5 -4.2 5.0 0q2.5 3.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M100.0 245.0q2.5 -3.8 5.0 0q2.5 2.3 5.0 0q2.5 -3.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M137.0 245.0q2.5 -3.4 5.0 0q2.5 2.9 5.0 0q2.5 -3.5 5.0 0q2.5 3.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M190.0 245.0q2.5 -4.6 5.0 0q2.5 3.4 5.0 0q2.5 -3.9 5.0 0q2.5 2.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M238.0 105.0q2.5 -4.2 5.0 0q2.5 2.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M275.0 105.0q2.5 -4.1 5.0 0q2.5 3.8 5.0 0q2.5 -3.1 5.0 0q2.5 3.0 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M328.0 105.0q2.5 -4.0 5.0 0q2.5 3.6 5.0 0q2.5 -3.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M238.0 119.0q2.5 -3.6 5.0 0q2.5 4.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M275.0 119.0q2.5 -3.5 5.0 0q2.5 4.1 5.0 0q2.5 -5.1 5.0 0q2.5 4.1 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M328.0 119.0q2.5 -5.6 5.0 0q2.5 2.2 5.0 0q2.5 -3.9 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M238.0 133.0q2.5 -4.7 5.0 0q2.5 3.7 5.0 0q2.5 -4.3 5.0 0q2.5 3.9 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M275.0 133.0q2.5 -5.1 5.0 0q2.5 2.5 5.0 0q2.5 -3.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M328.0 133.0q2.5 -4.5 5.0 0q2.5 3.8 5.0 0q2.5 -4.0 5.0 0q2.5 3.6 5.0 0q2.5 -6.0 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M238.0 147.0q2.5 -3.9 5.0 0q2.5 3.5 5.0 0q2.5 -6.1 5.0 0q2.5 3.7 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M275.0 147.0q2.5 -4.4 5.0 0q2.5 2.3 5.0 0q2.5 -5.5 5.0 0q2.5 2.4 5.0 0q2.5 -3.8 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M328.0 147.0q2.5 -3.6 5.0 0q2.5 2.9 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M238.0 161.0q2.5 -3.7 5.0 0q2.5 3.0 5.0 0q2.5 -5.5 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M275.0 161.0q2.5 -3.5 5.0 0q2.5 3.2 5.0 0q2.5 -5.9 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M328.0 161.0q2.5 -4.9 5.0 0q2.5 2.3 5.0 0q2.5 -5.8 5.0 0q2.5 4.1 5.0 0q2.5 -5.9 5.0 0"
-        stroke="#2B3E7A"
-        strokeWidth="0.9"
-        opacity="0.75"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        className="ad-write"
-        pathLength="100"
-        d="M238 175c4-12 8-12 12 0s8 12 12 0s8-12 12 0s8 12 12 0s8-12 12 0s8 12 12 0s8-12 12 0s8 12 12 0"
-        stroke="#2B3E7A"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M230 62V268"
-        stroke="#000"
-        strokeOpacity="0.25"
-        strokeWidth="1"
-      />
-      <g className="ad-pen">
-        <g transform="rotate(-42 238 175)">
-          <ellipse
-            cx="300"
-            cy="182"
-            rx="62"
-            ry="4"
-            fill="#000"
-            opacity="0.28"
-            filter="url(#ad-blur)"
-          />
-          <rect
-            x="246"
-            y="171.5"
-            width="92"
-            height="7"
-            rx="3.5"
-            fill="url(#ad-pen)"
-          />
-          <path d="M238 175L248 171.5V178.5Z" fill="#E7E2D6" />
-          <rect x="296" y="172.5" width="38" height="2" rx="1" fill="#E0B93A" />
-          <rect x="333" y="171.5" width="6" height="7" rx="2" fill="#E0B93A" />
-        </g>
-      </g>
-      <g className="ad-plant">
-        <ellipse
-          cx="66"
-          cy="78"
-          rx="44"
-          ry="40"
-          fill="#000"
-          opacity="0.28"
-          filter="url(#ad-blur)"
-        />
-        <g transform="rotate(0 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(38 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(81 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(125 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(168 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(200 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(240 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(277 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <g transform="rotate(321 60 70)">
-          <ellipse cx="88" cy="70" rx="30" ry="11" fill="url(#ad-leaf)" />
-          <path d="M62 70H114" stroke="#1F5A1C" strokeWidth="1" opacity="0.5" />
-          <path
-            d="M78 70L90 62M78 70L90 78M92 70L102 64M92 70L102 76"
-            stroke="#1F5A1C"
-            strokeWidth="0.7"
-            opacity="0.4"
-          />
-        </g>
-        <circle cx="60" cy="70" r="12" fill="#B5603B" />
-        <circle cx="60" cy="70" r="8" fill="#6B3A22" />
-      </g>
-      <ellipse
-        cx="462"
-        cy="130"
-        rx="50"
-        ry="48"
-        fill="#000"
-        opacity="0.38"
-        filter="url(#ad-blur)"
-      />
-      <circle
-        className="ad-wave"
-        cx="455"
-        cy="120"
-        r="46"
-        stroke="#E0B93A"
-        strokeWidth="2"
-      />
-      <circle
-        className="ad-wave"
-        style={{ animationDelay: "0.18s" }}
-        cx="455"
-        cy="120"
-        r="46"
-        stroke="#E0B93A"
-        strokeWidth="1.4"
-      />
-      <circle
-        cx="455"
-        cy="120"
-        r="46"
-        fill="url(#ad-brass2)"
-        stroke="#5A400A"
-        strokeWidth="1"
-      />
-      <circle
-        cx="455"
-        cy="120"
-        r="40"
-        fill="none"
-        stroke="#FFF3BC"
-        strokeOpacity="0.45"
-        strokeWidth="1"
-      />
-      <g className="ad-bell">
+        style={{ overflow: "visible" }}
+      >
+        <defs>
+          <linearGradient id={`ad-lid-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#DADDE5" />
+            <stop offset="1" stopColor="#A2A6B3" />
+          </linearGradient>
+          <linearGradient id={`ad-deck-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#C4C8D3" />
+            <stop offset="1" stopColor="#8C909E" />
+          </linearGradient>
+          <linearGradient id={`ad-hinge-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#7E8291" />
+            <stop offset="1" stopColor="#4F5260" />
+          </linearGradient>
+          <linearGradient id={`ad-front-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#9A9EAC" />
+            <stop offset="1" stopColor="#6A6E7C" />
+          </linearGradient>
+          <linearGradient id={`ad-key-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#30333F" />
+            <stop offset="1" stopColor="#1A1C25" />
+          </linearGradient>
+          <linearGradient id={`ad-pad-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#D2D5DE" />
+            <stop offset="1" stopColor="#A8ACB9" />
+          </linearGradient>
+          <filter
+            id={`ad-blur-${uid}`}
+            x="-20%"
+            y="-50%"
+            width="140%"
+            height="200%"
+          >
+            <feGaussianBlur stdDeviation="9" />
+          </filter>
+        </defs>
+
         <circle
-          cx="455"
-          cy="120"
-          r="32"
-          fill="url(#ad-brass)"
-          stroke="#8A6310"
-          strokeWidth="1"
-        />
-        <ellipse
-          cx="444"
-          cy="106"
-          rx="13"
-          ry="7"
-          fill="#fff"
-          opacity="0.5"
-          transform="rotate(-35 444 106)"
-        />
-        <circle
-          cx="455"
-          cy="120"
-          r="8"
-          fill="#B8891A"
-          stroke="#6B4E0C"
-          strokeWidth="1"
-        />
-        <circle cx="453" cy="118" r="3" fill="#FFF3BC" opacity="0.8" />
-      </g>
-      <g className="ad-tag">
-        <ellipse
-          cx="486"
-          cy="322"
-          rx="38"
-          ry="64"
-          fill="#000"
-          opacity="0.3"
-          filter="url(#ad-blur)"
-        />
-        <path
-          d="M486 238L512 200"
-          stroke="url(#ad-brass2)"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M500 214l8 6M506 206l8 6"
-          stroke="#8A6310"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        <circle
-          cx="518"
-          cy="192"
-          r="11"
-          fill="none"
-          stroke="url(#ad-brass2)"
-          strokeWidth="5"
-        />
-        <circle
-          cx="480"
-          cy="244"
-          r="16"
-          fill="none"
-          stroke="#C7C2D2"
-          strokeWidth="3.5"
-        />
-        <circle
-          cx="480"
-          cy="262"
-          r="6"
-          fill="none"
-          stroke="#C7C2D2"
-          strokeWidth="3"
-        />
-        <rect
-          x="452"
-          y="270"
-          width="56"
-          height="94"
-          rx="12"
-          fill="url(#ad-redtag)"
-        />
-        <rect
-          x="457"
-          y="275"
-          width="46"
-          height="84"
-          rx="8"
-          fill="none"
-          stroke="#F4D77A"
-          strokeOpacity="0.55"
-          strokeWidth="1"
-          strokeDasharray="3 3"
-        />
-        <circle cx="480" cy="284" r="4.2" fill="#2B1F18" />
-        <text
-          x="480"
-          y="330"
-          textAnchor="middle"
-          fontSize="22"
-          fontWeight="800"
-          fill="#F4D77A"
-          fontFamily="Georgia, serif"
-        >
-          207
-        </text>
-        <text
-          x="480"
-          y="346"
-          textAnchor="middle"
-          fontSize="7"
-          fontWeight="700"
-          fill="#F4D77A"
-          opacity="0.85"
-          fontFamily="system-ui, sans-serif"
-          letterSpacing="1.4"
-        >
-          SUITE
-        </text>
-      </g>
-      <g transform="translate(-70 0)">
-        <rect
-          x="250"
-          y="316"
-          width="188"
-          height="124"
-          rx="16"
-          fill="#000"
-          opacity="0.4"
-          filter="url(#ad-blur)"
-        />
-        <rect
-          x="240"
-          y="300"
-          width="184"
-          height="116"
-          rx="14"
-          fill="#0B0A10"
-          stroke="#3A3346"
+          className="ad-ring"
+          cx="280"
+          cy="200"
+          r="262"
+          stroke="#E0B93A"
+          strokeOpacity="0.3"
           strokeWidth="1.4"
-        />
-        <rect
-          x="246"
-          y="306"
-          width="172"
-          height="104"
-          rx="9"
-          fill="url(#ad-screen)"
-        />
-        <circle cx="256" cy="317" r="3" fill="#C9A227" />
-        <rect x="264" y="314.5" width="56" height="5" rx="2.5" fill="#655E75" />
-        <circle className="ad-blink" cx="406" cy="317" r="3" fill="#4ADE80" />
-        <rect
-          x="250"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="274"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="298"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="322"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="346"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="370"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="394"
-          y="330"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="250"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="274"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="298"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="322"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          className="ad-pulse"
-          x="346"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#E0B93A"
-        />
-        <rect
-          x="370"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="394"
-          y="348"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="250"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="274"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="298"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="322"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="346"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <rect
-          x="370"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="#C9A227"
-          opacity="0.9"
-        />
-        <rect
-          x="394"
-          y="366"
-          width="16"
-          height="12"
-          rx="3"
-          fill="none"
-          stroke="#3A3346"
-          strokeWidth="1"
-        />
-        <path
-          className="ad-spark"
-          pathLength="100"
-          d="M250 400L268 396L286 401L304 393L322 397L340 390L358 394L376 387L408 392"
-          stroke="#E0B93A"
-          strokeWidth="1.6"
+          strokeDasharray="3 10"
           strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
         />
-      </g>
-      <ellipse
-        cx="88"
-        cy="364"
-        rx="48"
-        ry="46"
-        fill="#000"
-        opacity="0.35"
-        filter="url(#ad-blur)"
-      />
-      <circle
-        cx="80"
-        cy="350"
-        r="44"
-        fill="url(#ad-cup)"
-        stroke="#CFC6B2"
-        strokeWidth="1"
-      />
-      <rect
-        x="104"
-        y="343"
-        width="22"
-        height="14"
-        rx="7"
-        fill="url(#ad-cup)"
-        stroke="#CFC6B2"
-        strokeWidth="1"
-      />
-      <circle
-        cx="80"
-        cy="350"
-        r="31"
-        fill="url(#ad-cup)"
-        stroke="#CFC6B2"
-        strokeWidth="1"
-      />
-      <circle cx="80" cy="350" r="25" fill="url(#ad-coffee)" />
-      <path
-        d="M80 360C68 352 70 342 76 342C79 342 80 345 80 346C80 345 81 342 84 342C90 342 92 352 80 360Z"
-        fill="#F1DDBF"
-        opacity="0.85"
-      />
-      <circle
-        className="ad-ripple"
-        cx="80"
-        cy="350"
-        r="9"
-        stroke="#F1DDBF"
-        strokeWidth="1.2"
-      />
-      <circle
-        className="ad-steam"
-        cx="80"
-        cy="346"
-        r="30"
-        fill="url(#ad-steam)"
-      />
-      <circle
-        className="ad-steam"
-        style={{ animationDelay: "2s" }}
-        cx="86"
-        cy="350"
-        r="26"
-        fill="url(#ad-steam)"
-      />
-      <g transform="translate(412 398) rotate(-10)">
-        <rect
-          x="-44"
-          y="-26"
-          width="96"
-          height="60"
-          rx="7"
+        <circle
+          className="ad-ring ad-ring-rev"
+          cx="280"
+          cy="200"
+          r="282"
+          stroke="#E0B93A"
+          strokeOpacity="0.2"
+          strokeWidth="1"
+          strokeDasharray="14 18"
+        />
+
+        <ellipse
+          cx="280"
+          cy="374"
+          rx="262"
+          ry="14"
           fill="#000"
-          opacity="0.35"
-          filter="url(#ad-blur)"
+          opacity="0.45"
+          filter={`url(#ad-blur-${uid})`}
+        />
+
+        <rect
+          x="60"
+          y="18"
+          width="440"
+          height="278"
+          rx="16"
+          fill={`url(#ad-lid-${uid})`}
         />
         <rect
-          x="-48"
-          y="-30"
-          width="96"
-          height="60"
-          rx="7"
-          fill="url(#ad-card)"
-          stroke="#4A4458"
-          strokeWidth="1"
+          x="60.5"
+          y="18.5"
+          width="439"
+          height="277"
+          rx="15.5"
+          stroke="#fff"
+          strokeOpacity="0.55"
         />
+        <rect x="68" y="26" width="424" height="262" rx="11" fill="#08070C" />
+        <rect x="76" y="36" width="408" height="238" rx="4" fill="#0E1220" />
+        <circle cx="280" cy="31" r="2.2" fill="#1C1C28" />
+        <circle cx="279.4" cy="30.4" r="0.7" fill="#6D7BA8" />
+
         <rect
-          x="-38"
-          y="-14"
-          width="20"
-          height="15"
+          x="130"
+          y="293"
+          width="300"
+          height="8"
           rx="3"
-          fill="url(#ad-chip)"
+          fill={`url(#ad-hinge-${uid})`}
         />
-        <path d="M-28 -14V1M-38 -6.5H-18" stroke="#8A6310" strokeWidth="0.8" />
+        <path d="M58 298H502L532 350H28Z" fill={`url(#ad-deck-${uid})`} />
+        <path d="M58 298H502" stroke="#fff" strokeOpacity="0.6" />
+        <rect
+          x="69.1"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="99.4"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="129.6"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="159.8"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="190.1"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="220.3"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="250.6"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="280.8"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="311.0"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="341.3"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="371.5"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="401.8"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="432.0"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="462.2"
+          y="303.0"
+          width="28.6"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="66.1"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="96.8"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="127.5"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="158.1"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="188.8"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="219.5"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="250.1"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="280.8"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="311.5"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="342.1"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="372.8"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="403.5"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="434.1"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="464.8"
+          y="308.2"
+          width="29.1"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="63.1"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="94.2"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="125.3"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="156.4"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="187.5"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="218.6"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="249.7"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="280.8"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="311.9"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="343.0"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="374.1"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="405.2"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="436.3"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="467.4"
+          y="313.4"
+          width="29.5"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="60.1"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="91.6"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="123.2"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="154.7"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="186.2"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="217.7"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="249.3"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="280.8"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="312.3"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="343.9"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="375.4"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="406.9"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="438.4"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="470.0"
+          y="318.6"
+          width="29.9"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="57.1"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="89.1"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="121.0"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="153.0"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="184.9"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="216.9"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="248.8"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="280.8"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="312.8"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="344.7"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="376.7"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="408.6"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="440.6"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
+        <rect
+          x="472.5"
+          y="323.8"
+          width="30.4"
+          height="4.2"
+          rx="1"
+          fill={`url(#ad-key-${uid})`}
+        />
         <path
-          d="M-8 -6q5 6 0 12M-1 -9q8 9 0 18M6 -12q11 12 0 24"
-          stroke="#E0B93A"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-          fill="none"
+          d="M228 330H332L337 346H223Z"
+          fill={`url(#ad-pad-${uid})`}
+          stroke="#8C909E"
+          strokeWidth="0.8"
+        />
+        <path
+          d="M28 350H532Q536 350 536 354V358Q536 364 528 364H32Q24 364 24 358V354Q24 350 28 350Z"
+          fill={`url(#ad-front-${uid})`}
+        />
+        <rect
+          x="250"
+          y="350"
+          width="60"
+          height="5"
+          rx="2.5"
+          fill="#5A5E6C"
           opacity="0.8"
         />
-        <text
-          x="-38"
-          y="21"
-          fontSize="7"
-          fontWeight="700"
-          fill="#E0B93A"
-          fontFamily="system-ui, sans-serif"
-          letterSpacing="2"
-        >
-          HOTEL
-        </text>
-        <g clipPath="url(#ad-cardclip)">
-          <rect
-            className="ad-shimmer"
-            x="-70"
-            y="-40"
-            width="20"
-            height="80"
-            fill="#fff"
-            opacity="0.2"
-            transform="skewX(-20)"
-          />
-        </g>
-      </g>
-      <g transform="translate(446 108)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "0s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
+      </svg>
+
+      {/* ---------- screen (HTML, scales with the laptop) ---------- */}
+      <div
+        className="absolute overflow-hidden"
+        style={{
+          left: "13.571%",
+          top: "9%",
+          width: "72.857%",
+          height: "59.5%",
+          borderRadius: u(0.7),
+          background: "#0B0E19",
+          fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
+        }}
+      >
+        <div key={cycle} className="absolute inset-0">
+          {/* wallpaper */}
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 100 58"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <linearGradient id={`ad-wp-${uid}`} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#17203A" />
+                <stop offset="1" stopColor="#0A0D18" />
+              </linearGradient>
+              <radialGradient id={`ad-wpg-${uid}`} cx="50%" cy="50%" r="50%">
+                <stop offset="0" stopColor="#F4D77A" stopOpacity="0.9" />
+                <stop offset="0.5" stopColor="#E0B93A" stopOpacity="0.45" />
+                <stop offset="1" stopColor="#E0B93A" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id={`ad-wpw-${uid}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor="#4C6FD8" stopOpacity="0.55" />
+                <stop offset="1" stopColor="#C9A227" stopOpacity="0.55" />
+              </linearGradient>
+            </defs>
+            <rect width="100" height="58" fill={`url(#ad-wp-${uid})`} />
+            <circle cx="70" cy="22" r="26" fill={`url(#ad-wpg-${uid})`} />
+            <path
+              d="M0 40C18 30 34 46 52 38S86 28 100 36V58H0Z"
+              fill={`url(#ad-wpw-${uid})`}
+              opacity="0.55"
+            />
+            <path
+              d="M0 46C20 38 38 52 58 44S90 38 100 44V58H0Z"
+              fill={`url(#ad-wpw-${uid})`}
+              opacity="0.4"
+            />
+          </svg>
+
+          {/* desktop icons */}
+          {[
+            {
+              top: 2.5,
+              label: "Files",
+              bg: "linear-gradient(135deg,#5B8DEF,#3556B8)",
+            },
+            {
+              top: 11.5,
+              label: "Reports",
+              bg: "linear-gradient(135deg,#4ADE80,#1F8F52)",
+            },
+          ].map((ic) => (
+            <div
+              key={ic.label}
+              className="absolute flex flex-col items-center"
+              style={{ left: u(1.6), top: u(ic.top), width: u(8), gap: u(0.5) }}
+            >
+              <div
+                style={{
+                  width: u(5.4),
+                  height: u(5.4),
+                  borderRadius: u(1.2),
+                  background: ic.bg,
+                  boxShadow: "0 0.4cqw 1cqw rgba(0,0,0,0.4)",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: u(1.15),
+                  color: "#fff",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                }}
+              >
+                {ic.label}
+              </span>
+            </div>
+          ))}
+          <div
+            className="absolute flex flex-col items-center"
+            style={{ left: u(1.6), top: u(20.5), width: u(8), gap: u(0.5) }}
+          >
+            <div
+              className="ad-appicon relative flex items-center justify-center"
+              style={{
+                width: u(5.4),
+                height: u(5.4),
+                borderRadius: u(1.2),
+                background: "linear-gradient(135deg, #F4D77A, #B8891A)",
+                color: "#1D1707",
+                fontWeight: 800,
+                fontSize: u(3),
+                boxShadow:
+                  "0 0.4cqw 1cqw rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.35)",
+              }}
+            >
+              M
+              <span
+                className="ad-clickring absolute rounded-full"
+                style={{ inset: u(-0.7), border: "2px solid #F4D77A" }}
+              />
+            </div>
+            <span
+              style={{
+                fontSize: u(1.15),
+                color: "#fff",
+                textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+              }}
+            >
+              Melmah
+            </span>
+          </div>
+
+          {/* taskbar (Windows 11 style) */}
+          <div
+            className="absolute inset-x-0 bottom-0"
+            style={{
+              height: u(4),
+              background: "rgba(14,17,28,0.82)",
+              backdropFilter: "blur(8px)",
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <div
+              className="absolute grid grid-cols-2"
+              style={{
+                left: u(27),
+                top: u(1),
+                width: u(2),
+                height: u(2),
+                gap: u(0.18),
+              }}
+            >
+              {[0, 1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  style={{ background: "#5AA2FF", borderRadius: u(0.15) }}
+                />
+              ))}
+            </div>
+            <div
+              className="absolute flex items-center"
+              style={{
+                left: u(30.2),
+                top: u(0.8),
+                width: u(9),
+                height: u(2.4),
+                borderRadius: "9999px",
+                background: "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                paddingLeft: u(0.9),
+              }}
+            >
+              <span
+                style={{
+                  width: u(1),
+                  height: u(1),
+                  borderRadius: "9999px",
+                  border: "1px solid rgba(255,255,255,0.55)",
+                }}
+              />
+            </div>
+            <div
+              className="ad-tbapp absolute flex items-center justify-center"
+              style={{
+                left: u(40.2),
+                top: u(0.9),
+                width: u(2.2),
+                height: u(2.2),
+                borderRadius: u(0.5),
+                background: "linear-gradient(135deg,#F4D77A,#B8891A)",
+                color: "#1D1707",
+                fontWeight: 800,
+                fontSize: u(1.3),
+              }}
+            >
+              M
+              <span
+                className="absolute"
+                style={{
+                  bottom: u(-0.4),
+                  left: "30%",
+                  right: "30%",
+                  height: u(0.25),
+                  borderRadius: "9999px",
+                  background: "#E0B93A",
+                }}
+              />
+            </div>
+            {[43.4, 46.6].map((x, i) => (
+              <span
+                key={x}
+                className="absolute"
+                style={{
+                  left: u(x),
+                  top: u(0.9),
+                  width: u(2.2),
+                  height: u(2.2),
+                  borderRadius: u(0.5),
+                  background: i
+                    ? "linear-gradient(135deg,#4ADE80,#1F8F52)"
+                    : "linear-gradient(135deg,#5B8DEF,#3556B8)",
+                }}
+              />
+            ))}
+            <div
+              className="absolute flex items-center"
+              style={{ right: u(1.4), top: 0, height: u(4), gap: u(1) }}
+              dir="ltr"
+            >
+              <span
+                style={{
+                  width: u(1.1),
+                  height: u(0.8),
+                  borderRadius: u(0.2),
+                  border: "1px solid rgba(255,255,255,0.7)",
+                }}
+              />
+              <span
+                style={{
+                  width: u(1.5),
+                  height: u(0.8),
+                  borderRadius: u(0.2),
+                  background: "rgba(255,255,255,0.75)",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: u(1.05),
+                  lineHeight: 1.15,
+                  color: "rgba(255,255,255,0.85)",
+                  textAlign: "right",
+                }}
+              >
+                9:41
+                <br />
+                28/10
+              </span>
+            </div>
+          </div>
+
+          {/* dashboard window: opens, maximizes, minimizes, repeats */}
+          <div
+            className="ad-win absolute flex flex-col overflow-hidden"
+            style={{
+              left: 0,
+              top: 0,
+              right: 0,
+              bottom: u(4),
+              background: "#0F1320",
+              color: "#F4F1EA",
+              boxShadow:
+                "0 1.5cqw 4cqw rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.12)",
+            }}
+          >
+            {/* title bar */}
+            <div
+              className="flex shrink-0 items-center"
+              style={{
+                height: u(3),
+                background: "#171C2E",
+                borderBottom: "1px solid rgba(255,255,255,0.07)",
+              }}
+              dir="ltr"
+            >
+              <span
+                className="flex items-center justify-center"
+                style={{
+                  marginLeft: u(1),
+                  width: u(1.7),
+                  height: u(1.7),
+                  borderRadius: u(0.4),
+                  background: "linear-gradient(135deg,#F4D77A,#B8891A)",
+                  color: "#1D1707",
+                  fontWeight: 800,
+                  fontSize: u(1.1),
+                }}
+              >
+                M
+              </span>
+              <span
+                style={{
+                  marginLeft: u(0.8),
+                  fontSize: u(1.2),
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                Melmah
+              </span>
+              <span
+                className="ad-blink"
+                style={{
+                  marginLeft: u(1),
+                  width: u(0.8),
+                  height: u(0.8),
+                  borderRadius: "9999px",
+                  background: "#4ADE80",
+                }}
+              />
+              <div className="ms-auto flex" style={{ height: "100%" }}>
+                <span
+                  className="ad-minbtn flex items-center justify-center"
+                  style={winBtn}
+                >
+                  <span
+                    style={{ width: u(1.1), height: "1px", background: "#fff" }}
+                  />
+                </span>
+                <span
+                  className="ad-maxbtn flex items-center justify-center"
+                  style={winBtn}
+                >
+                  <span
+                    style={{
+                      width: u(1),
+                      height: u(1),
+                      border: "1px solid #fff",
+                      borderRadius: u(0.12),
+                    }}
+                  />
+                </span>
+                <span
+                  className="flex items-center justify-center"
+                  style={winBtn}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      width: u(1.2),
+                      height: "1px",
+                      background: "#fff",
+                      transform: "rotate(45deg)",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      width: u(1.2),
+                      height: "1px",
+                      background: "#fff",
+                      transform: "rotate(-45deg)",
+                    }}
+                  />
+                </span>
+              </div>
+            </div>
+
+            <div className="flex min-h-0 flex-1">
+              {/* sidebar: expands when maximized */}
+              <div
+                className="ad-side flex shrink-0 flex-col items-center overflow-hidden"
+                style={{
+                  width: 0,
+                  background: "#0B0E19",
+                  borderRight: "1px solid rgba(255,255,255,0.06)",
+                  paddingTop: u(1.4),
+                  gap: u(1.1),
+                }}
+              >
+                {nav.map((Icon, i) => (
+                  <span
+                    key={i}
+                    className="flex shrink-0 items-center justify-center"
+                    style={{
+                      width: u(4.6),
+                      height: u(4.2),
+                      borderRadius: u(1),
+                      background:
+                        i === 0 ? "rgba(224,185,58,0.18)" : "transparent",
+                      color: i === 0 ? "#E0B93A" : "rgba(255,255,255,0.45)",
+                    }}
+                  >
+                    <Icon style={{ width: u(2), height: u(2) }} />
+                  </span>
+                ))}
+              </div>
+
+              {/* main */}
+              <div
+                className="flex min-h-0 min-w-0 flex-1 flex-col"
+                style={{ padding: u(1.6), gap: u(1.2) }}
+              >
+                <div
+                  className="flex items-center justify-between"
+                  style={{ gap: u(1) }}
+                >
+                  <div dir={t.dir}>
+                    <div
+                      style={{
+                        fontSize: u(2.2),
+                        fontWeight: 700,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {t.popupTitle}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: u(0.6),
+                        width: u(8),
+                        height: u(0.4),
+                        borderRadius: "9999px",
+                        background: "#E0B93A",
+                      }}
+                    />
+                  </div>
+                  <span
+                    className="flex shrink-0 items-center"
+                    style={{
+                      gap: u(0.6),
+                      padding: `${u(0.5)} ${u(1.1)}`,
+                      borderRadius: "9999px",
+                      background: "rgba(74,222,128,0.12)",
+                      color: "#4ADE80",
+                      fontSize: u(1.1),
+                      fontWeight: 600,
+                    }}
+                    dir="ltr"
+                  >
+                    <span
+                      className="ad-blink"
+                      style={{
+                        width: u(0.7),
+                        height: u(0.7),
+                        borderRadius: "9999px",
+                        background: "#4ADE80",
+                      }}
+                    />
+                    LIVE
+                  </span>
+                </div>
+
+                <div className="flex" style={{ gap: u(1) }}>
+                  {kpis.map(({ Icon, value, delta }, i) => (
+                    <div
+                      key={i}
+                      className="ad-pop flex min-w-0 flex-1 items-center"
+                      style={{
+                        ...card,
+                        padding: u(0.9),
+                        gap: u(0.8),
+                        animationDelay: `${3.0 + i * 0.12}s`,
+                      }}
+                    >
+                      <span
+                        className="flex shrink-0 items-center justify-center"
+                        style={{
+                          width: u(3),
+                          height: u(3),
+                          borderRadius: u(0.8),
+                          background: "rgba(224,185,58,0.16)",
+                          color: "#E0B93A",
+                        }}
+                      >
+                        <Icon style={{ width: u(1.7), height: u(1.7) }} />
+                      </span>
+                      <span className="min-w-0" dir="ltr">
+                        <span
+                          className="block"
+                          style={{
+                            fontSize: u(2),
+                            fontWeight: 700,
+                            lineHeight: 1.1,
+                          }}
+                        >
+                          {value}
+                        </span>
+                        {delta && (
+                          <span
+                            className="block"
+                            style={{ fontSize: u(1), color: "#4ADE80" }}
+                          >
+                            {delta}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex min-h-0 flex-1" style={{ gap: u(1) }}>
+                  <div
+                    className="flex min-w-0 flex-[3] flex-col"
+                    style={{ ...card, padding: u(1.1) }}
+                    dir="ltr"
+                  >
+                    <div
+                      style={{
+                        fontSize: u(1.1),
+                        color: "rgba(255,255,255,0.6)",
+                        marginBottom: u(0.6),
+                      }}
+                      dir={t.dir}
+                    >
+                      {t.heroChip1}
+                    </div>
+                    <div
+                      className="relative flex min-h-0 flex-1 items-end"
+                      style={{
+                        gap: u(0.9),
+                        borderBottom: "1px solid rgba(255,255,255,0.12)",
+                      }}
+                    >
+                      {[25, 50, 75].map((g) => (
+                        <span
+                          key={g}
+                          className="absolute inset-x-0"
+                          style={{
+                            bottom: `${g}%`,
+                            borderTop: "1px dashed rgba(255,255,255,0.08)",
+                          }}
+                        />
+                      ))}
+                      {bars.map((h, i) => (
+                        <span
+                          key={i}
+                          className="ad-bar relative flex-1"
+                          style={{
+                            height: `${h}%`,
+                            borderRadius: `${u(0.5)} ${u(0.5)} 0 0`,
+                            background:
+                              "linear-gradient(180deg, #F4D77A, #B8891A)",
+                            animationDelay: `${3.3 + i * 0.09}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      className="flex"
+                      style={{ gap: u(0.9), marginTop: u(0.4) }}
+                    >
+                      {days.map((d, i) => (
+                        <span
+                          key={i}
+                          className="flex-1 text-center"
+                          style={{
+                            fontSize: u(0.95),
+                            color: "rgba(255,255,255,0.4)",
+                          }}
+                        >
+                          {d}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="grid min-w-0 flex-[2] grid-cols-6 content-center"
+                    style={{ ...card, padding: u(1.1), gap: u(0.5) }}
+                  >
+                    {cells.map((i) => (
+                      <span
+                        key={i}
+                        className={i === 11 ? "ad-pulse" : undefined}
+                        style={{
+                          aspectRatio: "1 / 0.8",
+                          borderRadius: u(0.4),
+                          background:
+                            occupied.has(i) || i === 11
+                              ? "#C9A227"
+                              : "transparent",
+                          border:
+                            occupied.has(i) || i === 11
+                              ? "none"
+                              : "1px solid rgba(255,255,255,0.16)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* recent bookings: appears once the window is maximized */}
+                <div
+                  className="ad-book overflow-hidden"
+                  style={{
+                    ...card,
+                    maxHeight: 0,
+                    opacity: 0,
+                    padding: `0 ${u(1.1)}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: u(1.05),
+                      color: "rgba(255,255,255,0.6)",
+                      padding: `${u(0.7)} 0 ${u(0.3)}`,
+                    }}
+                    dir={t.dir}
+                  >
+                    {t.heroChip2}
+                  </div>
+                  {bookings.map((b, i) => (
+                    <div
+                      key={i}
+                      className="ad-row flex items-center"
+                      style={{
+                        height: u(2.3),
+                        gap: u(0.9),
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                        animationDelay: `${6.7 + i * 0.15}s`,
+                      }}
+                      dir="ltr"
+                    >
+                      <span
+                        className="flex items-center justify-center"
+                        style={{
+                          width: u(1.7),
+                          height: u(1.7),
+                          borderRadius: "9999px",
+                          background: "rgba(224,185,58,0.2)",
+                          color: "#E0B93A",
+                          fontSize: u(0.85),
+                          fontWeight: 700,
+                        }}
+                      >
+                        {b.i}
+                      </span>
+                      <span className="flex-1" style={{ fontSize: u(1.1) }}>
+                        {b.n}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: u(1.05),
+                          color: "rgba(255,255,255,0.55)",
+                        }}
+                      >
+                        {b.r}
+                      </span>
+                      <span
+                        style={{
+                          width: u(0.8),
+                          height: u(0.8),
+                          borderRadius: "9999px",
+                          background: b.c,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* mouse cursor */}
+          <svg
+            className="ad-cursor absolute"
+            style={{ left: 0, top: 0, width: u(3), height: u(3.6) }}
+            viewBox="0 0 20 24"
+          >
+            <path
+              d="M2 1L2 19L7 14.5L10.5 22L13.5 20.6L10.2 13.2L17 13Z"
+              fill="#fff"
+              stroke="#111"
+              strokeWidth="1.4"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        {/* glass glare */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(115deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 38%)",
+          }}
         />
-      </g>
-      <g transform="translate(470 132)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "1.1s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
-        />
-      </g>
-      <g transform="translate(436 134)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "2.2s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
-        />
-      </g>
-      <g transform="translate(486 230)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "3.0s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
-        />
-      </g>
-      <g transform="translate(430 384)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "1.7s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
-        />
-      </g>
-      <g transform="translate(300 150)">
-        <path
-          className="ad-twinkle"
-          style={{ animationDelay: "3.6s" }}
-          d="M0 -7L1.8 -1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8 -1.8Z"
-          fill="#fff"
-        />
-      </g>
-    </svg>
+      </div>
+    </div>
   );
 }
 
@@ -1570,7 +1576,7 @@ function HeroPanel({ isDark, t }) {
 
       <div className="relative mx-auto w-full max-w-[560px]">
         <div className="ad-float">
-          <AdminArt />
+          <AdminArt t={t} />
         </div>
 
         <div
@@ -1772,7 +1778,7 @@ function LoginForm() {
         aria-hidden="true"
       >
         <div className="ad-float mb-6 w-[300px] opacity-40 sm:w-[420px]">
-          <AdminArt />
+          <AdminArt t={t} />
         </div>
       </div>
 
@@ -1920,7 +1926,7 @@ function LoginForm() {
           animation: drift-b 13s ease-in-out infinite;
         }
 
-        /* ---- desk scene ---- */
+        /* ---- laptop scene ---- */
         @keyframes ad-float {
           0%,
           100% {
@@ -1935,87 +1941,181 @@ function LoginForm() {
             transform: rotate(360deg);
           }
         }
-        @keyframes ad-bell {
-          0%,
-          68% {
-            transform: scale(1);
+
+        /* One 17s story (restarted by React every 17s):
+           cursor -> click icon -> window opens -> maximize -> minimize */
+        @keyframes ad-cursor {
+          0% {
+            opacity: 0;
+            transform: translate(58cqw, 32cqw);
           }
-          70% {
-            transform: scale(0.9);
+          3.5% {
+            opacity: 1;
+            transform: translate(58cqw, 32cqw);
           }
-          74% {
-            transform: scale(1.04);
+          11.8%,
+          13% {
+            opacity: 1;
+            transform: translate(5.2cqw, 24cqw);
+          }
+          26% {
+            opacity: 1;
+            transform: translate(36cqw, 22cqw);
+          }
+          31%,
+          33.5% {
+            opacity: 1;
+            transform: translate(63.95cqw, 4.55cqw);
+          }
+          47% {
+            opacity: 1;
+            transform: translate(44cqw, 19cqw);
+          }
+          61%,
+          66% {
+            opacity: 1;
+            transform: translate(28cqw, 27cqw);
+          }
+          71%,
+          73.5% {
+            opacity: 1;
+            transform: translate(62.1cqw, 1.4cqw);
           }
           80%,
+          100% {
+            opacity: 0;
+            transform: translate(50cqw, 12cqw);
+          }
+        }
+        @keyframes ad-win {
+          0%,
+          13.8% {
+            opacity: 0;
+            transform: translate(4.2cqw, 22.2cqw) scale(0.06);
+            border-radius: 1.2cqw;
+          }
+          15% {
+            opacity: 1;
+          }
+          17.65%,
+          32.94% {
+            opacity: 1;
+            transform: translate(11cqw, 3.5cqw) scale(0.8);
+            border-radius: 1.2cqw;
+          }
+          37.65%,
+          74% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+            border-radius: 0;
+          }
+          77.06%,
+          100% {
+            opacity: 0;
+            transform: translate(40cqw, 38.5cqw) scale(0.05);
+            border-radius: 1.2cqw;
+          }
+        }
+        @keyframes ad-maxhl {
+          0%,
+          30.5% {
+            background: transparent;
+          }
+          31.5%,
+          33.5% {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          35%,
+          100% {
+            background: transparent;
+          }
+        }
+        @keyframes ad-minhl {
+          0%,
+          70.5% {
+            background: transparent;
+          }
+          71.5%,
+          73.5% {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          75%,
+          100% {
+            background: transparent;
+          }
+        }
+        @keyframes ad-tbapp {
+          0%,
+          13.5% {
+            opacity: 0;
+            transform: translateY(1cqw) scale(0.6);
+          }
+          16%,
+          94% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+          99%,
+          100% {
+            opacity: 0;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes ad-click {
+          0% {
+            transform: scale(1);
+          }
+          40% {
+            transform: scale(0.86);
+          }
           100% {
             transform: scale(1);
           }
         }
-        @keyframes ad-wave {
-          0%,
-          69% {
-            opacity: 0;
-            transform: scale(1);
-          }
-          70% {
-            opacity: 0.85;
-            transform: scale(1);
+        @keyframes ad-clickring {
+          0% {
+            opacity: 0.9;
+            transform: scale(0.8);
           }
           100% {
             opacity: 0;
             transform: scale(1.9);
           }
         }
-        @keyframes ad-tag {
+        @keyframes ad-side {
           from {
-            transform: rotate(-4deg);
+            width: 0;
           }
           to {
-            transform: rotate(4deg);
+            width: 8cqw;
           }
         }
-        @keyframes ad-plant {
+        @keyframes ad-book {
           from {
-            transform: rotate(-1.6deg);
-          }
-          to {
-            transform: rotate(1.6deg);
-          }
-        }
-        @keyframes ad-write {
-          0%,
-          4% {
-            stroke-dashoffset: 100;
-            opacity: 1;
-          }
-          50%,
-          88% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-          }
-          95%,
-          100% {
-            stroke-dashoffset: 0;
+            max-height: 0;
             opacity: 0;
           }
+          to {
+            max-height: 10.5cqw;
+            opacity: 1;
+          }
         }
-        @keyframes ad-pen {
-          0%,
-          4% {
-            transform: translate(0px, 0px);
+        @keyframes ad-pop {
+          0% {
+            opacity: 0;
+            transform: translateY(1.2cqw) scale(0.92);
           }
-          50% {
-            transform: translate(96px, -3px);
-          }
-          56% {
-            transform: translate(96px, -14px);
-          }
-          72% {
-            transform: translate(0px, -14px);
-          }
-          78%,
           100% {
-            transform: translate(0px, 0px);
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes ad-bar {
+          from {
+            transform: scaleY(0);
+          }
+          to {
+            transform: scaleY(1);
           }
         }
         @keyframes ad-pulse {
@@ -2025,61 +2125,6 @@ function LoginForm() {
           }
           50% {
             opacity: 0.3;
-          }
-        }
-        @keyframes ad-spark {
-          0% {
-            stroke-dashoffset: 100;
-          }
-          50%,
-          85% {
-            stroke-dashoffset: 0;
-          }
-          100% {
-            stroke-dashoffset: -100;
-          }
-        }
-        @keyframes ad-steam {
-          0% {
-            opacity: 0;
-            transform: translateY(8px) scale(0.8);
-          }
-          35% {
-            opacity: 0.9;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-26px) scale(1.25);
-          }
-        }
-        @keyframes ad-ripple {
-          0% {
-            opacity: 0.8;
-            transform: scale(0.5);
-          }
-          100% {
-            opacity: 0;
-            transform: scale(2.6);
-          }
-        }
-        @keyframes ad-shimmer {
-          0%,
-          55% {
-            transform: translateX(0) skewX(-20deg);
-          }
-          100% {
-            transform: translateX(170px) skewX(-20deg);
-          }
-        }
-        @keyframes ad-twinkle {
-          0%,
-          100% {
-            opacity: 0;
-            transform: scale(0.3) rotate(0deg);
-          }
-          50% {
-            opacity: 0.95;
-            transform: scale(1) rotate(45deg);
           }
         }
         @keyframes ad-blink {
@@ -2135,70 +2180,64 @@ function LoginForm() {
         }
         .ad-ring {
           transform-box: view-box;
-          transform-origin: 280px 230px;
+          transform-origin: 280px 200px;
           animation: ad-spin 70s linear infinite;
         }
         .ad-ring-rev {
           animation-duration: 110s;
           animation-direction: reverse;
         }
-        .ad-bell {
-          transform-box: view-box;
-          transform-origin: 455px 120px;
-          animation: ad-bell 5s ease-in-out infinite;
-        }
-        .ad-wave {
+
+        .ad-cursor {
           opacity: 0;
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: ad-wave 5s ease-out infinite;
+          animation: ad-cursor 17s ease-in-out both;
+          will-change: transform;
         }
-        .ad-tag {
-          transform-box: view-box;
-          transform-origin: 480px 244px;
-          animation: ad-tag 3.6s ease-in-out infinite alternate;
+        .ad-win {
+          opacity: 0;
+          transform-origin: 0 0;
+          animation: ad-win 17s cubic-bezier(0.3, 0.9, 0.3, 1) both;
+          will-change: transform;
         }
-        .ad-plant {
-          transform-box: view-box;
-          transform-origin: 60px 70px;
-          animation: ad-plant 5s ease-in-out infinite alternate;
+        .ad-maxbtn {
+          animation: ad-maxhl 17s linear both;
         }
-        .ad-write {
-          stroke-dasharray: 100;
-          stroke-dashoffset: 100;
-          animation: ad-write 7s linear infinite;
+        .ad-minbtn {
+          animation: ad-minhl 17s linear both;
         }
-        .ad-pen {
-          animation: ad-pen 7s linear infinite;
+        .ad-tbapp {
+          opacity: 0;
+          animation: ad-tbapp 17s ease-out both;
         }
+        .ad-appicon {
+          animation: ad-click 0.3s ease-out 2.1s both;
+        }
+        .ad-clickring {
+          opacity: 0;
+          animation: ad-clickring 0.7s ease-out 2.1s both;
+        }
+        .ad-side {
+          animation: ad-side 0.6s ease-out 6.1s both;
+        }
+        .ad-book {
+          animation: ad-book 0.6s ease-out 6.4s both;
+        }
+        .ad-row {
+          opacity: 0;
+          animation: ad-pop 0.4s ease-out both;
+        }
+        .ad-pop {
+          opacity: 0;
+          animation: ad-pop 0.45s ease-out both;
+        }
+        .ad-bar {
+          transform-origin: bottom;
+          transform: scaleY(0);
+          animation: ad-bar 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
         .ad-pulse {
           animation: ad-pulse 2s ease-in-out infinite;
-        }
-        .ad-spark {
-          stroke-dasharray: 100;
-          stroke-dashoffset: 100;
-          animation: ad-spark 6s ease-in-out infinite;
-        }
-        .ad-steam {
-          opacity: 0;
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: ad-steam 5.5s ease-out infinite;
-        }
-        .ad-ripple {
-          opacity: 0;
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: ad-ripple 3s ease-out infinite;
-        }
-        .ad-shimmer {
-          animation: ad-shimmer 5s ease-in-out infinite;
-        }
-        .ad-twinkle {
-          opacity: 0;
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: ad-twinkle 5s ease-in-out infinite;
         }
         .ad-blink {
           animation: ad-blink 1.6s ease-in-out infinite;
@@ -2221,18 +2260,19 @@ function LoginForm() {
           .blob-b,
           .ad-float,
           .ad-ring,
-          .ad-bell,
-          .ad-wave,
-          .ad-tag,
-          .ad-plant,
-          .ad-write,
-          .ad-pen,
+          .ad-cursor,
+          .ad-win,
+          .ad-maxbtn,
+          .ad-minbtn,
+          .ad-tbapp,
+          .ad-appicon,
+          .ad-clickring,
+          .ad-side,
+          .ad-book,
+          .ad-row,
+          .ad-pop,
+          .ad-bar,
           .ad-pulse,
-          .ad-spark,
-          .ad-steam,
-          .ad-ripple,
-          .ad-shimmer,
-          .ad-twinkle,
           .ad-blink,
           .ad-up,
           .ad-bokeh,
@@ -2240,12 +2280,26 @@ function LoginForm() {
           .ad-ping {
             animation: none !important;
           }
-          .ad-write,
-          .ad-spark {
-            stroke-dashoffset: 0;
-          }
-          .ad-up {
+          .ad-win,
+          .ad-pop,
+          .ad-row,
+          .ad-up,
+          .ad-tbapp {
             opacity: 1;
+          }
+          .ad-bar {
+            transform: scaleY(1);
+          }
+          .ad-side {
+            width: 8cqw;
+          }
+          .ad-book {
+            max-height: 10.5cqw;
+            opacity: 1;
+          }
+          .ad-cursor,
+          .ad-clickring {
+            opacity: 0;
           }
         }
       `}</style>
