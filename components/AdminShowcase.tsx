@@ -19,7 +19,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
-import FloatingBubbles from "./FloatingBubbles";
+
 
 // scene units (viewBox is 640 wide) -> container-query width units
 const q = (v: number) => `${(v / 6.4).toFixed(3)}cqw`;
@@ -663,7 +663,7 @@ export default function AdminShowcase({ isRTL }: { isRTL?: boolean }) {
             "radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.08) 0%, transparent 50%)",
         }}
       />
-      <FloatingBubbles count={16} />
+      
 
       <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 lg:grid-cols-[1.35fr_0.65fr] lg:gap-10">
         {/* ===== DESK + MONITOR ===== */}
