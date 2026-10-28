@@ -13,6 +13,7 @@ import { pageText } from "@/lib/pageText"; // move your translation copy object 
 import KitchenTV from "@/components/KitchenBoard";
 
 import AdminShowcase from "@/components/AdminShowcase";
+import OnlineOrderShowcase from "@/components/Onlineordershowcase";
 
 // Placeholder stats — wire up to real counts once the registration backend exists.
 const stats = { hotels: "40+", cities: "6", orders: "12,000+" };
@@ -51,7 +52,6 @@ export default function Home() {
         stats={stats}
         ArrowIcon={ArrowIcon}
         onPrimaryCta={goToRegister}
-
         onSecondaryCta={scrollToHow}
       />
       <div id="how-it-works">
@@ -63,6 +63,9 @@ export default function Home() {
       </div>
       <div id="admin-showcase">
         <AdminShowcase text={text} />
+      </div>
+      <div id="admin-showcase">
+        <OnlineOrderShowcase text={text} />
       </div>
       {/* Next sections (pricing, testimonials, footer, etc.) get added here
           the same way — one component each. */}
