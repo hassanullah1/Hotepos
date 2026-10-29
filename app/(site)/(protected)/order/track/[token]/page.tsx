@@ -377,48 +377,37 @@ export default function TrackPage() {
     document.documentElement.setAttribute("dir", t.dir);
   }, [lang, mounted, t.dir]);
 
-  useEffect(() => {
-    if (!mounted) return;
-    if (confirming) return;
+ useEffect(() => {
+   if (!mounted) return;
+   if (confirming) return;
 
-    const paidFlag = searchParams.get("paid");
-    if (paidFlag !== "1") return;
+   const paidFlag = searchParams.get("paid");
+   if (paidFlag !== "1") return;
 
-    const rawUrl = typeof window !== "undefined" ? window.location.href : "";
-    let data: any = {};
-    try {
-      const idx = rawUrl.indexOf("data=");
-      if (idx !== -1) {
-        const json = decodeURIComponent(rawUrl.slice(idx + 5));
-        data = JSON.parse(json);
-      }
-    } catch {}
+   const refOrderId = searchParams.get("ref");
+   if (!refOrderId) return;
 
-    const refOrderId = searchParams.get("ref");
-    if (!refOrderId) return;
+   setConfirming(true);
+   fetch("/api/payments/hesabpay/order/confirm", {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     credentials: "same-origin",
+     body: JSON.stringify({ ref: refOrderId }),
+   })
+     .then((r) => r.json())
+     .then((d) => {
+       if (!d.ok) {
+         console.warn("Confirm returned pending:", d);
+       }
+       setConfirming(false);
+     })
+     .catch((err) => {
+       console.error("Confirm request failed:", err);
+       setConfirming(false);
+     });
 
-    setConfirming(true);
-    fetch("/api/payments/hesabpay/order/confirm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      body: JSON.stringify({
-        ref: refOrderId,
-        transaction_id: data?.transaction_id || null,
-        success: data?.success === true,
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (!d.ok) console.error("Confirm returned:", d);
-      })
-      .catch((err) => console.error("Confirm request failed:", err));
-
-    if (typeof window !== "undefined") {
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted, searchParams]);
+   window.history.replaceState({}, "", window.location.pathname);
+ }, [mounted, searchParams]);
 
   // Already reviewed? Accept several likely backend shapes.
   const alreadyReviewed =
