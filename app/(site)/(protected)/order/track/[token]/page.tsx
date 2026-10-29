@@ -560,7 +560,7 @@ export default function TrackPage() {
       <div className="relative mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-10">
         {/* Back link */}
         <Link
-          href="/order"
+          href="/"
           className={`group mb-5 inline-flex items-center gap-1.5 text-xs font-semibold transition ${
             isDark
               ? "text-[#B7B2C4] hover:text-[#E0B93A]"

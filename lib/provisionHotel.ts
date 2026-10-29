@@ -77,35 +77,70 @@ export async function createExpiredHotel(data) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Activate a hotel after successful payment.
-// - status → "active", expires_at = max(now, current) + 1 month
-// - If owner has no password yet, generate a reset_token and email
-//   them the existing reset-password link. No password_hash is set
-//   here — the user chooses their own password.
+// Activate a hotel after successful payment. IDEMPOTENT.
+//
+// Safe to call multiple times (webhook retries, race with confirm, etc.):
+//   - Only extends subscription once (atomic conditional update)
+//   - Only sends "set password" email once (guarded by password_hash)
+//
+// `subscription_expires_at` = max(now, current) + 1 month.
 // ─────────────────────────────────────────────────────────────
-export async function activateHotel(hotelId) {
+export async function activateHotel(hotelId: string) {
   const hotel = await prisma.hotels.findUnique({ where: { id: hotelId } });
   if (!hotel) throw new Error("hotel_not_found");
 
   const now = new Date();
+
+  // Fast path: already active with future expiry → do nothing
+  if (
+    hotel.subscription_status === "active" &&
+    hotel.subscription_expires_at &&
+    new Date(hotel.subscription_expires_at) > now
+  ) {
+    console.log("[activateHotel] already active, skipping:", hotelId);
+    return {
+      hotel,
+      resetLinkSent: false,
+      already_active: true,
+    };
+  }
+
+  // Compute new expiry: max(now, current) + 1 month
   const currentExpiry = hotel.subscription_expires_at
     ? new Date(hotel.subscription_expires_at)
     : null;
   const base = currentExpiry && currentExpiry > now ? currentExpiry : now;
-
   const newExpiry = new Date(base);
   newExpiry.setMonth(newExpiry.getMonth() + 1);
 
-  const updatedHotel = await prisma.hotels.update({
-    where: { id: hotel.id },
+  // ATOMIC update — only succeeds if the hotel is still NOT active-with-future-expiry.
+  // This is what makes concurrent webhook retries safe.
+  const updateResult = await prisma.hotels.updateMany({
+    where: {
+      id: hotel.id,
+      OR: [
+        { subscription_status: { not: "active" } },
+        { subscription_expires_at: { lte: now } },
+      ],
+    },
     data: {
       subscription_status: "active",
       subscription_expires_at: newExpiry,
     },
   });
 
-  // If the owner has no password yet, send them a "set your password"
-  // link using the existing reset-token flow (24h expiry).
+  if (updateResult.count === 0) {
+    // Another concurrent call already activated it. Don't re-extend, don't re-email.
+    console.log("[activateHotel] lost race, already activated by another call:", hotelId);
+    const fresh = await prisma.hotels.findUnique({ where: { id: hotelId } });
+    return {
+      hotel: fresh || hotel,
+      resetLinkSent: false,
+      already_active: true,
+    };
+  }
+
+  // We are the one that activated it → send password email if needed.
   const owner = await prisma.hotel_owners.findUnique({
     where: { hotel_id: hotel.id },
     include: { users: true },
@@ -125,8 +160,7 @@ export async function activateHotel(hotelId) {
       },
     });
 
-    const appUrl =
-      process.env.NEXT_PUBLIC_APP_URL ;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     const link = `${appUrl}/reset-password?token=${resetToken}`;
 
     try {
@@ -136,12 +170,17 @@ export async function activateHotel(hotelId) {
         link,
       });
       resetLinkSent = true;
+      console.log("[activateHotel] password email sent to:", owner.users.email);
     } catch (err) {
-      console.error("Password setup email failed:", err);
+      console.error("[activateHotel] password email failed:", err);
     }
   }
 
-  return { hotel: updatedHotel, resetLinkSent };
+  const updatedHotel = await prisma.hotels.findUnique({
+    where: { id: hotelId },
+  });
+
+  return { hotel: updatedHotel || hotel, resetLinkSent };
 }
 
 // ─────────────────────────────────────────────────────────────
