@@ -7,7 +7,6 @@ import { payoutOrder } from "@/lib/payoutOrder";
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// Reachability probe — some checkers use GET
 export async function GET() {
   return NextResponse.json({ success: true }, { status: 200 });
 }
@@ -23,7 +22,7 @@ export async function POST(request: Request) {
     );
     if (rawBody) console.log("[hesabpay webhook] body:", rawBody);
 
-    // ── 1. Parse — never 400 on empty/invalid body (probe sends junk)
+    // ── 1. Parse
     let payload: any = {};
     try {
       payload = rawBody ? JSON.parse(rawBody) : {};
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ── 2. Extract reference (probe has none)
+    // ── 2. Reference — HesabPay puts the order UUID in items[0].id
     const reference =
       payload.reference ||
       payload.metadata?.reference ||
@@ -42,60 +41,82 @@ export async function POST(request: Request) {
       payload.data?.reference;
 
     if (!reference) {
+      console.log("[hesabpay webhook] probe (no reference)");
       return NextResponse.json({ success: true, probe: true }, { status: 200 });
     }
+    console.log("[hesabpay webhook] reference:", reference);
 
-    // ── 3. Signature — local HMAC (no fake verify URL)
-    const signature =
+    // ── 3. Signature (HesabPay sends signature IN THE BODY — skip header check)
+    const signatureHeader =
       request.headers.get("x-hesab-signature") ||
       request.headers.get("x-signature") ||
       "";
     const secret = process.env.HESABPAY_WEBHOOK_SECRET || "";
 
-    if (secret && signature) {
+    // Only verify if BOTH a secret is configured AND a signature header is present.
+    // HesabPay currently puts the signature in the body, so this path usually skips.
+    if (secret && signatureHeader) {
       const expected = createHmac("sha256", secret)
         .update(rawBody)
         .digest("hex");
       let ok = false;
       try {
-        ok = timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+        ok = timingSafeEqual(
+          Buffer.from(expected),
+          Buffer.from(signatureHeader),
+        );
       } catch {
         ok = false;
       }
       if (!ok) {
-        console.warn("[hesabpay webhook] bad signature for", reference);
-        // Return 200 — bad signature won't fix itself on retry
+        console.warn("[hesabpay webhook] bad header signature for", reference);
         return NextResponse.json(
           { success: false, error: "invalid_signature" },
           { status: 200 },
         );
       }
-    } else if (secret && !signature) {
-      console.warn("[hesabpay webhook] missing signature for", reference);
-      // Allow through — webhook secret may not be set yet
     }
 
-    // ── 4. Status
-    const status = payload.status || payload.payment_status;
-    const succeeded = ["success", "succeeded", "paid", "completed"].includes(
-      String(status || "").toLowerCase(),
+    // ── 4. Success detection — the actual HesabPay payload shape
+    const statusStr = String(
+      payload.status || payload.payment_status || "",
+    ).toLowerCase();
+
+    const succeeded =
+      payload.success === true ||
+      payload.status_code === 10 ||
+      payload.status_code === "10" ||
+      ["success", "succeeded", "paid", "completed"].includes(statusStr);
+
+    const failed =
+      payload.success === false ||
+      [
+        "failed",
+        "failure",
+        "cancelled",
+        "canceled",
+        "declined",
+        "error",
+        "rejected",
+      ].includes(statusStr);
+
+    console.log(
+      "[hesabpay webhook] succeeded=",
+      succeeded,
+      "failed=",
+      failed,
+      "success_field=",
+      payload.success,
+      "status_code=",
+      payload.status_code,
     );
-    const failed = [
-      "failed",
-      "failure",
-      "cancelled",
-      "canceled",
-      "declined",
-      "error",
-      "rejected",
-    ].includes(String(status || "").toLowerCase());
+
+    const transactionId = payload.transaction_id || null;
 
     const isRenewal =
       typeof reference === "string" && reference.startsWith("renew:");
 
-    // ═══════════════════════════════════════════════════════════════
-    // A. RENEWAL — "renew:<hotelId>:<planId>:<months>"
-    // ═══════════════════════════════════════════════════════════════
+    // ═══════════════ A. RENEWAL ═══════════════
     if (isRenewal) {
       const parts = String(reference).split(":");
       const hotelId = parts[1];
@@ -112,7 +133,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
           success: true,
           renewal: true,
-          status: status || "unknown",
+          status: "failed",
         });
       }
 
@@ -153,7 +174,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // ── Guard: reference must be a UUID for the remaining paths
+    // ── Guard UUID
     if (typeof reference !== "string" || !UUID_RE.test(reference)) {
       return NextResponse.json(
         { success: false, error: "invalid_reference" },
@@ -161,13 +182,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // B. ORDER PAYMENT
-    // ═══════════════════════════════════════════════════════════════
+    // ═══════════════ B. ORDER PAYMENT ═══════════════
     const maybeOrder = await prisma.orders.findUnique({
       where: { id: reference },
       select: { id: true, payment_status: true },
     });
+
+    console.log(
+      "[hesabpay webhook] order lookup:",
+      maybeOrder
+        ? `found payment_status=${maybeOrder.payment_status}`
+        : "not found",
+    );
 
     if (maybeOrder) {
       if (failed) {
@@ -183,11 +209,14 @@ export async function POST(request: Request) {
       }
 
       if (!succeeded) {
-        // Unknown status — do nothing, just ack
+        // Order found but payload doesn't indicate success — do nothing
+        console.warn(
+          "[hesabpay webhook] order found but not marked paid (no success signal)",
+        );
         return NextResponse.json({
           success: true,
           order: true,
-          unknown_status: status || null,
+          unknown_status: true,
         });
       }
 
@@ -198,32 +227,39 @@ export async function POST(request: Request) {
           data: {
             payment_status: "paid",
             paid_at: new Date(),
-            payment_reference:
-              payload.transaction_id || payload.reference || null,
+            payment_reference: transactionId || reference,
             // Do NOT set status: "in_progress" — kitchen advances it
           },
         });
+        console.log(
+          "[hesabpay webhook] ✅ order marked paid:",
+          maybeOrder.id,
+          "tx:",
+          transactionId,
+        );
 
-        // Payout — idempotent
         const existingPayout = await prisma.order_payouts.findUnique({
           where: { order_id: maybeOrder.id },
         });
         if (!existingPayout) {
           try {
             await payoutOrder(maybeOrder.id);
+            console.log("[hesabpay webhook] payout done:", maybeOrder.id);
           } catch (err) {
             console.error("[hesabpay webhook] payout failed:", err);
-            // Non-fatal — cron can retry
           }
         }
+      } else {
+        console.log(
+          "[hesabpay webhook] order already paid, skipping:",
+          maybeOrder.id,
+        );
       }
 
       return NextResponse.json({ success: true, order: true });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // C. NEW HOTEL ACTIVATION
-    // ═══════════════════════════════════════════════════════════════
+    // ═══════════════ C. NEW HOTEL ACTIVATION ═══════════════
     const maybeHotel = await prisma.hotels.findUnique({
       where: { id: reference },
       include: {
@@ -244,16 +280,13 @@ export async function POST(request: Request) {
           status: "failed",
         });
       }
-
       if (!succeeded) {
         return NextResponse.json({
           success: true,
           hotel: true,
-          unknown_status: status || null,
+          unknown_status: true,
         });
       }
-
-      // Idempotent
       if (
         maybeHotel.subscription_status === "active" &&
         maybeHotel.subscription_expires_at &&
@@ -266,7 +299,6 @@ export async function POST(request: Request) {
           already_processed: true,
         });
       }
-
       try {
         const { resetLinkSent } = await activateHotel(maybeHotel.id);
         return NextResponse.json({
@@ -283,9 +315,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // D. PENDING SIGNUP
-    // ═══════════════════════════════════════════════════════════════
+    // ═══════════════ D. PENDING SIGNUP ═══════════════
     const signup = await prisma.pending_signups.findUnique({
       where: { id: reference },
     });
@@ -306,19 +336,19 @@ export async function POST(request: Request) {
         return NextResponse.json({
           success: true,
           signup: true,
-          unknown_status: status || null,
+          unknown_status: true,
         });
       }
       return NextResponse.json({ success: true, signup: true });
     }
 
+    console.warn("[hesabpay webhook] unknown reference:", reference);
     return NextResponse.json(
       { success: false, error: "unknown_reference" },
       { status: 200 },
     );
   } catch (err) {
     console.error("[hesabpay webhook] fatal:", err);
-    // NEVER return 5xx — HesabPay treats it as "not delivered" and retries forever
     return NextResponse.json(
       { success: false, error: "internal" },
       { status: 200 },
