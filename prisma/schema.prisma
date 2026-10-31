@@ -138,6 +138,7 @@ model hotels {
   subscription_status  String? @default("trial")
   subscription_expires_at DateTime? @db.Timestamptz(6)
   is_online               Boolean    @default(false)
+  delivery_type String    @default("none") @db.VarChar(20)   // ← must be here
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
 
@@ -216,12 +217,46 @@ model subscription_plans {
   max_branches    Int       @default(1)
   max_pos_devices Int       @default(2)
   price_monthly   Decimal   @db.Decimal(12, 2)
-  features        Json?     @default("{}")
-  is_rooms        Boolean   @default(false)
+ sections        plan_sections[]
+  
   is_active       Boolean?  @default(true)
   created_at      DateTime? @default(now()) @db.Timestamptz(6)
   hotels          hotels[]
   pending_signups pending_signups[]
+}
+
+
+/// Master catalogue of every gated feature area ("section") in the app.
+/// e.g. key = "rooms", "pos", "inventory", "kitchen", "payroll", "reports" ...
+model sections {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String    @unique @db.VarChar(50)   // machine name, e.g. "rooms"
+  name        String    @db.VarChar(100)          // display name, e.g. "Rooms & Stays"
+  description String?
+  icon        String?   @db.VarChar(50)
+  sort_order  Int?      @default(0)
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  plan_sections plan_sections[]
+
+  @@index([is_active], map: "idx_sections_active")
+}
+
+/// Which sections each plan unlocks. Join table.
+model plan_sections {
+  plan_id    String  @db.Uuid
+  section_id String  @db.Uuid
+  is_enabled Boolean @default(true)
+
+  /// Per-section limits for this plan, e.g. { "max_rooms": 20, "max_items": 500 }
+  config     Json?   @default("{}")
+
+  subscription_plans subscription_plans @relation(fields: [plan_id],    references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sections           sections           @relation(fields: [section_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([plan_id, section_id])
+  @@index([section_id], map: "idx_plan_sections_section")
 }
 
 

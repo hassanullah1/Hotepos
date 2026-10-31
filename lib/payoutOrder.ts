@@ -2,18 +2,24 @@ import prisma from "@/lib/prisma";
 import { sendMultiVendorPayment } from "@/lib/hesabpay";
 
 /**
- * Given a paid order, send the money onwards:
- *   - 5% (configurable) stays with the platform
- *   - 95% goes to the hotel owner's HesabPay account
+ * Split a paid order between the hotel owner and the platform.
  *
- * Safe to call twice — if a completed payout already exists, it's a no-op.
- * If a pending row exists, it retries the same distribution.
+ * Rules:
+ *   commission = 5% of subtotal (food only — delivery is never commissioned)
+ *   delivery_fee = total_amount − subtotal      (0 | 50 | 50)
+ *
+ *   delivery_type = "paid"  → owner delivers → owner keeps delivery_fee
+ *   delivery_type = "none"  → platform delivers → platform keeps delivery_fee
+ *   delivery_type = "free"  → no delivery fee
+ *
+ * Safe to call twice: completed payouts are a no-op; pending ones retry.
  */
 export async function payoutOrder(orderId: string) {
   const order = await prisma.orders.findUnique({
     where: { id: orderId },
     select: {
       id: true,
+      subtotal: true,
       total_amount: true,
       payment_status: true,
       branch_id: true,
@@ -24,6 +30,7 @@ export async function payoutOrder(orderId: string) {
             select: {
               id: true,
               name: true,
+              delivery_type: true, // "none" | "paid" | "free"
               hotel_owner: { select: { hesabpay_account_number: true } },
             },
           },
@@ -48,36 +55,64 @@ export async function payoutOrder(orderId: string) {
   if (!ownerAccount)
     return { ok: false as const, error: "OWNER_ACCOUNT_MISSING" };
 
-  // Platform fee %
+  // ── Platform settings ──
   const settings = await prisma.platform_settings.findFirst({
     select: { commission_rate: true, commission_account: true },
   });
   const feeRate = Number(settings?.commission_rate ?? 5) / 100;
 
-  const gross = Number(order.total_amount);
-  const platform_fee = Math.round(gross * feeRate * 100) / 100;
-  const owner_amount = Math.round((gross - platform_fee) * 100) / 100;
+  // ── Numbers ──
+  const round = (n: number) => Math.round(n * 100) / 100;
 
-  // Build vendor list. If the platform has a dedicated commission account,
-  // send the fee there explicitly for visibility. Otherwise it stays in
-  // the platform's merchant account and we only pay the owner.
-  const vendors: { account_number: string; amount: number }[] = [
-    { account_number: ownerAccount, amount: owner_amount },
-  ];
-  if (settings?.commission_account) {
+  const total = Number(order.total_amount); // food + delivery
+  const subtotal = Number(order.subtotal); // food only
+  const deliveryFee = round(Math.max(0, total - subtotal));
+  const deliveryType = hotel.delivery_type ?? "none";
+
+  const commission = round(subtotal * feeRate); // 5% of food only
+  const foodToOwner = round(subtotal - commission);
+
+  let owner_amount: number;
+  let platform_fee: number;
+
+  if (deliveryFee > 0 && deliveryType === "paid") {
+    // Owner provides delivery → owner keeps the delivery fee
+    owner_amount = round(foodToOwner + deliveryFee);
+    platform_fee = commission;
+  } else if (deliveryFee > 0 && deliveryType === "none") {
+    // Platform provides delivery → platform keeps the delivery fee
+    owner_amount = foodToOwner;
+    platform_fee = round(commission + deliveryFee);
+  } else {
+    // "free", or any order with no delivery fee (dine-in)
+    owner_amount = foodToOwner;
+    platform_fee = commission;
+  }
+
+  // Safety check: never pay out more than was collected
+  if (round(owner_amount + platform_fee) > round(total) + 0.01) {
+    return { ok: false as const, error: "SPLIT_EXCEEDS_TOTAL" };
+  }
+
+  // ── Build vendor list ──
+  const vendors: { account_number: string; amount: number }[] = [];
+  if (owner_amount > 0) {
+    vendors.push({ account_number: ownerAccount, amount: owner_amount });
+  }
+  if (platform_fee > 0 && settings?.commission_account) {
     vendors.push({
       account_number: settings.commission_account,
       amount: platform_fee,
     });
   }
 
-  // Upsert the ledger row
+  // ── Ledger row ──
   const ledger = await prisma.order_payouts.upsert({
     where: { order_id: order.id },
     update: {
       owner_account: ownerAccount,
       commission_account: settings?.commission_account || null,
-      gross_amount: gross,
+      gross_amount: total,
       platform_fee,
       owner_amount,
       status: "pending",
@@ -88,13 +123,14 @@ export async function payoutOrder(orderId: string) {
       hotel_id: hotel.id,
       owner_account: ownerAccount,
       commission_account: settings?.commission_account || null,
-      gross_amount: gross,
+      gross_amount: total,
       platform_fee,
       owner_amount,
       status: "pending",
     },
   });
 
+  // ── Move the money ──
   try {
     const result = await sendMultiVendorPayment(vendors);
 
@@ -123,6 +159,8 @@ export async function payoutOrder(orderId: string) {
       transaction_id: result.transaction_id,
       owner_amount,
       platform_fee,
+      delivery_fee: deliveryFee,
+      delivery_type: deliveryType,
     };
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Payout failed";

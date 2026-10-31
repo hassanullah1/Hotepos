@@ -8,26 +8,49 @@ const PLAN_SELECT = {
   max_branches: true,
   max_pos_devices: true,
   price_monthly: true,
-  features: true,
   is_active: true,
-  is_rooms: true, // 👈 NEW
   created_at: true,
+  sections: {
+    where: { is_enabled: true },
+    select: {
+      config: true,
+      sections: { select: { key: true, name: true } },
+    },
+  },
   _count: { select: { hotels: true } },
 };
 
 function serializePlan(p: any) {
+  const enabled = (p.sections ?? [])
+    .map((ps: any) => ({
+      key: ps.sections?.key ?? null,
+      name: ps.sections?.name ?? null,
+      config: ps.config ?? {},
+    }))
+    .filter((s: any) => s.key);
+
   return {
     id: p.id,
     name: p.name,
     max_branches: p.max_branches,
     max_pos_devices: p.max_pos_devices,
     price_monthly: p.price_monthly,
-    features: p.features || {},
     is_active: p.is_active,
-    is_rooms: p.is_rooms === true, // 👈 NEW
-    hotel_count: p._count?.hotels ?? 0,
     created_at: p.created_at,
+    section_keys: enabled.map((s: any) => s.key),
+    sections: enabled,
+    section_count: enabled.length,
+    hotel_count: p._count?.hotels ?? 0,
   };
+}
+
+async function resolveSectionIds(keys: string[]) {
+  if (!keys.length) return [] as string[];
+  const rows = await prisma.sections.findMany({
+    where: { key: { in: keys } },
+    select: { id: true },
+  });
+  return rows.map((r) => r.id);
 }
 
 // GET /api/subscription-plans?q=basic&include_inactive=1
@@ -44,9 +67,7 @@ export async function GET(request: Request) {
   if (!includeInactive || !requireRole(user, ["super_admin"])) {
     where.is_active = true;
   }
-  if (q) {
-    where.name = { contains: q, mode: "insensitive" };
-  }
+  if (q) where.name = { contains: q, mode: "insensitive" };
 
   const plans = await prisma.subscription_plans.findMany({
     where,
@@ -62,9 +83,8 @@ export async function POST(request: Request) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!requireRole(user, ["super_admin"])) {
+  if (!requireRole(user, ["super_admin"]))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   const body = await request.json();
   if (!body.name || body.name.trim().length === 0) {
@@ -91,7 +111,12 @@ export async function POST(request: Request) {
     );
   }
 
+  const sectionKeys: string[] = Array.isArray(body.section_keys)
+    ? body.section_keys.filter((k: any) => typeof k === "string")
+    : [];
+
   try {
+    const sectionIds = await resolveSectionIds(sectionKeys);
     const plan = await prisma.subscription_plans.create({
       data: {
         name: body.name.trim(),
@@ -99,12 +124,13 @@ export async function POST(request: Request) {
         max_pos_devices:
           body.max_pos_devices != null ? Number(body.max_pos_devices) : 2,
         price_monthly: body.price_monthly,
-        features:
-          body.features && typeof body.features === "object"
-            ? body.features
-            : {},
         is_active: body.is_active ?? true,
-        is_rooms: body.is_rooms === true, // 👈 NEW
+        sections: {
+          create: sectionIds.map((id) => ({
+            section_id: id,
+            is_enabled: true,
+          })),
+        },
       },
       select: PLAN_SELECT,
     });

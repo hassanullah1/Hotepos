@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { Check, Loader2 } from "lucide-react";
 
 const inputClass =
   "w-full rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm dark:border-white/10";
@@ -17,30 +18,46 @@ export default function CreatePlanPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  const [allSections, setAllSections] = useState([]);
+  const [sectionsLoading, setSectionsLoading] = useState(true);
+  const [selectedSectionKeys, setSelectedSectionKeys] = useState([]);
+
   const [form, setForm] = useState({
     name: "",
     price_monthly: "",
     max_branches: 1,
     max_pos_devices: 2,
     is_active: true,
-    is_rooms: false, // 👈 NEW
   });
 
-  const [featureKeys, setFeatureKeys] = useState([{ key: "", value: "" }]);
+  // Load the section catalogue once
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/sections");
+        if (!res.ok) throw new Error("Failed to load sections");
+        const data = await res.json();
+        if (!cancelled) setAllSections(data.sections || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setSectionsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
   }
-  function updateFeature(i, field, value) {
-    setFeatureKeys((prev) =>
-      prev.map((f, idx) => (idx === i ? { ...f, [field]: value } : f)),
+
+  function toggleSection(key) {
+    setSelectedSectionKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
-  }
-  function addFeatureRow() {
-    setFeatureKeys((prev) => [...prev, { key: "", value: "" }]);
-  }
-  function removeFeatureRow(i) {
-    setFeatureKeys((prev) => prev.filter((_, idx) => idx !== i));
   }
 
   async function handleSubmit(e) {
@@ -48,11 +65,6 @@ export default function CreatePlanPage() {
     setSaving(true);
     setError("");
     try {
-      const features = {};
-      featureKeys.forEach((f) => {
-        if (f.key.trim()) features[f.key.trim()] = f.value;
-      });
-
       const res = await fetchWithAuth("/api/subscription-plans", {
         method: "POST",
         body: JSON.stringify({
@@ -61,8 +73,7 @@ export default function CreatePlanPage() {
           max_branches: Number(form.max_branches),
           max_pos_devices: Number(form.max_pos_devices),
           is_active: form.is_active,
-          is_rooms: form.is_rooms, // 👈 NEW
-          features,
+          section_keys: selectedSectionKeys,
         }),
       });
 
@@ -103,6 +114,7 @@ export default function CreatePlanPage() {
           </div>
         )}
 
+        {/* ── Basic info ─────────────────────────────────── */}
         <div className={sectionClass}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -163,69 +175,78 @@ export default function CreatePlanPage() {
                 className={inputClass}
               />
             </div>
-
-            {/* 👈 NEW — rooms feature toggle */}
-            <div className="sm:col-span-2">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.is_rooms}
-                  onChange={(e) => update("is_rooms", e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-black/20 text-teal-600 focus:ring-teal-500 dark:border-white/20"
-                />
-                <span className="min-w-0">
-                  <span className="block text-sm font-medium text-[#10243A] dark:text-[#EDEBE3]">
-                    Rooms management
-                  </span>
-                  <span className="mt-0.5 block text-xs text-[#5B6472] dark:text-[#C7CDD6]">
-                    Hotels on this plan can manage rooms and room stays.
-                  </span>
-                </span>
-              </label>
-            </div>
           </div>
         </div>
 
+        {/* ── Sections (the new gating mechanism) ─────────── */}
         <div className={sectionClass}>
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-[#10243A] dark:text-[#EDEBE3]">
-              Features (optional)
-            </h2>
-            <button
-              type="button"
-              onClick={addFeatureRow}
-              className="text-sm font-medium text-[#2F6690] hover:underline"
-            >
-              + Add feature
-            </button>
-          </div>
-          {featureKeys.map((f, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                type="text"
-                placeholder="key (e.g. reports_export)"
-                value={f.key}
-                onChange={(e) => updateFeature(i, "key", e.target.value)}
-                className={inputClass}
-              />
-              <input
-                type="text"
-                placeholder="value (e.g. true, 100, csv)"
-                value={f.value}
-                onChange={(e) => updateFeature(i, "value", e.target.value)}
-                className={inputClass}
-              />
-              {featureKeys.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeFeatureRow(i)}
-                  className="shrink-0 text-xs font-medium text-red-600 hover:underline"
-                >
-                  Remove
-                </button>
-              )}
+            <div>
+              <h2 className="text-base font-semibold text-[#10243A] dark:text-[#EDEBE3]">
+                Sections included in this plan
+              </h2>
+              <p className="mt-0.5 text-xs text-[#5B6472] dark:text-[#C7CDD6]">
+                Hotels on this plan will only see the sections you tick below.
+              </p>
             </div>
-          ))}
+            <span className="text-xs text-[#5B6472] dark:text-[#C7CDD6]">
+              {selectedSectionKeys.length} selected
+            </span>
+          </div>
+
+          {sectionsLoading ? (
+            <div className="flex items-center gap-2 text-sm text-[#5B6472] dark:text-[#C7CDD6]">
+              <Loader2 size={14} className="animate-spin" />
+              Loading sections…
+            </div>
+          ) : allSections.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-black/10 px-3 py-4 text-xs text-[#5B6472] dark:border-white/10 dark:text-[#C7CDD6]">
+              No sections found. Ask a super admin to seed the{" "}
+              <code>sections</code> table first.
+            </div>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {allSections.map((s) => {
+                const checked = selectedSectionKeys.includes(s.key);
+                return (
+                  <label
+                    key={s.id}
+                    className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
+                      checked
+                        ? "border-teal-500 bg-teal-50/60 dark:bg-teal-900/20"
+                        : "border-black/10 hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.03]"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleSection(s.key)}
+                      className="mt-0.5 h-4 w-4 rounded border-black/20 text-teal-600 focus:ring-teal-500 dark:border-white/20"
+                    />
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-1.5 text-sm font-medium text-[#10243A] dark:text-[#EDEBE3]">
+                        {s.name}
+                        {checked && (
+                          <Check
+                            size={12}
+                            className="text-teal-600 dark:text-teal-400"
+                          />
+                        )}
+                      </span>
+                      <span className="mt-0.5 block font-mono text-[11px] text-[#5B6472] dark:text-[#C7CDD6]">
+                        {s.key}
+                      </span>
+                      {s.description && (
+                        <span className="mt-1 block text-xs text-[#5B6472] dark:text-[#C7CDD6]">
+                          {s.description}
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

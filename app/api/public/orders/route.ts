@@ -5,6 +5,9 @@ import { getBuyerFromRequest } from "@/lib/buyer-auth";
 
 type CartLine = { menu_item_id: string; quantity: number };
 
+/** Flat delivery fee (AFN). Applied unless hotel.delivery_type = "free". */
+const PAID_DELIVERY_FEE = 50;
+
 function newToken() {
   return crypto.randomBytes(24).toString("hex");
 }
@@ -56,8 +59,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "EMPTY_CART" }, { status: 400 });
 
   // ── Resolve branch (hotel must be online) ──
-  let branch = null;
-  let table = null;
+  let branch: {
+    id: string;
+    hotel_id: string;
+    hotels: { delivery_type: string } | null;
+  } | null = null;
+  let table: { id: string; branch_id: string } | null = null;
 
   if (tableToken) {
     table = await prisma.dining_tables.findFirst({
@@ -72,7 +79,11 @@ export async function POST(request: Request) {
         status: "active",
         hotels: { is_online: true },
       },
-      select: { id: true, hotel_id: true },
+      select: {
+        id: true,
+        hotel_id: true,
+        hotels: { select: { delivery_type: true } },
+      },
     });
   } else if (branchId) {
     branch = await prisma.branches.findFirst({
@@ -81,12 +92,19 @@ export async function POST(request: Request) {
         status: "active",
         hotels: { is_online: true },
       },
-      select: { id: true, hotel_id: true },
+      select: {
+        id: true,
+        hotel_id: true,
+        hotels: { select: { delivery_type: true } },
+      },
     });
   }
 
   if (!branch)
     return NextResponse.json({ error: "BRANCH_NOT_FOUND" }, { status: 404 });
+
+  // "free" → 0; "none" and "paid" → PAID_DELIVERY_FEE
+  const deliveryType = branch.hotels?.delivery_type ?? "paid";
 
   const source: "qr" | "customer" = table ? "qr" : "customer";
   const orderType: "dine_in" | "delivery" = table ? "dine_in" : "delivery";
@@ -152,6 +170,15 @@ export async function POST(request: Request) {
   });
   const subtotal = +lines.reduce((s, l) => s + l.line_total, 0).toFixed(2);
 
+  // ── Delivery fee (server-side, never trust client) ──
+  // "free"  → 0 AFN
+  // "none"  → PAID_DELIVERY_FEE  (still delivered, standard fee)
+  // "paid"  → PAID_DELIVERY_FEE
+  // dine-in → 0
+  const deliveryFee =
+    source === "customer" && deliveryType !== "free" ? PAID_DELIVERY_FEE : 0;
+  const totalAmount = +(subtotal + deliveryFee).toFixed(2);
+
   // ── Dine-in: resolve/create table session ──
   let tableSessionId: string | null = null;
   if (orderType === "dine_in" && table) {
@@ -200,7 +227,7 @@ export async function POST(request: Request) {
         source,
         public_token: token,
         subtotal,
-        total_amount: subtotal,
+        total_amount: totalAmount, // includes delivery fee unless "free"
         notes: note || null,
 
         // Only online delivery orders get a satellite row

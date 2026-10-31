@@ -3,23 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Pencil, Trash2, Plus, Eye, BedDouble } from "lucide-react";
+import { Plus, Eye, Trash2, LayoutGrid } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
+
+
 const inputClass =
   "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500";
-
-function PrimaryButton({ children, className = "", ...props }) {
-  return (
-    <button
-      {...props}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-    >
-      {children}
-    </button>
-  );
-}
 
 export default function PlansListPage() {
   const router = useRouter();
@@ -105,6 +96,7 @@ export default function PlansListPage() {
 
   const title = getText("plansList.title", "Subscription Plans");
   const newPlan = getText("plansList.newPlan", "New Plan");
+  const manageSections = getText("plansList.newPlan", "section");
   const searchPlaceholder = getText(
     "plansList.searchPlaceholder",
     "Search plans...",
@@ -117,22 +109,41 @@ export default function PlansListPage() {
   const inactiveLabel = getText("plansList.inactive", "Inactive");
   const editLabel = getText("plansList.edit", "Edit");
   const deleteLabel = getText("plansList.delete", "Delete");
-  const roomsLabel = getText("plansList.rooms", "Rooms"); // 👈 NEW
+  const sectionsLabel = getText("plansList.sections", "Sections");
 
   return (
     <div className="p-6" dir={dir}>
-      {/* Header */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-          {title}
-        </h1>
-        <Link
-          href="/admin/plans/create"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
-        >
-          <Plus size={16} />
-          {newPlan}
-        </Link>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        {/* ── Left: title + subtitle ─────────────────────── */}
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+            {title}
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Create plans and control which app sections each plan unlocks.
+          </p>
+        </div>
+
+        {/* ── Right: secondary + primary actions ─────────── */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Secondary: manage the section catalogue */}
+          <Link
+            href="/admin/sections"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900"
+          >
+            <LayoutGrid size={16} />
+            {manageSections}
+          </Link>
+
+          {/* Primary: create a new plan */}
+          <Link
+            href="/admin/plans/create"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+          >
+            <Plus size={16} />
+            {newPlan}
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
@@ -155,7 +166,6 @@ export default function PlansListPage() {
         </label>
       </div>
 
-      {/* Error */}
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400">
           {error}
@@ -179,9 +189,8 @@ export default function PlansListPage() {
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Max POS
               </th>
-              {/* 👈 NEW column */}
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                {roomsLabel}
+                {sectionsLabel}
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Hotels
@@ -239,24 +248,22 @@ export default function PlansListPage() {
                   <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                     {plan.max_pos_devices}
                   </td>
-                  {/* 👈 NEW cell */}
+
+                  {/* Sections column */}
                   <td className="px-4 py-3">
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                        plan.is_rooms
-                          ? "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400"
-                          : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                      }`}
+                      className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-900/30 dark:text-teal-400"
                       title={
-                        plan.is_rooms
-                          ? "Rooms management included"
-                          : "Rooms management not included"
+                        plan.section_keys && plan.section_keys.length
+                          ? plan.section_keys.join(", ")
+                          : "No sections enabled"
                       }
                     >
-                      <BedDouble size={12} />
-                      {plan.is_rooms ? "✓" : "✕"}
+                      <LayoutGrid size={12} />
+                      {plan.section_count ?? 0}
                     </span>
                   </td>
+
                   <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                     {plan.hotel_count}
                   </td>

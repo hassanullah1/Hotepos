@@ -72,6 +72,17 @@ export type email_verifications = $Result.DefaultSelection<Prisma.$email_verific
  */
 export type subscription_plans = $Result.DefaultSelection<Prisma.$subscription_plansPayload>
 /**
+ * Model sections
+ * Master catalogue of every gated feature area ("section") in the app.
+ * e.g. key = "rooms", "pos", "inventory", "kitchen", "payroll", "reports" ...
+ */
+export type sections = $Result.DefaultSelection<Prisma.$sectionsPayload>
+/**
+ * Model plan_sections
+ * Which sections each plan unlocks. Join table.
+ */
+export type plan_sections = $Result.DefaultSelection<Prisma.$plan_sectionsPayload>
+/**
  * Model provinces
  * 
  */
@@ -515,6 +526,26 @@ export class PrismaClient<
     * ```
     */
   get subscription_plans(): Prisma.subscription_plansDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sections`: Exposes CRUD operations for the **sections** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sections
+    * const sections = await prisma.sections.findMany()
+    * ```
+    */
+  get sections(): Prisma.sectionsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.plan_sections`: Exposes CRUD operations for the **plan_sections** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Plan_sections
+    * const plan_sections = await prisma.plan_sections.findMany()
+    * ```
+    */
+  get plan_sections(): Prisma.plan_sectionsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.provinces`: Exposes CRUD operations for the **provinces** model.
@@ -1379,6 +1410,8 @@ export namespace Prisma {
     pending_signups: 'pending_signups',
     email_verifications: 'email_verifications',
     subscription_plans: 'subscription_plans',
+    sections: 'sections',
+    plan_sections: 'plan_sections',
     provinces: 'provinces',
     branches: 'branches',
     audit_logs: 'audit_logs',
@@ -1436,7 +1469,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2177,6 +2210,154 @@ export namespace Prisma {
           count: {
             args: Prisma.subscription_plansCountArgs<ExtArgs>
             result: $Utils.Optional<Subscription_plansCountAggregateOutputType> | number
+          }
+        }
+      }
+      sections: {
+        payload: Prisma.$sectionsPayload<ExtArgs>
+        fields: Prisma.sectionsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.sectionsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.sectionsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          findFirst: {
+            args: Prisma.sectionsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.sectionsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          findMany: {
+            args: Prisma.sectionsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>[]
+          }
+          create: {
+            args: Prisma.sectionsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          createMany: {
+            args: Prisma.sectionsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.sectionsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>[]
+          }
+          delete: {
+            args: Prisma.sectionsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          update: {
+            args: Prisma.sectionsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          deleteMany: {
+            args: Prisma.sectionsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.sectionsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.sectionsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>[]
+          }
+          upsert: {
+            args: Prisma.sectionsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$sectionsPayload>
+          }
+          aggregate: {
+            args: Prisma.SectionsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSections>
+          }
+          groupBy: {
+            args: Prisma.sectionsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SectionsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.sectionsCountArgs<ExtArgs>
+            result: $Utils.Optional<SectionsCountAggregateOutputType> | number
+          }
+        }
+      }
+      plan_sections: {
+        payload: Prisma.$plan_sectionsPayload<ExtArgs>
+        fields: Prisma.plan_sectionsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.plan_sectionsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.plan_sectionsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          findFirst: {
+            args: Prisma.plan_sectionsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.plan_sectionsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          findMany: {
+            args: Prisma.plan_sectionsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>[]
+          }
+          create: {
+            args: Prisma.plan_sectionsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          createMany: {
+            args: Prisma.plan_sectionsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.plan_sectionsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>[]
+          }
+          delete: {
+            args: Prisma.plan_sectionsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          update: {
+            args: Prisma.plan_sectionsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          deleteMany: {
+            args: Prisma.plan_sectionsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.plan_sectionsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.plan_sectionsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>[]
+          }
+          upsert: {
+            args: Prisma.plan_sectionsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$plan_sectionsPayload>
+          }
+          aggregate: {
+            args: Prisma.Plan_sectionsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlan_sections>
+          }
+          groupBy: {
+            args: Prisma.plan_sectionsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Plan_sectionsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.plan_sectionsCountArgs<ExtArgs>
+            result: $Utils.Optional<Plan_sectionsCountAggregateOutputType> | number
           }
         }
       }
@@ -5406,6 +5587,8 @@ export namespace Prisma {
     pending_signups?: pending_signupsOmit
     email_verifications?: email_verificationsOmit
     subscription_plans?: subscription_plansOmit
+    sections?: sectionsOmit
+    plan_sections?: plan_sectionsOmit
     provinces?: provincesOmit
     branches?: branchesOmit
     audit_logs?: audit_logsOmit
@@ -5917,11 +6100,13 @@ export namespace Prisma {
    */
 
   export type Subscription_plansCountOutputType = {
+    sections: number
     hotels: number
     pending_signups: number
   }
 
   export type Subscription_plansCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sections?: boolean | Subscription_plansCountOutputTypeCountSectionsArgs
     hotels?: boolean | Subscription_plansCountOutputTypeCountHotelsArgs
     pending_signups?: boolean | Subscription_plansCountOutputTypeCountPending_signupsArgs
   }
@@ -5940,6 +6125,13 @@ export namespace Prisma {
   /**
    * Subscription_plansCountOutputType without action
    */
+  export type Subscription_plansCountOutputTypeCountSectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: plan_sectionsWhereInput
+  }
+
+  /**
+   * Subscription_plansCountOutputType without action
+   */
   export type Subscription_plansCountOutputTypeCountHotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: hotelsWhereInput
   }
@@ -5949,6 +6141,37 @@ export namespace Prisma {
    */
   export type Subscription_plansCountOutputTypeCountPending_signupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: pending_signupsWhereInput
+  }
+
+
+  /**
+   * Count Type SectionsCountOutputType
+   */
+
+  export type SectionsCountOutputType = {
+    plan_sections: number
+  }
+
+  export type SectionsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    plan_sections?: boolean | SectionsCountOutputTypeCountPlan_sectionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SectionsCountOutputType without action
+   */
+  export type SectionsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SectionsCountOutputType
+     */
+    select?: SectionsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SectionsCountOutputType without action
+   */
+  export type SectionsCountOutputTypeCountPlan_sectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: plan_sectionsWhereInput
   }
 
 
@@ -13096,6 +13319,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
+    delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
     verification_status: string | null
@@ -13110,6 +13334,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
+    delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
     verification_status: string | null
@@ -13124,6 +13349,7 @@ export namespace Prisma {
     subscription_status: number
     subscription_expires_at: number
     is_online: number
+    delivery_type: number
     created_at: number
     updated_at: number
     verification_status: number
@@ -13140,6 +13366,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    delivery_type?: true
     created_at?: true
     updated_at?: true
     verification_status?: true
@@ -13154,6 +13381,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    delivery_type?: true
     created_at?: true
     updated_at?: true
     verification_status?: true
@@ -13168,6 +13396,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    delivery_type?: true
     created_at?: true
     updated_at?: true
     verification_status?: true
@@ -13255,6 +13484,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean
+    delivery_type: string
     created_at: Date | null
     updated_at: Date | null
     verification_status: string
@@ -13286,6 +13516,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
@@ -13307,6 +13538,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
@@ -13322,6 +13554,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
@@ -13337,12 +13570,13 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
   }
 
-  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
+  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "delivery_type" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
   export type hotelsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
     hotel_owner?: boolean | hotels$hotel_ownerArgs<ExtArgs>
@@ -13378,6 +13612,7 @@ export namespace Prisma {
       subscription_status: string | null
       subscription_expires_at: Date | null
       is_online: boolean
+      delivery_type: string
       created_at: Date | null
       updated_at: Date | null
       verification_status: string
@@ -13818,6 +14053,7 @@ export namespace Prisma {
     readonly subscription_status: FieldRef<"hotels", 'String'>
     readonly subscription_expires_at: FieldRef<"hotels", 'DateTime'>
     readonly is_online: FieldRef<"hotels", 'Boolean'>
+    readonly delivery_type: FieldRef<"hotels", 'String'>
     readonly created_at: FieldRef<"hotels", 'DateTime'>
     readonly updated_at: FieldRef<"hotels", 'DateTime'>
     readonly verification_status: FieldRef<"hotels", 'String'>
@@ -17728,7 +17964,6 @@ export namespace Prisma {
     max_branches: number | null
     max_pos_devices: number | null
     price_monthly: Decimal | null
-    is_rooms: boolean | null
     is_active: boolean | null
     created_at: Date | null
   }
@@ -17739,7 +17974,6 @@ export namespace Prisma {
     max_branches: number | null
     max_pos_devices: number | null
     price_monthly: Decimal | null
-    is_rooms: boolean | null
     is_active: boolean | null
     created_at: Date | null
   }
@@ -17750,8 +17984,6 @@ export namespace Prisma {
     max_branches: number
     max_pos_devices: number
     price_monthly: number
-    features: number
-    is_rooms: number
     is_active: number
     created_at: number
     _all: number
@@ -17776,7 +18008,6 @@ export namespace Prisma {
     max_branches?: true
     max_pos_devices?: true
     price_monthly?: true
-    is_rooms?: true
     is_active?: true
     created_at?: true
   }
@@ -17787,7 +18018,6 @@ export namespace Prisma {
     max_branches?: true
     max_pos_devices?: true
     price_monthly?: true
-    is_rooms?: true
     is_active?: true
     created_at?: true
   }
@@ -17798,8 +18028,6 @@ export namespace Prisma {
     max_branches?: true
     max_pos_devices?: true
     price_monthly?: true
-    features?: true
-    is_rooms?: true
     is_active?: true
     created_at?: true
     _all?: true
@@ -17897,8 +18125,6 @@ export namespace Prisma {
     max_branches: number
     max_pos_devices: number
     price_monthly: Decimal
-    features: JsonValue | null
-    is_rooms: boolean
     is_active: boolean | null
     created_at: Date | null
     _count: Subscription_plansCountAggregateOutputType | null
@@ -17928,10 +18154,9 @@ export namespace Prisma {
     max_branches?: boolean
     max_pos_devices?: boolean
     price_monthly?: boolean
-    features?: boolean
-    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
+    sections?: boolean | subscription_plans$sectionsArgs<ExtArgs>
     hotels?: boolean | subscription_plans$hotelsArgs<ExtArgs>
     pending_signups?: boolean | subscription_plans$pending_signupsArgs<ExtArgs>
     _count?: boolean | Subscription_plansCountOutputTypeDefaultArgs<ExtArgs>
@@ -17943,8 +18168,6 @@ export namespace Prisma {
     max_branches?: boolean
     max_pos_devices?: boolean
     price_monthly?: boolean
-    features?: boolean
-    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["subscription_plans"]>
@@ -17955,8 +18178,6 @@ export namespace Prisma {
     max_branches?: boolean
     max_pos_devices?: boolean
     price_monthly?: boolean
-    features?: boolean
-    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["subscription_plans"]>
@@ -17967,14 +18188,13 @@ export namespace Prisma {
     max_branches?: boolean
     max_pos_devices?: boolean
     price_monthly?: boolean
-    features?: boolean
-    is_rooms?: boolean
     is_active?: boolean
     created_at?: boolean
   }
 
-  export type subscription_plansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "max_branches" | "max_pos_devices" | "price_monthly" | "features" | "is_rooms" | "is_active" | "created_at", ExtArgs["result"]["subscription_plans"]>
+  export type subscription_plansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "max_branches" | "max_pos_devices" | "price_monthly" | "is_active" | "created_at", ExtArgs["result"]["subscription_plans"]>
   export type subscription_plansInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sections?: boolean | subscription_plans$sectionsArgs<ExtArgs>
     hotels?: boolean | subscription_plans$hotelsArgs<ExtArgs>
     pending_signups?: boolean | subscription_plans$pending_signupsArgs<ExtArgs>
     _count?: boolean | Subscription_plansCountOutputTypeDefaultArgs<ExtArgs>
@@ -17985,6 +18205,7 @@ export namespace Prisma {
   export type $subscription_plansPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "subscription_plans"
     objects: {
+      sections: Prisma.$plan_sectionsPayload<ExtArgs>[]
       hotels: Prisma.$hotelsPayload<ExtArgs>[]
       pending_signups: Prisma.$pending_signupsPayload<ExtArgs>[]
     }
@@ -17994,8 +18215,6 @@ export namespace Prisma {
       max_branches: number
       max_pos_devices: number
       price_monthly: Prisma.Decimal
-      features: Prisma.JsonValue | null
-      is_rooms: boolean
       is_active: boolean | null
       created_at: Date | null
     }, ExtArgs["result"]["subscription_plans"]>
@@ -18392,6 +18611,7 @@ export namespace Prisma {
    */
   export interface Prisma__subscription_plansClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    sections<T extends subscription_plans$sectionsArgs<ExtArgs> = {}>(args?: Subset<T, subscription_plans$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     hotels<T extends subscription_plans$hotelsArgs<ExtArgs> = {}>(args?: Subset<T, subscription_plans$hotelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$hotelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pending_signups<T extends subscription_plans$pending_signupsArgs<ExtArgs> = {}>(args?: Subset<T, subscription_plans$pending_signupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$pending_signupsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -18428,8 +18648,6 @@ export namespace Prisma {
     readonly max_branches: FieldRef<"subscription_plans", 'Int'>
     readonly max_pos_devices: FieldRef<"subscription_plans", 'Int'>
     readonly price_monthly: FieldRef<"subscription_plans", 'Decimal'>
-    readonly features: FieldRef<"subscription_plans", 'Json'>
-    readonly is_rooms: FieldRef<"subscription_plans", 'Boolean'>
     readonly is_active: FieldRef<"subscription_plans", 'Boolean'>
     readonly created_at: FieldRef<"subscription_plans", 'DateTime'>
   }
@@ -18825,6 +19043,30 @@ export namespace Prisma {
   }
 
   /**
+   * subscription_plans.sections
+   */
+  export type subscription_plans$sectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    where?: plan_sectionsWhereInput
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    cursor?: plan_sectionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Plan_sectionsScalarFieldEnum | Plan_sectionsScalarFieldEnum[]
+  }
+
+  /**
    * subscription_plans.hotels
    */
   export type subscription_plans$hotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18888,6 +19130,2211 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: subscription_plansInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model sections
+   */
+
+  export type AggregateSections = {
+    _count: SectionsCountAggregateOutputType | null
+    _avg: SectionsAvgAggregateOutputType | null
+    _sum: SectionsSumAggregateOutputType | null
+    _min: SectionsMinAggregateOutputType | null
+    _max: SectionsMaxAggregateOutputType | null
+  }
+
+  export type SectionsAvgAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type SectionsSumAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type SectionsMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type SectionsMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type SectionsCountAggregateOutputType = {
+    id: number
+    key: number
+    name: number
+    description: number
+    icon: number
+    sort_order: number
+    is_active: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type SectionsAvgAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type SectionsSumAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type SectionsMinAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type SectionsMaxAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type SectionsCountAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type SectionsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sections to aggregate.
+     */
+    where?: sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sections to fetch.
+     */
+    orderBy?: sectionsOrderByWithRelationInput | sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned sections
+    **/
+    _count?: true | SectionsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SectionsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SectionsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SectionsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SectionsMaxAggregateInputType
+  }
+
+  export type GetSectionsAggregateType<T extends SectionsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSections]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSections[P]>
+      : GetScalarType<T[P], AggregateSections[P]>
+  }
+
+
+
+
+  export type sectionsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sectionsWhereInput
+    orderBy?: sectionsOrderByWithAggregationInput | sectionsOrderByWithAggregationInput[]
+    by: SectionsScalarFieldEnum[] | SectionsScalarFieldEnum
+    having?: sectionsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SectionsCountAggregateInputType | true
+    _avg?: SectionsAvgAggregateInputType
+    _sum?: SectionsSumAggregateInputType
+    _min?: SectionsMinAggregateInputType
+    _max?: SectionsMaxAggregateInputType
+  }
+
+  export type SectionsGroupByOutputType = {
+    id: string
+    key: string
+    name: string
+    description: string | null
+    icon: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+    _count: SectionsCountAggregateOutputType | null
+    _avg: SectionsAvgAggregateOutputType | null
+    _sum: SectionsSumAggregateOutputType | null
+    _min: SectionsMinAggregateOutputType | null
+    _max: SectionsMaxAggregateOutputType | null
+  }
+
+  type GetSectionsGroupByPayload<T extends sectionsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SectionsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SectionsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SectionsGroupByOutputType[P]>
+            : GetScalarType<T[P], SectionsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type sectionsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+    plan_sections?: boolean | sections$plan_sectionsArgs<ExtArgs>
+    _count?: boolean | SectionsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sections"]>
+
+  export type sectionsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["sections"]>
+
+  export type sectionsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["sections"]>
+
+  export type sectionsSelectScalar = {
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }
+
+  export type sectionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "name" | "description" | "icon" | "sort_order" | "is_active" | "created_at", ExtArgs["result"]["sections"]>
+  export type sectionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    plan_sections?: boolean | sections$plan_sectionsArgs<ExtArgs>
+    _count?: boolean | SectionsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type sectionsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type sectionsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $sectionsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "sections"
+    objects: {
+      plan_sections: Prisma.$plan_sectionsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      name: string
+      description: string | null
+      icon: string | null
+      sort_order: number | null
+      is_active: boolean | null
+      created_at: Date | null
+    }, ExtArgs["result"]["sections"]>
+    composites: {}
+  }
+
+  type sectionsGetPayload<S extends boolean | null | undefined | sectionsDefaultArgs> = $Result.GetResult<Prisma.$sectionsPayload, S>
+
+  type sectionsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<sectionsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SectionsCountAggregateInputType | true
+    }
+
+  export interface sectionsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['sections'], meta: { name: 'sections' } }
+    /**
+     * Find zero or one Sections that matches the filter.
+     * @param {sectionsFindUniqueArgs} args - Arguments to find a Sections
+     * @example
+     * // Get one Sections
+     * const sections = await prisma.sections.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends sectionsFindUniqueArgs>(args: SelectSubset<T, sectionsFindUniqueArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Sections that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {sectionsFindUniqueOrThrowArgs} args - Arguments to find a Sections
+     * @example
+     * // Get one Sections
+     * const sections = await prisma.sections.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends sectionsFindUniqueOrThrowArgs>(args: SelectSubset<T, sectionsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsFindFirstArgs} args - Arguments to find a Sections
+     * @example
+     * // Get one Sections
+     * const sections = await prisma.sections.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends sectionsFindFirstArgs>(args?: SelectSubset<T, sectionsFindFirstArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sections that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsFindFirstOrThrowArgs} args - Arguments to find a Sections
+     * @example
+     * // Get one Sections
+     * const sections = await prisma.sections.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends sectionsFindFirstOrThrowArgs>(args?: SelectSubset<T, sectionsFindFirstOrThrowArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sections
+     * const sections = await prisma.sections.findMany()
+     * 
+     * // Get first 10 Sections
+     * const sections = await prisma.sections.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sectionsWithIdOnly = await prisma.sections.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends sectionsFindManyArgs>(args?: SelectSubset<T, sectionsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Sections.
+     * @param {sectionsCreateArgs} args - Arguments to create a Sections.
+     * @example
+     * // Create one Sections
+     * const Sections = await prisma.sections.create({
+     *   data: {
+     *     // ... data to create a Sections
+     *   }
+     * })
+     * 
+     */
+    create<T extends sectionsCreateArgs>(args: SelectSubset<T, sectionsCreateArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sections.
+     * @param {sectionsCreateManyArgs} args - Arguments to create many Sections.
+     * @example
+     * // Create many Sections
+     * const sections = await prisma.sections.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends sectionsCreateManyArgs>(args?: SelectSubset<T, sectionsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sections and returns the data saved in the database.
+     * @param {sectionsCreateManyAndReturnArgs} args - Arguments to create many Sections.
+     * @example
+     * // Create many Sections
+     * const sections = await prisma.sections.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sections and only return the `id`
+     * const sectionsWithIdOnly = await prisma.sections.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends sectionsCreateManyAndReturnArgs>(args?: SelectSubset<T, sectionsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Sections.
+     * @param {sectionsDeleteArgs} args - Arguments to delete one Sections.
+     * @example
+     * // Delete one Sections
+     * const Sections = await prisma.sections.delete({
+     *   where: {
+     *     // ... filter to delete one Sections
+     *   }
+     * })
+     * 
+     */
+    delete<T extends sectionsDeleteArgs>(args: SelectSubset<T, sectionsDeleteArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Sections.
+     * @param {sectionsUpdateArgs} args - Arguments to update one Sections.
+     * @example
+     * // Update one Sections
+     * const sections = await prisma.sections.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends sectionsUpdateArgs>(args: SelectSubset<T, sectionsUpdateArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sections.
+     * @param {sectionsDeleteManyArgs} args - Arguments to filter Sections to delete.
+     * @example
+     * // Delete a few Sections
+     * const { count } = await prisma.sections.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends sectionsDeleteManyArgs>(args?: SelectSubset<T, sectionsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sections
+     * const sections = await prisma.sections.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends sectionsUpdateManyArgs>(args: SelectSubset<T, sectionsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sections and returns the data updated in the database.
+     * @param {sectionsUpdateManyAndReturnArgs} args - Arguments to update many Sections.
+     * @example
+     * // Update many Sections
+     * const sections = await prisma.sections.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sections and only return the `id`
+     * const sectionsWithIdOnly = await prisma.sections.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends sectionsUpdateManyAndReturnArgs>(args: SelectSubset<T, sectionsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Sections.
+     * @param {sectionsUpsertArgs} args - Arguments to update or create a Sections.
+     * @example
+     * // Update or create a Sections
+     * const sections = await prisma.sections.upsert({
+     *   create: {
+     *     // ... data to create a Sections
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sections we want to update
+     *   }
+     * })
+     */
+    upsert<T extends sectionsUpsertArgs>(args: SelectSubset<T, sectionsUpsertArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsCountArgs} args - Arguments to filter Sections to count.
+     * @example
+     * // Count the number of Sections
+     * const count = await prisma.sections.count({
+     *   where: {
+     *     // ... the filter for the Sections we want to count
+     *   }
+     * })
+    **/
+    count<T extends sectionsCountArgs>(
+      args?: Subset<T, sectionsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SectionsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SectionsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SectionsAggregateArgs>(args: Subset<T, SectionsAggregateArgs>): Prisma.PrismaPromise<GetSectionsAggregateType<T>>
+
+    /**
+     * Group by Sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sectionsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends sectionsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: sectionsGroupByArgs['orderBy'] }
+        : { orderBy?: sectionsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, sectionsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSectionsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the sections model
+   */
+  readonly fields: sectionsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for sections.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__sectionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    plan_sections<T extends sections$plan_sectionsArgs<ExtArgs> = {}>(args?: Subset<T, sections$plan_sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the sections model
+   */
+  interface sectionsFieldRefs {
+    readonly id: FieldRef<"sections", 'String'>
+    readonly key: FieldRef<"sections", 'String'>
+    readonly name: FieldRef<"sections", 'String'>
+    readonly description: FieldRef<"sections", 'String'>
+    readonly icon: FieldRef<"sections", 'String'>
+    readonly sort_order: FieldRef<"sections", 'Int'>
+    readonly is_active: FieldRef<"sections", 'Boolean'>
+    readonly created_at: FieldRef<"sections", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * sections findUnique
+   */
+  export type sectionsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which sections to fetch.
+     */
+    where: sectionsWhereUniqueInput
+  }
+
+  /**
+   * sections findUniqueOrThrow
+   */
+  export type sectionsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which sections to fetch.
+     */
+    where: sectionsWhereUniqueInput
+  }
+
+  /**
+   * sections findFirst
+   */
+  export type sectionsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which sections to fetch.
+     */
+    where?: sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sections to fetch.
+     */
+    orderBy?: sectionsOrderByWithRelationInput | sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sections.
+     */
+    cursor?: sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sections.
+     */
+    distinct?: SectionsScalarFieldEnum | SectionsScalarFieldEnum[]
+  }
+
+  /**
+   * sections findFirstOrThrow
+   */
+  export type sectionsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which sections to fetch.
+     */
+    where?: sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sections to fetch.
+     */
+    orderBy?: sectionsOrderByWithRelationInput | sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sections.
+     */
+    cursor?: sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sections.
+     */
+    distinct?: SectionsScalarFieldEnum | SectionsScalarFieldEnum[]
+  }
+
+  /**
+   * sections findMany
+   */
+  export type sectionsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which sections to fetch.
+     */
+    where?: sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sections to fetch.
+     */
+    orderBy?: sectionsOrderByWithRelationInput | sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing sections.
+     */
+    cursor?: sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sections.
+     */
+    distinct?: SectionsScalarFieldEnum | SectionsScalarFieldEnum[]
+  }
+
+  /**
+   * sections create
+   */
+  export type sectionsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a sections.
+     */
+    data: XOR<sectionsCreateInput, sectionsUncheckedCreateInput>
+  }
+
+  /**
+   * sections createMany
+   */
+  export type sectionsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many sections.
+     */
+    data: sectionsCreateManyInput | sectionsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * sections createManyAndReturn
+   */
+  export type sectionsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * The data used to create many sections.
+     */
+    data: sectionsCreateManyInput | sectionsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * sections update
+   */
+  export type sectionsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a sections.
+     */
+    data: XOR<sectionsUpdateInput, sectionsUncheckedUpdateInput>
+    /**
+     * Choose, which sections to update.
+     */
+    where: sectionsWhereUniqueInput
+  }
+
+  /**
+   * sections updateMany
+   */
+  export type sectionsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update sections.
+     */
+    data: XOR<sectionsUpdateManyMutationInput, sectionsUncheckedUpdateManyInput>
+    /**
+     * Filter which sections to update
+     */
+    where?: sectionsWhereInput
+    /**
+     * Limit how many sections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * sections updateManyAndReturn
+   */
+  export type sectionsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * The data used to update sections.
+     */
+    data: XOR<sectionsUpdateManyMutationInput, sectionsUncheckedUpdateManyInput>
+    /**
+     * Filter which sections to update
+     */
+    where?: sectionsWhereInput
+    /**
+     * Limit how many sections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * sections upsert
+   */
+  export type sectionsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the sections to update in case it exists.
+     */
+    where: sectionsWhereUniqueInput
+    /**
+     * In case the sections found by the `where` argument doesn't exist, create a new sections with this data.
+     */
+    create: XOR<sectionsCreateInput, sectionsUncheckedCreateInput>
+    /**
+     * In case the sections was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<sectionsUpdateInput, sectionsUncheckedUpdateInput>
+  }
+
+  /**
+   * sections delete
+   */
+  export type sectionsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+    /**
+     * Filter which sections to delete.
+     */
+    where: sectionsWhereUniqueInput
+  }
+
+  /**
+   * sections deleteMany
+   */
+  export type sectionsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sections to delete
+     */
+    where?: sectionsWhereInput
+    /**
+     * Limit how many sections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * sections.plan_sections
+   */
+  export type sections$plan_sectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    where?: plan_sectionsWhereInput
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    cursor?: plan_sectionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Plan_sectionsScalarFieldEnum | Plan_sectionsScalarFieldEnum[]
+  }
+
+  /**
+   * sections without action
+   */
+  export type sectionsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sections
+     */
+    select?: sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sections
+     */
+    omit?: sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sectionsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model plan_sections
+   */
+
+  export type AggregatePlan_sections = {
+    _count: Plan_sectionsCountAggregateOutputType | null
+    _min: Plan_sectionsMinAggregateOutputType | null
+    _max: Plan_sectionsMaxAggregateOutputType | null
+  }
+
+  export type Plan_sectionsMinAggregateOutputType = {
+    plan_id: string | null
+    section_id: string | null
+    is_enabled: boolean | null
+  }
+
+  export type Plan_sectionsMaxAggregateOutputType = {
+    plan_id: string | null
+    section_id: string | null
+    is_enabled: boolean | null
+  }
+
+  export type Plan_sectionsCountAggregateOutputType = {
+    plan_id: number
+    section_id: number
+    is_enabled: number
+    config: number
+    _all: number
+  }
+
+
+  export type Plan_sectionsMinAggregateInputType = {
+    plan_id?: true
+    section_id?: true
+    is_enabled?: true
+  }
+
+  export type Plan_sectionsMaxAggregateInputType = {
+    plan_id?: true
+    section_id?: true
+    is_enabled?: true
+  }
+
+  export type Plan_sectionsCountAggregateInputType = {
+    plan_id?: true
+    section_id?: true
+    is_enabled?: true
+    config?: true
+    _all?: true
+  }
+
+  export type Plan_sectionsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which plan_sections to aggregate.
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of plan_sections to fetch.
+     */
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: plan_sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` plan_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` plan_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned plan_sections
+    **/
+    _count?: true | Plan_sectionsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Plan_sectionsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Plan_sectionsMaxAggregateInputType
+  }
+
+  export type GetPlan_sectionsAggregateType<T extends Plan_sectionsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlan_sections]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlan_sections[P]>
+      : GetScalarType<T[P], AggregatePlan_sections[P]>
+  }
+
+
+
+
+  export type plan_sectionsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: plan_sectionsWhereInput
+    orderBy?: plan_sectionsOrderByWithAggregationInput | plan_sectionsOrderByWithAggregationInput[]
+    by: Plan_sectionsScalarFieldEnum[] | Plan_sectionsScalarFieldEnum
+    having?: plan_sectionsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Plan_sectionsCountAggregateInputType | true
+    _min?: Plan_sectionsMinAggregateInputType
+    _max?: Plan_sectionsMaxAggregateInputType
+  }
+
+  export type Plan_sectionsGroupByOutputType = {
+    plan_id: string
+    section_id: string
+    is_enabled: boolean
+    config: JsonValue | null
+    _count: Plan_sectionsCountAggregateOutputType | null
+    _min: Plan_sectionsMinAggregateOutputType | null
+    _max: Plan_sectionsMaxAggregateOutputType | null
+  }
+
+  type GetPlan_sectionsGroupByPayload<T extends plan_sectionsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Plan_sectionsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Plan_sectionsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Plan_sectionsGroupByOutputType[P]>
+            : GetScalarType<T[P], Plan_sectionsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type plan_sectionsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    plan_id?: boolean
+    section_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plan_sections"]>
+
+  export type plan_sectionsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    plan_id?: boolean
+    section_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plan_sections"]>
+
+  export type plan_sectionsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    plan_id?: boolean
+    section_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plan_sections"]>
+
+  export type plan_sectionsSelectScalar = {
+    plan_id?: boolean
+    section_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+  }
+
+  export type plan_sectionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"plan_id" | "section_id" | "is_enabled" | "config", ExtArgs["result"]["plan_sections"]>
+  export type plan_sectionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }
+  export type plan_sectionsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }
+  export type plan_sectionsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subscription_plans?: boolean | subscription_plansDefaultArgs<ExtArgs>
+    sections?: boolean | sectionsDefaultArgs<ExtArgs>
+  }
+
+  export type $plan_sectionsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "plan_sections"
+    objects: {
+      subscription_plans: Prisma.$subscription_plansPayload<ExtArgs>
+      sections: Prisma.$sectionsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      plan_id: string
+      section_id: string
+      is_enabled: boolean
+      /**
+       * Per-section limits for this plan, e.g. { "max_rooms": 20, "max_items": 500 }
+       */
+      config: Prisma.JsonValue | null
+    }, ExtArgs["result"]["plan_sections"]>
+    composites: {}
+  }
+
+  type plan_sectionsGetPayload<S extends boolean | null | undefined | plan_sectionsDefaultArgs> = $Result.GetResult<Prisma.$plan_sectionsPayload, S>
+
+  type plan_sectionsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<plan_sectionsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Plan_sectionsCountAggregateInputType | true
+    }
+
+  export interface plan_sectionsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['plan_sections'], meta: { name: 'plan_sections' } }
+    /**
+     * Find zero or one Plan_sections that matches the filter.
+     * @param {plan_sectionsFindUniqueArgs} args - Arguments to find a Plan_sections
+     * @example
+     * // Get one Plan_sections
+     * const plan_sections = await prisma.plan_sections.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends plan_sectionsFindUniqueArgs>(args: SelectSubset<T, plan_sectionsFindUniqueArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Plan_sections that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {plan_sectionsFindUniqueOrThrowArgs} args - Arguments to find a Plan_sections
+     * @example
+     * // Get one Plan_sections
+     * const plan_sections = await prisma.plan_sections.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends plan_sectionsFindUniqueOrThrowArgs>(args: SelectSubset<T, plan_sectionsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Plan_sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsFindFirstArgs} args - Arguments to find a Plan_sections
+     * @example
+     * // Get one Plan_sections
+     * const plan_sections = await prisma.plan_sections.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends plan_sectionsFindFirstArgs>(args?: SelectSubset<T, plan_sectionsFindFirstArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Plan_sections that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsFindFirstOrThrowArgs} args - Arguments to find a Plan_sections
+     * @example
+     * // Get one Plan_sections
+     * const plan_sections = await prisma.plan_sections.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends plan_sectionsFindFirstOrThrowArgs>(args?: SelectSubset<T, plan_sectionsFindFirstOrThrowArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Plan_sections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Plan_sections
+     * const plan_sections = await prisma.plan_sections.findMany()
+     * 
+     * // Get first 10 Plan_sections
+     * const plan_sections = await prisma.plan_sections.findMany({ take: 10 })
+     * 
+     * // Only select the `plan_id`
+     * const plan_sectionsWithPlan_idOnly = await prisma.plan_sections.findMany({ select: { plan_id: true } })
+     * 
+     */
+    findMany<T extends plan_sectionsFindManyArgs>(args?: SelectSubset<T, plan_sectionsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Plan_sections.
+     * @param {plan_sectionsCreateArgs} args - Arguments to create a Plan_sections.
+     * @example
+     * // Create one Plan_sections
+     * const Plan_sections = await prisma.plan_sections.create({
+     *   data: {
+     *     // ... data to create a Plan_sections
+     *   }
+     * })
+     * 
+     */
+    create<T extends plan_sectionsCreateArgs>(args: SelectSubset<T, plan_sectionsCreateArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Plan_sections.
+     * @param {plan_sectionsCreateManyArgs} args - Arguments to create many Plan_sections.
+     * @example
+     * // Create many Plan_sections
+     * const plan_sections = await prisma.plan_sections.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends plan_sectionsCreateManyArgs>(args?: SelectSubset<T, plan_sectionsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Plan_sections and returns the data saved in the database.
+     * @param {plan_sectionsCreateManyAndReturnArgs} args - Arguments to create many Plan_sections.
+     * @example
+     * // Create many Plan_sections
+     * const plan_sections = await prisma.plan_sections.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Plan_sections and only return the `plan_id`
+     * const plan_sectionsWithPlan_idOnly = await prisma.plan_sections.createManyAndReturn({
+     *   select: { plan_id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends plan_sectionsCreateManyAndReturnArgs>(args?: SelectSubset<T, plan_sectionsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Plan_sections.
+     * @param {plan_sectionsDeleteArgs} args - Arguments to delete one Plan_sections.
+     * @example
+     * // Delete one Plan_sections
+     * const Plan_sections = await prisma.plan_sections.delete({
+     *   where: {
+     *     // ... filter to delete one Plan_sections
+     *   }
+     * })
+     * 
+     */
+    delete<T extends plan_sectionsDeleteArgs>(args: SelectSubset<T, plan_sectionsDeleteArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Plan_sections.
+     * @param {plan_sectionsUpdateArgs} args - Arguments to update one Plan_sections.
+     * @example
+     * // Update one Plan_sections
+     * const plan_sections = await prisma.plan_sections.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends plan_sectionsUpdateArgs>(args: SelectSubset<T, plan_sectionsUpdateArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Plan_sections.
+     * @param {plan_sectionsDeleteManyArgs} args - Arguments to filter Plan_sections to delete.
+     * @example
+     * // Delete a few Plan_sections
+     * const { count } = await prisma.plan_sections.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends plan_sectionsDeleteManyArgs>(args?: SelectSubset<T, plan_sectionsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Plan_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Plan_sections
+     * const plan_sections = await prisma.plan_sections.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends plan_sectionsUpdateManyArgs>(args: SelectSubset<T, plan_sectionsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Plan_sections and returns the data updated in the database.
+     * @param {plan_sectionsUpdateManyAndReturnArgs} args - Arguments to update many Plan_sections.
+     * @example
+     * // Update many Plan_sections
+     * const plan_sections = await prisma.plan_sections.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Plan_sections and only return the `plan_id`
+     * const plan_sectionsWithPlan_idOnly = await prisma.plan_sections.updateManyAndReturn({
+     *   select: { plan_id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends plan_sectionsUpdateManyAndReturnArgs>(args: SelectSubset<T, plan_sectionsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Plan_sections.
+     * @param {plan_sectionsUpsertArgs} args - Arguments to update or create a Plan_sections.
+     * @example
+     * // Update or create a Plan_sections
+     * const plan_sections = await prisma.plan_sections.upsert({
+     *   create: {
+     *     // ... data to create a Plan_sections
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Plan_sections we want to update
+     *   }
+     * })
+     */
+    upsert<T extends plan_sectionsUpsertArgs>(args: SelectSubset<T, plan_sectionsUpsertArgs<ExtArgs>>): Prisma__plan_sectionsClient<$Result.GetResult<Prisma.$plan_sectionsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Plan_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsCountArgs} args - Arguments to filter Plan_sections to count.
+     * @example
+     * // Count the number of Plan_sections
+     * const count = await prisma.plan_sections.count({
+     *   where: {
+     *     // ... the filter for the Plan_sections we want to count
+     *   }
+     * })
+    **/
+    count<T extends plan_sectionsCountArgs>(
+      args?: Subset<T, plan_sectionsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Plan_sectionsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Plan_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plan_sectionsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Plan_sectionsAggregateArgs>(args: Subset<T, Plan_sectionsAggregateArgs>): Prisma.PrismaPromise<GetPlan_sectionsAggregateType<T>>
+
+    /**
+     * Group by Plan_sections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {plan_sectionsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends plan_sectionsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: plan_sectionsGroupByArgs['orderBy'] }
+        : { orderBy?: plan_sectionsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, plan_sectionsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlan_sectionsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the plan_sections model
+   */
+  readonly fields: plan_sectionsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for plan_sections.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__plan_sectionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    subscription_plans<T extends subscription_plansDefaultArgs<ExtArgs> = {}>(args?: Subset<T, subscription_plansDefaultArgs<ExtArgs>>): Prisma__subscription_plansClient<$Result.GetResult<Prisma.$subscription_plansPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sections<T extends sectionsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, sectionsDefaultArgs<ExtArgs>>): Prisma__sectionsClient<$Result.GetResult<Prisma.$sectionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the plan_sections model
+   */
+  interface plan_sectionsFieldRefs {
+    readonly plan_id: FieldRef<"plan_sections", 'String'>
+    readonly section_id: FieldRef<"plan_sections", 'String'>
+    readonly is_enabled: FieldRef<"plan_sections", 'Boolean'>
+    readonly config: FieldRef<"plan_sections", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * plan_sections findUnique
+   */
+  export type plan_sectionsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which plan_sections to fetch.
+     */
+    where: plan_sectionsWhereUniqueInput
+  }
+
+  /**
+   * plan_sections findUniqueOrThrow
+   */
+  export type plan_sectionsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which plan_sections to fetch.
+     */
+    where: plan_sectionsWhereUniqueInput
+  }
+
+  /**
+   * plan_sections findFirst
+   */
+  export type plan_sectionsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which plan_sections to fetch.
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of plan_sections to fetch.
+     */
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for plan_sections.
+     */
+    cursor?: plan_sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` plan_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` plan_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of plan_sections.
+     */
+    distinct?: Plan_sectionsScalarFieldEnum | Plan_sectionsScalarFieldEnum[]
+  }
+
+  /**
+   * plan_sections findFirstOrThrow
+   */
+  export type plan_sectionsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which plan_sections to fetch.
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of plan_sections to fetch.
+     */
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for plan_sections.
+     */
+    cursor?: plan_sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` plan_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` plan_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of plan_sections.
+     */
+    distinct?: Plan_sectionsScalarFieldEnum | Plan_sectionsScalarFieldEnum[]
+  }
+
+  /**
+   * plan_sections findMany
+   */
+  export type plan_sectionsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter, which plan_sections to fetch.
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of plan_sections to fetch.
+     */
+    orderBy?: plan_sectionsOrderByWithRelationInput | plan_sectionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing plan_sections.
+     */
+    cursor?: plan_sectionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` plan_sections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` plan_sections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of plan_sections.
+     */
+    distinct?: Plan_sectionsScalarFieldEnum | Plan_sectionsScalarFieldEnum[]
+  }
+
+  /**
+   * plan_sections create
+   */
+  export type plan_sectionsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a plan_sections.
+     */
+    data: XOR<plan_sectionsCreateInput, plan_sectionsUncheckedCreateInput>
+  }
+
+  /**
+   * plan_sections createMany
+   */
+  export type plan_sectionsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many plan_sections.
+     */
+    data: plan_sectionsCreateManyInput | plan_sectionsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * plan_sections createManyAndReturn
+   */
+  export type plan_sectionsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * The data used to create many plan_sections.
+     */
+    data: plan_sectionsCreateManyInput | plan_sectionsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * plan_sections update
+   */
+  export type plan_sectionsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a plan_sections.
+     */
+    data: XOR<plan_sectionsUpdateInput, plan_sectionsUncheckedUpdateInput>
+    /**
+     * Choose, which plan_sections to update.
+     */
+    where: plan_sectionsWhereUniqueInput
+  }
+
+  /**
+   * plan_sections updateMany
+   */
+  export type plan_sectionsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update plan_sections.
+     */
+    data: XOR<plan_sectionsUpdateManyMutationInput, plan_sectionsUncheckedUpdateManyInput>
+    /**
+     * Filter which plan_sections to update
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * Limit how many plan_sections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * plan_sections updateManyAndReturn
+   */
+  export type plan_sectionsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * The data used to update plan_sections.
+     */
+    data: XOR<plan_sectionsUpdateManyMutationInput, plan_sectionsUncheckedUpdateManyInput>
+    /**
+     * Filter which plan_sections to update
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * Limit how many plan_sections to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * plan_sections upsert
+   */
+  export type plan_sectionsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the plan_sections to update in case it exists.
+     */
+    where: plan_sectionsWhereUniqueInput
+    /**
+     * In case the plan_sections found by the `where` argument doesn't exist, create a new plan_sections with this data.
+     */
+    create: XOR<plan_sectionsCreateInput, plan_sectionsUncheckedCreateInput>
+    /**
+     * In case the plan_sections was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<plan_sectionsUpdateInput, plan_sectionsUncheckedUpdateInput>
+  }
+
+  /**
+   * plan_sections delete
+   */
+  export type plan_sectionsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
+    /**
+     * Filter which plan_sections to delete.
+     */
+    where: plan_sectionsWhereUniqueInput
+  }
+
+  /**
+   * plan_sections deleteMany
+   */
+  export type plan_sectionsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which plan_sections to delete
+     */
+    where?: plan_sectionsWhereInput
+    /**
+     * Limit how many plan_sections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * plan_sections without action
+   */
+  export type plan_sectionsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the plan_sections
+     */
+    select?: plan_sectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the plan_sections
+     */
+    omit?: plan_sectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: plan_sectionsInclude<ExtArgs> | null
   }
 
 
@@ -69430,6 +71877,7 @@ export namespace Prisma {
     subscription_status: 'subscription_status',
     subscription_expires_at: 'subscription_expires_at',
     is_online: 'is_online',
+    delivery_type: 'delivery_type',
     created_at: 'created_at',
     updated_at: 'updated_at',
     verification_status: 'verification_status'
@@ -69489,13 +71937,35 @@ export namespace Prisma {
     max_branches: 'max_branches',
     max_pos_devices: 'max_pos_devices',
     price_monthly: 'price_monthly',
-    features: 'features',
-    is_rooms: 'is_rooms',
     is_active: 'is_active',
     created_at: 'created_at'
   };
 
   export type Subscription_plansScalarFieldEnum = (typeof Subscription_plansScalarFieldEnum)[keyof typeof Subscription_plansScalarFieldEnum]
+
+
+  export const SectionsScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    description: 'description',
+    icon: 'icon',
+    sort_order: 'sort_order',
+    is_active: 'is_active',
+    created_at: 'created_at'
+  };
+
+  export type SectionsScalarFieldEnum = (typeof SectionsScalarFieldEnum)[keyof typeof SectionsScalarFieldEnum]
+
+
+  export const Plan_sectionsScalarFieldEnum: {
+    plan_id: 'plan_id',
+    section_id: 'section_id',
+    is_enabled: 'is_enabled',
+    config: 'config'
+  };
+
+  export type Plan_sectionsScalarFieldEnum = (typeof Plan_sectionsScalarFieldEnum)[keyof typeof Plan_sectionsScalarFieldEnum]
 
 
   export const ProvincesScalarFieldEnum: {
@@ -70681,6 +73151,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     verification_status?: StringFilter<"hotels"> | string
@@ -70701,6 +73172,7 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
+    delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     verification_status?: SortOrder
@@ -70724,6 +73196,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     verification_status?: StringFilter<"hotels"> | string
@@ -70744,6 +73217,7 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
+    delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     verification_status?: SortOrder
@@ -70764,6 +73238,7 @@ export namespace Prisma {
     subscription_status?: StringNullableWithAggregatesFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     is_online?: BoolWithAggregatesFilter<"hotels"> | boolean
+    delivery_type?: StringWithAggregatesFilter<"hotels"> | string
     created_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     verification_status?: StringWithAggregatesFilter<"hotels"> | string
@@ -71005,10 +73480,9 @@ export namespace Prisma {
     max_branches?: IntFilter<"subscription_plans"> | number
     max_pos_devices?: IntFilter<"subscription_plans"> | number
     price_monthly?: DecimalFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
-    features?: JsonNullableFilter<"subscription_plans">
-    is_rooms?: BoolFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableFilter<"subscription_plans"> | Date | string | null
+    sections?: Plan_sectionsListRelationFilter
     hotels?: HotelsListRelationFilter
     pending_signups?: Pending_signupsListRelationFilter
   }
@@ -71019,10 +73493,9 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
-    features?: SortOrderInput | SortOrder
-    is_rooms?: SortOrder
     is_active?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
+    sections?: plan_sectionsOrderByRelationAggregateInput
     hotels?: hotelsOrderByRelationAggregateInput
     pending_signups?: pending_signupsOrderByRelationAggregateInput
   }
@@ -71036,10 +73509,9 @@ export namespace Prisma {
     max_branches?: IntFilter<"subscription_plans"> | number
     max_pos_devices?: IntFilter<"subscription_plans"> | number
     price_monthly?: DecimalFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
-    features?: JsonNullableFilter<"subscription_plans">
-    is_rooms?: BoolFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableFilter<"subscription_plans"> | Date | string | null
+    sections?: Plan_sectionsListRelationFilter
     hotels?: HotelsListRelationFilter
     pending_signups?: Pending_signupsListRelationFilter
   }, "id">
@@ -71050,8 +73522,6 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
-    features?: SortOrderInput | SortOrder
-    is_rooms?: SortOrder
     is_active?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     _count?: subscription_plansCountOrderByAggregateInput
@@ -71070,10 +73540,134 @@ export namespace Prisma {
     max_branches?: IntWithAggregatesFilter<"subscription_plans"> | number
     max_pos_devices?: IntWithAggregatesFilter<"subscription_plans"> | number
     price_monthly?: DecimalWithAggregatesFilter<"subscription_plans"> | Decimal | DecimalJsLike | number | string
-    features?: JsonNullableWithAggregatesFilter<"subscription_plans">
-    is_rooms?: BoolWithAggregatesFilter<"subscription_plans"> | boolean
     is_active?: BoolNullableWithAggregatesFilter<"subscription_plans"> | boolean | null
     created_at?: DateTimeNullableWithAggregatesFilter<"subscription_plans"> | Date | string | null
+  }
+
+  export type sectionsWhereInput = {
+    AND?: sectionsWhereInput | sectionsWhereInput[]
+    OR?: sectionsWhereInput[]
+    NOT?: sectionsWhereInput | sectionsWhereInput[]
+    id?: UuidFilter<"sections"> | string
+    key?: StringFilter<"sections"> | string
+    name?: StringFilter<"sections"> | string
+    description?: StringNullableFilter<"sections"> | string | null
+    icon?: StringNullableFilter<"sections"> | string | null
+    sort_order?: IntNullableFilter<"sections"> | number | null
+    is_active?: BoolNullableFilter<"sections"> | boolean | null
+    created_at?: DateTimeNullableFilter<"sections"> | Date | string | null
+    plan_sections?: Plan_sectionsListRelationFilter
+  }
+
+  export type sectionsOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    plan_sections?: plan_sectionsOrderByRelationAggregateInput
+  }
+
+  export type sectionsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: sectionsWhereInput | sectionsWhereInput[]
+    OR?: sectionsWhereInput[]
+    NOT?: sectionsWhereInput | sectionsWhereInput[]
+    name?: StringFilter<"sections"> | string
+    description?: StringNullableFilter<"sections"> | string | null
+    icon?: StringNullableFilter<"sections"> | string | null
+    sort_order?: IntNullableFilter<"sections"> | number | null
+    is_active?: BoolNullableFilter<"sections"> | boolean | null
+    created_at?: DateTimeNullableFilter<"sections"> | Date | string | null
+    plan_sections?: Plan_sectionsListRelationFilter
+  }, "id" | "key">
+
+  export type sectionsOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: sectionsCountOrderByAggregateInput
+    _avg?: sectionsAvgOrderByAggregateInput
+    _max?: sectionsMaxOrderByAggregateInput
+    _min?: sectionsMinOrderByAggregateInput
+    _sum?: sectionsSumOrderByAggregateInput
+  }
+
+  export type sectionsScalarWhereWithAggregatesInput = {
+    AND?: sectionsScalarWhereWithAggregatesInput | sectionsScalarWhereWithAggregatesInput[]
+    OR?: sectionsScalarWhereWithAggregatesInput[]
+    NOT?: sectionsScalarWhereWithAggregatesInput | sectionsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"sections"> | string
+    key?: StringWithAggregatesFilter<"sections"> | string
+    name?: StringWithAggregatesFilter<"sections"> | string
+    description?: StringNullableWithAggregatesFilter<"sections"> | string | null
+    icon?: StringNullableWithAggregatesFilter<"sections"> | string | null
+    sort_order?: IntNullableWithAggregatesFilter<"sections"> | number | null
+    is_active?: BoolNullableWithAggregatesFilter<"sections"> | boolean | null
+    created_at?: DateTimeNullableWithAggregatesFilter<"sections"> | Date | string | null
+  }
+
+  export type plan_sectionsWhereInput = {
+    AND?: plan_sectionsWhereInput | plan_sectionsWhereInput[]
+    OR?: plan_sectionsWhereInput[]
+    NOT?: plan_sectionsWhereInput | plan_sectionsWhereInput[]
+    plan_id?: UuidFilter<"plan_sections"> | string
+    section_id?: UuidFilter<"plan_sections"> | string
+    is_enabled?: BoolFilter<"plan_sections"> | boolean
+    config?: JsonNullableFilter<"plan_sections">
+    subscription_plans?: XOR<Subscription_plansScalarRelationFilter, subscription_plansWhereInput>
+    sections?: XOR<SectionsScalarRelationFilter, sectionsWhereInput>
+  }
+
+  export type plan_sectionsOrderByWithRelationInput = {
+    plan_id?: SortOrder
+    section_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrderInput | SortOrder
+    subscription_plans?: subscription_plansOrderByWithRelationInput
+    sections?: sectionsOrderByWithRelationInput
+  }
+
+  export type plan_sectionsWhereUniqueInput = Prisma.AtLeast<{
+    plan_id_section_id?: plan_sectionsPlan_idSection_idCompoundUniqueInput
+    AND?: plan_sectionsWhereInput | plan_sectionsWhereInput[]
+    OR?: plan_sectionsWhereInput[]
+    NOT?: plan_sectionsWhereInput | plan_sectionsWhereInput[]
+    plan_id?: UuidFilter<"plan_sections"> | string
+    section_id?: UuidFilter<"plan_sections"> | string
+    is_enabled?: BoolFilter<"plan_sections"> | boolean
+    config?: JsonNullableFilter<"plan_sections">
+    subscription_plans?: XOR<Subscription_plansScalarRelationFilter, subscription_plansWhereInput>
+    sections?: XOR<SectionsScalarRelationFilter, sectionsWhereInput>
+  }, "plan_id_section_id">
+
+  export type plan_sectionsOrderByWithAggregationInput = {
+    plan_id?: SortOrder
+    section_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrderInput | SortOrder
+    _count?: plan_sectionsCountOrderByAggregateInput
+    _max?: plan_sectionsMaxOrderByAggregateInput
+    _min?: plan_sectionsMinOrderByAggregateInput
+  }
+
+  export type plan_sectionsScalarWhereWithAggregatesInput = {
+    AND?: plan_sectionsScalarWhereWithAggregatesInput | plan_sectionsScalarWhereWithAggregatesInput[]
+    OR?: plan_sectionsScalarWhereWithAggregatesInput[]
+    NOT?: plan_sectionsScalarWhereWithAggregatesInput | plan_sectionsScalarWhereWithAggregatesInput[]
+    plan_id?: UuidWithAggregatesFilter<"plan_sections"> | string
+    section_id?: UuidWithAggregatesFilter<"plan_sections"> | string
+    is_enabled?: BoolWithAggregatesFilter<"plan_sections"> | boolean
+    config?: JsonNullableWithAggregatesFilter<"plan_sections">
   }
 
   export type provincesWhereInput = {
@@ -75062,6 +77656,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -75082,6 +77677,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -75100,6 +77696,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -75120,6 +77717,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -75139,6 +77737,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -75152,6 +77751,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -75166,6 +77766,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -75426,10 +78027,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsCreateNestedManyWithoutSubscription_plansInput
     hotels?: hotelsCreateNestedManyWithoutSubscription_plansInput
     pending_signups?: pending_signupsCreateNestedManyWithoutSubscription_plansInput
   }
@@ -75440,10 +78040,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsUncheckedCreateNestedManyWithoutSubscription_plansInput
     hotels?: hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput
     pending_signups?: pending_signupsUncheckedCreateNestedManyWithoutSubscription_plansInput
   }
@@ -75454,10 +78053,9 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUpdateManyWithoutSubscription_plansNestedInput
     hotels?: hotelsUpdateManyWithoutSubscription_plansNestedInput
     pending_signups?: pending_signupsUpdateManyWithoutSubscription_plansNestedInput
   }
@@ -75468,10 +78066,9 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUncheckedUpdateManyWithoutSubscription_plansNestedInput
     hotels?: hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput
     pending_signups?: pending_signupsUncheckedUpdateManyWithoutSubscription_plansNestedInput
   }
@@ -75482,8 +78079,6 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
   }
@@ -75494,8 +78089,6 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -75506,10 +78099,136 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type sectionsCreateInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    plan_sections?: plan_sectionsCreateNestedManyWithoutSectionsInput
+  }
+
+  export type sectionsUncheckedCreateInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    plan_sections?: plan_sectionsUncheckedCreateNestedManyWithoutSectionsInput
+  }
+
+  export type sectionsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan_sections?: plan_sectionsUpdateManyWithoutSectionsNestedInput
+  }
+
+  export type sectionsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan_sections?: plan_sectionsUncheckedUpdateManyWithoutSectionsNestedInput
+  }
+
+  export type sectionsCreateManyInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type sectionsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type sectionsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type plan_sectionsCreateInput = {
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    subscription_plans: subscription_plansCreateNestedOneWithoutSectionsInput
+    sections: sectionsCreateNestedOneWithoutPlan_sectionsInput
+  }
+
+  export type plan_sectionsUncheckedCreateInput = {
+    plan_id: string
+    section_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUpdateInput = {
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    subscription_plans?: subscription_plansUpdateOneRequiredWithoutSectionsNestedInput
+    sections?: sectionsUpdateOneRequiredWithoutPlan_sectionsNestedInput
+  }
+
+  export type plan_sectionsUncheckedUpdateInput = {
+    plan_id?: StringFieldUpdateOperationsInput | string
+    section_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsCreateManyInput = {
+    plan_id: string
+    section_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUpdateManyMutationInput = {
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUncheckedUpdateManyInput = {
+    plan_id?: StringFieldUpdateOperationsInput | string
+    section_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type provincesCreateInput = {
@@ -79787,6 +82506,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     verification_status?: SortOrder
@@ -79801,6 +82521,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     verification_status?: SortOrder
@@ -79815,6 +82536,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     verification_status?: SortOrder
@@ -80021,28 +82743,11 @@ export namespace Prisma {
     gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type Plan_sectionsListRelationFilter = {
+    every?: plan_sectionsWhereInput
+    some?: plan_sectionsWhereInput
+    none?: plan_sectionsWhereInput
   }
 
   export type HotelsListRelationFilter = {
@@ -80055,6 +82760,10 @@ export namespace Prisma {
     every?: pending_signupsWhereInput
     some?: pending_signupsWhereInput
     none?: pending_signupsWhereInput
+  }
+
+  export type plan_sectionsOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type hotelsOrderByRelationAggregateInput = {
@@ -80071,8 +82780,6 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
-    features?: SortOrder
-    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -80089,7 +82796,6 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
-    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -80100,7 +82806,6 @@ export namespace Prisma {
     max_branches?: SortOrder
     max_pos_devices?: SortOrder
     price_monthly?: SortOrder
-    is_rooms?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
   }
@@ -80125,6 +82830,126 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type sectionsCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type sectionsAvgOrderByAggregateInput = {
+    sort_order?: SortOrder
+  }
+
+  export type sectionsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type sectionsMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type sectionsSumOrderByAggregateInput = {
+    sort_order?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type SectionsScalarRelationFilter = {
+    is?: sectionsWhereInput
+    isNot?: sectionsWhereInput
+  }
+
+  export type plan_sectionsPlan_idSection_idCompoundUniqueInput = {
+    plan_id: string
+    section_id: string
+  }
+
+  export type plan_sectionsCountOrderByAggregateInput = {
+    plan_id?: SortOrder
+    section_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrder
+  }
+
+  export type plan_sectionsMaxOrderByAggregateInput = {
+    plan_id?: SortOrder
+    section_id?: SortOrder
+    is_enabled?: SortOrder
+  }
+
+  export type plan_sectionsMinOrderByAggregateInput = {
+    plan_id?: SortOrder
+    section_id?: SortOrder
+    is_enabled?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -80437,17 +83262,6 @@ export namespace Prisma {
     created_at?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type customersHotel_idPhoneCompoundUniqueInput = {
     hotel_id: string
     phone: string
@@ -80492,22 +83306,6 @@ export namespace Prisma {
 
   export type customersSumOrderByAggregateInput = {
     loyalty_points?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BranchesScalarRelationFilter = {
@@ -83876,6 +86674,13 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type plan_sectionsCreateNestedManyWithoutSubscription_plansInput = {
+    create?: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput> | plan_sectionsCreateWithoutSubscription_plansInput[] | plan_sectionsUncheckedCreateWithoutSubscription_plansInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSubscription_plansInput | plan_sectionsCreateOrConnectWithoutSubscription_plansInput[]
+    createMany?: plan_sectionsCreateManySubscription_plansInputEnvelope
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+  }
+
   export type hotelsCreateNestedManyWithoutSubscription_plansInput = {
     create?: XOR<hotelsCreateWithoutSubscription_plansInput, hotelsUncheckedCreateWithoutSubscription_plansInput> | hotelsCreateWithoutSubscription_plansInput[] | hotelsUncheckedCreateWithoutSubscription_plansInput[]
     connectOrCreate?: hotelsCreateOrConnectWithoutSubscription_plansInput | hotelsCreateOrConnectWithoutSubscription_plansInput[]
@@ -83888,6 +86693,13 @@ export namespace Prisma {
     connectOrCreate?: pending_signupsCreateOrConnectWithoutSubscription_plansInput | pending_signupsCreateOrConnectWithoutSubscription_plansInput[]
     createMany?: pending_signupsCreateManySubscription_plansInputEnvelope
     connect?: pending_signupsWhereUniqueInput | pending_signupsWhereUniqueInput[]
+  }
+
+  export type plan_sectionsUncheckedCreateNestedManyWithoutSubscription_plansInput = {
+    create?: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput> | plan_sectionsCreateWithoutSubscription_plansInput[] | plan_sectionsUncheckedCreateWithoutSubscription_plansInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSubscription_plansInput | plan_sectionsCreateOrConnectWithoutSubscription_plansInput[]
+    createMany?: plan_sectionsCreateManySubscription_plansInputEnvelope
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
   }
 
   export type hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput = {
@@ -83910,6 +86722,20 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type plan_sectionsUpdateManyWithoutSubscription_plansNestedInput = {
+    create?: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput> | plan_sectionsCreateWithoutSubscription_plansInput[] | plan_sectionsUncheckedCreateWithoutSubscription_plansInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSubscription_plansInput | plan_sectionsCreateOrConnectWithoutSubscription_plansInput[]
+    upsert?: plan_sectionsUpsertWithWhereUniqueWithoutSubscription_plansInput | plan_sectionsUpsertWithWhereUniqueWithoutSubscription_plansInput[]
+    createMany?: plan_sectionsCreateManySubscription_plansInputEnvelope
+    set?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    disconnect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    delete?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    update?: plan_sectionsUpdateWithWhereUniqueWithoutSubscription_plansInput | plan_sectionsUpdateWithWhereUniqueWithoutSubscription_plansInput[]
+    updateMany?: plan_sectionsUpdateManyWithWhereWithoutSubscription_plansInput | plan_sectionsUpdateManyWithWhereWithoutSubscription_plansInput[]
+    deleteMany?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
   }
 
   export type hotelsUpdateManyWithoutSubscription_plansNestedInput = {
@@ -83940,6 +86766,20 @@ export namespace Prisma {
     deleteMany?: pending_signupsScalarWhereInput | pending_signupsScalarWhereInput[]
   }
 
+  export type plan_sectionsUncheckedUpdateManyWithoutSubscription_plansNestedInput = {
+    create?: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput> | plan_sectionsCreateWithoutSubscription_plansInput[] | plan_sectionsUncheckedCreateWithoutSubscription_plansInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSubscription_plansInput | plan_sectionsCreateOrConnectWithoutSubscription_plansInput[]
+    upsert?: plan_sectionsUpsertWithWhereUniqueWithoutSubscription_plansInput | plan_sectionsUpsertWithWhereUniqueWithoutSubscription_plansInput[]
+    createMany?: plan_sectionsCreateManySubscription_plansInputEnvelope
+    set?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    disconnect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    delete?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    update?: plan_sectionsUpdateWithWhereUniqueWithoutSubscription_plansInput | plan_sectionsUpdateWithWhereUniqueWithoutSubscription_plansInput[]
+    updateMany?: plan_sectionsUpdateManyWithWhereWithoutSubscription_plansInput | plan_sectionsUpdateManyWithWhereWithoutSubscription_plansInput[]
+    deleteMany?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
+  }
+
   export type hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput = {
     create?: XOR<hotelsCreateWithoutSubscription_plansInput, hotelsUncheckedCreateWithoutSubscription_plansInput> | hotelsCreateWithoutSubscription_plansInput[] | hotelsUncheckedCreateWithoutSubscription_plansInput[]
     connectOrCreate?: hotelsCreateOrConnectWithoutSubscription_plansInput | hotelsCreateOrConnectWithoutSubscription_plansInput[]
@@ -83966,6 +86806,84 @@ export namespace Prisma {
     update?: pending_signupsUpdateWithWhereUniqueWithoutSubscription_plansInput | pending_signupsUpdateWithWhereUniqueWithoutSubscription_plansInput[]
     updateMany?: pending_signupsUpdateManyWithWhereWithoutSubscription_plansInput | pending_signupsUpdateManyWithWhereWithoutSubscription_plansInput[]
     deleteMany?: pending_signupsScalarWhereInput | pending_signupsScalarWhereInput[]
+  }
+
+  export type plan_sectionsCreateNestedManyWithoutSectionsInput = {
+    create?: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput> | plan_sectionsCreateWithoutSectionsInput[] | plan_sectionsUncheckedCreateWithoutSectionsInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSectionsInput | plan_sectionsCreateOrConnectWithoutSectionsInput[]
+    createMany?: plan_sectionsCreateManySectionsInputEnvelope
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+  }
+
+  export type plan_sectionsUncheckedCreateNestedManyWithoutSectionsInput = {
+    create?: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput> | plan_sectionsCreateWithoutSectionsInput[] | plan_sectionsUncheckedCreateWithoutSectionsInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSectionsInput | plan_sectionsCreateOrConnectWithoutSectionsInput[]
+    createMany?: plan_sectionsCreateManySectionsInputEnvelope
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type plan_sectionsUpdateManyWithoutSectionsNestedInput = {
+    create?: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput> | plan_sectionsCreateWithoutSectionsInput[] | plan_sectionsUncheckedCreateWithoutSectionsInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSectionsInput | plan_sectionsCreateOrConnectWithoutSectionsInput[]
+    upsert?: plan_sectionsUpsertWithWhereUniqueWithoutSectionsInput | plan_sectionsUpsertWithWhereUniqueWithoutSectionsInput[]
+    createMany?: plan_sectionsCreateManySectionsInputEnvelope
+    set?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    disconnect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    delete?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    update?: plan_sectionsUpdateWithWhereUniqueWithoutSectionsInput | plan_sectionsUpdateWithWhereUniqueWithoutSectionsInput[]
+    updateMany?: plan_sectionsUpdateManyWithWhereWithoutSectionsInput | plan_sectionsUpdateManyWithWhereWithoutSectionsInput[]
+    deleteMany?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
+  }
+
+  export type plan_sectionsUncheckedUpdateManyWithoutSectionsNestedInput = {
+    create?: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput> | plan_sectionsCreateWithoutSectionsInput[] | plan_sectionsUncheckedCreateWithoutSectionsInput[]
+    connectOrCreate?: plan_sectionsCreateOrConnectWithoutSectionsInput | plan_sectionsCreateOrConnectWithoutSectionsInput[]
+    upsert?: plan_sectionsUpsertWithWhereUniqueWithoutSectionsInput | plan_sectionsUpsertWithWhereUniqueWithoutSectionsInput[]
+    createMany?: plan_sectionsCreateManySectionsInputEnvelope
+    set?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    disconnect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    delete?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    connect?: plan_sectionsWhereUniqueInput | plan_sectionsWhereUniqueInput[]
+    update?: plan_sectionsUpdateWithWhereUniqueWithoutSectionsInput | plan_sectionsUpdateWithWhereUniqueWithoutSectionsInput[]
+    updateMany?: plan_sectionsUpdateManyWithWhereWithoutSectionsInput | plan_sectionsUpdateManyWithWhereWithoutSectionsInput[]
+    deleteMany?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
+  }
+
+  export type subscription_plansCreateNestedOneWithoutSectionsInput = {
+    create?: XOR<subscription_plansCreateWithoutSectionsInput, subscription_plansUncheckedCreateWithoutSectionsInput>
+    connectOrCreate?: subscription_plansCreateOrConnectWithoutSectionsInput
+    connect?: subscription_plansWhereUniqueInput
+  }
+
+  export type sectionsCreateNestedOneWithoutPlan_sectionsInput = {
+    create?: XOR<sectionsCreateWithoutPlan_sectionsInput, sectionsUncheckedCreateWithoutPlan_sectionsInput>
+    connectOrCreate?: sectionsCreateOrConnectWithoutPlan_sectionsInput
+    connect?: sectionsWhereUniqueInput
+  }
+
+  export type subscription_plansUpdateOneRequiredWithoutSectionsNestedInput = {
+    create?: XOR<subscription_plansCreateWithoutSectionsInput, subscription_plansUncheckedCreateWithoutSectionsInput>
+    connectOrCreate?: subscription_plansCreateOrConnectWithoutSectionsInput
+    upsert?: subscription_plansUpsertWithoutSectionsInput
+    connect?: subscription_plansWhereUniqueInput
+    update?: XOR<XOR<subscription_plansUpdateToOneWithWhereWithoutSectionsInput, subscription_plansUpdateWithoutSectionsInput>, subscription_plansUncheckedUpdateWithoutSectionsInput>
+  }
+
+  export type sectionsUpdateOneRequiredWithoutPlan_sectionsNestedInput = {
+    create?: XOR<sectionsCreateWithoutPlan_sectionsInput, sectionsUncheckedCreateWithoutPlan_sectionsInput>
+    connectOrCreate?: sectionsCreateOrConnectWithoutPlan_sectionsInput
+    upsert?: sectionsUpsertWithoutPlan_sectionsInput
+    connect?: sectionsWhereUniqueInput
+    update?: XOR<XOR<sectionsUpdateToOneWithWhereWithoutPlan_sectionsInput, sectionsUpdateWithoutPlan_sectionsInput>, sectionsUncheckedUpdateWithoutPlan_sectionsInput>
   }
 
   export type branchesCreateNestedManyWithoutProvincesInput = {
@@ -85092,14 +88010,6 @@ export namespace Prisma {
     connectOrCreate?: paymentsCreateOrConnectWithoutCustomersInput | paymentsCreateOrConnectWithoutCustomersInput[]
     createMany?: paymentsCreateManyCustomersInputEnvelope
     connect?: paymentsWhereUniqueInput | paymentsWhereUniqueInput[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type hotelsUpdateOneRequiredWithoutCustomersNestedInput = {
@@ -87903,6 +90813,33 @@ export namespace Prisma {
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
   }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -87952,33 +90889,6 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type staff_salariesCreateWithoutUsersInput = {
@@ -90183,10 +93093,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsCreateNestedManyWithoutSubscription_plansInput
     pending_signups?: pending_signupsCreateNestedManyWithoutSubscription_plansInput
   }
 
@@ -90196,10 +93105,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsUncheckedCreateNestedManyWithoutSubscription_plansInput
     pending_signups?: pending_signupsUncheckedCreateNestedManyWithoutSubscription_plansInput
   }
 
@@ -90440,10 +93348,9 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUpdateManyWithoutSubscription_plansNestedInput
     pending_signups?: pending_signupsUpdateManyWithoutSubscription_plansNestedInput
   }
 
@@ -90453,10 +93360,9 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUncheckedUpdateManyWithoutSubscription_plansNestedInput
     pending_signups?: pending_signupsUncheckedUpdateManyWithoutSubscription_plansNestedInput
   }
 
@@ -90706,6 +93612,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -90725,6 +93632,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -90845,6 +93753,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -90864,6 +93773,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -90879,10 +93789,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsCreateNestedManyWithoutSubscription_plansInput
     hotels?: hotelsCreateNestedManyWithoutSubscription_plansInput
   }
 
@@ -90892,10 +93801,9 @@ export namespace Prisma {
     max_branches?: number
     max_pos_devices?: number
     price_monthly: Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: boolean
     is_active?: boolean | null
     created_at?: Date | string | null
+    sections?: plan_sectionsUncheckedCreateNestedManyWithoutSubscription_plansInput
     hotels?: hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput
   }
 
@@ -90921,10 +93829,9 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUpdateManyWithoutSubscription_plansNestedInput
     hotels?: hotelsUpdateManyWithoutSubscription_plansNestedInput
   }
 
@@ -90934,11 +93841,32 @@ export namespace Prisma {
     max_branches?: IntFieldUpdateOperationsInput | number
     max_pos_devices?: IntFieldUpdateOperationsInput | number
     price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    features?: NullableJsonNullValueInput | InputJsonValue
-    is_rooms?: BoolFieldUpdateOperationsInput | boolean
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sections?: plan_sectionsUncheckedUpdateManyWithoutSubscription_plansNestedInput
     hotels?: hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput
+  }
+
+  export type plan_sectionsCreateWithoutSubscription_plansInput = {
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    sections: sectionsCreateNestedOneWithoutPlan_sectionsInput
+  }
+
+  export type plan_sectionsUncheckedCreateWithoutSubscription_plansInput = {
+    section_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsCreateOrConnectWithoutSubscription_plansInput = {
+    where: plan_sectionsWhereUniqueInput
+    create: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput>
+  }
+
+  export type plan_sectionsCreateManySubscription_plansInputEnvelope = {
+    data: plan_sectionsCreateManySubscription_plansInput | plan_sectionsCreateManySubscription_plansInput[]
+    skipDuplicates?: boolean
   }
 
   export type hotelsCreateWithoutSubscription_plansInput = {
@@ -90949,6 +93877,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -90967,6 +93896,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -91029,6 +93959,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type plan_sectionsUpsertWithWhereUniqueWithoutSubscription_plansInput = {
+    where: plan_sectionsWhereUniqueInput
+    update: XOR<plan_sectionsUpdateWithoutSubscription_plansInput, plan_sectionsUncheckedUpdateWithoutSubscription_plansInput>
+    create: XOR<plan_sectionsCreateWithoutSubscription_plansInput, plan_sectionsUncheckedCreateWithoutSubscription_plansInput>
+  }
+
+  export type plan_sectionsUpdateWithWhereUniqueWithoutSubscription_plansInput = {
+    where: plan_sectionsWhereUniqueInput
+    data: XOR<plan_sectionsUpdateWithoutSubscription_plansInput, plan_sectionsUncheckedUpdateWithoutSubscription_plansInput>
+  }
+
+  export type plan_sectionsUpdateManyWithWhereWithoutSubscription_plansInput = {
+    where: plan_sectionsScalarWhereInput
+    data: XOR<plan_sectionsUpdateManyMutationInput, plan_sectionsUncheckedUpdateManyWithoutSubscription_plansInput>
+  }
+
+  export type plan_sectionsScalarWhereInput = {
+    AND?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
+    OR?: plan_sectionsScalarWhereInput[]
+    NOT?: plan_sectionsScalarWhereInput | plan_sectionsScalarWhereInput[]
+    plan_id?: UuidFilter<"plan_sections"> | string
+    section_id?: UuidFilter<"plan_sections"> | string
+    is_enabled?: BoolFilter<"plan_sections"> | boolean
+    config?: JsonNullableFilter<"plan_sections">
+  }
+
   export type hotelsUpsertWithWhereUniqueWithoutSubscription_plansInput = {
     where: hotelsWhereUniqueInput
     update: XOR<hotelsUpdateWithoutSubscription_plansInput, hotelsUncheckedUpdateWithoutSubscription_plansInput>
@@ -91057,6 +94013,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     verification_status?: StringFilter<"hotels"> | string
@@ -91096,6 +94053,168 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"pending_signups"> | Date | string | null
     paid_at?: DateTimeNullableFilter<"pending_signups"> | Date | string | null
     expires_at?: DateTimeNullableFilter<"pending_signups"> | Date | string | null
+  }
+
+  export type plan_sectionsCreateWithoutSectionsInput = {
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    subscription_plans: subscription_plansCreateNestedOneWithoutSectionsInput
+  }
+
+  export type plan_sectionsUncheckedCreateWithoutSectionsInput = {
+    plan_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsCreateOrConnectWithoutSectionsInput = {
+    where: plan_sectionsWhereUniqueInput
+    create: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput>
+  }
+
+  export type plan_sectionsCreateManySectionsInputEnvelope = {
+    data: plan_sectionsCreateManySectionsInput | plan_sectionsCreateManySectionsInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type plan_sectionsUpsertWithWhereUniqueWithoutSectionsInput = {
+    where: plan_sectionsWhereUniqueInput
+    update: XOR<plan_sectionsUpdateWithoutSectionsInput, plan_sectionsUncheckedUpdateWithoutSectionsInput>
+    create: XOR<plan_sectionsCreateWithoutSectionsInput, plan_sectionsUncheckedCreateWithoutSectionsInput>
+  }
+
+  export type plan_sectionsUpdateWithWhereUniqueWithoutSectionsInput = {
+    where: plan_sectionsWhereUniqueInput
+    data: XOR<plan_sectionsUpdateWithoutSectionsInput, plan_sectionsUncheckedUpdateWithoutSectionsInput>
+  }
+
+  export type plan_sectionsUpdateManyWithWhereWithoutSectionsInput = {
+    where: plan_sectionsScalarWhereInput
+    data: XOR<plan_sectionsUpdateManyMutationInput, plan_sectionsUncheckedUpdateManyWithoutSectionsInput>
+  }
+
+  export type subscription_plansCreateWithoutSectionsInput = {
+    id?: string
+    name: string
+    max_branches?: number
+    max_pos_devices?: number
+    price_monthly: Decimal | DecimalJsLike | number | string
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    hotels?: hotelsCreateNestedManyWithoutSubscription_plansInput
+    pending_signups?: pending_signupsCreateNestedManyWithoutSubscription_plansInput
+  }
+
+  export type subscription_plansUncheckedCreateWithoutSectionsInput = {
+    id?: string
+    name: string
+    max_branches?: number
+    max_pos_devices?: number
+    price_monthly: Decimal | DecimalJsLike | number | string
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    hotels?: hotelsUncheckedCreateNestedManyWithoutSubscription_plansInput
+    pending_signups?: pending_signupsUncheckedCreateNestedManyWithoutSubscription_plansInput
+  }
+
+  export type subscription_plansCreateOrConnectWithoutSectionsInput = {
+    where: subscription_plansWhereUniqueInput
+    create: XOR<subscription_plansCreateWithoutSectionsInput, subscription_plansUncheckedCreateWithoutSectionsInput>
+  }
+
+  export type sectionsCreateWithoutPlan_sectionsInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type sectionsUncheckedCreateWithoutPlan_sectionsInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type sectionsCreateOrConnectWithoutPlan_sectionsInput = {
+    where: sectionsWhereUniqueInput
+    create: XOR<sectionsCreateWithoutPlan_sectionsInput, sectionsUncheckedCreateWithoutPlan_sectionsInput>
+  }
+
+  export type subscription_plansUpsertWithoutSectionsInput = {
+    update: XOR<subscription_plansUpdateWithoutSectionsInput, subscription_plansUncheckedUpdateWithoutSectionsInput>
+    create: XOR<subscription_plansCreateWithoutSectionsInput, subscription_plansUncheckedCreateWithoutSectionsInput>
+    where?: subscription_plansWhereInput
+  }
+
+  export type subscription_plansUpdateToOneWithWhereWithoutSectionsInput = {
+    where?: subscription_plansWhereInput
+    data: XOR<subscription_plansUpdateWithoutSectionsInput, subscription_plansUncheckedUpdateWithoutSectionsInput>
+  }
+
+  export type subscription_plansUpdateWithoutSectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    max_branches?: IntFieldUpdateOperationsInput | number
+    max_pos_devices?: IntFieldUpdateOperationsInput | number
+    price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateManyWithoutSubscription_plansNestedInput
+    pending_signups?: pending_signupsUpdateManyWithoutSubscription_plansNestedInput
+  }
+
+  export type subscription_plansUncheckedUpdateWithoutSectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    max_branches?: IntFieldUpdateOperationsInput | number
+    max_pos_devices?: IntFieldUpdateOperationsInput | number
+    price_monthly?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUncheckedUpdateManyWithoutSubscription_plansNestedInput
+    pending_signups?: pending_signupsUncheckedUpdateManyWithoutSubscription_plansNestedInput
+  }
+
+  export type sectionsUpsertWithoutPlan_sectionsInput = {
+    update: XOR<sectionsUpdateWithoutPlan_sectionsInput, sectionsUncheckedUpdateWithoutPlan_sectionsInput>
+    create: XOR<sectionsCreateWithoutPlan_sectionsInput, sectionsUncheckedCreateWithoutPlan_sectionsInput>
+    where?: sectionsWhereInput
+  }
+
+  export type sectionsUpdateToOneWithWhereWithoutPlan_sectionsInput = {
+    where?: sectionsWhereInput
+    data: XOR<sectionsUpdateWithoutPlan_sectionsInput, sectionsUncheckedUpdateWithoutPlan_sectionsInput>
+  }
+
+  export type sectionsUpdateWithoutPlan_sectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type sectionsUncheckedUpdateWithoutPlan_sectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type branchesCreateWithoutProvincesInput = {
@@ -91330,6 +94449,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -91349,6 +94469,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -92231,6 +95352,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -92250,6 +95372,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -92854,6 +95977,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -92873,6 +95997,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -93005,6 +96130,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -93024,6 +96150,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -93041,6 +96168,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -93060,6 +96188,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -93279,6 +96408,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -93298,6 +96428,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -102091,6 +105222,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -102110,6 +105242,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -102193,6 +105326,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -102212,6 +105346,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -107713,6 +110848,12 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type plan_sectionsCreateManySubscription_plansInput = {
+    section_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
   export type hotelsCreateManySubscription_plansInput = {
     id?: string
     name: string
@@ -107721,6 +110862,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
@@ -107742,6 +110884,24 @@ export namespace Prisma {
     expires_at?: Date | string | null
   }
 
+  export type plan_sectionsUpdateWithoutSubscription_plansInput = {
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    sections?: sectionsUpdateOneRequiredWithoutPlan_sectionsNestedInput
+  }
+
+  export type plan_sectionsUncheckedUpdateWithoutSubscription_plansInput = {
+    section_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUncheckedUpdateManyWithoutSubscription_plansInput = {
+    section_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
   export type hotelsUpdateWithoutSubscription_plansInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -107750,6 +110910,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -107768,6 +110929,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -107786,6 +110948,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
@@ -107837,6 +111000,30 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     paid_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type plan_sectionsCreateManySectionsInput = {
+    plan_id: string
+    is_enabled?: boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUpdateWithoutSectionsInput = {
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+    subscription_plans?: subscription_plansUpdateOneRequiredWithoutSectionsNestedInput
+  }
+
+  export type plan_sectionsUncheckedUpdateWithoutSectionsInput = {
+    plan_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type plan_sectionsUncheckedUpdateManyWithoutSectionsInput = {
+    plan_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type branchesCreateManyProvincesInput = {

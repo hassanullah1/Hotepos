@@ -54,6 +54,9 @@ const checkoutText = {
     notePlaceholder: "Add a note for the restaurant (optional)",
     items: "items",
     total: "Total",
+    subtotal: "Subtotal",
+    delivery: "Delivery",
+    deliveryFree: "Free",
     placeOrder: "Place order",
     placing: "Placing order…",
     signInToOrder: "Sign in to place your order",
@@ -91,6 +94,9 @@ const checkoutText = {
     notePlaceholder: "د رستورانت لپاره یادونه (اختیاري)",
     items: "توکي",
     total: "ټول",
+    subtotal: "فرعي مجموعه",
+    delivery: "تحویل",
+    deliveryFree: "وړیا",
     placeOrder: "فرمایش وکړئ",
     placing: "فرمایش کیږي…",
     signInToOrder: "د فرمایش کولو لپاره ننوځئ",
@@ -128,6 +134,9 @@ const checkoutText = {
     notePlaceholder: "یادداشت برای رستورانت (اختیاری)",
     items: "آیتم",
     total: "مجموع",
+    subtotal: "جمع جزء",
+    delivery: "تحویل",
+    deliveryFree: "رایگان",
     placeOrder: "ثبت سفارش",
     placing: "در حال ثبت…",
     signInToOrder: "برای سفارش وارد شوید",
@@ -140,12 +149,18 @@ const checkoutText = {
   },
 };
 
+/** Flat delivery fee (AFN). Charged unless hotel.delivery_type = "free".
+ *  MUST match `PAID_DELIVERY_FEE` in `app/api/public/orders/route.ts`. */
+const PAID_DELIVERY_FEE = 50;
+
 function initials(name?: string) {
   if (!name) return "?";
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
+
+type DeliveryType = "none" | "paid" | "free";
 
 export default function CheckoutPage() {
   const { branchId } = useParams<{ branchId: string }>();
@@ -172,6 +187,7 @@ export default function CheckoutPage() {
   const [loaded, setLoaded] = useState(false);
   const [branchName, setBranchName] = useState("");
   const [currency, setCurrency] = useState("AFN");
+  const [deliveryType, setDeliveryType] = useState<DeliveryType | null>(null);
   const [cart, setCart] = useState<Record<string, { item: any; qty: number }>>(
     {},
   );
@@ -185,6 +201,10 @@ export default function CheckoutPage() {
         if (parsed?.branch) {
           setBranchName(parsed.branch.name || "");
           setCurrency(parsed.branch.currency || "AFN");
+          const stored = parsed.branch.delivery_type;
+          if (stored === "none" || stored === "paid" || stored === "free") {
+            setDeliveryType(stored);
+          }
         }
         if (parsed?.cart) setCart(parsed.cart);
       }
@@ -209,6 +229,35 @@ export default function CheckoutPage() {
       /* ignore */
     }
   }, [cart, loaded, branchId, branchName, currency]);
+
+  // ── Authoritative delivery_type from the API ──
+  useEffect(() => {
+    if (!branchId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/public/branches/${branchId}`, {
+          credentials: "same-origin",
+        });
+        if (!res.ok) throw new Error("fetch_failed");
+        const d = await res.json();
+        if (cancelled) return;
+        const dt = d?.branch?.delivery_type;
+        setDeliveryType(
+          dt === "paid" || dt === "free" || dt === "none" ? dt : "paid",
+        );
+        if (d?.branch?.name) setBranchName(d.branch.name);
+        if (d?.branch?.currency) setCurrency(d.branch.currency);
+      } catch {
+        if (cancelled) return;
+        // Unknown → default to "paid" (charges 50, same as "none")
+        setDeliveryType((prev) => prev ?? "paid");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [branchId]);
 
   // ── form fields ──
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -261,6 +310,12 @@ export default function CheckoutPage() {
     [cartLines],
   );
 
+  // ── Delivery fee ──
+  // "free" → 0; "none" or "paid" → PAID_DELIVERY_FEE (server enforces the same)
+  const isFreeDelivery = deliveryType === "free";
+  const deliveryFee = isFreeDelivery ? 0 : PAID_DELIVERY_FEE;
+  const grandTotal = cartTotal + deliveryFee;
+
   function addOne(itemId: string) {
     setCart((c) => {
       const existing = c[itemId];
@@ -291,7 +346,6 @@ export default function CheckoutPage() {
   const hasAddress = !!deliveryAddress.trim();
   const formValid = hasContact && hasAddress;
   const canSubmit = !saving && !!buyer && cartLines.length > 0 && formValid;
-  // Signed-out users can still tap the button to go to the login page.
   const submitDisabled = saving || (!!buyer && !canSubmit);
 
   async function submit() {
@@ -316,6 +370,7 @@ export default function CheckoutPage() {
           menu_item_id: l.item.id,
           quantity: l.qty,
         })),
+        // delivery_fee is intentionally NOT sent — server computes it.
       };
 
       const res = await fetch("/api/public/orders", {
@@ -348,7 +403,6 @@ export default function CheckoutPage() {
 
   const ArrowBack = isRTL ? ArrowRight : ArrowLeft;
 
-  // shared style tokens (same palette as the dish + menu pages)
   const muted = isDark ? "text-[#9691A6]" : "text-[#8A8496]";
   const soft = isDark ? "text-[#B7B2C4]" : "text-[#6E687A]";
   const gold = isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]";
@@ -363,7 +417,7 @@ export default function CheckoutPage() {
     : "bg-[#C9A227]/15 text-[#8A6E1A]";
 
   // ── loading ──
-  if (!loaded)
+  if (!loaded || deliveryType === null)
     return (
       <div
         className={`flex min-h-screen items-center justify-center ${
@@ -630,7 +684,6 @@ export default function CheckoutPage() {
                     </p>
                   </div>
 
-                  {/* Quantity stepper (same look as the menu page) */}
                   <div
                     className={`flex shrink-0 items-center gap-0.5 rounded-full border p-0.5 ${
                       isDark
@@ -677,23 +730,53 @@ export default function CheckoutPage() {
               ))}
             </ul>
 
+            {/* Totals */}
             <div
-              className={`flex items-center justify-between border-t px-3.5 py-3 ${
+              className={`border-t ${
                 isDark
                   ? "border-[#2E2938] bg-[#161320]"
                   : "border-[#E4DFD4] bg-[#FAF8F4]"
               }`}
             >
-              <span className={`text-xs ${muted}`}>{t.total}</span>
-              <span
-                className={`text-2xl font-semibold tabular-nums ${gold}`}
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {cartTotal.toFixed(2)}{" "}
-                <span className={`text-sm font-medium ${muted}`}>
-                  {currency}
+              {/* Subtotal + delivery breakdown */}
+              <div className="space-y-1 px-3.5 pt-2.5">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className={muted}>{t.subtotal}</span>
+                  <span className="tabular-nums">
+                    {cartTotal.toFixed(2)} {currency}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className={muted}>{t.delivery}</span>
+                  <span
+                    className={`tabular-nums ${
+                      isFreeDelivery
+                        ? isDark
+                          ? "text-emerald-400"
+                          : "text-emerald-700"
+                        : ""
+                    }`}
+                  >
+                    {isFreeDelivery
+                      ? t.deliveryFree
+                      : `${deliveryFee.toFixed(2)} ${currency}`}
+                  </span>
+                </div>
+              </div>
+
+              {/* Grand total */}
+              <div className="flex items-center justify-between px-3.5 py-3">
+                <span className={`text-xs ${muted}`}>{t.total}</span>
+                <span
+                  className={`text-2xl font-semibold tabular-nums ${gold}`}
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {grandTotal.toFixed(2)}{" "}
+                  <span className={`text-sm font-medium ${muted}`}>
+                    {currency}
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
           </div>
         </section>
@@ -860,8 +943,7 @@ export default function CheckoutPage() {
         )}
       </div>
 
-      {/* Sticky submit pill (same style as the dish + menu pages).
-          Rendered in document.body so parent layouts can't break fixed. */}
+      {/* Sticky submit pill */}
       {mounted &&
         createPortal(
           <div
@@ -900,7 +982,7 @@ export default function CheckoutPage() {
                     className={`text-base font-bold tabular-nums ${gold}`}
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {cartTotal.toFixed(2)}{" "}
+                    {grandTotal.toFixed(2)}{" "}
                     <span className={`text-[10px] font-medium ${muted}`}>
                       {currency}
                     </span>

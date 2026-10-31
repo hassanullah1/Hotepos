@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     );
     if (rawBody) console.log("[hesabpay webhook] body:", rawBody);
 
-    // ── 1. Parse
+    // ── 1. Parse (never 400 on empty/invalid body — probe sends junk)
     let payload: any = {};
     try {
       payload = rawBody ? JSON.parse(rawBody) : {};
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ── 2. Reference — HesabPay puts the order UUID in items[0].id
+    // ── 2. Reference (probe has none)
     const reference =
       payload.reference ||
       payload.metadata?.reference ||
@@ -46,15 +46,13 @@ export async function POST(request: Request) {
     }
     console.log("[hesabpay webhook] reference:", reference);
 
-    // ── 3. Signature (HesabPay sends signature IN THE BODY — skip header check)
+    // ── 3. Signature (HesabPay puts signature in body; header check is optional)
     const signatureHeader =
       request.headers.get("x-hesab-signature") ||
       request.headers.get("x-signature") ||
       "";
     const secret = process.env.HESABPAY_WEBHOOK_SECRET || "";
 
-    // Only verify if BOTH a secret is configured AND a signature header is present.
-    // HesabPay currently puts the signature in the body, so this path usually skips.
     if (secret && signatureHeader) {
       const expected = createHmac("sha256", secret)
         .update(rawBody)
@@ -77,7 +75,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // ── 4. Success detection — the actual HesabPay payload shape
+    // ── 4. Success detection — actual HesabPay payload shape
     const statusStr = String(
       payload.status || payload.payment_status || "",
     ).toLowerCase();
@@ -116,7 +114,9 @@ export async function POST(request: Request) {
     const isRenewal =
       typeof reference === "string" && reference.startsWith("renew:");
 
-    // ═══════════════ A. RENEWAL ═══════════════
+    // ═══════════════════════════════════════════════════════════════
+    // A. RENEWAL — "renew:<hotelId>:<planId>:<months>"
+    // ═══════════════════════════════════════════════════════════════
     if (isRenewal) {
       const parts = String(reference).split(":");
       const hotelId = parts[1];
@@ -129,6 +129,7 @@ export async function POST(request: Request) {
           { status: 200 },
         );
       }
+
       if (!succeeded) {
         return NextResponse.json({
           success: true,
@@ -144,6 +145,37 @@ export async function POST(request: Request) {
       if (!hotel) {
         return NextResponse.json(
           { success: false, error: "unknown_hotel" },
+          { status: 200 },
+        );
+      }
+
+      const plan = await prisma.subscription_plans.findUnique({
+        where: { id: planId },
+        select: { max_branches: true, max_pos_devices: true },
+      });
+      if (!plan) {
+        return NextResponse.json(
+          { success: false, error: "unknown_plan" },
+          { status: 200 },
+        );
+      }
+
+      const branchCount = await prisma.branches.count({
+        where: { hotel_id: hotelId },
+      });
+      const posCount = await prisma.pos_devices.count({
+        where: { branches: { hotel_id: hotelId }, is_active: true },
+      });
+
+      if (plan.max_branches != null && branchCount > plan.max_branches) {
+        return NextResponse.json(
+          { success: false, error: "plan_too_small_branches" },
+          { status: 200 },
+        );
+      }
+      if (plan.max_pos_devices != null && posCount > plan.max_pos_devices) {
+        return NextResponse.json(
+          { success: false, error: "plan_too_small_pos" },
           { status: 200 },
         );
       }
@@ -165,6 +197,15 @@ export async function POST(request: Request) {
         },
       });
 
+      console.log(
+        "[hesabpay webhook] ✅ renewal applied:",
+        hotelId,
+        "months:",
+        monthsNum,
+        "new_expiry:",
+        newExpiry.toISOString(),
+      );
+
       return NextResponse.json({
         success: true,
         renewal: true,
@@ -174,7 +215,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // ── Guard UUID
+    // ── Guard: reference must be a UUID for remaining paths
     if (typeof reference !== "string" || !UUID_RE.test(reference)) {
       return NextResponse.json(
         { success: false, error: "invalid_reference" },
@@ -182,7 +223,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // ═══════════════ B. ORDER PAYMENT ═══════════════
+    // ═══════════════════════════════════════════════════════════════
+    // B. ORDER PAYMENT
+    // ═══════════════════════════════════════════════════════════════
     const maybeOrder = await prisma.orders.findUnique({
       where: { id: reference },
       select: { id: true, payment_status: true },
@@ -209,7 +252,6 @@ export async function POST(request: Request) {
       }
 
       if (!succeeded) {
-        // Order found but payload doesn't indicate success — do nothing
         console.warn(
           "[hesabpay webhook] order found but not marked paid (no success signal)",
         );
@@ -220,7 +262,6 @@ export async function POST(request: Request) {
         });
       }
 
-      // Idempotent mark-paid
       if (maybeOrder.payment_status !== "paid") {
         await prisma.orders.update({
           where: { id: maybeOrder.id },
@@ -228,7 +269,6 @@ export async function POST(request: Request) {
             payment_status: "paid",
             paid_at: new Date(),
             payment_reference: transactionId || reference,
-            // Do NOT set status: "in_progress" — kitchen advances it
           },
         });
         console.log(
@@ -259,7 +299,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, order: true });
     }
 
-    // ═══════════════ C. NEW HOTEL ACTIVATION ═══════════════
+    // ═══════════════════════════════════════════════════════════════
+    // C. HOTEL — either new signup activation OR renewal for
+    //    a hotel whose reference was sent as a plain UUID.
+    // ═══════════════════════════════════════════════════════════════
     const maybeHotel = await prisma.hotels.findUnique({
       where: { id: reference },
       include: {
@@ -269,6 +312,23 @@ export async function POST(request: Request) {
     });
 
     if (maybeHotel) {
+      // ── GUARD: skip established hotels (renewals) ──
+      // If the hotel already has an owner with a password, it's a real hotel
+      // doing a RENEWAL, not a new signup. The webhook should NOT activate it
+      // here — that would add 1 extra month + send an unwanted password email.
+      // Renewals are extended by /api/renew/confirm instead.
+      if (maybeHotel.hotel_owner?.users?.password_hash) {
+        console.log(
+          "[hesabpay webhook] skipping activation — renewal for established hotel:",
+          maybeHotel.id,
+        );
+        return NextResponse.json({
+          success: true,
+          hotel: true,
+          skip: "renewal_detected",
+        });
+      }
+
       if (failed) {
         await prisma.hotels.update({
           where: { id: maybeHotel.id },
@@ -280,6 +340,7 @@ export async function POST(request: Request) {
           status: "failed",
         });
       }
+
       if (!succeeded) {
         return NextResponse.json({
           success: true,
@@ -287,6 +348,8 @@ export async function POST(request: Request) {
           unknown_status: true,
         });
       }
+
+      // Idempotent — already activated within the last minute
       if (
         maybeHotel.subscription_status === "active" &&
         maybeHotel.subscription_expires_at &&
@@ -299,8 +362,15 @@ export async function POST(request: Request) {
           already_processed: true,
         });
       }
+
       try {
         const { resetLinkSent } = await activateHotel(maybeHotel.id);
+        console.log(
+          "[hesabpay webhook] ✅ hotel activated:",
+          maybeHotel.id,
+          "resetLinkSent:",
+          resetLinkSent,
+        );
         return NextResponse.json({
           success: true,
           hotel_id: maybeHotel.id,
@@ -315,7 +385,9 @@ export async function POST(request: Request) {
       }
     }
 
-    // ═══════════════ D. PENDING SIGNUP ═══════════════
+    // ═══════════════════════════════════════════════════════════════
+    // D. PENDING SIGNUP
+    // ═══════════════════════════════════════════════════════════════
     const signup = await prisma.pending_signups.findUnique({
       where: { id: reference },
     });

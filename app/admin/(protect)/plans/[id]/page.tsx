@@ -10,7 +10,8 @@ import {
   Check,
   X,
   Trash2,
-  BedDouble,
+  LayoutGrid,
+  Loader2,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -128,7 +129,6 @@ export default function PlanDetailPage() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto" dir={dir}>
-      {/* Header with back button */}
       <div className="mb-6">
         <Link
           href="/admin/plans"
@@ -139,7 +139,7 @@ export default function PlanDetailPage() {
         </Link>
       </div>
 
-      {/* Plan summary card */}
+      {/* ── Plan summary card ───────────────────────────── */}
       <div className="mb-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -176,19 +176,6 @@ export default function PlanDetailPage() {
                   {plan.max_pos_devices}
                 </span>
               </span>
-
-              {/* 👈 NEW — rooms badge */}
-              <span>·</span>
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                  plan.is_rooms
-                    ? "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400"
-                    : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                }`}
-              >
-                <BedDouble size={12} />
-                {plan.is_rooms ? "Rooms ✓" : "Rooms ✕"}
-              </span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -210,16 +197,26 @@ export default function PlanDetailPage() {
             </button>
           </div>
         </div>
-        {plan.features && Object.keys(plan.features).length > 0 && (
+
+        {/* ── Enabled sections ─────────────────────────── */}
+        {plan.sections && plan.sections.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-200 pt-4 dark:border-gray-700">
-            {Object.entries(plan.features).map(([key, value]) => (
+            <span className="flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <LayoutGrid size={12} /> Sections
+            </span>
+            {plan.sections.map((s) => (
               <span
-                key={key}
+                key={s.key}
                 className="rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
               >
-                {key}: {String(value)}
+                {s.name}
               </span>
             ))}
+          </div>
+        )}
+        {plan.sections && plan.sections.length === 0 && (
+          <div className="mt-4 border-t border-gray-200 pt-4 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+            No sections enabled for this plan yet.
           </div>
         )}
       </div>
@@ -354,30 +351,41 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
     max_branches: plan.max_branches,
     max_pos_devices: plan.max_pos_devices,
     is_active: plan.is_active,
-    is_rooms: plan.is_rooms === true, // 👈 NEW
   });
-  const [featureKeys, setFeatureKeys] = useState(
-    Object.entries(plan.features || {}).length
-      ? Object.entries(plan.features).map(([key, value]) => ({
-          key,
-          value: String(value),
-        }))
-      : [{ key: "", value: "" }],
+
+  const [allSections, setAllSections] = useState([]);
+  const [sectionsLoading, setSectionsLoading] = useState(true);
+  const [selectedSectionKeys, setSelectedSectionKeys] = useState(
+    Array.isArray(plan.section_keys) ? plan.section_keys : [],
   );
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
-  function updateFeature(i, field, value) {
-    setFeatureKeys((prev) =>
-      prev.map((f, idx) => (idx === i ? { ...f, [field]: value } : f)),
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/sections");
+        if (!res.ok) throw new Error("Failed to load sections");
+        const data = await res.json();
+        if (!cancelled) setAllSections(data.sections || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setSectionsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  function toggleSection(key) {
+    setSelectedSectionKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
-  }
-  function addFeatureRow() {
-    setFeatureKeys((prev) => [...prev, { key: "", value: "" }]);
-  }
-  function removeFeatureRow(i) {
-    setFeatureKeys((prev) => prev.filter((_, idx) => idx !== i));
   }
 
   async function handleSave(e) {
@@ -386,11 +394,6 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
     setError("");
     setSaved(false);
     try {
-      const features = {};
-      featureKeys.forEach((f) => {
-        if (f.key.trim()) features[f.key.trim()] = f.value;
-      });
-
       const res = await fetchWithAuth(`/api/subscription-plans/${plan.id}`, {
         method: "PATCH",
         body: JSON.stringify({
@@ -399,8 +402,7 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
           max_branches: Number(form.max_branches),
           max_pos_devices: Number(form.max_pos_devices),
           is_active: form.is_active,
-          is_rooms: form.is_rooms, // 👈 NEW
-          features,
+          section_keys: selectedSectionKeys,
         }),
       });
       if (!res.ok) {
@@ -505,76 +507,78 @@ function EditForm({ plan, onSaved, onCancel, dir, t }) {
             className={inputClass}
           />
         </div>
-
-        {/* 👈 NEW — rooms feature toggle */}
-        <div className="sm:col-span-2">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.is_rooms}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, is_rooms: e.target.checked }))
-              }
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
-            />
-            <span className="min-w-0">
-              <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                Rooms management
-              </span>
-              <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
-                Hotels on this plan can manage rooms and room stays.
-                {plan.hotel_count > 0 && (
-                  <>
-                    {" "}
-                    This plan is on {plan.hotel_count} hotel
-                    {plan.hotel_count === 1 ? "" : "s"} — the change applies
-                    everywhere immediately.
-                  </>
-                )}
-              </span>
-            </span>
-          </label>
-        </div>
       </div>
 
+      {/* ── Sections picker ───────────────────────────── */}
       <div className="space-y-2 border-t border-gray-200 pt-4 dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <span className={labelClass}>{t.planDetail.fields.features}</span>
-          <button
-            type="button"
-            onClick={addFeatureRow}
-            className="text-sm font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400"
-          >
-            + {t.planDetail.fields.addFeature}
-          </button>
-        </div>
-        {featureKeys.map((f, i) => (
-          <div key={i} className="flex gap-2">
-            <input
-              type="text"
-              placeholder={t.planDetail.fields.keyPlaceholder}
-              value={f.key}
-              onChange={(e) => updateFeature(i, "key", e.target.value)}
-              className={inputClass}
-            />
-            <input
-              type="text"
-              placeholder={t.planDetail.fields.valuePlaceholder}
-              value={f.value}
-              onChange={(e) => updateFeature(i, "value", e.target.value)}
-              className={inputClass}
-            />
-            {featureKeys.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeFeatureRow(i)}
-                className="shrink-0 text-xs font-medium text-red-600 hover:underline"
-              >
-                {t.planDetail.fields.removeFeature}
-              </button>
-            )}
+          <div>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+              Sections included in this plan
+            </span>
+            <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
+              {plan.hotel_count > 0
+                ? `Applied to ${plan.hotel_count} hotel${plan.hotel_count === 1 ? "" : "s"} immediately.`
+                : "Hotels on this plan will only see the sections you tick below."}
+            </span>
           </div>
-        ))}
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {selectedSectionKeys.length} selected
+          </span>
+        </div>
+
+        {sectionsLoading ? (
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <Loader2 size={14} className="animate-spin" />
+            Loading sections…
+          </div>
+        ) : allSections.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-gray-300 px-3 py-4 text-xs text-gray-500 dark:border-gray-600 dark:text-gray-400">
+            No sections found in the catalogue.
+          </div>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {allSections.map((s) => {
+              const checked = selectedSectionKeys.includes(s.key);
+              return (
+                <label
+                  key={s.id}
+                  className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors ${
+                    checked
+                      ? "border-teal-500 bg-teal-50/60 dark:bg-teal-900/20"
+                      : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/40"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleSection(s.key)}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-800"
+                  />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {s.name}
+                      {checked && (
+                        <Check
+                          size={12}
+                          className="text-teal-600 dark:text-teal-400"
+                        />
+                      )}
+                    </span>
+                    <span className="mt-0.5 block font-mono text-[11px] text-gray-500 dark:text-gray-400">
+                      {s.key}
+                    </span>
+                    {s.description && (
+                      <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
+                        {s.description}
+                      </span>
+                    )}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="flex gap-3">

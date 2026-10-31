@@ -8,10 +8,15 @@ const PLAN_DETAIL_SELECT = {
   max_branches: true,
   max_pos_devices: true,
   price_monthly: true,
-  features: true,
   is_active: true,
-  is_rooms: true, // 👈 NEW
   created_at: true,
+  sections: {
+    where: { is_enabled: true },
+    select: {
+      config: true,
+      sections: { select: { key: true, name: true } },
+    },
+  },
   hotels: {
     select: {
       id: true,
@@ -29,16 +34,24 @@ const PLAN_DETAIL_SELECT = {
 };
 
 function serializePlanDetail(p: any) {
+  const sections = (p.sections ?? [])
+    .map((ps: any) => ({
+      key: ps.sections?.key ?? null,
+      name: ps.sections?.name ?? null,
+      config: ps.config ?? {},
+    }))
+    .filter((s: any) => s.key);
+
   return {
     id: p.id,
     name: p.name,
     max_branches: p.max_branches,
     max_pos_devices: p.max_pos_devices,
     price_monthly: p.price_monthly,
-    features: p.features || {},
     is_active: p.is_active,
-    is_rooms: p.is_rooms === true, // 👈 NEW
     created_at: p.created_at,
+    sections,
+    section_keys: sections.map((s: any) => s.key),
     hotels: (p.hotels || []).map((h: any) => ({
       id: h.id,
       name: h.name,
@@ -61,11 +74,10 @@ export async function GET(
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!requireRole(user, ["super_admin"])) {
+  if (!requireRole(user, ["super_admin"]))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  const { id } = await params;
 
+  const { id } = await params;
   const plan = await prisma.subscription_plans.findUnique({
     where: { id },
     select: PLAN_DETAIL_SELECT,
@@ -83,11 +95,10 @@ export async function PATCH(
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!requireRole(user, ["super_admin"])) {
+  if (!requireRole(user, ["super_admin"]))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  const { id } = await params;
 
+  const { id } = await params;
   const body = await request.json();
   const data: Record<string, unknown> = {};
 
@@ -125,16 +136,42 @@ export async function PATCH(
     data.max_branches = Number(body.max_branches);
   if (body.max_pos_devices !== undefined)
     data.max_pos_devices = Number(body.max_pos_devices);
-  if (body.features !== undefined)
-    data.features =
-      body.features && typeof body.features === "object" ? body.features : {};
   if (body.is_active !== undefined) data.is_active = !!body.is_active;
 
-  // 👇 NEW — plan-level rooms feature
-  if (body.is_rooms !== undefined) data.is_rooms = body.is_rooms === true;
+  const wantsSectionsUpdate = Array.isArray(body.section_keys);
 
   try {
-    await prisma.subscription_plans.update({ where: { id }, data });
+    await prisma.$transaction(async (tx) => {
+      if (wantsSectionsUpdate) {
+        const keys: string[] = body.section_keys.filter(
+          (k: any) => typeof k === "string",
+        );
+        const sectionRows = keys.length
+          ? await tx.sections.findMany({
+              where: { key: { in: keys } },
+              select: { id: true },
+            })
+          : [];
+
+        await tx.plan_sections.deleteMany({ where: { plan_id: id } });
+
+        if (sectionRows.length) {
+          await tx.plan_sections.createMany({
+            data: sectionRows.map((r) => ({
+              plan_id: id,
+              section_id: r.id,
+              is_enabled: true,
+            })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      if (Object.keys(data).length) {
+        await tx.subscription_plans.update({ where: { id }, data });
+      }
+    });
+
     const plan = await prisma.subscription_plans.findUnique({
       where: { id },
       select: PLAN_DETAIL_SELECT,
@@ -156,11 +193,10 @@ export async function DELETE(
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!requireRole(user, ["super_admin"])) {
+  if (!requireRole(user, ["super_admin"]))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  const { id } = await params;
 
+  const { id } = await params;
   const inUse = await prisma.hotels.count({
     where: { subscription_plan_id: id },
   });

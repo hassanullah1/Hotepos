@@ -26,7 +26,6 @@ import {
   Menu,
   X,
   ClipboardList,
-  PlusCircle,
   BedDouble,
   Contact,
   UserPlus,
@@ -34,18 +33,27 @@ import {
   Clock,
   AlertCircle,
   RefreshCw,
-  ShieldCheck,
   ShieldAlert,
   PhoneCall,
   MessageCircle,
   ArrowRight,
+  LayoutGrid,
 } from "lucide-react";
 
-/* ------------------------------------------------------------------ */
-/*  Palette — "midnight & brass"                                      */
-/* ------------------------------------------------------------------ */
+/* ==================================================================
+ * NAV ITEMS
+ *
+ *  - NO `requiresSection`       →  COMMON — shown on every plan
+ *                                  (still filtered by role)
+ *  - WITH `requiresSection:"x"` →  RESTRICTED — shown only if the
+ *                                  hotel's plan unlocks section "x"
+ *
+ * The `key` of a requiresSection MUST exactly match a `sections.key`
+ * row in the database (e.g. "pos", "rooms", "payroll", "expenses").
+ * ================================================================== */
 
 const NAV_ITEMS = [
+  /* ── COMMON ────────────────────────────────────────────────── */
   {
     href: "/admin",
     key: "dashboard",
@@ -75,19 +83,18 @@ const NAV_ITEMS = [
     icon: GitBranch,
   },
   {
-    href: "/admin/rooms",
-    key: "rooms",
-    section: "manage",
-    roles: ["hotel_owner", "branch_manager"],
-    icon: BedDouble,
-    requiresRooms: true,
-  },
-  {
     href: "/admin/plans",
     key: "plans",
     section: "manage",
     roles: ["super_admin", "admin"],
     icon: ScrollText,
+  },
+  {
+    href: "/admin/sections",
+    key: "sections",
+    section: "manage",
+    roles: ["super_admin", "admin"],
+    icon: LayoutGrid,
   },
   {
     href: "/admin/users",
@@ -103,32 +110,37 @@ const NAV_ITEMS = [
     icon: UserCog,
   },
   {
+    // Staff → COMMON (every plan gets it)
+    href: "/admin/owners/staff",
+    key: "ownerStaff",
+    section: "ops",
+    roles: ["hotel_owner", "branch_manager"],
+    icon: UserCheck,
+  },
+
+  /* ── RESTRICTED (plan-gated) ───────────────────────────────── */
+  {
+    href: "/admin/rooms",
+    key: "rooms",
+    section: "manage",
+    roles: ["hotel_owner", "branch_manager"],
+    icon: BedDouble,
+    requiresSection: "rooms",
+  },
+  {
     href: "/admin/orders",
     key: "orders",
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: ClipboardList,
   },
-  // {
-  //   href: "/admin/order/create",
-  //   key: "createOrder",
-  //   section: "ops",
-  //   roles: ["waiter", "branch_manager"],
-  //   icon: PlusCircle,
-  // },
   {
     href: "/admin/expenses",
     key: "expenses",
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: Wallet,
-  },
-  {
-    href: "/admin/owners/staff",
-    key: "ownerStaff",
-    section: "ops",
-    roles: ["hotel_owner", "branch_manager"],
-    icon: UserCheck,
+    requiresSection: "expenses",
   },
   {
     href: "/admin/owners/menu",
@@ -143,6 +155,7 @@ const NAV_ITEMS = [
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: Table2,
+    requiresSection: "tables",
   },
   {
     href: "/admin/owners/attendance",
@@ -150,6 +163,7 @@ const NAV_ITEMS = [
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: CalendarCheck,
+    requiresSection: "payroll",
   },
   {
     href: "/admin/customers",
@@ -157,7 +171,10 @@ const NAV_ITEMS = [
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: Contact,
+    requiresSection: "pos",
   },
+
+  /* ── COMMON (platform-only) ────────────────────────────────── */
   {
     href: "/admin/pending-signups",
     key: "newSignups",
@@ -254,7 +271,7 @@ const FOCUS_RING =
   "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A93A]/70 focus-visible:ring-offset-0";
 
 /* ------------------------------------------------------------------ */
-/*  Subscription banner (soft warning — not blocking)                  */
+/*  Subscription banner                                               */
 /* ------------------------------------------------------------------ */
 function SubscriptionBanner({ subState, daysLeft, showText }) {
   if (subState !== "expiring_soon") return null;
@@ -294,7 +311,7 @@ function SubscriptionBanner({ subState, daysLeft, showText }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Subscription expired block — HIGHEST priority                      */
+/*  Subscription expired block                                        */
 /* ------------------------------------------------------------------ */
 function SubscriptionExpiredBlock({ showText }) {
   return (
@@ -366,7 +383,7 @@ function SubscriptionExpiredBlock({ showText }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Verification block — shown only when subscription is fine          */
+/*  Verification block                                                */
 /* ------------------------------------------------------------------ */
 function VerificationBlock({ status, showText }) {
   const config = {
@@ -500,7 +517,7 @@ function VerificationBlock({ status, showText }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main component                                                     */
+/*  Main component                                                    */
 /* ------------------------------------------------------------------ */
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -522,7 +539,12 @@ export default function AdminSidebar() {
   const [verification, setVerification] = useState(null);
   const [verifLoading, setVerifLoading] = useState(true);
 
-  const [hasRooms, setHasRooms] = useState(false);
+  /**
+   * Section gating:
+   *   null     → not loaded yet, or platform admin → show all items
+   *   Set(...) → hotel role, gate items by `requiresSection`
+   */
+  const [enabledSections, setEnabledSections] = useState(null);
 
   const sizeAppName = isRtl ? "text-[20px]" : "text-[18px]";
   const sizeAppSubtitle = isRtl ? "text-[13px]" : "text-[12px]";
@@ -571,10 +593,10 @@ export default function AdminSidebar() {
     };
   }, [hasHotelRole, pathname]);
 
-  /* ---------- plan fetch — decides whether "rooms" nav shows ---------- */
+  /* ---------- sections fetch — gates nav items ---------- */
   useEffect(() => {
     if (!hasHotelRole) {
-      setHasRooms(false);
+      setEnabledSections(null); // platform admin: no gating
       return;
     }
 
@@ -582,15 +604,30 @@ export default function AdminSidebar() {
 
     (async () => {
       try {
-        const res = await fetchWithAuth("/api/owner/plan");
+        const res = await fetchWithAuth("/api/owner/sections");
         if (!res.ok) {
-          if (!cancelled) setHasRooms(false);
+          if (!cancelled) setEnabledSections(new Set());
           return;
         }
         const data = await res.json();
-        if (!cancelled) setHasRooms(data?.plan?.is_rooms === true);
+       
+        if (typeof window !== "undefined") {
+          console.log("[sidebar] section_keys:", data.section_keys);
+          console.log("[sidebar] rooms?", data.section_keys?.includes("rooms"));
+          console.log(
+            "[sidebar] expenses?",
+            data.section_keys?.includes("expenses"),
+          );
+        }
+        if (cancelled) return;
+
+        if (data?.all) {
+          setEnabledSections(null); // bypass — show everything
+        } else {
+          setEnabledSections(new Set(data?.section_keys ?? []));
+        }
       } catch {
-        if (!cancelled) setHasRooms(false);
+        if (!cancelled) setEnabledSections(new Set());
       }
     })();
 
@@ -649,7 +686,7 @@ export default function AdminSidebar() {
     return () => window.removeEventListener("keydown", onKey);
   }, [mobileOpen]);
 
-  /* ---------- lock body scroll while mobile drawer is open ---------- */
+  /* ---------- lock body scroll while mobile drawer open ---------- */
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
@@ -690,13 +727,21 @@ export default function AdminSidebar() {
     ...(isDesktop ? { width: expanded ? "16.5rem" : "5.25rem" } : {}),
   };
 
-  /* ---------- visible items ---------- */
+  /* ---------- visible items: role + section gating ---------- */
   const visibleItems = useMemo(
     () =>
       NAV_ITEMS.filter((item) => {
+        // 1. Role filter
         if (!item.roles.includes(role)) return false;
-        if (item.requiresRooms && !hasRooms) return false;
-        return true;
+
+        // 2. Common item — no plan gating
+        if (!item.requiresSection) return true;
+
+        // 3. Platform admin OR loading → show
+        if (enabledSections === null) return true;
+
+        // 4. Hotel role → gate by plan sections
+        return enabledSections.has(item.requiresSection);
       })
         .map((item) =>
           item.children
@@ -707,7 +752,7 @@ export default function AdminSidebar() {
             : item,
         )
         .filter((item) => !item.children || item.children.length > 0),
-    [role, hasRooms],
+    [role, enabledSections],
   );
 
   const sections = useMemo(() => {
@@ -895,7 +940,6 @@ export default function AdminSidebar() {
             </button>
           )}
 
-          {/* Close button (mobile) */}
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
@@ -913,7 +957,6 @@ export default function AdminSidebar() {
           </button>
         </div>
 
-        {/* ───────── Soft subscription warning (expiring soon) ───────── */}
         {showNav && (
           <SubscriptionBanner
             subState={subState}
@@ -922,21 +965,18 @@ export default function AdminSidebar() {
           />
         )}
 
-        {/* ───────── Priority 1: subscription expired ───────── */}
         {showSubscriptionBlock && (
           <div className="flex-1 pt-6">
             <SubscriptionExpiredBlock showText={showText} />
           </div>
         )}
 
-        {/* ───────── Priority 2: verification not approved ───────── */}
         {showVerificationBlock && (
           <div className="flex-1 pt-6">
             <VerificationBlock status={verification} showText={showText} />
           </div>
         )}
 
-        {/* ───────── Nav ───────── */}
         {showNav && (
           <nav className="flex-1 px-3 pb-4">
             {sections.map((section, idx) => (

@@ -33,7 +33,14 @@ export async function GET(
       currency: true,
       opening_time: true,
       closing_time: true,
-      hotels: { select: { id: true, name: true, logo_url: true } },
+      hotels: {
+        select: {
+          id: true,
+          name: true,
+          logo_url: true,
+          delivery_type: true, // "none" | "paid" | "free"
+        },
+      },
     },
   });
 
@@ -119,6 +126,7 @@ export async function GET(
       opening_time: branch.opening_time,
       closing_time: branch.closing_time,
       hotels: branch.hotels || null,
+      delivery_type: branch.hotels?.delivery_type ?? "none", // ← NEW
     },
     categories: mapped,
   });
