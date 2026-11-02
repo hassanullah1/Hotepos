@@ -14,26 +14,51 @@ import {
   Gem,
   ChevronDown,
   Infinity as InfinityIcon,
+  ShoppingBag,
+  BedDouble,
+  ChefHat,
+  Package,
+  Users,
+  Wallet,
+  BarChart3,
+  Globe,
+  Contact,
+  CalendarCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import { useTranslation } from "@/hooks/useTranslation";
 
-
-
 const PLANS_ENDPOINT = "/api/public/subscription-plans";
-const VISIBLE_FEATURES = 5;
+const VISIBLE_SECTIONS = 5;
 
-// Icons cycle by position, so any number of plans works.
 const TIER_ICONS = [Store, Building2, Zap, Rocket, Crown, Gem];
 
-const isNil = (v) => v === null || v === undefined;
+const SECTION_ICONS: Record<string, any> = {
+  pos: ShoppingBag,
+  online_order: ShoppingBag,
+  rooms: BedDouble,
+  kitchen: ChefHat,
+  inventory: Package,
+  payroll: Users,
+  staffs: Users,
+  expenses: Wallet,
+  reports: BarChart3,
+  online: Globe,
+  customers: Contact,
+  attendance: CalendarCheck,
+  security: ShieldCheck,
+};
+const getSectionIcon = (key: string) => SECTION_ICONS[key] ?? Sparkles;
+
+const isNil = (v: unknown) => v === null || v === undefined;
 
 /* ---------- hooks ---------- */
 
-function useCountUp(value, duration = 900) {
+function useCountUp(value: number, duration = 900) {
   const [display, setDisplay] = useState(0);
   const prevRef = useRef(0);
-  const rafRef = useRef(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isNil(value)) return undefined;
@@ -41,7 +66,7 @@ function useCountUp(value, duration = 900) {
     const end = value;
     const startTime = performance.now();
 
-    function tick(now) {
+    function tick(now: number) {
       const progress = Math.min((now - startTime) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(start + (end - start) * eased);
@@ -49,13 +74,14 @@ function useCountUp(value, duration = 900) {
       else prevRef.current = end;
     }
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [value, duration]);
 
   return display;
 }
 
-// Italic breaks Arabic-script letters (Pashto, Dari), so we read <html dir>.
 function useIsRTL() {
   const [isRTL, setIsRTL] = useState(false);
   useEffect(() => {
@@ -74,16 +100,30 @@ function useIsRTL() {
 
 /* ---------- small pieces ---------- */
 
-function AnimatedPrice({ value }) {
+function AnimatedPrice({ value }: { value: number }) {
   const animated = useCountUp(value ?? 0);
   return <>{Math.round(animated).toLocaleString()}</>;
 }
 
-// Capacity meter: bar length is relative to the biggest plan, so people
-// can compare plans at a glance. Unlimited = full striped bar + infinity.
-function Meter({ icon: Icon, label, value, max, visible, delay }) {
+function Meter({
+  icon: Icon,
+  label,
+  value,
+  max,
+  visible,
+  delay,
+}: {
+  icon: any;
+  label: string;
+  value: number | null;
+  max: number;
+  visible: boolean;
+  delay: number;
+}) {
   const unlimited = isNil(value);
-  const pct = unlimited ? 100 : Math.max(8, Math.round((value / max) * 100));
+  const pct = unlimited
+    ? 100
+    : Math.max(8, Math.round(((value as number) / max) * 100));
   return (
     <div>
       <div className="flex items-center gap-2 text-sm text-[#CFCADB]">
@@ -109,7 +149,15 @@ function Meter({ icon: Icon, label, value, max, visible, delay }) {
   );
 }
 
-function PlanCTA({ plan, featured, t }) {
+function PlanCTA({
+  plan,
+  featured,
+  t,
+}: {
+  plan: any;
+  featured: boolean;
+  t: any;
+}) {
   const isCustom = isNil(plan.price_monthly);
   const href = isCustom
     ? "/contact"
@@ -140,14 +188,24 @@ function PlanCard({
   t,
   isRTL,
   widthClass,
+}: {
+  plan: any;
+  index: number;
+  featured: boolean;
+  mounted: boolean;
+  maxes: { branches: number; pos: number };
+  t: any;
+  isRTL: boolean;
+  widthClass: string;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const Icon = TIER_ICONS[index % TIER_ICONS.length];
   const hasPrice = !isNil(plan.price_monthly);
-  const features = Array.isArray(plan.features) ? plan.features : [];
-  const shown = expanded ? features : features.slice(0, VISIBLE_FEATURES);
-  const hidden = features.length - VISIBLE_FEATURES;
+
+  const sections: any[] = Array.isArray(plan.sections) ? plan.sections : [];
+  const shown = expanded ? sections : sections.slice(0, VISIBLE_SECTIONS);
+  const hidden = sections.length - VISIBLE_SECTIONS;
   const delay = Math.min(index, 8) * 90;
 
   const branchLabel = isNil(plan.max_branches)
@@ -162,8 +220,7 @@ function PlanCard({
       ? t.pricingPosSingular
       : t.pricingPosPlural.replace("{count}", plan.max_pos_devices);
 
-  // Cursor-following spotlight (responds to the person's pointer)
-  function onMove(e) {
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
     const el = cardRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -186,7 +243,6 @@ function PlanCard({
           (featured ? "shadow-2xl shadow-[#C9A227]/20" : "")
         }
       >
-        {/* Border: spinning gold light for the featured plan, quiet line for the rest */}
         {featured ? (
           <div className="spin-border pointer-events-none absolute inset-0" />
         ) : (
@@ -194,7 +250,6 @@ function PlanCard({
         )}
 
         <div className="relative flex h-full flex-col rounded-[21px] bg-[#1B1823] p-6">
-          {/* Spotlight */}
           <div className="spotlight pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {featured && (
@@ -204,7 +259,6 @@ function PlanCard({
             </span>
           )}
 
-          {/* Title block */}
           <div className="relative flex items-center gap-3">
             <div
               className={
@@ -230,7 +284,6 @@ function PlanCard({
             </p>
           )}
 
-          {/* Price */}
           <div className="relative mt-5 flex items-baseline gap-1">
             {hasPrice ? (
               <>
@@ -264,7 +317,6 @@ function PlanCard({
             <PlanCTA plan={plan} featured={featured} t={t} />
           </div>
 
-          {/* Capacity meters */}
           <div className="relative mt-6 space-y-4 rounded-xl bg-[#15121C] p-4">
             <Meter
               icon={Building2}
@@ -284,44 +336,64 @@ function PlanCard({
             />
           </div>
 
-          {/* Features */}
-          {features.length > 0 && (
-            <div className="relative mt-5 flex-1">
-              <ul className="space-y-2.5">
-                {shown.map((feature, i) => (
-                  <li
-                    key={`${feature}-${i}`}
-                    className="flex items-start gap-2.5 text-sm text-[#B7B2C4]"
+          <div className="relative mt-5 flex-1">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[#6E687A]">
+              {t.pricingIncludes || "Includes"}
+            </p>
+
+            {sections.length > 0 ? (
+              <>
+                <ul className="space-y-2">
+                  {shown.map((section: any) => {
+                    const SectionIcon = getSectionIcon(section.key);
+                    return (
+                      <li
+                        key={section.key}
+                        className="flex items-center gap-2.5 text-sm text-[#B7B2C4]"
+                        title={section.description || undefined}
+                      >
+                        <span
+                          className={
+                            "grid h-6 w-6 shrink-0 place-items-center rounded-md " +
+                            (featured
+                              ? "bg-[#C9A227]/15 text-[#E0B93A]"
+                              : "bg-[#C9A227]/10 text-[#C9A227]")
+                          }
+                        >
+                          <SectionIcon size={12} strokeWidth={2.25} />
+                        </span>
+                        <span className="truncate">{section.name}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {hidden > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setExpanded((v) => !v)}
+                    aria-expanded={expanded}
+                    className="mt-3 inline-flex items-center gap-1 rounded text-xs font-semibold text-[#C9A227] hover:text-[#E0B93A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
                   >
-                    <Check
-                      size={15}
-                      strokeWidth={2.5}
-                      className="mt-0.5 shrink-0 text-[#C9A227]"
+                    {expanded
+                      ? t.pricingShowLess || "Show less"
+                      : `${t.pricingShowMore || "Show more"} (+${hidden})`}
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-300 ${
+                        expanded ? "rotate-180" : ""
+                      }`}
                     />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              {hidden > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setExpanded((v) => !v)}
-                  aria-expanded={expanded}
-                  className="mt-3 inline-flex items-center gap-1 rounded text-xs font-semibold text-[#C9A227] hover:text-[#E0B93A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
-                >
-                  {expanded
-                    ? t.pricingShowLess || "Show less"
-                    : `${t.pricingShowMore || "Show more"} (+${hidden})`}
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform duration-300 ${
-                      expanded ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              )}
-            </div>
-          )}
+                  </button>
+                )}
+              </>
+            ) : (
+              <p className="flex items-center gap-2 text-sm text-[#9691A6]">
+                <Check size={14} className="shrink-0 text-[#C9A227]" />
+                {t.pricingCoreFeatures || "Core platform features included."}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -330,9 +402,7 @@ function PlanCard({
 
 /* ---------- page ---------- */
 
-// Full class strings so Tailwind can see them. Rows with leftovers are
-// centered, so 4, 5, 6, 7... plans all look balanced.
-function widthFor(count) {
+function widthFor(count: number) {
   const base = "w-full sm:w-[calc(50%-12px)]";
   if (count <= 3) return `${base} lg:w-[calc(33.333%-16px)]`;
   if (count === 4 || count >= 7)
@@ -343,7 +413,7 @@ function widthFor(count) {
 export default function PricingPage() {
   const t = useTranslation();
   const isRTL = useIsRTL();
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -356,24 +426,25 @@ export default function PricingPage() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(PLANS_ENDPOINT);
+        const res = await fetch(PLANS_ENDPOINT, { cache: "no-store" });
         if (!res.ok) throw new Error(tRef.current.pricingErrorLoad);
         const data = await res.json();
         if (!cancelled) {
           const active = (data.plans || []).filter(
-            (p) => p.is_active !== false,
+            (p: any) => p.is_active !== false,
           );
-          // Cheapest first, "Custom" (no price) always last
-          active.sort((a, b) => {
-            if (isNil(a.price_monthly)) return isNil(b.price_monthly) ? 0 : 1;
+          active.sort((a: any, b: any) => {
+            if (isNil(a.price_monthly))
+              return isNil(b.price_monthly) ? 0 : 1;
             if (isNil(b.price_monthly)) return -1;
             return Number(a.price_monthly) - Number(b.price_monthly);
           });
           setPlans(active);
           requestAnimationFrame(() => setMounted(true));
         }
-      } catch (err) {
-        if (!cancelled) setError(err.message || tRef.current.pricingErrorLoad);
+      } catch (err: any) {
+        if (!cancelled)
+          setError(err.message || tRef.current.pricingErrorLoad);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -391,9 +462,8 @@ export default function PricingPage() {
     return plans[Math.floor((plans.length - 1) / 2)]?.id ?? null;
   }, [plans]);
 
-  // Biggest finite limits, used to scale every meter
   const maxes = useMemo(() => {
-    const max = (key) =>
+    const max = (key: "max_branches" | "max_pos_devices") =>
       Math.max(
         1,
         ...plans
@@ -410,7 +480,6 @@ export default function PricingPage() {
     <div
       className={`${displayFont.variable} relative min-h-screen overflow-hidden bg-[#15121C]`}
     >
-      {/* Table-grid pattern */}
       <svg
         className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
         viewBox="0 0 300 300"
@@ -438,9 +507,7 @@ export default function PricingPage() {
       <div className="blob-b pointer-events-none absolute top-40 -right-32 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-20">
-        {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
-         
           <h1
             className="mt-5 text-xl font-medium tracking-tight text-[#F0EAE2] sm:text-2xl"
             style={{ fontFamily: "var(--font-display)" }}
@@ -464,16 +531,21 @@ export default function PricingPage() {
           </div>
         )}
 
-        {/* Plans: wrapping flex so any count works and the last row stays centered */}
         <div className="mt-16 flex flex-wrap justify-center gap-6">
           {loading ? (
             [0, 1, 2, 3].map((i) => (
               <div key={i} className={widthClass}>
-                <div className="h-[460px] animate-pulse rounded-[22px] border border-[#2E2938] bg-[#1B1823] p-6">
+                <div className="h-[520px] animate-pulse rounded-[22px] border border-[#2E2938] bg-[#1B1823] p-6">
                   <div className="h-10 w-10 rounded-xl bg-[#2A2534]" />
                   <div className="mt-5 h-4 w-28 rounded bg-[#2A2534]" />
                   <div className="mt-8 h-12 w-32 rounded bg-[#2A2534]" />
                   <div className="mt-6 h-11 w-full rounded-xl bg-[#2A2534]" />
+                  <div className="mt-6 h-20 rounded-xl bg-[#15121C]" />
+                  <div className="mt-5 space-y-2">
+                    <div className="h-4 w-full rounded bg-[#2A2534]" />
+                    <div className="h-4 w-5/6 rounded bg-[#2A2534]" />
+                    <div className="h-4 w-2/3 rounded bg-[#2A2534]" />
+                  </div>
                 </div>
               </div>
             ))
@@ -505,42 +577,21 @@ export default function PricingPage() {
 
       <style jsx global>{`
         @keyframes drift-a {
-          0%,
-          100% {
-            transform: translate(0, 0);
-          }
-          50% {
-            transform: translate(30px, 40px);
-          }
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(30px, 40px); }
         }
         @keyframes drift-b {
-          0%,
-          100% {
-            transform: translate(0, 0);
-          }
-          50% {
-            transform: translate(-40px, 30px);
-          }
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(-40px, 30px); }
         }
-        .blob-a {
-          animation: drift-a 9s ease-in-out infinite;
-        }
-        .blob-b {
-          animation: drift-b 11s ease-in-out infinite;
-        }
+        .blob-a { animation: drift-a 9s ease-in-out infinite; }
+        .blob-b { animation: drift-b 11s ease-in-out infinite; }
 
         @keyframes sparkle-turn {
-          0%,
-          100% {
-            transform: rotate(0deg);
-          }
-          50% {
-            transform: rotate(20deg);
-          }
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(20deg); }
         }
-        .sparkle-spin {
-          animation: sparkle-turn 1.8s ease-in-out infinite;
-        }
+        .sparkle-spin { animation: sparkle-turn 1.8s ease-in-out infinite; }
 
         @property --angle {
           syntax: "<angle>";
@@ -548,9 +599,7 @@ export default function PricingPage() {
           inherits: false;
         }
         @keyframes spin-border {
-          to {
-            --angle: 360deg;
-          }
+          to { --angle: 360deg; }
         }
         .spin-border {
           background: conic-gradient(
@@ -580,10 +629,7 @@ export default function PricingPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .blob-a,
-          .blob-b,
-          .sparkle-spin,
-          .spin-border {
+          .blob-a, .blob-b, .sparkle-spin, .spin-border {
             animation: none !important;
           }
         }

@@ -16,22 +16,28 @@ import {
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
-// Adjust if your hotel-profile route is different
 const HOTEL_PROFILE_PATH = "/admin/profile";
-
 const HESABPAY_PATTERN = /^07\d{8}$/;
 
-const EMPTY_CATEGORY = { id: null, name: "", sort_order: 0, is_active: true };
+const EMPTY_CATEGORY = {
+  id: null,
+  name: "",
+  sort_order: 0,
+  is_active: true,
+  default_product_category_id: "",
+};
+
 const EMPTY_ITEM = {
   id: null,
   name: "",
   description: "",
-  price: "",
+  base_price: "",
   tax_rate: 0,
   is_available: true,
   is_online: false,
   is_kitchen: true,
   category_id: "",
+  product_category_id: "",
   image_url: "",
 };
 
@@ -44,39 +50,37 @@ export default function MenuPage() {
   const router = useRouter();
   const { t, dir } = useAdminPreferences();
 
-  const [me, setMe] = useState<any>(null);
+  const [me, setMe] = useState(null);
   const isOwner = me?.role === "hotel_owner";
   const isBranchManager = me?.role === "branch_manager";
 
-  const [hotels, setHotels] = useState<any[]>([]);
+  const [hotels, setHotels] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState("");
 
-  const [branches, setBranches] = useState<any[]>([]);
+  const [branches, setBranches] = useState([]);
   const [branchesHotelId, setBranchesHotelId] = useState("");
   const [loadingBranches, setLoadingBranches] = useState(false);
   const [branchId, setBranchId] = useState("");
 
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState([]);
+  const [productCategories, setProductCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState([]);
   const [loadingItems, setLoadingItems] = useState(false);
-  const [categoryForm, setCategoryForm] = useState<any>(null);
-  const [itemForm, setItemForm] = useState<any>(null);
+  const [categoryForm, setCategoryForm] = useState(null);
+  const [itemForm, setItemForm] = useState(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [togglingId, setTogglingId] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [togglingId, setTogglingId] = useState(null);
+  const fileInputRef = useRef(null);
 
-  /* ---- HesabPay guard state ---- */
-  const [hesabpayStatus, setHesabpayStatus] = useState<
-    "loading" | "valid" | "missing"
-  >("loading");
+  const [hesabpayStatus, setHesabpayStatus] = useState("loading");
   const [showHesabpayModal, setShowHesabpayModal] = useState(false);
 
   const branchesReady = !loadingBranches && branchesHotelId === selectedHotelId;
 
-  function handle401(res: Response) {
+  function handle401(res) {
     if (res.status === 401) {
       router.push("/hotel/login");
       return true;
@@ -84,6 +88,7 @@ export default function MenuPage() {
     return false;
   }
 
+  /* ---------- load user ---------- */
   useEffect(() => {
     (async () => {
       try {
@@ -94,13 +99,28 @@ export default function MenuPage() {
         }
         const data = await res.json();
         setMe(data.user);
-      } catch (err: any) {
+      } catch (err) {
         setError(err.message);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ---------- load product categories (platform-wide) ---------- */
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/product-categories");
+        if (!res.ok) return;
+        const data = await res.json();
+        setProductCategories(data.categories || []);
+      } catch {
+        /* non-fatal */
+      }
+    })();
+  }, []);
+
+  /* ---------- owner: load hotels + branches ---------- */
   async function loadHotels() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
@@ -109,12 +129,12 @@ export default function MenuPage() {
       setHotels(data.hotels || []);
       const defaultHotelId = data.selectedHotelId || data.hotels?.[0]?.id || "";
       setSelectedHotelId(defaultHotelId);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     }
   }
 
-  async function loadBranches(hotelId: string) {
+  async function loadBranches(hotelId) {
     if (!hotelId) return;
     setLoadingBranches(true);
     setBranches([]);
@@ -131,7 +151,7 @@ export default function MenuPage() {
         }
         return current;
       });
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
       setBranches([]);
       setBranchesHotelId("");
@@ -140,6 +160,7 @@ export default function MenuPage() {
     }
   }
 
+  /* ---------- categories (hotel-scoped) ---------- */
   async function loadCategories() {
     if (!branchId) return;
     try {
@@ -149,11 +170,12 @@ export default function MenuPage() {
       if (handle401(res)) return;
       const data = await res.json();
       setCategories(data.categories || []);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     }
   }
 
+  /* ---------- items (hotel-scoped, per-branch merged) ---------- */
   async function loadItems() {
     if (!branchId) return;
     setLoadingItems(true);
@@ -166,15 +188,15 @@ export default function MenuPage() {
       if (handle401(res)) return;
       const data = await res.json();
       setItems(data.items || []);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setLoadingItems(false);
     }
   }
 
-  /* ---- Load hotel's HesabPay status (guard source) ---- */
-  async function loadHesabpayStatus(hotelId: string) {
+  /* ---------- HesabPay guard ---------- */
+  async function loadHesabpayStatus(hotelId) {
     if (!hotelId) {
       setHesabpayStatus("missing");
       return;
@@ -183,7 +205,6 @@ export default function MenuPage() {
       const res = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
       if (handle401(res)) return;
       if (!res.ok) {
-        // can't determine (e.g. branch manager without access) — permissive
         setHesabpayStatus("valid");
         return;
       }
@@ -191,18 +212,16 @@ export default function MenuPage() {
       const hp = String(data.hotel?.hesabpay_account_number || "").trim();
       setHesabpayStatus(HESABPAY_PATTERN.test(hp) ? "valid" : "missing");
     } catch {
-      // network/other — permissive to avoid breaking the page
       setHesabpayStatus("valid");
     }
   }
 
+  /* ---------- orchestration effects ---------- */
   useEffect(() => {
     if (isOwner) {
       loadHotels();
     } else if (isBranchManager) {
-      if (me?.branch?.id) {
-        setBranchId(me.branch.id);
-      }
+      if (me?.branch?.id) setBranchId(me.branch.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOwner, isBranchManager, me]);
@@ -232,27 +251,22 @@ export default function MenuPage() {
   }, [branchId]);
 
   useEffect(() => {
-    if (branchId) {
-      loadItems();
-    }
+    if (branchId) loadItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId, activeCategory]);
 
-  /* resolve hotel id for the HesabPay check */
   const hotelIdForHesabpay = isOwner
     ? selectedHotelId
     : me?.branch?.hotel_id || me?.hotel_id || "";
 
-  /* fetch HesabPay status when the hotel context is ready */
   useEffect(() => {
     if (!me) return;
     loadHesabpayStatus(hotelIdForHesabpay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [me, isOwner, hotelIdForHesabpay]);
 
-  /* ---- Guard helper ---- */
-  function guardOnline(desired: boolean): boolean {
-    if (!desired) return true; // turning off is always allowed
+  function guardOnline(desired) {
+    if (!desired) return true;
     if (hesabpayStatus === "missing") {
       setShowHesabpayModal(true);
       return false;
@@ -260,7 +274,8 @@ export default function MenuPage() {
     return true;
   }
 
-  async function saveCategory(e: React.FormEvent) {
+  /* ---------- category save ---------- */
+  async function saveCategory(e) {
     e.preventDefault();
     setSaving(true);
     setError("");
@@ -268,10 +283,18 @@ export default function MenuPage() {
     const url = isEdit
       ? `/api/owners/menu-categories/${categoryForm.id}`
       : "/api/owners/menu-categories";
+    const payload = {
+      branch_id: branchId,
+      name: categoryForm.name,
+      sort_order: categoryForm.sort_order,
+      is_active: categoryForm.is_active,
+      default_product_category_id:
+        categoryForm.default_product_category_id || null,
+    };
     try {
       const res = await fetchWithAuth(url, {
         method: isEdit ? "PATCH" : "POST",
-        body: JSON.stringify({ ...categoryForm, branch_id: branchId }),
+        body: JSON.stringify(payload),
       });
       if (handle401(res)) return;
       const data = await res.json();
@@ -281,14 +304,14 @@ export default function MenuPage() {
       }
       setCategoryForm(null);
       loadCategories();
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
     }
   }
 
-  async function deleteCategory(c: any) {
+  async function deleteCategory(c) {
     if (!confirm(t.branch.categories.confirmDelete.replace("{name}", c.name)))
       return;
     try {
@@ -300,7 +323,7 @@ export default function MenuPage() {
       if (!res.ok) return alert(data.error || t.branch.categories.deleteError);
       if (activeCategory === c.id) setActiveCategory("");
       loadCategories();
-    } catch (err: any) {
+    } catch (err) {
       alert(err.message);
     }
   }
@@ -326,26 +349,26 @@ export default function MenuPage() {
     });
   }
 
-  function openEditItem(i: any) {
+  function openEditItem(i) {
     setError("");
     setItemForm({
       id: i.id,
       name: i.name,
       description: i.description || "",
-      price: i.price,
+      base_price: i.base_price,
       tax_rate: i.tax_rate ?? 0,
       is_available: i.is_available,
       is_online: i.is_online ?? false,
       is_kitchen: i.is_kitchen,
       category_id: i.category?.id || "",
+      product_category_id: i.product_category?.id || "",
       image_url: i.image_url || "",
     });
   }
 
-  async function saveItem(e: React.FormEvent) {
+  /* ---------- item save (create or update) ---------- */
+  async function saveItem(e) {
     e.preventDefault();
-
-    // Final safety net — block if trying to save an online item without HesabPay
     if (itemForm.is_online && !guardOnline(true)) return;
 
     setSaving(true);
@@ -354,12 +377,21 @@ export default function MenuPage() {
     const url = isEdit
       ? `/api/owners/menu-items/${itemForm.id}`
       : "/api/owners/menu-items";
+
     const payload = {
-      ...itemForm,
-      price: Number(itemForm.price),
       branch_id: branchId,
+      name: itemForm.name,
+      description: itemForm.description,
+      image_url: itemForm.image_url,
+      base_price: Number(itemForm.base_price),
+      tax_rate: itemForm.tax_rate,
+      is_kitchen: itemForm.is_kitchen,
+      category_id: itemForm.category_id || null,
+      product_category_id: itemForm.product_category_id || null,
+      is_available: itemForm.is_available,
+      is_online: itemForm.is_online,
     };
-    delete payload.id;
+
     try {
       const res = await fetchWithAuth(url, {
         method: isEdit ? "PATCH" : "POST",
@@ -374,14 +406,14 @@ export default function MenuPage() {
       setItemForm(null);
       loadItems();
       loadCategories();
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
     }
   }
 
-  async function deleteItem(i: any) {
+  async function deleteItem(i) {
     if (!confirm(t.branch.items.confirmDelete.replace("{name}", i.name)))
       return;
     try {
@@ -393,25 +425,32 @@ export default function MenuPage() {
       if (!res.ok) return alert(data.error || t.branch.items.deleteError);
       loadItems();
       loadCategories();
-    } catch (err: any) {
+    } catch (err) {
       alert(err.message);
     }
   }
 
-  async function quickPrice(i: any, newPrice: number | string) {
+  /* ---------- quick price (per-branch override) ---------- */
+  async function quickPrice(i, newPrice) {
+    const n = Number(newPrice);
+    if (!Number.isFinite(n)) return;
     try {
       const res = await fetchWithAuth(`/api/owners/menu-items/${i.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ price: Number(newPrice) }),
+        body: JSON.stringify({
+          branch_id: branchId,
+          price_override: n,
+        }),
       });
       if (handle401(res)) return;
       if (res.ok) loadItems();
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     }
   }
 
-  async function toggleOnline(item: any) {
+  /* ---------- online toggle (per-branch) ---------- */
+  async function toggleOnline(item) {
     const desired = !item.is_online;
     if (!guardOnline(desired)) return;
 
@@ -419,7 +458,10 @@ export default function MenuPage() {
     try {
       const res = await fetchWithAuth(`/api/owners/menu-items/${item.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ is_online: desired }),
+        body: JSON.stringify({
+          branch_id: branchId,
+          is_online: desired,
+        }),
       });
       if (handle401(res)) return;
       const data = await res.json();
@@ -427,14 +469,15 @@ export default function MenuPage() {
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, is_online: desired } : i)),
       );
-    } catch (err: any) {
+    } catch (err) {
       alert(err.message);
     } finally {
       setTogglingId(null);
     }
   }
 
-  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  /* ---------- image upload ---------- */
+  async function handleImageSelect(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     setError("");
@@ -442,9 +485,7 @@ export default function MenuPage() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-
       const token = localStorage.getItem("auth_token");
-
       const res = await fetch("/api/owners/menu-image-upload", {
         method: "POST",
         body: fd,
@@ -452,10 +493,9 @@ export default function MenuPage() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
-
       if (handle401(res)) return;
 
-      let data: any = null;
+      let data = null;
       const text = await res.text();
       try {
         data = text ? JSON.parse(text) : null;
@@ -472,8 +512,8 @@ export default function MenuPage() {
         setError(t.branch.items.uploadNoUrl);
         return;
       }
-      setItemForm((prev: any) => ({ ...prev, image_url: data.url }));
-    } catch (err: any) {
+      setItemForm((prev) => ({ ...prev, image_url: data.url }));
+    } catch (err) {
       setError(err.message);
     } finally {
       setUploadingImage(false);
@@ -482,7 +522,7 @@ export default function MenuPage() {
   }
 
   function removeImage() {
-    setItemForm((prev: any) => ({ ...prev, image_url: "" }));
+    setItemForm((prev) => ({ ...prev, image_url: "" }));
   }
 
   if (!me) {
@@ -502,7 +542,7 @@ export default function MenuPage() {
   return (
     <div className="min-h-screen p-4" dir={dir}>
       <div className="max-w-6xl mx-auto">
-        {/* ---------- header ---------- */}
+        {/* header */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
@@ -570,7 +610,7 @@ export default function MenuPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 items-start">
-          {/* ---------- categories ---------- */}
+          {/* categories */}
           <div className="min-w-0">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
@@ -633,7 +673,7 @@ export default function MenuPage() {
             </div>
           </div>
 
-          {/* ---------- items ---------- */}
+          {/* items */}
           <div className="min-w-0">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
@@ -729,8 +769,8 @@ export default function MenuPage() {
                         disabled={togglingId === i.id}
                         title={
                           i.is_online
-                            ? "Visible to online customers — click to hide"
-                            : "Hidden from online — click to show"
+                            ? "Visible to online customers at this branch — click to hide"
+                            : "Hidden from online at this branch — click to show"
                         }
                         className={`inline-flex items-center gap-1 self-start rounded-full px-2.5 py-1 text-[11px] font-semibold transition disabled:opacity-50 ${
                           i.is_online
@@ -771,13 +811,14 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* ---------- category modal ---------- */}
+      {/* modals */}
       {categoryForm && (
         <CategoryModal
           t={t}
           dir={dir}
           form={categoryForm}
           setForm={setCategoryForm}
+          productCategories={productCategories}
           onSubmit={saveCategory}
           onClose={() => !saving && setCategoryForm(null)}
           saving={saving}
@@ -785,7 +826,6 @@ export default function MenuPage() {
         />
       )}
 
-      {/* ---------- item modal ---------- */}
       {itemForm && (
         <ItemModal
           t={t}
@@ -793,6 +833,7 @@ export default function MenuPage() {
           form={itemForm}
           setForm={setItemForm}
           categories={categories}
+          productCategories={productCategories}
           onSubmit={saveItem}
           onClose={() => !saving && setItemForm(null)}
           saving={saving}
@@ -805,7 +846,6 @@ export default function MenuPage() {
         />
       )}
 
-      {/* ---------- HesabPay required popup ---------- */}
       {showHesabpayModal && (
         <HesabpayRequiredModal
           t={t}
@@ -819,24 +859,10 @@ export default function MenuPage() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  HesabPay required popup                                            */
-/* ------------------------------------------------------------------ */
-function HesabpayRequiredModal({
-  t,
-  dir,
-  isOwner,
-  onClose,
-  onGoToProfile,
-}: {
-  t: any;
-  dir: string;
-  isOwner: boolean;
-  onClose: () => void;
-  onGoToProfile: () => void;
-}) {
+/* ---------- HesabpayRequiredModal (unchanged) ---------- */
+function HesabpayRequiredModal({ t, dir, isOwner, onClose, onGoToProfile }) {
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
+    function onKey(e) {
       if (e.key === "Escape") onClose();
     }
     document.addEventListener("keydown", onKey);
@@ -904,21 +930,20 @@ function HesabpayRequiredModal({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Category modal                                                     */
-/* ------------------------------------------------------------------ */
+/* ---------- CategoryModal (new: product category dropdown) ---------- */
 function CategoryModal({
   t,
   dir,
   form,
   setForm,
+  productCategories,
   onSubmit,
   onClose,
   saving,
   error,
-}: any) {
+}) {
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
+    function onKey(e) {
       if (e.key === "Escape" && !saving) onClose();
     }
     document.addEventListener("keydown", onKey);
@@ -994,6 +1019,38 @@ function CategoryModal({
             </div>
           </div>
 
+          <div>
+            <label className={labelClass}>
+              {t.branch.categories.defaultProductCategory ||
+                "Default product category (auto-tag new items)"}
+            </label>
+            <select
+              value={form.default_product_category_id || ""}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  default_product_category_id: e.target.value,
+                })
+              }
+              className={inputClass}
+            >
+              <option value="">
+                {t.branch.categories.noDefaultProductCategory ||
+                  "— None (items inherit nothing) —"}
+              </option>
+              {productCategories.map((pc) => (
+                <option key={pc.id} value={pc.id}>
+                  {pc.icon ? `${pc.icon} ` : ""}
+                  {pc.name}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-teal-700/60 dark:text-teal-300/60">
+              New items created in this category will be auto-tagged for the
+              online marketplace chips.
+            </p>
+          </div>
+
           <label className="flex items-center gap-2 text-sm text-teal-900 dark:text-teal-100 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -1030,15 +1087,14 @@ function CategoryModal({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Item modal                                                         */
-/* ------------------------------------------------------------------ */
+/* ---------- ItemModal (new: product category dropdown + base_price) ---------- */
 function ItemModal({
   t,
   dir,
   form,
   setForm,
   categories,
+  productCategories,
   onSubmit,
   onClose,
   saving,
@@ -1048,9 +1104,9 @@ function ItemModal({
   removeImage,
   fileInputRef,
   guardOnline,
-}: any) {
+}) {
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
+    function onKey(e) {
       if (e.key === "Escape" && !saving && !uploadingImage) onClose();
     }
     document.addEventListener("keydown", onKey);
@@ -1098,7 +1154,7 @@ function ItemModal({
             </div>
           )}
 
-          {/* image chooser */}
+          {/* image */}
           <div className="flex items-start gap-3">
             <div className="h-24 w-24 shrink-0 rounded-xl overflow-hidden border border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center">
               {form.image_url ? (
@@ -1156,7 +1212,7 @@ function ItemModal({
             </div>
             <div>
               <label className={labelClass}>
-                {t.branch.items.categoryLabel || "Category"}
+                {t.branch.items.categoryLabel || "Menu category"}
               </label>
               <select
                 value={form.category_id}
@@ -1166,7 +1222,7 @@ function ItemModal({
                 className={inputClass}
               >
                 <option value="">{t.branch.items.noCategory}</option>
-                {categories.map((c: any) => (
+                {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
@@ -1175,20 +1231,50 @@ function ItemModal({
             </div>
           </div>
 
+          <div>
+            <label className={labelClass}>
+              {t.branch.items.productCategory ||
+                "Marketplace category (helps customers find it)"}
+            </label>
+            <select
+              value={form.product_category_id || ""}
+              onChange={(e) =>
+                setForm({ ...form, product_category_id: e.target.value })
+              }
+              className={inputClass}
+            >
+              <option value="">
+                {t.branch.items.noProductCategory || "— Not tagged —"}
+              </option>
+              {productCategories.map((pc) => (
+                <option key={pc.id} value={pc.id}>
+                  {pc.icon ? `${pc.icon} ` : ""}
+                  {pc.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
-                {t.branch.items.pricePlaceholder || "Price"} *
+                {t.branch.items.basePrice || "Base price (hotel-wide)"} *
               </label>
               <input
                 required
                 type="number"
                 step="0.01"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
+                value={form.base_price}
+                onChange={(e) =>
+                  setForm({ ...form, base_price: e.target.value })
+                }
                 dir="ltr"
                 className={inputClass}
               />
+              <p className="mt-1 text-[11px] text-teal-700/60 dark:text-teal-300/60">
+                Changing this affects every branch. Use the card's quick price
+                to set a per-branch override.
+              </p>
             </div>
             <div>
               <label className={labelClass}>
@@ -1235,7 +1321,6 @@ function ItemModal({
             <ToggleTile
               checked={form.is_online}
               onChange={(v) => {
-                // Guard: block turning ON when HesabPay is missing
                 if (
                   v &&
                   typeof guardOnline === "function" &&
@@ -1244,7 +1329,7 @@ function ItemModal({
                   return;
                 setForm({ ...form, is_online: v });
               }}
-              label={t.branch.items.online || "Online"}
+              label={t.branch.items.online || "Online (this branch)"}
               icon={form.is_online ? <Globe size={12} /> : <Store size={12} />}
               accent={form.is_online ? "emerald" : undefined}
             />
@@ -1274,22 +1359,7 @@ function ItemModal({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Toggle tile                                                        */
-/* ------------------------------------------------------------------ */
-function ToggleTile({
-  checked,
-  onChange,
-  label,
-  icon,
-  accent,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-  icon?: React.ReactNode;
-  accent?: "emerald";
-}) {
+function ToggleTile({ checked, onChange, label, icon, accent }) {
   const borderCls = checked
     ? accent === "emerald"
       ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50/60 dark:bg-emerald-950/30"

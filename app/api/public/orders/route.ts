@@ -1,3 +1,4 @@
+// app/api/public/orders/route.js
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
@@ -5,7 +6,6 @@ import { getBuyerFromRequest } from "@/lib/buyer-auth";
 
 type CartLine = { menu_item_id: string; quantity: number };
 
-/** Flat delivery fee (AFN). Applied unless hotel.delivery_type = "free". */
 const PAID_DELIVERY_FEE = 50;
 
 function newToken() {
@@ -29,7 +29,6 @@ export async function POST(request: Request) {
     typeof body.table_token === "string" ? body.table_token : "";
   const note = typeof body.note === "string" ? body.note.trim() : "";
 
-  // delivery fields (only for customer / non-QR orders)
   const deliveryAddressRaw =
     typeof body.delivery_address === "string"
       ? body.delivery_address.trim()
@@ -103,7 +102,6 @@ export async function POST(request: Request) {
   if (!branch)
     return NextResponse.json({ error: "BRANCH_NOT_FOUND" }, { status: 404 });
 
-  // "free" → 0; "none" and "paid" → PAID_DELIVERY_FEE
   const deliveryType = branch.hotels?.delivery_type ?? "paid";
 
   const source: "qr" | "customer" = table ? "qr" : "customer";
@@ -122,42 +120,59 @@ export async function POST(request: Request) {
     contactName = dbBuyer?.full_name?.trim() || "";
     contactPhone = dbBuyer?.phone?.trim() || "";
 
-    if (!contactName) {
+    if (!contactName)
       return NextResponse.json(
         { error: "BUYER_NAME_MISSING" },
         { status: 400 },
       );
-    }
-    if (!contactPhone) {
+    if (!contactPhone)
       return NextResponse.json(
         { error: "BUYER_PHONE_MISSING" },
         { status: 400 },
       );
-    }
-    if (!deliveryAddressRaw) {
+    if (!deliveryAddressRaw)
       return NextResponse.json(
         { error: "DELIVERY_ADDRESS_REQUIRED" },
         { status: 400 },
       );
-    }
   }
 
-  // ── Validate items ──
+  // ── Validate items (MIGRATION FIX) ──
+  // menu_items no longer has branch_id / is_online / is_available / price.
+  // Branch-level availability and price live in branch_menu_items.
   const menuItemIds = items.map((i) => i.menu_item_id);
-  const menuItems = await prisma.menu_items.findMany({
+
+  const menuRows = await prisma.menu_items.findMany({
     where: {
       id: { in: menuItemIds },
-      branch_id: branch.id,
-      is_available: true,
-      is_online: true,
+      branch_items: {
+        some: {
+          branch_id: branch.id,
+          is_online: true,
+          is_available: true,
+        },
+      },
     },
-    select: { id: true, price: true },
+    select: {
+      id: true,
+      base_price: true,
+      branch_items: {
+        where: { branch_id: branch.id },
+        select: { price_override: true, is_available: true, is_online: true },
+      },
+    },
   });
 
-  if (menuItems.length !== menuItemIds.length)
+  if (menuRows.length !== menuItemIds.length)
     return NextResponse.json({ error: "ITEM_NOT_AVAILABLE" }, { status: 400 });
 
-  const priceMap = new Map(menuItems.map((m) => [m.id, Number(m.price)]));
+  const priceMap = new Map(
+    menuRows.map((m) => [
+      m.id,
+      Number(m.branch_items?.[0]?.price_override ?? m.base_price),
+    ]),
+  );
+
   const lines = items.map((i) => {
     const unit = priceMap.get(i.menu_item_id)!;
     const qty = Math.max(1, Math.floor(i.quantity));
@@ -170,11 +185,6 @@ export async function POST(request: Request) {
   });
   const subtotal = +lines.reduce((s, l) => s + l.line_total, 0).toFixed(2);
 
-  // ── Delivery fee (server-side, never trust client) ──
-  // "free"  → 0 AFN
-  // "none"  → PAID_DELIVERY_FEE  (still delivered, standard fee)
-  // "paid"  → PAID_DELIVERY_FEE
-  // dine-in → 0
   const deliveryFee =
     source === "customer" && deliveryType !== "free" ? PAID_DELIVERY_FEE : 0;
   const totalAmount = +(subtotal + deliveryFee).toFixed(2);
@@ -205,9 +215,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const count = await prisma.orders.count({
-    where: { branch_id: branch.id },
-  });
+  const count = await prisma.orders.count({ where: { branch_id: branch.id } });
   const orderNumber = `${branch.id.slice(0, 4).toUpperCase()}-${String(
     count + 1,
   ).padStart(5, "0")}`;
@@ -227,10 +235,9 @@ export async function POST(request: Request) {
         source,
         public_token: token,
         subtotal,
-        total_amount: totalAmount, // includes delivery fee unless "free"
+        total_amount: totalAmount,
         notes: note || null,
 
-        // Only online delivery orders get a satellite row
         ...(source === "customer"
           ? {
               online_details: {

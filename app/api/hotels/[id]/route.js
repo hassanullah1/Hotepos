@@ -37,7 +37,8 @@ const HOTEL_DETAIL_SELECT = {
       max_branches: true,
       max_pos_devices: true,
       price_monthly: true,
-      features: true,
+      is_active: true,
+      created_at: true,
     },
   },
   branches: {
@@ -57,7 +58,11 @@ const HOTEL_DETAIL_SELECT = {
       closing_time: true,
       created_at: true,
       _count: {
-        select: { users: true, dining_tables: true, menu_items: true },
+        select: {
+          users: true,
+          dining_tables: true,
+          branch_menu_items: true,
+        },
       },
     },
     orderBy: { created_at: "asc" },
@@ -109,7 +114,7 @@ function serializeHotelDetail(h) {
       created_at: b.created_at,
       staff_count: b._count?.users ?? 0,
       table_count: b._count?.dining_tables ?? 0,
-      menu_item_count: b._count?.menu_items ?? 0,
+      menu_item_count: b._count?.branch_menu_items ?? 0,
     })),
     worker_count,
     created_at: h.created_at,

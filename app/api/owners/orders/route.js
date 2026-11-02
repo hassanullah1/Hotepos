@@ -24,7 +24,6 @@ const ORDER_INCLUDE = {
   buyers: {
     select: { id: true, full_name: true, phone: true, email: true },
   },
-  // ── NEW: online delivery details ──
   online_details: true,
 };
 
@@ -80,16 +79,9 @@ function serializeOrder(o) {
       : null,
 
     buyer: b
-      ? {
-          id: b.id,
-          full_name: b.full_name,
-          phone: b.phone,
-          email: b.email,
-        }
+      ? { id: b.id, full_name: b.full_name, phone: b.phone, email: b.email }
       : null,
 
-    // ── NEW: online-only contact + delivery ──
-    // null for POS / QR orders. Present only for source = "customer".
     online_details: od
       ? {
           contact_name: od.contact_name,
@@ -264,10 +256,28 @@ export async function POST(request) {
       );
   }
 
+  /* ─────────────────────────────────────────────────────────────
+     MENU LOOKUP — items are hotel-level now, per-branch state is
+     in branch_menu_items. We fetch items belonging to the hotel
+     AND linked to this specific branch, with the override price.
+     ───────────────────────────────────────────────────────────── */
   const menuIds = items.map((i) => i.menu_item_id).filter(Boolean);
   const menuRows = await prisma.menu_items.findMany({
-    where: { id: { in: menuIds }, branch_id },
-    select: { id: true, price: true, is_kitchen: true, prep_station: true },
+    where: {
+      id: { in: menuIds },
+      hotel_id: branch.hotel_id,
+      branch_items: { some: { branch_id } },
+    },
+    select: {
+      id: true,
+      base_price: true,
+      is_kitchen: true,
+      prep_station: true,
+      branch_items: {
+        where: { branch_id },
+        select: { price_override: true, is_available: true },
+      },
+    },
   });
 
   if (menuRows.length !== menuIds.length) {
@@ -280,8 +290,9 @@ export async function POST(request) {
 
   const resolved = items.map((i) => {
     const m = menuMap.get(i.menu_item_id);
+    const bi = m.branch_items?.[0];
     const qty = Math.max(1, Number(i.quantity) || 1);
-    const unit = Number(m.price);
+    const unit = Number(bi?.price_override ?? m.base_price);
     return {
       menu_item_id: i.menu_item_id,
       quantity: qty,

@@ -129,6 +129,16 @@ export type menu_categories = $Result.DefaultSelection<Prisma.$menu_categoriesPa
  */
 export type menu_items = $Result.DefaultSelection<Prisma.$menu_itemsPayload>
 /**
+ * Model product_categories
+ * 
+ */
+export type product_categories = $Result.DefaultSelection<Prisma.$product_categoriesPayload>
+/**
+ * Model branch_menu_items
+ * 
+ */
+export type branch_menu_items = $Result.DefaultSelection<Prisma.$branch_menu_itemsPayload>
+/**
  * Model menu_item_modifier_groups
  * 
  */
@@ -636,6 +646,26 @@ export class PrismaClient<
     * ```
     */
   get menu_items(): Prisma.menu_itemsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.product_categories`: Exposes CRUD operations for the **product_categories** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Product_categories
+    * const product_categories = await prisma.product_categories.findMany()
+    * ```
+    */
+  get product_categories(): Prisma.product_categoriesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.branch_menu_items`: Exposes CRUD operations for the **branch_menu_items** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Branch_menu_items
+    * const branch_menu_items = await prisma.branch_menu_items.findMany()
+    * ```
+    */
+  get branch_menu_items(): Prisma.branch_menu_itemsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.menu_item_modifier_groups`: Exposes CRUD operations for the **menu_item_modifier_groups** model.
@@ -1421,6 +1451,8 @@ export namespace Prisma {
     table_sessions: 'table_sessions',
     menu_categories: 'menu_categories',
     menu_items: 'menu_items',
+    product_categories: 'product_categories',
+    branch_menu_items: 'branch_menu_items',
     menu_item_modifier_groups: 'menu_item_modifier_groups',
     menu_item_modifiers: 'menu_item_modifiers',
     inventory_items: 'inventory_items',
@@ -1469,7 +1501,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "product_categories" | "branch_menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3024,6 +3056,154 @@ export namespace Prisma {
           count: {
             args: Prisma.menu_itemsCountArgs<ExtArgs>
             result: $Utils.Optional<Menu_itemsCountAggregateOutputType> | number
+          }
+        }
+      }
+      product_categories: {
+        payload: Prisma.$product_categoriesPayload<ExtArgs>
+        fields: Prisma.product_categoriesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.product_categoriesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.product_categoriesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          findFirst: {
+            args: Prisma.product_categoriesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.product_categoriesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          findMany: {
+            args: Prisma.product_categoriesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>[]
+          }
+          create: {
+            args: Prisma.product_categoriesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          createMany: {
+            args: Prisma.product_categoriesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.product_categoriesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>[]
+          }
+          delete: {
+            args: Prisma.product_categoriesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          update: {
+            args: Prisma.product_categoriesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          deleteMany: {
+            args: Prisma.product_categoriesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.product_categoriesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.product_categoriesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>[]
+          }
+          upsert: {
+            args: Prisma.product_categoriesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$product_categoriesPayload>
+          }
+          aggregate: {
+            args: Prisma.Product_categoriesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProduct_categories>
+          }
+          groupBy: {
+            args: Prisma.product_categoriesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Product_categoriesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.product_categoriesCountArgs<ExtArgs>
+            result: $Utils.Optional<Product_categoriesCountAggregateOutputType> | number
+          }
+        }
+      }
+      branch_menu_items: {
+        payload: Prisma.$branch_menu_itemsPayload<ExtArgs>
+        fields: Prisma.branch_menu_itemsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.branch_menu_itemsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.branch_menu_itemsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          findFirst: {
+            args: Prisma.branch_menu_itemsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.branch_menu_itemsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          findMany: {
+            args: Prisma.branch_menu_itemsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>[]
+          }
+          create: {
+            args: Prisma.branch_menu_itemsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          createMany: {
+            args: Prisma.branch_menu_itemsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.branch_menu_itemsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>[]
+          }
+          delete: {
+            args: Prisma.branch_menu_itemsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          update: {
+            args: Prisma.branch_menu_itemsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          deleteMany: {
+            args: Prisma.branch_menu_itemsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.branch_menu_itemsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.branch_menu_itemsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>[]
+          }
+          upsert: {
+            args: Prisma.branch_menu_itemsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$branch_menu_itemsPayload>
+          }
+          aggregate: {
+            args: Prisma.Branch_menu_itemsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBranch_menu_items>
+          }
+          groupBy: {
+            args: Prisma.branch_menu_itemsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Branch_menu_itemsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.branch_menu_itemsCountArgs<ExtArgs>
+            result: $Utils.Optional<Branch_menu_itemsCountAggregateOutputType> | number
           }
         }
       }
@@ -5598,6 +5778,8 @@ export namespace Prisma {
     table_sessions?: table_sessionsOmit
     menu_categories?: menu_categoriesOmit
     menu_items?: menu_itemsOmit
+    product_categories?: product_categoriesOmit
+    branch_menu_items?: branch_menu_itemsOmit
     menu_item_modifier_groups?: menu_item_modifier_groupsOmit
     menu_item_modifiers?: menu_item_modifiersOmit
     inventory_items?: inventory_itemsOmit
@@ -6043,6 +6225,8 @@ export namespace Prisma {
 
   export type HotelsCountOutputType = {
     expense_categories: number
+    menu_categories: number
+    menu_items: number
     branches: number
     customers: number
     audit_logs: number
@@ -6050,6 +6234,8 @@ export namespace Prisma {
 
   export type HotelsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expense_categories?: boolean | HotelsCountOutputTypeCountExpense_categoriesArgs
+    menu_categories?: boolean | HotelsCountOutputTypeCountMenu_categoriesArgs
+    menu_items?: boolean | HotelsCountOutputTypeCountMenu_itemsArgs
     branches?: boolean | HotelsCountOutputTypeCountBranchesArgs
     customers?: boolean | HotelsCountOutputTypeCountCustomersArgs
     audit_logs?: boolean | HotelsCountOutputTypeCountAudit_logsArgs
@@ -6071,6 +6257,20 @@ export namespace Prisma {
    */
   export type HotelsCountOutputTypeCountExpense_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: expense_categoriesWhereInput
+  }
+
+  /**
+   * HotelsCountOutputType without action
+   */
+  export type HotelsCountOutputTypeCountMenu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: menu_categoriesWhereInput
+  }
+
+  /**
+   * HotelsCountOutputType without action
+   */
+  export type HotelsCountOutputTypeCountMenu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: menu_itemsWhereInput
   }
 
   /**
@@ -6221,8 +6421,7 @@ export namespace Prisma {
     discounts: number
     inventory_items: number
     invoices: number
-    menu_categories: number
-    menu_items: number
+    branch_menu_items: number
     orders: number
     payment_methods: number
     pos_devices: number
@@ -6247,8 +6446,7 @@ export namespace Prisma {
     discounts?: boolean | BranchesCountOutputTypeCountDiscountsArgs
     inventory_items?: boolean | BranchesCountOutputTypeCountInventory_itemsArgs
     invoices?: boolean | BranchesCountOutputTypeCountInvoicesArgs
-    menu_categories?: boolean | BranchesCountOutputTypeCountMenu_categoriesArgs
-    menu_items?: boolean | BranchesCountOutputTypeCountMenu_itemsArgs
+    branch_menu_items?: boolean | BranchesCountOutputTypeCountBranch_menu_itemsArgs
     orders?: boolean | BranchesCountOutputTypeCountOrdersArgs
     payment_methods?: boolean | BranchesCountOutputTypeCountPayment_methodsArgs
     pos_devices?: boolean | BranchesCountOutputTypeCountPos_devicesArgs
@@ -6346,15 +6544,8 @@ export namespace Prisma {
   /**
    * BranchesCountOutputType without action
    */
-  export type BranchesCountOutputTypeCountMenu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: menu_categoriesWhereInput
-  }
-
-  /**
-   * BranchesCountOutputType without action
-   */
-  export type BranchesCountOutputTypeCountMenu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: menu_itemsWhereInput
+  export type BranchesCountOutputTypeCountBranch_menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: branch_menu_itemsWhereInput
   }
 
   /**
@@ -6617,6 +6808,7 @@ export namespace Prisma {
     menu_item_modifier_groups: number
     order_items: number
     reviews: number
+    branch_items: number
   }
 
   export type Menu_itemsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6624,6 +6816,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: boolean | Menu_itemsCountOutputTypeCountMenu_item_modifier_groupsArgs
     order_items?: boolean | Menu_itemsCountOutputTypeCountOrder_itemsArgs
     reviews?: boolean | Menu_itemsCountOutputTypeCountReviewsArgs
+    branch_items?: boolean | Menu_itemsCountOutputTypeCountBranch_itemsArgs
   }
 
   // Custom InputTypes
@@ -6663,6 +6856,62 @@ export namespace Prisma {
    */
   export type Menu_itemsCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: reviewsWhereInput
+  }
+
+  /**
+   * Menu_itemsCountOutputType without action
+   */
+  export type Menu_itemsCountOutputTypeCountBranch_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: branch_menu_itemsWhereInput
+  }
+
+
+  /**
+   * Count Type Product_categoriesCountOutputType
+   */
+
+  export type Product_categoriesCountOutputType = {
+    children: number
+    items: number
+    menu_categories: number
+  }
+
+  export type Product_categoriesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    children?: boolean | Product_categoriesCountOutputTypeCountChildrenArgs
+    items?: boolean | Product_categoriesCountOutputTypeCountItemsArgs
+    menu_categories?: boolean | Product_categoriesCountOutputTypeCountMenu_categoriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Product_categoriesCountOutputType without action
+   */
+  export type Product_categoriesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product_categoriesCountOutputType
+     */
+    select?: Product_categoriesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Product_categoriesCountOutputType without action
+   */
+  export type Product_categoriesCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: product_categoriesWhereInput
+  }
+
+  /**
+   * Product_categoriesCountOutputType without action
+   */
+  export type Product_categoriesCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: menu_itemsWhereInput
+  }
+
+  /**
+   * Product_categoriesCountOutputType without action
+   */
+  export type Product_categoriesCountOutputTypeCountMenu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: menu_categoriesWhereInput
   }
 
 
@@ -13319,6 +13568,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
+    business_type: string | null
     delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -13334,6 +13584,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
+    business_type: string | null
     delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -13349,6 +13600,7 @@ export namespace Prisma {
     subscription_status: number
     subscription_expires_at: number
     is_online: number
+    business_type: number
     delivery_type: number
     created_at: number
     updated_at: number
@@ -13366,6 +13618,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    business_type?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13381,6 +13634,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    business_type?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13396,6 +13650,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
+    business_type?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13484,6 +13739,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean
+    business_type: string
     delivery_type: string
     created_at: Date | null
     updated_at: Date | null
@@ -13516,6 +13772,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    business_type?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -13523,6 +13780,8 @@ export namespace Prisma {
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
     hotel_owner?: boolean | hotels$hotel_ownerArgs<ExtArgs>
     expense_categories?: boolean | hotels$expense_categoriesArgs<ExtArgs>
+    menu_categories?: boolean | hotels$menu_categoriesArgs<ExtArgs>
+    menu_items?: boolean | hotels$menu_itemsArgs<ExtArgs>
     branches?: boolean | hotels$branchesArgs<ExtArgs>
     customers?: boolean | hotels$customersArgs<ExtArgs>
     audit_logs?: boolean | hotels$audit_logsArgs<ExtArgs>
@@ -13538,6 +13797,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    business_type?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -13554,6 +13814,7 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    business_type?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -13570,17 +13831,20 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
+    business_type?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
   }
 
-  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "delivery_type" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
+  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "business_type" | "delivery_type" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
   export type hotelsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
     hotel_owner?: boolean | hotels$hotel_ownerArgs<ExtArgs>
     expense_categories?: boolean | hotels$expense_categoriesArgs<ExtArgs>
+    menu_categories?: boolean | hotels$menu_categoriesArgs<ExtArgs>
+    menu_items?: boolean | hotels$menu_itemsArgs<ExtArgs>
     branches?: boolean | hotels$branchesArgs<ExtArgs>
     customers?: boolean | hotels$customersArgs<ExtArgs>
     audit_logs?: boolean | hotels$audit_logsArgs<ExtArgs>
@@ -13599,6 +13863,8 @@ export namespace Prisma {
       subscription_plans: Prisma.$subscription_plansPayload<ExtArgs> | null
       hotel_owner: Prisma.$hotel_ownersPayload<ExtArgs> | null
       expense_categories: Prisma.$expense_categoriesPayload<ExtArgs>[]
+      menu_categories: Prisma.$menu_categoriesPayload<ExtArgs>[]
+      menu_items: Prisma.$menu_itemsPayload<ExtArgs>[]
       branches: Prisma.$branchesPayload<ExtArgs>[]
       customers: Prisma.$customersPayload<ExtArgs>[]
       audit_logs: Prisma.$audit_logsPayload<ExtArgs>[]
@@ -13612,6 +13878,7 @@ export namespace Prisma {
       subscription_status: string | null
       subscription_expires_at: Date | null
       is_online: boolean
+      business_type: string
       delivery_type: string
       created_at: Date | null
       updated_at: Date | null
@@ -14013,6 +14280,8 @@ export namespace Prisma {
     subscription_plans<T extends hotels$subscription_plansArgs<ExtArgs> = {}>(args?: Subset<T, hotels$subscription_plansArgs<ExtArgs>>): Prisma__subscription_plansClient<$Result.GetResult<Prisma.$subscription_plansPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     hotel_owner<T extends hotels$hotel_ownerArgs<ExtArgs> = {}>(args?: Subset<T, hotels$hotel_ownerArgs<ExtArgs>>): Prisma__hotel_ownersClient<$Result.GetResult<Prisma.$hotel_ownersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     expense_categories<T extends hotels$expense_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, hotels$expense_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$expense_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    menu_categories<T extends hotels$menu_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, hotels$menu_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    menu_items<T extends hotels$menu_itemsArgs<ExtArgs> = {}>(args?: Subset<T, hotels$menu_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branches<T extends hotels$branchesArgs<ExtArgs> = {}>(args?: Subset<T, hotels$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branchesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customers<T extends hotels$customersArgs<ExtArgs> = {}>(args?: Subset<T, hotels$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$customersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audit_logs<T extends hotels$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, hotels$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$audit_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14053,6 +14322,7 @@ export namespace Prisma {
     readonly subscription_status: FieldRef<"hotels", 'String'>
     readonly subscription_expires_at: FieldRef<"hotels", 'DateTime'>
     readonly is_online: FieldRef<"hotels", 'Boolean'>
+    readonly business_type: FieldRef<"hotels", 'String'>
     readonly delivery_type: FieldRef<"hotels", 'String'>
     readonly created_at: FieldRef<"hotels", 'DateTime'>
     readonly updated_at: FieldRef<"hotels", 'DateTime'>
@@ -14517,6 +14787,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Expense_categoriesScalarFieldEnum | Expense_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * hotels.menu_categories
+   */
+  export type hotels$menu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_categories
+     */
+    select?: menu_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_categories
+     */
+    omit?: menu_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_categoriesInclude<ExtArgs> | null
+    where?: menu_categoriesWhereInput
+    orderBy?: menu_categoriesOrderByWithRelationInput | menu_categoriesOrderByWithRelationInput[]
+    cursor?: menu_categoriesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Menu_categoriesScalarFieldEnum | Menu_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * hotels.menu_items
+   */
+  export type hotels$menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_items
+     */
+    select?: menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_items
+     */
+    omit?: menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_itemsInclude<ExtArgs> | null
+    where?: menu_itemsWhereInput
+    orderBy?: menu_itemsOrderByWithRelationInput | menu_itemsOrderByWithRelationInput[]
+    cursor?: menu_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Menu_itemsScalarFieldEnum | Menu_itemsScalarFieldEnum[]
   }
 
   /**
@@ -22708,8 +23026,7 @@ export namespace Prisma {
     discounts?: boolean | branches$discountsArgs<ExtArgs>
     inventory_items?: boolean | branches$inventory_itemsArgs<ExtArgs>
     invoices?: boolean | branches$invoicesArgs<ExtArgs>
-    menu_categories?: boolean | branches$menu_categoriesArgs<ExtArgs>
-    menu_items?: boolean | branches$menu_itemsArgs<ExtArgs>
+    branch_menu_items?: boolean | branches$branch_menu_itemsArgs<ExtArgs>
     orders?: boolean | branches$ordersArgs<ExtArgs>
     payment_methods?: boolean | branches$payment_methodsArgs<ExtArgs>
     pos_devices?: boolean | branches$pos_devicesArgs<ExtArgs>
@@ -22808,8 +23125,7 @@ export namespace Prisma {
     discounts?: boolean | branches$discountsArgs<ExtArgs>
     inventory_items?: boolean | branches$inventory_itemsArgs<ExtArgs>
     invoices?: boolean | branches$invoicesArgs<ExtArgs>
-    menu_categories?: boolean | branches$menu_categoriesArgs<ExtArgs>
-    menu_items?: boolean | branches$menu_itemsArgs<ExtArgs>
+    branch_menu_items?: boolean | branches$branch_menu_itemsArgs<ExtArgs>
     orders?: boolean | branches$ordersArgs<ExtArgs>
     payment_methods?: boolean | branches$payment_methodsArgs<ExtArgs>
     pos_devices?: boolean | branches$pos_devicesArgs<ExtArgs>
@@ -22847,8 +23163,7 @@ export namespace Prisma {
       discounts: Prisma.$discountsPayload<ExtArgs>[]
       inventory_items: Prisma.$inventory_itemsPayload<ExtArgs>[]
       invoices: Prisma.$invoicesPayload<ExtArgs>[]
-      menu_categories: Prisma.$menu_categoriesPayload<ExtArgs>[]
-      menu_items: Prisma.$menu_itemsPayload<ExtArgs>[]
+      branch_menu_items: Prisma.$branch_menu_itemsPayload<ExtArgs>[]
       orders: Prisma.$ordersPayload<ExtArgs>[]
       payment_methods: Prisma.$payment_methodsPayload<ExtArgs>[]
       pos_devices: Prisma.$pos_devicesPayload<ExtArgs>[]
@@ -23287,8 +23602,7 @@ export namespace Prisma {
     discounts<T extends branches$discountsArgs<ExtArgs> = {}>(args?: Subset<T, branches$discountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$discountsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inventory_items<T extends branches$inventory_itemsArgs<ExtArgs> = {}>(args?: Subset<T, branches$inventory_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$inventory_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends branches$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, branches$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$invoicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    menu_categories<T extends branches$menu_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, branches$menu_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    menu_items<T extends branches$menu_itemsArgs<ExtArgs> = {}>(args?: Subset<T, branches$menu_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    branch_menu_items<T extends branches$branch_menu_itemsArgs<ExtArgs> = {}>(args?: Subset<T, branches$branch_menu_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends branches$ordersArgs<ExtArgs> = {}>(args?: Subset<T, branches$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ordersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payment_methods<T extends branches$payment_methodsArgs<ExtArgs> = {}>(args?: Subset<T, branches$payment_methodsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$payment_methodsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pos_devices<T extends branches$pos_devicesArgs<ExtArgs> = {}>(args?: Subset<T, branches$pos_devicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$pos_devicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -24008,51 +24322,27 @@ export namespace Prisma {
   }
 
   /**
-   * branches.menu_categories
+   * branches.branch_menu_items
    */
-  export type branches$menu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type branches$branch_menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the menu_categories
+     * Select specific fields to fetch from the branch_menu_items
      */
-    select?: menu_categoriesSelect<ExtArgs> | null
+    select?: branch_menu_itemsSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the menu_categories
+     * Omit specific fields from the branch_menu_items
      */
-    omit?: menu_categoriesOmit<ExtArgs> | null
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: menu_categoriesInclude<ExtArgs> | null
-    where?: menu_categoriesWhereInput
-    orderBy?: menu_categoriesOrderByWithRelationInput | menu_categoriesOrderByWithRelationInput[]
-    cursor?: menu_categoriesWhereUniqueInput
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    where?: branch_menu_itemsWhereInput
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    cursor?: branch_menu_itemsWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: Menu_categoriesScalarFieldEnum | Menu_categoriesScalarFieldEnum[]
-  }
-
-  /**
-   * branches.menu_items
-   */
-  export type branches$menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the menu_items
-     */
-    select?: menu_itemsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the menu_items
-     */
-    omit?: menu_itemsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: menu_itemsInclude<ExtArgs> | null
-    where?: menu_itemsWhereInput
-    orderBy?: menu_itemsOrderByWithRelationInput | menu_itemsOrderByWithRelationInput[]
-    cursor?: menu_itemsWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: Menu_itemsScalarFieldEnum | Menu_itemsScalarFieldEnum[]
+    distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
   }
 
   /**
@@ -30213,26 +30503,29 @@ export namespace Prisma {
 
   export type Menu_categoriesMinAggregateOutputType = {
     id: string | null
-    branch_id: string | null
+    hotel_id: string | null
     name: string | null
     sort_order: number | null
     is_active: boolean | null
+    default_product_category_id: string | null
   }
 
   export type Menu_categoriesMaxAggregateOutputType = {
     id: string | null
-    branch_id: string | null
+    hotel_id: string | null
     name: string | null
     sort_order: number | null
     is_active: boolean | null
+    default_product_category_id: string | null
   }
 
   export type Menu_categoriesCountAggregateOutputType = {
     id: number
-    branch_id: number
+    hotel_id: number
     name: number
     sort_order: number
     is_active: number
+    default_product_category_id: number
     _all: number
   }
 
@@ -30247,26 +30540,29 @@ export namespace Prisma {
 
   export type Menu_categoriesMinAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     name?: true
     sort_order?: true
     is_active?: true
+    default_product_category_id?: true
   }
 
   export type Menu_categoriesMaxAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     name?: true
     sort_order?: true
     is_active?: true
+    default_product_category_id?: true
   }
 
   export type Menu_categoriesCountAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     name?: true
     sort_order?: true
     is_active?: true
+    default_product_category_id?: true
     _all?: true
   }
 
@@ -30358,10 +30654,11 @@ export namespace Prisma {
 
   export type Menu_categoriesGroupByOutputType = {
     id: string
-    branch_id: string
+    hotel_id: string
     name: string
     sort_order: number | null
     is_active: boolean | null
+    default_product_category_id: string | null
     _count: Menu_categoriesCountAggregateOutputType | null
     _avg: Menu_categoriesAvgAggregateOutputType | null
     _sum: Menu_categoriesSumAggregateOutputType | null
@@ -30385,66 +30682,78 @@ export namespace Prisma {
 
   export type menu_categoriesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     name?: boolean
     sort_order?: boolean
     is_active?: boolean
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category_id?: boolean
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_items?: boolean | menu_categories$menu_itemsArgs<ExtArgs>
     _count?: boolean | Menu_categoriesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menu_categories"]>
 
   export type menu_categoriesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     name?: boolean
     sort_order?: boolean
     is_active?: boolean
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category_id?: boolean
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menu_categories"]>
 
   export type menu_categoriesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     name?: boolean
     sort_order?: boolean
     is_active?: boolean
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category_id?: boolean
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menu_categories"]>
 
   export type menu_categoriesSelectScalar = {
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     name?: boolean
     sort_order?: boolean
     is_active?: boolean
+    default_product_category_id?: boolean
   }
 
-  export type menu_categoriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "branch_id" | "name" | "sort_order" | "is_active", ExtArgs["result"]["menu_categories"]>
+  export type menu_categoriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "name" | "sort_order" | "is_active" | "default_product_category_id", ExtArgs["result"]["menu_categories"]>
   export type menu_categoriesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_items?: boolean | menu_categories$menu_itemsArgs<ExtArgs>
     _count?: boolean | Menu_categoriesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type menu_categoriesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
   }
   export type menu_categoriesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    default_product_category?: boolean | menu_categories$default_product_categoryArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
   }
 
   export type $menu_categoriesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "menu_categories"
     objects: {
-      branches: Prisma.$branchesPayload<ExtArgs>
+      default_product_category: Prisma.$product_categoriesPayload<ExtArgs> | null
+      hotels: Prisma.$hotelsPayload<ExtArgs>
       menu_items: Prisma.$menu_itemsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      branch_id: string
+      hotel_id: string
       name: string
       sort_order: number | null
       is_active: boolean | null
+      default_product_category_id: string | null
     }, ExtArgs["result"]["menu_categories"]>
     composites: {}
   }
@@ -30839,7 +31148,8 @@ export namespace Prisma {
    */
   export interface Prisma__menu_categoriesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    branches<T extends branchesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, branchesDefaultArgs<ExtArgs>>): Prisma__branchesClient<$Result.GetResult<Prisma.$branchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    default_product_category<T extends menu_categories$default_product_categoryArgs<ExtArgs> = {}>(args?: Subset<T, menu_categories$default_product_categoryArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    hotels<T extends hotelsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, hotelsDefaultArgs<ExtArgs>>): Prisma__hotelsClient<$Result.GetResult<Prisma.$hotelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     menu_items<T extends menu_categories$menu_itemsArgs<ExtArgs> = {}>(args?: Subset<T, menu_categories$menu_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -30871,10 +31181,11 @@ export namespace Prisma {
    */
   interface menu_categoriesFieldRefs {
     readonly id: FieldRef<"menu_categories", 'String'>
-    readonly branch_id: FieldRef<"menu_categories", 'String'>
+    readonly hotel_id: FieldRef<"menu_categories", 'String'>
     readonly name: FieldRef<"menu_categories", 'String'>
     readonly sort_order: FieldRef<"menu_categories", 'Int'>
     readonly is_active: FieldRef<"menu_categories", 'Boolean'>
+    readonly default_product_category_id: FieldRef<"menu_categories", 'String'>
   }
     
 
@@ -31276,6 +31587,25 @@ export namespace Prisma {
   }
 
   /**
+   * menu_categories.default_product_category
+   */
+  export type menu_categories$default_product_categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    where?: product_categoriesWhereInput
+  }
+
+  /**
    * menu_categories.menu_items
    */
   export type menu_categories$menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -31331,30 +31661,32 @@ export namespace Prisma {
   }
 
   export type Menu_itemsAvgAggregateOutputType = {
-    price: Decimal | null
+    base_price: Decimal | null
     tax_rate: Decimal | null
     sort_order: number | null
   }
 
   export type Menu_itemsSumAggregateOutputType = {
-    price: Decimal | null
+    base_price: Decimal | null
     tax_rate: Decimal | null
     sort_order: number | null
   }
 
   export type Menu_itemsMinAggregateOutputType = {
     id: string | null
-    branch_id: string | null
+    hotel_id: string | null
     category_id: string | null
+    product_category_id: string | null
     name: string | null
     description: string | null
     image_url: string | null
-    price: Decimal | null
+    base_price: Decimal | null
     tax_rate: Decimal | null
     is_available: boolean | null
     is_online: boolean | null
     is_kitchen: boolean | null
     prep_station: string | null
+    product_kind: string | null
     sort_order: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -31362,17 +31694,19 @@ export namespace Prisma {
 
   export type Menu_itemsMaxAggregateOutputType = {
     id: string | null
-    branch_id: string | null
+    hotel_id: string | null
     category_id: string | null
+    product_category_id: string | null
     name: string | null
     description: string | null
     image_url: string | null
-    price: Decimal | null
+    base_price: Decimal | null
     tax_rate: Decimal | null
     is_available: boolean | null
     is_online: boolean | null
     is_kitchen: boolean | null
     prep_station: string | null
+    product_kind: string | null
     sort_order: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -31380,17 +31714,19 @@ export namespace Prisma {
 
   export type Menu_itemsCountAggregateOutputType = {
     id: number
-    branch_id: number
+    hotel_id: number
     category_id: number
+    product_category_id: number
     name: number
     description: number
     image_url: number
-    price: number
+    base_price: number
     tax_rate: number
     is_available: number
     is_online: number
     is_kitchen: number
     prep_station: number
+    product_kind: number
     sort_order: number
     created_at: number
     updated_at: number
@@ -31399,30 +31735,32 @@ export namespace Prisma {
 
 
   export type Menu_itemsAvgAggregateInputType = {
-    price?: true
+    base_price?: true
     tax_rate?: true
     sort_order?: true
   }
 
   export type Menu_itemsSumAggregateInputType = {
-    price?: true
+    base_price?: true
     tax_rate?: true
     sort_order?: true
   }
 
   export type Menu_itemsMinAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     category_id?: true
+    product_category_id?: true
     name?: true
     description?: true
     image_url?: true
-    price?: true
+    base_price?: true
     tax_rate?: true
     is_available?: true
     is_online?: true
     is_kitchen?: true
     prep_station?: true
+    product_kind?: true
     sort_order?: true
     created_at?: true
     updated_at?: true
@@ -31430,17 +31768,19 @@ export namespace Prisma {
 
   export type Menu_itemsMaxAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     category_id?: true
+    product_category_id?: true
     name?: true
     description?: true
     image_url?: true
-    price?: true
+    base_price?: true
     tax_rate?: true
     is_available?: true
     is_online?: true
     is_kitchen?: true
     prep_station?: true
+    product_kind?: true
     sort_order?: true
     created_at?: true
     updated_at?: true
@@ -31448,17 +31788,19 @@ export namespace Prisma {
 
   export type Menu_itemsCountAggregateInputType = {
     id?: true
-    branch_id?: true
+    hotel_id?: true
     category_id?: true
+    product_category_id?: true
     name?: true
     description?: true
     image_url?: true
-    price?: true
+    base_price?: true
     tax_rate?: true
     is_available?: true
     is_online?: true
     is_kitchen?: true
     prep_station?: true
+    product_kind?: true
     sort_order?: true
     created_at?: true
     updated_at?: true
@@ -31553,17 +31895,19 @@ export namespace Prisma {
 
   export type Menu_itemsGroupByOutputType = {
     id: string
-    branch_id: string
+    hotel_id: string
     category_id: string | null
+    product_category_id: string | null
     name: string
     description: string | null
     image_url: string | null
-    price: Decimal
+    base_price: Decimal
     tax_rate: Decimal | null
     is_available: boolean | null
     is_online: boolean
     is_kitchen: boolean | null
     prep_station: string | null
+    product_kind: string
     sort_order: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -31590,129 +31934,149 @@ export namespace Prisma {
 
   export type menu_itemsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     category_id?: boolean
+    product_category_id?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
-    price?: boolean
+    base_price?: boolean
     tax_rate?: boolean
     is_available?: boolean
     is_online?: boolean
     is_kitchen?: boolean
     prep_station?: boolean
+    product_kind?: boolean
     sort_order?: boolean
     created_at?: boolean
     updated_at?: boolean
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
     menu_item_ingredients?: boolean | menu_items$menu_item_ingredientsArgs<ExtArgs>
     menu_item_modifier_groups?: boolean | menu_items$menu_item_modifier_groupsArgs<ExtArgs>
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
-    menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     order_items?: boolean | menu_items$order_itemsArgs<ExtArgs>
     reviews?: boolean | menu_items$reviewsArgs<ExtArgs>
+    branch_items?: boolean | menu_items$branch_itemsArgs<ExtArgs>
     _count?: boolean | Menu_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
   export type menu_itemsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     category_id?: boolean
+    product_category_id?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
-    price?: boolean
+    base_price?: boolean
     tax_rate?: boolean
     is_available?: boolean
     is_online?: boolean
     is_kitchen?: boolean
     prep_station?: boolean
+    product_kind?: boolean
     sort_order?: boolean
     created_at?: boolean
     updated_at?: boolean
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
   export type menu_itemsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     category_id?: boolean
+    product_category_id?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
-    price?: boolean
+    base_price?: boolean
     tax_rate?: boolean
     is_available?: boolean
     is_online?: boolean
     is_kitchen?: boolean
     prep_station?: boolean
+    product_kind?: boolean
     sort_order?: boolean
     created_at?: boolean
     updated_at?: boolean
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
   export type menu_itemsSelectScalar = {
     id?: boolean
-    branch_id?: boolean
+    hotel_id?: boolean
     category_id?: boolean
+    product_category_id?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
-    price?: boolean
+    base_price?: boolean
     tax_rate?: boolean
     is_available?: boolean
     is_online?: boolean
     is_kitchen?: boolean
     prep_station?: boolean
+    product_kind?: boolean
     sort_order?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type menu_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "branch_id" | "category_id" | "name" | "description" | "image_url" | "price" | "tax_rate" | "is_available" | "is_online" | "is_kitchen" | "prep_station" | "sort_order" | "created_at" | "updated_at", ExtArgs["result"]["menu_items"]>
+  export type menu_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "category_id" | "product_category_id" | "name" | "description" | "image_url" | "base_price" | "tax_rate" | "is_available" | "is_online" | "is_kitchen" | "prep_station" | "product_kind" | "sort_order" | "created_at" | "updated_at", ExtArgs["result"]["menu_items"]>
   export type menu_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
+    menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
     menu_item_ingredients?: boolean | menu_items$menu_item_ingredientsArgs<ExtArgs>
     menu_item_modifier_groups?: boolean | menu_items$menu_item_modifier_groupsArgs<ExtArgs>
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
-    menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     order_items?: boolean | menu_items$order_itemsArgs<ExtArgs>
     reviews?: boolean | menu_items$reviewsArgs<ExtArgs>
+    branch_items?: boolean | menu_items$branch_itemsArgs<ExtArgs>
     _count?: boolean | Menu_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type menu_itemsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
   }
   export type menu_itemsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
+    product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
   }
 
   export type $menu_itemsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "menu_items"
     objects: {
+      hotels: Prisma.$hotelsPayload<ExtArgs>
+      menu_categories: Prisma.$menu_categoriesPayload<ExtArgs> | null
+      product_category: Prisma.$product_categoriesPayload<ExtArgs> | null
       menu_item_ingredients: Prisma.$menu_item_ingredientsPayload<ExtArgs>[]
       menu_item_modifier_groups: Prisma.$menu_item_modifier_groupsPayload<ExtArgs>[]
-      branches: Prisma.$branchesPayload<ExtArgs>
-      menu_categories: Prisma.$menu_categoriesPayload<ExtArgs> | null
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
       reviews: Prisma.$reviewsPayload<ExtArgs>[]
+      branch_items: Prisma.$branch_menu_itemsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      branch_id: string
+      hotel_id: string
       category_id: string | null
+      product_category_id: string | null
       name: string
       description: string | null
       image_url: string | null
-      price: Prisma.Decimal
+      base_price: Prisma.Decimal
       tax_rate: Prisma.Decimal | null
       is_available: boolean | null
       is_online: boolean
       is_kitchen: boolean | null
       prep_station: string | null
+      product_kind: string
       sort_order: number | null
       created_at: Date | null
       updated_at: Date | null
@@ -32110,12 +32474,14 @@ export namespace Prisma {
    */
   export interface Prisma__menu_itemsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    hotels<T extends hotelsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, hotelsDefaultArgs<ExtArgs>>): Prisma__hotelsClient<$Result.GetResult<Prisma.$hotelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    menu_categories<T extends menu_items$menu_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$menu_categoriesArgs<ExtArgs>>): Prisma__menu_categoriesClient<$Result.GetResult<Prisma.$menu_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    product_category<T extends menu_items$product_categoryArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$product_categoryArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     menu_item_ingredients<T extends menu_items$menu_item_ingredientsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$menu_item_ingredientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_item_ingredientsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     menu_item_modifier_groups<T extends menu_items$menu_item_modifier_groupsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$menu_item_modifier_groupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_item_modifier_groupsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    branches<T extends branchesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, branchesDefaultArgs<ExtArgs>>): Prisma__branchesClient<$Result.GetResult<Prisma.$branchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    menu_categories<T extends menu_items$menu_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$menu_categoriesArgs<ExtArgs>>): Prisma__menu_categoriesClient<$Result.GetResult<Prisma.$menu_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     order_items<T extends menu_items$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends menu_items$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$reviewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    branch_items<T extends menu_items$branch_itemsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$branch_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32146,17 +32512,19 @@ export namespace Prisma {
    */
   interface menu_itemsFieldRefs {
     readonly id: FieldRef<"menu_items", 'String'>
-    readonly branch_id: FieldRef<"menu_items", 'String'>
+    readonly hotel_id: FieldRef<"menu_items", 'String'>
     readonly category_id: FieldRef<"menu_items", 'String'>
+    readonly product_category_id: FieldRef<"menu_items", 'String'>
     readonly name: FieldRef<"menu_items", 'String'>
     readonly description: FieldRef<"menu_items", 'String'>
     readonly image_url: FieldRef<"menu_items", 'String'>
-    readonly price: FieldRef<"menu_items", 'Decimal'>
+    readonly base_price: FieldRef<"menu_items", 'Decimal'>
     readonly tax_rate: FieldRef<"menu_items", 'Decimal'>
     readonly is_available: FieldRef<"menu_items", 'Boolean'>
     readonly is_online: FieldRef<"menu_items", 'Boolean'>
     readonly is_kitchen: FieldRef<"menu_items", 'Boolean'>
     readonly prep_station: FieldRef<"menu_items", 'String'>
+    readonly product_kind: FieldRef<"menu_items", 'String'>
     readonly sort_order: FieldRef<"menu_items", 'Int'>
     readonly created_at: FieldRef<"menu_items", 'DateTime'>
     readonly updated_at: FieldRef<"menu_items", 'DateTime'>
@@ -32561,6 +32929,44 @@ export namespace Prisma {
   }
 
   /**
+   * menu_items.menu_categories
+   */
+  export type menu_items$menu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_categories
+     */
+    select?: menu_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_categories
+     */
+    omit?: menu_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_categoriesInclude<ExtArgs> | null
+    where?: menu_categoriesWhereInput
+  }
+
+  /**
+   * menu_items.product_category
+   */
+  export type menu_items$product_categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    where?: product_categoriesWhereInput
+  }
+
+  /**
    * menu_items.menu_item_ingredients
    */
   export type menu_items$menu_item_ingredientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -32606,25 +33012,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Menu_item_modifier_groupsScalarFieldEnum | Menu_item_modifier_groupsScalarFieldEnum[]
-  }
-
-  /**
-   * menu_items.menu_categories
-   */
-  export type menu_items$menu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the menu_categories
-     */
-    select?: menu_categoriesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the menu_categories
-     */
-    omit?: menu_categoriesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: menu_categoriesInclude<ExtArgs> | null
-    where?: menu_categoriesWhereInput
   }
 
   /**
@@ -32676,6 +33063,30 @@ export namespace Prisma {
   }
 
   /**
+   * menu_items.branch_items
+   */
+  export type menu_items$branch_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    where?: branch_menu_itemsWhereInput
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    cursor?: branch_menu_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
+  }
+
+  /**
    * menu_items without action
    */
   export type menu_itemsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -32691,6 +33102,2395 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: menu_itemsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model product_categories
+   */
+
+  export type AggregateProduct_categories = {
+    _count: Product_categoriesCountAggregateOutputType | null
+    _avg: Product_categoriesAvgAggregateOutputType | null
+    _sum: Product_categoriesSumAggregateOutputType | null
+    _min: Product_categoriesMinAggregateOutputType | null
+    _max: Product_categoriesMaxAggregateOutputType | null
+  }
+
+  export type Product_categoriesAvgAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type Product_categoriesSumAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type Product_categoriesMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    image_url: string | null
+    parent_id: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type Product_categoriesMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    image_url: string | null
+    parent_id: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type Product_categoriesCountAggregateOutputType = {
+    id: number
+    key: number
+    name: number
+    description: number
+    icon: number
+    image_url: number
+    parent_id: number
+    sort_order: number
+    is_active: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type Product_categoriesAvgAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type Product_categoriesSumAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type Product_categoriesMinAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    image_url?: true
+    parent_id?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type Product_categoriesMaxAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    image_url?: true
+    parent_id?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type Product_categoriesCountAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    description?: true
+    icon?: true
+    image_url?: true
+    parent_id?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type Product_categoriesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which product_categories to aggregate.
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of product_categories to fetch.
+     */
+    orderBy?: product_categoriesOrderByWithRelationInput | product_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: product_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` product_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` product_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned product_categories
+    **/
+    _count?: true | Product_categoriesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Product_categoriesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Product_categoriesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Product_categoriesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Product_categoriesMaxAggregateInputType
+  }
+
+  export type GetProduct_categoriesAggregateType<T extends Product_categoriesAggregateArgs> = {
+        [P in keyof T & keyof AggregateProduct_categories]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProduct_categories[P]>
+      : GetScalarType<T[P], AggregateProduct_categories[P]>
+  }
+
+
+
+
+  export type product_categoriesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: product_categoriesWhereInput
+    orderBy?: product_categoriesOrderByWithAggregationInput | product_categoriesOrderByWithAggregationInput[]
+    by: Product_categoriesScalarFieldEnum[] | Product_categoriesScalarFieldEnum
+    having?: product_categoriesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Product_categoriesCountAggregateInputType | true
+    _avg?: Product_categoriesAvgAggregateInputType
+    _sum?: Product_categoriesSumAggregateInputType
+    _min?: Product_categoriesMinAggregateInputType
+    _max?: Product_categoriesMaxAggregateInputType
+  }
+
+  export type Product_categoriesGroupByOutputType = {
+    id: string
+    key: string
+    name: string
+    description: string | null
+    icon: string | null
+    image_url: string | null
+    parent_id: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+    _count: Product_categoriesCountAggregateOutputType | null
+    _avg: Product_categoriesAvgAggregateOutputType | null
+    _sum: Product_categoriesSumAggregateOutputType | null
+    _min: Product_categoriesMinAggregateOutputType | null
+    _max: Product_categoriesMaxAggregateOutputType | null
+  }
+
+  type GetProduct_categoriesGroupByPayload<T extends product_categoriesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Product_categoriesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Product_categoriesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Product_categoriesGroupByOutputType[P]>
+            : GetScalarType<T[P], Product_categoriesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type product_categoriesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    image_url?: boolean
+    parent_id?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+    children?: boolean | product_categories$childrenArgs<ExtArgs>
+    items?: boolean | product_categories$itemsArgs<ExtArgs>
+    menu_categories?: boolean | product_categories$menu_categoriesArgs<ExtArgs>
+    _count?: boolean | Product_categoriesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["product_categories"]>
+
+  export type product_categoriesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    image_url?: boolean
+    parent_id?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["product_categories"]>
+
+  export type product_categoriesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    image_url?: boolean
+    parent_id?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["product_categories"]>
+
+  export type product_categoriesSelectScalar = {
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    image_url?: boolean
+    parent_id?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }
+
+  export type product_categoriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "name" | "description" | "icon" | "image_url" | "parent_id" | "sort_order" | "is_active" | "created_at", ExtArgs["result"]["product_categories"]>
+  export type product_categoriesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+    children?: boolean | product_categories$childrenArgs<ExtArgs>
+    items?: boolean | product_categories$itemsArgs<ExtArgs>
+    menu_categories?: boolean | product_categories$menu_categoriesArgs<ExtArgs>
+    _count?: boolean | Product_categoriesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type product_categoriesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+  }
+  export type product_categoriesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | product_categories$parentArgs<ExtArgs>
+  }
+
+  export type $product_categoriesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "product_categories"
+    objects: {
+      parent: Prisma.$product_categoriesPayload<ExtArgs> | null
+      children: Prisma.$product_categoriesPayload<ExtArgs>[]
+      items: Prisma.$menu_itemsPayload<ExtArgs>[]
+      menu_categories: Prisma.$menu_categoriesPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      name: string
+      description: string | null
+      icon: string | null
+      image_url: string | null
+      parent_id: string | null
+      sort_order: number | null
+      is_active: boolean | null
+      created_at: Date | null
+    }, ExtArgs["result"]["product_categories"]>
+    composites: {}
+  }
+
+  type product_categoriesGetPayload<S extends boolean | null | undefined | product_categoriesDefaultArgs> = $Result.GetResult<Prisma.$product_categoriesPayload, S>
+
+  type product_categoriesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<product_categoriesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Product_categoriesCountAggregateInputType | true
+    }
+
+  export interface product_categoriesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['product_categories'], meta: { name: 'product_categories' } }
+    /**
+     * Find zero or one Product_categories that matches the filter.
+     * @param {product_categoriesFindUniqueArgs} args - Arguments to find a Product_categories
+     * @example
+     * // Get one Product_categories
+     * const product_categories = await prisma.product_categories.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends product_categoriesFindUniqueArgs>(args: SelectSubset<T, product_categoriesFindUniqueArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Product_categories that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {product_categoriesFindUniqueOrThrowArgs} args - Arguments to find a Product_categories
+     * @example
+     * // Get one Product_categories
+     * const product_categories = await prisma.product_categories.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends product_categoriesFindUniqueOrThrowArgs>(args: SelectSubset<T, product_categoriesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Product_categories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesFindFirstArgs} args - Arguments to find a Product_categories
+     * @example
+     * // Get one Product_categories
+     * const product_categories = await prisma.product_categories.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends product_categoriesFindFirstArgs>(args?: SelectSubset<T, product_categoriesFindFirstArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Product_categories that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesFindFirstOrThrowArgs} args - Arguments to find a Product_categories
+     * @example
+     * // Get one Product_categories
+     * const product_categories = await prisma.product_categories.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends product_categoriesFindFirstOrThrowArgs>(args?: SelectSubset<T, product_categoriesFindFirstOrThrowArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Product_categories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Product_categories
+     * const product_categories = await prisma.product_categories.findMany()
+     * 
+     * // Get first 10 Product_categories
+     * const product_categories = await prisma.product_categories.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const product_categoriesWithIdOnly = await prisma.product_categories.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends product_categoriesFindManyArgs>(args?: SelectSubset<T, product_categoriesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Product_categories.
+     * @param {product_categoriesCreateArgs} args - Arguments to create a Product_categories.
+     * @example
+     * // Create one Product_categories
+     * const Product_categories = await prisma.product_categories.create({
+     *   data: {
+     *     // ... data to create a Product_categories
+     *   }
+     * })
+     * 
+     */
+    create<T extends product_categoriesCreateArgs>(args: SelectSubset<T, product_categoriesCreateArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Product_categories.
+     * @param {product_categoriesCreateManyArgs} args - Arguments to create many Product_categories.
+     * @example
+     * // Create many Product_categories
+     * const product_categories = await prisma.product_categories.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends product_categoriesCreateManyArgs>(args?: SelectSubset<T, product_categoriesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Product_categories and returns the data saved in the database.
+     * @param {product_categoriesCreateManyAndReturnArgs} args - Arguments to create many Product_categories.
+     * @example
+     * // Create many Product_categories
+     * const product_categories = await prisma.product_categories.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Product_categories and only return the `id`
+     * const product_categoriesWithIdOnly = await prisma.product_categories.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends product_categoriesCreateManyAndReturnArgs>(args?: SelectSubset<T, product_categoriesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Product_categories.
+     * @param {product_categoriesDeleteArgs} args - Arguments to delete one Product_categories.
+     * @example
+     * // Delete one Product_categories
+     * const Product_categories = await prisma.product_categories.delete({
+     *   where: {
+     *     // ... filter to delete one Product_categories
+     *   }
+     * })
+     * 
+     */
+    delete<T extends product_categoriesDeleteArgs>(args: SelectSubset<T, product_categoriesDeleteArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Product_categories.
+     * @param {product_categoriesUpdateArgs} args - Arguments to update one Product_categories.
+     * @example
+     * // Update one Product_categories
+     * const product_categories = await prisma.product_categories.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends product_categoriesUpdateArgs>(args: SelectSubset<T, product_categoriesUpdateArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Product_categories.
+     * @param {product_categoriesDeleteManyArgs} args - Arguments to filter Product_categories to delete.
+     * @example
+     * // Delete a few Product_categories
+     * const { count } = await prisma.product_categories.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends product_categoriesDeleteManyArgs>(args?: SelectSubset<T, product_categoriesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Product_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Product_categories
+     * const product_categories = await prisma.product_categories.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends product_categoriesUpdateManyArgs>(args: SelectSubset<T, product_categoriesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Product_categories and returns the data updated in the database.
+     * @param {product_categoriesUpdateManyAndReturnArgs} args - Arguments to update many Product_categories.
+     * @example
+     * // Update many Product_categories
+     * const product_categories = await prisma.product_categories.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Product_categories and only return the `id`
+     * const product_categoriesWithIdOnly = await prisma.product_categories.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends product_categoriesUpdateManyAndReturnArgs>(args: SelectSubset<T, product_categoriesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Product_categories.
+     * @param {product_categoriesUpsertArgs} args - Arguments to update or create a Product_categories.
+     * @example
+     * // Update or create a Product_categories
+     * const product_categories = await prisma.product_categories.upsert({
+     *   create: {
+     *     // ... data to create a Product_categories
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Product_categories we want to update
+     *   }
+     * })
+     */
+    upsert<T extends product_categoriesUpsertArgs>(args: SelectSubset<T, product_categoriesUpsertArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Product_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesCountArgs} args - Arguments to filter Product_categories to count.
+     * @example
+     * // Count the number of Product_categories
+     * const count = await prisma.product_categories.count({
+     *   where: {
+     *     // ... the filter for the Product_categories we want to count
+     *   }
+     * })
+    **/
+    count<T extends product_categoriesCountArgs>(
+      args?: Subset<T, product_categoriesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Product_categoriesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Product_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Product_categoriesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Product_categoriesAggregateArgs>(args: Subset<T, Product_categoriesAggregateArgs>): Prisma.PrismaPromise<GetProduct_categoriesAggregateType<T>>
+
+    /**
+     * Group by Product_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {product_categoriesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends product_categoriesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: product_categoriesGroupByArgs['orderBy'] }
+        : { orderBy?: product_categoriesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, product_categoriesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProduct_categoriesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the product_categories model
+   */
+  readonly fields: product_categoriesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for product_categories.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__product_categoriesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    parent<T extends product_categories$parentArgs<ExtArgs> = {}>(args?: Subset<T, product_categories$parentArgs<ExtArgs>>): Prisma__product_categoriesClient<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    children<T extends product_categories$childrenArgs<ExtArgs> = {}>(args?: Subset<T, product_categories$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$product_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    items<T extends product_categories$itemsArgs<ExtArgs> = {}>(args?: Subset<T, product_categories$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    menu_categories<T extends product_categories$menu_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, product_categories$menu_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the product_categories model
+   */
+  interface product_categoriesFieldRefs {
+    readonly id: FieldRef<"product_categories", 'String'>
+    readonly key: FieldRef<"product_categories", 'String'>
+    readonly name: FieldRef<"product_categories", 'String'>
+    readonly description: FieldRef<"product_categories", 'String'>
+    readonly icon: FieldRef<"product_categories", 'String'>
+    readonly image_url: FieldRef<"product_categories", 'String'>
+    readonly parent_id: FieldRef<"product_categories", 'String'>
+    readonly sort_order: FieldRef<"product_categories", 'Int'>
+    readonly is_active: FieldRef<"product_categories", 'Boolean'>
+    readonly created_at: FieldRef<"product_categories", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * product_categories findUnique
+   */
+  export type product_categoriesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which product_categories to fetch.
+     */
+    where: product_categoriesWhereUniqueInput
+  }
+
+  /**
+   * product_categories findUniqueOrThrow
+   */
+  export type product_categoriesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which product_categories to fetch.
+     */
+    where: product_categoriesWhereUniqueInput
+  }
+
+  /**
+   * product_categories findFirst
+   */
+  export type product_categoriesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which product_categories to fetch.
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of product_categories to fetch.
+     */
+    orderBy?: product_categoriesOrderByWithRelationInput | product_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for product_categories.
+     */
+    cursor?: product_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` product_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` product_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of product_categories.
+     */
+    distinct?: Product_categoriesScalarFieldEnum | Product_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories findFirstOrThrow
+   */
+  export type product_categoriesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which product_categories to fetch.
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of product_categories to fetch.
+     */
+    orderBy?: product_categoriesOrderByWithRelationInput | product_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for product_categories.
+     */
+    cursor?: product_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` product_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` product_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of product_categories.
+     */
+    distinct?: Product_categoriesScalarFieldEnum | Product_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories findMany
+   */
+  export type product_categoriesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which product_categories to fetch.
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of product_categories to fetch.
+     */
+    orderBy?: product_categoriesOrderByWithRelationInput | product_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing product_categories.
+     */
+    cursor?: product_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` product_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` product_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of product_categories.
+     */
+    distinct?: Product_categoriesScalarFieldEnum | Product_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories create
+   */
+  export type product_categoriesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a product_categories.
+     */
+    data: XOR<product_categoriesCreateInput, product_categoriesUncheckedCreateInput>
+  }
+
+  /**
+   * product_categories createMany
+   */
+  export type product_categoriesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many product_categories.
+     */
+    data: product_categoriesCreateManyInput | product_categoriesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * product_categories createManyAndReturn
+   */
+  export type product_categoriesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * The data used to create many product_categories.
+     */
+    data: product_categoriesCreateManyInput | product_categoriesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * product_categories update
+   */
+  export type product_categoriesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a product_categories.
+     */
+    data: XOR<product_categoriesUpdateInput, product_categoriesUncheckedUpdateInput>
+    /**
+     * Choose, which product_categories to update.
+     */
+    where: product_categoriesWhereUniqueInput
+  }
+
+  /**
+   * product_categories updateMany
+   */
+  export type product_categoriesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update product_categories.
+     */
+    data: XOR<product_categoriesUpdateManyMutationInput, product_categoriesUncheckedUpdateManyInput>
+    /**
+     * Filter which product_categories to update
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * Limit how many product_categories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * product_categories updateManyAndReturn
+   */
+  export type product_categoriesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * The data used to update product_categories.
+     */
+    data: XOR<product_categoriesUpdateManyMutationInput, product_categoriesUncheckedUpdateManyInput>
+    /**
+     * Filter which product_categories to update
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * Limit how many product_categories to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * product_categories upsert
+   */
+  export type product_categoriesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the product_categories to update in case it exists.
+     */
+    where: product_categoriesWhereUniqueInput
+    /**
+     * In case the product_categories found by the `where` argument doesn't exist, create a new product_categories with this data.
+     */
+    create: XOR<product_categoriesCreateInput, product_categoriesUncheckedCreateInput>
+    /**
+     * In case the product_categories was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<product_categoriesUpdateInput, product_categoriesUncheckedUpdateInput>
+  }
+
+  /**
+   * product_categories delete
+   */
+  export type product_categoriesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter which product_categories to delete.
+     */
+    where: product_categoriesWhereUniqueInput
+  }
+
+  /**
+   * product_categories deleteMany
+   */
+  export type product_categoriesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which product_categories to delete
+     */
+    where?: product_categoriesWhereInput
+    /**
+     * Limit how many product_categories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * product_categories.parent
+   */
+  export type product_categories$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    where?: product_categoriesWhereInput
+  }
+
+  /**
+   * product_categories.children
+   */
+  export type product_categories$childrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+    where?: product_categoriesWhereInput
+    orderBy?: product_categoriesOrderByWithRelationInput | product_categoriesOrderByWithRelationInput[]
+    cursor?: product_categoriesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Product_categoriesScalarFieldEnum | Product_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories.items
+   */
+  export type product_categories$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_items
+     */
+    select?: menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_items
+     */
+    omit?: menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_itemsInclude<ExtArgs> | null
+    where?: menu_itemsWhereInput
+    orderBy?: menu_itemsOrderByWithRelationInput | menu_itemsOrderByWithRelationInput[]
+    cursor?: menu_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Menu_itemsScalarFieldEnum | Menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories.menu_categories
+   */
+  export type product_categories$menu_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_categories
+     */
+    select?: menu_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_categories
+     */
+    omit?: menu_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_categoriesInclude<ExtArgs> | null
+    where?: menu_categoriesWhereInput
+    orderBy?: menu_categoriesOrderByWithRelationInput | menu_categoriesOrderByWithRelationInput[]
+    cursor?: menu_categoriesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Menu_categoriesScalarFieldEnum | Menu_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * product_categories without action
+   */
+  export type product_categoriesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the product_categories
+     */
+    select?: product_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the product_categories
+     */
+    omit?: product_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: product_categoriesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model branch_menu_items
+   */
+
+  export type AggregateBranch_menu_items = {
+    _count: Branch_menu_itemsCountAggregateOutputType | null
+    _avg: Branch_menu_itemsAvgAggregateOutputType | null
+    _sum: Branch_menu_itemsSumAggregateOutputType | null
+    _min: Branch_menu_itemsMinAggregateOutputType | null
+    _max: Branch_menu_itemsMaxAggregateOutputType | null
+  }
+
+  export type Branch_menu_itemsAvgAggregateOutputType = {
+    price_override: Decimal | null
+    sort_order: number | null
+  }
+
+  export type Branch_menu_itemsSumAggregateOutputType = {
+    price_override: Decimal | null
+    sort_order: number | null
+  }
+
+  export type Branch_menu_itemsMinAggregateOutputType = {
+    branch_id: string | null
+    menu_item_id: string | null
+    price_override: Decimal | null
+    is_available: boolean | null
+    is_online: boolean | null
+    sort_order: number | null
+  }
+
+  export type Branch_menu_itemsMaxAggregateOutputType = {
+    branch_id: string | null
+    menu_item_id: string | null
+    price_override: Decimal | null
+    is_available: boolean | null
+    is_online: boolean | null
+    sort_order: number | null
+  }
+
+  export type Branch_menu_itemsCountAggregateOutputType = {
+    branch_id: number
+    menu_item_id: number
+    price_override: number
+    is_available: number
+    is_online: number
+    sort_order: number
+    _all: number
+  }
+
+
+  export type Branch_menu_itemsAvgAggregateInputType = {
+    price_override?: true
+    sort_order?: true
+  }
+
+  export type Branch_menu_itemsSumAggregateInputType = {
+    price_override?: true
+    sort_order?: true
+  }
+
+  export type Branch_menu_itemsMinAggregateInputType = {
+    branch_id?: true
+    menu_item_id?: true
+    price_override?: true
+    is_available?: true
+    is_online?: true
+    sort_order?: true
+  }
+
+  export type Branch_menu_itemsMaxAggregateInputType = {
+    branch_id?: true
+    menu_item_id?: true
+    price_override?: true
+    is_available?: true
+    is_online?: true
+    sort_order?: true
+  }
+
+  export type Branch_menu_itemsCountAggregateInputType = {
+    branch_id?: true
+    menu_item_id?: true
+    price_override?: true
+    is_available?: true
+    is_online?: true
+    sort_order?: true
+    _all?: true
+  }
+
+  export type Branch_menu_itemsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which branch_menu_items to aggregate.
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of branch_menu_items to fetch.
+     */
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: branch_menu_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` branch_menu_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` branch_menu_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned branch_menu_items
+    **/
+    _count?: true | Branch_menu_itemsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Branch_menu_itemsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Branch_menu_itemsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Branch_menu_itemsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Branch_menu_itemsMaxAggregateInputType
+  }
+
+  export type GetBranch_menu_itemsAggregateType<T extends Branch_menu_itemsAggregateArgs> = {
+        [P in keyof T & keyof AggregateBranch_menu_items]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBranch_menu_items[P]>
+      : GetScalarType<T[P], AggregateBranch_menu_items[P]>
+  }
+
+
+
+
+  export type branch_menu_itemsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: branch_menu_itemsWhereInput
+    orderBy?: branch_menu_itemsOrderByWithAggregationInput | branch_menu_itemsOrderByWithAggregationInput[]
+    by: Branch_menu_itemsScalarFieldEnum[] | Branch_menu_itemsScalarFieldEnum
+    having?: branch_menu_itemsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Branch_menu_itemsCountAggregateInputType | true
+    _avg?: Branch_menu_itemsAvgAggregateInputType
+    _sum?: Branch_menu_itemsSumAggregateInputType
+    _min?: Branch_menu_itemsMinAggregateInputType
+    _max?: Branch_menu_itemsMaxAggregateInputType
+  }
+
+  export type Branch_menu_itemsGroupByOutputType = {
+    branch_id: string
+    menu_item_id: string
+    price_override: Decimal | null
+    is_available: boolean
+    is_online: boolean
+    sort_order: number | null
+    _count: Branch_menu_itemsCountAggregateOutputType | null
+    _avg: Branch_menu_itemsAvgAggregateOutputType | null
+    _sum: Branch_menu_itemsSumAggregateOutputType | null
+    _min: Branch_menu_itemsMinAggregateOutputType | null
+    _max: Branch_menu_itemsMaxAggregateOutputType | null
+  }
+
+  type GetBranch_menu_itemsGroupByPayload<T extends branch_menu_itemsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Branch_menu_itemsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Branch_menu_itemsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Branch_menu_itemsGroupByOutputType[P]>
+            : GetScalarType<T[P], Branch_menu_itemsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type branch_menu_itemsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    branch_id?: boolean
+    menu_item_id?: boolean
+    price_override?: boolean
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: boolean
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch_menu_items"]>
+
+  export type branch_menu_itemsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    branch_id?: boolean
+    menu_item_id?: boolean
+    price_override?: boolean
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: boolean
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch_menu_items"]>
+
+  export type branch_menu_itemsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    branch_id?: boolean
+    menu_item_id?: boolean
+    price_override?: boolean
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: boolean
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["branch_menu_items"]>
+
+  export type branch_menu_itemsSelectScalar = {
+    branch_id?: boolean
+    menu_item_id?: boolean
+    price_override?: boolean
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: boolean
+  }
+
+  export type branch_menu_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"branch_id" | "menu_item_id" | "price_override" | "is_available" | "is_online" | "sort_order", ExtArgs["result"]["branch_menu_items"]>
+  export type branch_menu_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }
+  export type branch_menu_itemsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }
+  export type branch_menu_itemsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branches?: boolean | branchesDefaultArgs<ExtArgs>
+    menu_item?: boolean | menu_itemsDefaultArgs<ExtArgs>
+  }
+
+  export type $branch_menu_itemsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "branch_menu_items"
+    objects: {
+      branches: Prisma.$branchesPayload<ExtArgs>
+      menu_item: Prisma.$menu_itemsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      branch_id: string
+      menu_item_id: string
+      price_override: Prisma.Decimal | null
+      is_available: boolean
+      is_online: boolean
+      sort_order: number | null
+    }, ExtArgs["result"]["branch_menu_items"]>
+    composites: {}
+  }
+
+  type branch_menu_itemsGetPayload<S extends boolean | null | undefined | branch_menu_itemsDefaultArgs> = $Result.GetResult<Prisma.$branch_menu_itemsPayload, S>
+
+  type branch_menu_itemsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<branch_menu_itemsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Branch_menu_itemsCountAggregateInputType | true
+    }
+
+  export interface branch_menu_itemsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['branch_menu_items'], meta: { name: 'branch_menu_items' } }
+    /**
+     * Find zero or one Branch_menu_items that matches the filter.
+     * @param {branch_menu_itemsFindUniqueArgs} args - Arguments to find a Branch_menu_items
+     * @example
+     * // Get one Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends branch_menu_itemsFindUniqueArgs>(args: SelectSubset<T, branch_menu_itemsFindUniqueArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Branch_menu_items that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {branch_menu_itemsFindUniqueOrThrowArgs} args - Arguments to find a Branch_menu_items
+     * @example
+     * // Get one Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends branch_menu_itemsFindUniqueOrThrowArgs>(args: SelectSubset<T, branch_menu_itemsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Branch_menu_items that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsFindFirstArgs} args - Arguments to find a Branch_menu_items
+     * @example
+     * // Get one Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends branch_menu_itemsFindFirstArgs>(args?: SelectSubset<T, branch_menu_itemsFindFirstArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Branch_menu_items that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsFindFirstOrThrowArgs} args - Arguments to find a Branch_menu_items
+     * @example
+     * // Get one Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends branch_menu_itemsFindFirstOrThrowArgs>(args?: SelectSubset<T, branch_menu_itemsFindFirstOrThrowArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Branch_menu_items that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findMany()
+     * 
+     * // Get first 10 Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.findMany({ take: 10 })
+     * 
+     * // Only select the `branch_id`
+     * const branch_menu_itemsWithBranch_idOnly = await prisma.branch_menu_items.findMany({ select: { branch_id: true } })
+     * 
+     */
+    findMany<T extends branch_menu_itemsFindManyArgs>(args?: SelectSubset<T, branch_menu_itemsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Branch_menu_items.
+     * @param {branch_menu_itemsCreateArgs} args - Arguments to create a Branch_menu_items.
+     * @example
+     * // Create one Branch_menu_items
+     * const Branch_menu_items = await prisma.branch_menu_items.create({
+     *   data: {
+     *     // ... data to create a Branch_menu_items
+     *   }
+     * })
+     * 
+     */
+    create<T extends branch_menu_itemsCreateArgs>(args: SelectSubset<T, branch_menu_itemsCreateArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Branch_menu_items.
+     * @param {branch_menu_itemsCreateManyArgs} args - Arguments to create many Branch_menu_items.
+     * @example
+     * // Create many Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends branch_menu_itemsCreateManyArgs>(args?: SelectSubset<T, branch_menu_itemsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Branch_menu_items and returns the data saved in the database.
+     * @param {branch_menu_itemsCreateManyAndReturnArgs} args - Arguments to create many Branch_menu_items.
+     * @example
+     * // Create many Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Branch_menu_items and only return the `branch_id`
+     * const branch_menu_itemsWithBranch_idOnly = await prisma.branch_menu_items.createManyAndReturn({
+     *   select: { branch_id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends branch_menu_itemsCreateManyAndReturnArgs>(args?: SelectSubset<T, branch_menu_itemsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Branch_menu_items.
+     * @param {branch_menu_itemsDeleteArgs} args - Arguments to delete one Branch_menu_items.
+     * @example
+     * // Delete one Branch_menu_items
+     * const Branch_menu_items = await prisma.branch_menu_items.delete({
+     *   where: {
+     *     // ... filter to delete one Branch_menu_items
+     *   }
+     * })
+     * 
+     */
+    delete<T extends branch_menu_itemsDeleteArgs>(args: SelectSubset<T, branch_menu_itemsDeleteArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Branch_menu_items.
+     * @param {branch_menu_itemsUpdateArgs} args - Arguments to update one Branch_menu_items.
+     * @example
+     * // Update one Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends branch_menu_itemsUpdateArgs>(args: SelectSubset<T, branch_menu_itemsUpdateArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Branch_menu_items.
+     * @param {branch_menu_itemsDeleteManyArgs} args - Arguments to filter Branch_menu_items to delete.
+     * @example
+     * // Delete a few Branch_menu_items
+     * const { count } = await prisma.branch_menu_items.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends branch_menu_itemsDeleteManyArgs>(args?: SelectSubset<T, branch_menu_itemsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Branch_menu_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends branch_menu_itemsUpdateManyArgs>(args: SelectSubset<T, branch_menu_itemsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Branch_menu_items and returns the data updated in the database.
+     * @param {branch_menu_itemsUpdateManyAndReturnArgs} args - Arguments to update many Branch_menu_items.
+     * @example
+     * // Update many Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Branch_menu_items and only return the `branch_id`
+     * const branch_menu_itemsWithBranch_idOnly = await prisma.branch_menu_items.updateManyAndReturn({
+     *   select: { branch_id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends branch_menu_itemsUpdateManyAndReturnArgs>(args: SelectSubset<T, branch_menu_itemsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Branch_menu_items.
+     * @param {branch_menu_itemsUpsertArgs} args - Arguments to update or create a Branch_menu_items.
+     * @example
+     * // Update or create a Branch_menu_items
+     * const branch_menu_items = await prisma.branch_menu_items.upsert({
+     *   create: {
+     *     // ... data to create a Branch_menu_items
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Branch_menu_items we want to update
+     *   }
+     * })
+     */
+    upsert<T extends branch_menu_itemsUpsertArgs>(args: SelectSubset<T, branch_menu_itemsUpsertArgs<ExtArgs>>): Prisma__branch_menu_itemsClient<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Branch_menu_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsCountArgs} args - Arguments to filter Branch_menu_items to count.
+     * @example
+     * // Count the number of Branch_menu_items
+     * const count = await prisma.branch_menu_items.count({
+     *   where: {
+     *     // ... the filter for the Branch_menu_items we want to count
+     *   }
+     * })
+    **/
+    count<T extends branch_menu_itemsCountArgs>(
+      args?: Subset<T, branch_menu_itemsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Branch_menu_itemsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Branch_menu_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Branch_menu_itemsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Branch_menu_itemsAggregateArgs>(args: Subset<T, Branch_menu_itemsAggregateArgs>): Prisma.PrismaPromise<GetBranch_menu_itemsAggregateType<T>>
+
+    /**
+     * Group by Branch_menu_items.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {branch_menu_itemsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends branch_menu_itemsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: branch_menu_itemsGroupByArgs['orderBy'] }
+        : { orderBy?: branch_menu_itemsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, branch_menu_itemsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBranch_menu_itemsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the branch_menu_items model
+   */
+  readonly fields: branch_menu_itemsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for branch_menu_items.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__branch_menu_itemsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    branches<T extends branchesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, branchesDefaultArgs<ExtArgs>>): Prisma__branchesClient<$Result.GetResult<Prisma.$branchesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    menu_item<T extends menu_itemsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, menu_itemsDefaultArgs<ExtArgs>>): Prisma__menu_itemsClient<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the branch_menu_items model
+   */
+  interface branch_menu_itemsFieldRefs {
+    readonly branch_id: FieldRef<"branch_menu_items", 'String'>
+    readonly menu_item_id: FieldRef<"branch_menu_items", 'String'>
+    readonly price_override: FieldRef<"branch_menu_items", 'Decimal'>
+    readonly is_available: FieldRef<"branch_menu_items", 'Boolean'>
+    readonly is_online: FieldRef<"branch_menu_items", 'Boolean'>
+    readonly sort_order: FieldRef<"branch_menu_items", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * branch_menu_items findUnique
+   */
+  export type branch_menu_itemsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which branch_menu_items to fetch.
+     */
+    where: branch_menu_itemsWhereUniqueInput
+  }
+
+  /**
+   * branch_menu_items findUniqueOrThrow
+   */
+  export type branch_menu_itemsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which branch_menu_items to fetch.
+     */
+    where: branch_menu_itemsWhereUniqueInput
+  }
+
+  /**
+   * branch_menu_items findFirst
+   */
+  export type branch_menu_itemsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which branch_menu_items to fetch.
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of branch_menu_items to fetch.
+     */
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for branch_menu_items.
+     */
+    cursor?: branch_menu_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` branch_menu_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` branch_menu_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of branch_menu_items.
+     */
+    distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * branch_menu_items findFirstOrThrow
+   */
+  export type branch_menu_itemsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which branch_menu_items to fetch.
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of branch_menu_items to fetch.
+     */
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for branch_menu_items.
+     */
+    cursor?: branch_menu_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` branch_menu_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` branch_menu_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of branch_menu_items.
+     */
+    distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * branch_menu_items findMany
+   */
+  export type branch_menu_itemsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter, which branch_menu_items to fetch.
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of branch_menu_items to fetch.
+     */
+    orderBy?: branch_menu_itemsOrderByWithRelationInput | branch_menu_itemsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing branch_menu_items.
+     */
+    cursor?: branch_menu_itemsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` branch_menu_items from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` branch_menu_items.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of branch_menu_items.
+     */
+    distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * branch_menu_items create
+   */
+  export type branch_menu_itemsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a branch_menu_items.
+     */
+    data: XOR<branch_menu_itemsCreateInput, branch_menu_itemsUncheckedCreateInput>
+  }
+
+  /**
+   * branch_menu_items createMany
+   */
+  export type branch_menu_itemsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many branch_menu_items.
+     */
+    data: branch_menu_itemsCreateManyInput | branch_menu_itemsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * branch_menu_items createManyAndReturn
+   */
+  export type branch_menu_itemsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * The data used to create many branch_menu_items.
+     */
+    data: branch_menu_itemsCreateManyInput | branch_menu_itemsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * branch_menu_items update
+   */
+  export type branch_menu_itemsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a branch_menu_items.
+     */
+    data: XOR<branch_menu_itemsUpdateInput, branch_menu_itemsUncheckedUpdateInput>
+    /**
+     * Choose, which branch_menu_items to update.
+     */
+    where: branch_menu_itemsWhereUniqueInput
+  }
+
+  /**
+   * branch_menu_items updateMany
+   */
+  export type branch_menu_itemsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update branch_menu_items.
+     */
+    data: XOR<branch_menu_itemsUpdateManyMutationInput, branch_menu_itemsUncheckedUpdateManyInput>
+    /**
+     * Filter which branch_menu_items to update
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * Limit how many branch_menu_items to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * branch_menu_items updateManyAndReturn
+   */
+  export type branch_menu_itemsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * The data used to update branch_menu_items.
+     */
+    data: XOR<branch_menu_itemsUpdateManyMutationInput, branch_menu_itemsUncheckedUpdateManyInput>
+    /**
+     * Filter which branch_menu_items to update
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * Limit how many branch_menu_items to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * branch_menu_items upsert
+   */
+  export type branch_menu_itemsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the branch_menu_items to update in case it exists.
+     */
+    where: branch_menu_itemsWhereUniqueInput
+    /**
+     * In case the branch_menu_items found by the `where` argument doesn't exist, create a new branch_menu_items with this data.
+     */
+    create: XOR<branch_menu_itemsCreateInput, branch_menu_itemsUncheckedCreateInput>
+    /**
+     * In case the branch_menu_items was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<branch_menu_itemsUpdateInput, branch_menu_itemsUncheckedUpdateInput>
+  }
+
+  /**
+   * branch_menu_items delete
+   */
+  export type branch_menu_itemsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
+    /**
+     * Filter which branch_menu_items to delete.
+     */
+    where: branch_menu_itemsWhereUniqueInput
+  }
+
+  /**
+   * branch_menu_items deleteMany
+   */
+  export type branch_menu_itemsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which branch_menu_items to delete
+     */
+    where?: branch_menu_itemsWhereInput
+    /**
+     * Limit how many branch_menu_items to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * branch_menu_items without action
+   */
+  export type branch_menu_itemsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the branch_menu_items
+     */
+    select?: branch_menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the branch_menu_items
+     */
+    omit?: branch_menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: branch_menu_itemsInclude<ExtArgs> | null
   }
 
 
@@ -71877,6 +74677,7 @@ export namespace Prisma {
     subscription_status: 'subscription_status',
     subscription_expires_at: 'subscription_expires_at',
     is_online: 'is_online',
+    business_type: 'business_type',
     delivery_type: 'delivery_type',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -72070,10 +74871,11 @@ export namespace Prisma {
 
   export const Menu_categoriesScalarFieldEnum: {
     id: 'id',
-    branch_id: 'branch_id',
+    hotel_id: 'hotel_id',
     name: 'name',
     sort_order: 'sort_order',
-    is_active: 'is_active'
+    is_active: 'is_active',
+    default_product_category_id: 'default_product_category_id'
   };
 
   export type Menu_categoriesScalarFieldEnum = (typeof Menu_categoriesScalarFieldEnum)[keyof typeof Menu_categoriesScalarFieldEnum]
@@ -72081,23 +74883,53 @@ export namespace Prisma {
 
   export const Menu_itemsScalarFieldEnum: {
     id: 'id',
-    branch_id: 'branch_id',
+    hotel_id: 'hotel_id',
     category_id: 'category_id',
+    product_category_id: 'product_category_id',
     name: 'name',
     description: 'description',
     image_url: 'image_url',
-    price: 'price',
+    base_price: 'base_price',
     tax_rate: 'tax_rate',
     is_available: 'is_available',
     is_online: 'is_online',
     is_kitchen: 'is_kitchen',
     prep_station: 'prep_station',
+    product_kind: 'product_kind',
     sort_order: 'sort_order',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
 
   export type Menu_itemsScalarFieldEnum = (typeof Menu_itemsScalarFieldEnum)[keyof typeof Menu_itemsScalarFieldEnum]
+
+
+  export const Product_categoriesScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    description: 'description',
+    icon: 'icon',
+    image_url: 'image_url',
+    parent_id: 'parent_id',
+    sort_order: 'sort_order',
+    is_active: 'is_active',
+    created_at: 'created_at'
+  };
+
+  export type Product_categoriesScalarFieldEnum = (typeof Product_categoriesScalarFieldEnum)[keyof typeof Product_categoriesScalarFieldEnum]
+
+
+  export const Branch_menu_itemsScalarFieldEnum: {
+    branch_id: 'branch_id',
+    menu_item_id: 'menu_item_id',
+    price_override: 'price_override',
+    is_available: 'is_available',
+    is_online: 'is_online',
+    sort_order: 'sort_order'
+  };
+
+  export type Branch_menu_itemsScalarFieldEnum = (typeof Branch_menu_itemsScalarFieldEnum)[keyof typeof Branch_menu_itemsScalarFieldEnum]
 
 
   export const Menu_item_modifier_groupsScalarFieldEnum: {
@@ -73151,6 +75983,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    business_type?: StringFilter<"hotels"> | string
     delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
@@ -73158,6 +75991,8 @@ export namespace Prisma {
     subscription_plans?: XOR<Subscription_plansNullableScalarRelationFilter, subscription_plansWhereInput> | null
     hotel_owner?: XOR<Hotel_ownersNullableScalarRelationFilter, hotel_ownersWhereInput> | null
     expense_categories?: Expense_categoriesListRelationFilter
+    menu_categories?: Menu_categoriesListRelationFilter
+    menu_items?: Menu_itemsListRelationFilter
     branches?: BranchesListRelationFilter
     customers?: CustomersListRelationFilter
     audit_logs?: Audit_logsListRelationFilter
@@ -73172,6 +76007,7 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
+    business_type?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -73179,6 +76015,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansOrderByWithRelationInput
     hotel_owner?: hotel_ownersOrderByWithRelationInput
     expense_categories?: expense_categoriesOrderByRelationAggregateInput
+    menu_categories?: menu_categoriesOrderByRelationAggregateInput
+    menu_items?: menu_itemsOrderByRelationAggregateInput
     branches?: branchesOrderByRelationAggregateInput
     customers?: customersOrderByRelationAggregateInput
     audit_logs?: audit_logsOrderByRelationAggregateInput
@@ -73196,6 +76034,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    business_type?: StringFilter<"hotels"> | string
     delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
@@ -73203,6 +76042,8 @@ export namespace Prisma {
     subscription_plans?: XOR<Subscription_plansNullableScalarRelationFilter, subscription_plansWhereInput> | null
     hotel_owner?: XOR<Hotel_ownersNullableScalarRelationFilter, hotel_ownersWhereInput> | null
     expense_categories?: Expense_categoriesListRelationFilter
+    menu_categories?: Menu_categoriesListRelationFilter
+    menu_items?: Menu_itemsListRelationFilter
     branches?: BranchesListRelationFilter
     customers?: CustomersListRelationFilter
     audit_logs?: Audit_logsListRelationFilter
@@ -73217,6 +76058,7 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
+    business_type?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -73238,6 +76080,7 @@ export namespace Prisma {
     subscription_status?: StringNullableWithAggregatesFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     is_online?: BoolWithAggregatesFilter<"hotels"> | boolean
+    business_type?: StringWithAggregatesFilter<"hotels"> | string
     delivery_type?: StringWithAggregatesFilter<"hotels"> | string
     created_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
@@ -73745,8 +76588,7 @@ export namespace Prisma {
     discounts?: DiscountsListRelationFilter
     inventory_items?: Inventory_itemsListRelationFilter
     invoices?: InvoicesListRelationFilter
-    menu_categories?: Menu_categoriesListRelationFilter
-    menu_items?: Menu_itemsListRelationFilter
+    branch_menu_items?: Branch_menu_itemsListRelationFilter
     orders?: OrdersListRelationFilter
     payment_methods?: Payment_methodsListRelationFilter
     pos_devices?: Pos_devicesListRelationFilter
@@ -73792,8 +76634,7 @@ export namespace Prisma {
     discounts?: discountsOrderByRelationAggregateInput
     inventory_items?: inventory_itemsOrderByRelationAggregateInput
     invoices?: invoicesOrderByRelationAggregateInput
-    menu_categories?: menu_categoriesOrderByRelationAggregateInput
-    menu_items?: menu_itemsOrderByRelationAggregateInput
+    branch_menu_items?: branch_menu_itemsOrderByRelationAggregateInput
     orders?: ordersOrderByRelationAggregateInput
     payment_methods?: payment_methodsOrderByRelationAggregateInput
     pos_devices?: pos_devicesOrderByRelationAggregateInput
@@ -73843,8 +76684,7 @@ export namespace Prisma {
     discounts?: DiscountsListRelationFilter
     inventory_items?: Inventory_itemsListRelationFilter
     invoices?: InvoicesListRelationFilter
-    menu_categories?: Menu_categoriesListRelationFilter
-    menu_items?: Menu_itemsListRelationFilter
+    branch_menu_items?: Branch_menu_itemsListRelationFilter
     orders?: OrdersListRelationFilter
     payment_methods?: Payment_methodsListRelationFilter
     pos_devices?: Pos_devicesListRelationFilter
@@ -74288,43 +77128,51 @@ export namespace Prisma {
     OR?: menu_categoriesWhereInput[]
     NOT?: menu_categoriesWhereInput | menu_categoriesWhereInput[]
     id?: UuidFilter<"menu_categories"> | string
-    branch_id?: UuidFilter<"menu_categories"> | string
+    hotel_id?: UuidFilter<"menu_categories"> | string
     name?: StringFilter<"menu_categories"> | string
     sort_order?: IntNullableFilter<"menu_categories"> | number | null
     is_active?: BoolNullableFilter<"menu_categories"> | boolean | null
-    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
+    default_product_category_id?: UuidNullableFilter<"menu_categories"> | string | null
+    default_product_category?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
+    hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
     menu_items?: Menu_itemsListRelationFilter
   }
 
   export type menu_categoriesOrderByWithRelationInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     name?: SortOrder
     sort_order?: SortOrderInput | SortOrder
     is_active?: SortOrderInput | SortOrder
-    branches?: branchesOrderByWithRelationInput
+    default_product_category_id?: SortOrderInput | SortOrder
+    default_product_category?: product_categoriesOrderByWithRelationInput
+    hotels?: hotelsOrderByWithRelationInput
     menu_items?: menu_itemsOrderByRelationAggregateInput
   }
 
   export type menu_categoriesWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    hotel_id_name?: menu_categoriesHotel_idNameCompoundUniqueInput
     AND?: menu_categoriesWhereInput | menu_categoriesWhereInput[]
     OR?: menu_categoriesWhereInput[]
     NOT?: menu_categoriesWhereInput | menu_categoriesWhereInput[]
-    branch_id?: UuidFilter<"menu_categories"> | string
+    hotel_id?: UuidFilter<"menu_categories"> | string
     name?: StringFilter<"menu_categories"> | string
     sort_order?: IntNullableFilter<"menu_categories"> | number | null
     is_active?: BoolNullableFilter<"menu_categories"> | boolean | null
-    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
+    default_product_category_id?: UuidNullableFilter<"menu_categories"> | string | null
+    default_product_category?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
+    hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
     menu_items?: Menu_itemsListRelationFilter
-  }, "id">
+  }, "id" | "hotel_id_name">
 
   export type menu_categoriesOrderByWithAggregationInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     name?: SortOrder
     sort_order?: SortOrderInput | SortOrder
     is_active?: SortOrderInput | SortOrder
+    default_product_category_id?: SortOrderInput | SortOrder
     _count?: menu_categoriesCountOrderByAggregateInput
     _avg?: menu_categoriesAvgOrderByAggregateInput
     _max?: menu_categoriesMaxOrderByAggregateInput
@@ -74337,10 +77185,11 @@ export namespace Prisma {
     OR?: menu_categoriesScalarWhereWithAggregatesInput[]
     NOT?: menu_categoriesScalarWhereWithAggregatesInput | menu_categoriesScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"menu_categories"> | string
-    branch_id?: UuidWithAggregatesFilter<"menu_categories"> | string
+    hotel_id?: UuidWithAggregatesFilter<"menu_categories"> | string
     name?: StringWithAggregatesFilter<"menu_categories"> | string
     sort_order?: IntNullableWithAggregatesFilter<"menu_categories"> | number | null
     is_active?: BoolNullableWithAggregatesFilter<"menu_categories"> | boolean | null
+    default_product_category_id?: UuidNullableWithAggregatesFilter<"menu_categories"> | string | null
   }
 
   export type menu_itemsWhereInput = {
@@ -74348,50 +77197,58 @@ export namespace Prisma {
     OR?: menu_itemsWhereInput[]
     NOT?: menu_itemsWhereInput | menu_itemsWhereInput[]
     id?: UuidFilter<"menu_items"> | string
-    branch_id?: UuidFilter<"menu_items"> | string
+    hotel_id?: UuidFilter<"menu_items"> | string
     category_id?: UuidNullableFilter<"menu_items"> | string | null
+    product_category_id?: UuidNullableFilter<"menu_items"> | string | null
     name?: StringFilter<"menu_items"> | string
     description?: StringNullableFilter<"menu_items"> | string | null
     image_url?: StringNullableFilter<"menu_items"> | string | null
-    price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
     tax_rate?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     is_available?: BoolNullableFilter<"menu_items"> | boolean | null
     is_online?: BoolFilter<"menu_items"> | boolean
     is_kitchen?: BoolNullableFilter<"menu_items"> | boolean | null
     prep_station?: StringNullableFilter<"menu_items"> | string | null
+    product_kind?: StringFilter<"menu_items"> | string
     sort_order?: IntNullableFilter<"menu_items"> | number | null
     created_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
+    hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
+    menu_categories?: XOR<Menu_categoriesNullableScalarRelationFilter, menu_categoriesWhereInput> | null
+    product_category?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
     menu_item_ingredients?: Menu_item_ingredientsListRelationFilter
     menu_item_modifier_groups?: Menu_item_modifier_groupsListRelationFilter
-    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
-    menu_categories?: XOR<Menu_categoriesNullableScalarRelationFilter, menu_categoriesWhereInput> | null
     order_items?: Order_itemsListRelationFilter
     reviews?: ReviewsListRelationFilter
+    branch_items?: Branch_menu_itemsListRelationFilter
   }
 
   export type menu_itemsOrderByWithRelationInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     category_id?: SortOrderInput | SortOrder
+    product_category_id?: SortOrderInput | SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     image_url?: SortOrderInput | SortOrder
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrderInput | SortOrder
     is_available?: SortOrderInput | SortOrder
     is_online?: SortOrder
     is_kitchen?: SortOrderInput | SortOrder
     prep_station?: SortOrderInput | SortOrder
+    product_kind?: SortOrder
     sort_order?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
+    hotels?: hotelsOrderByWithRelationInput
+    menu_categories?: menu_categoriesOrderByWithRelationInput
+    product_category?: product_categoriesOrderByWithRelationInput
     menu_item_ingredients?: menu_item_ingredientsOrderByRelationAggregateInput
     menu_item_modifier_groups?: menu_item_modifier_groupsOrderByRelationAggregateInput
-    branches?: branchesOrderByWithRelationInput
-    menu_categories?: menu_categoriesOrderByWithRelationInput
     order_items?: order_itemsOrderByRelationAggregateInput
     reviews?: reviewsOrderByRelationAggregateInput
+    branch_items?: branch_menu_itemsOrderByRelationAggregateInput
   }
 
   export type menu_itemsWhereUniqueInput = Prisma.AtLeast<{
@@ -74399,41 +77256,47 @@ export namespace Prisma {
     AND?: menu_itemsWhereInput | menu_itemsWhereInput[]
     OR?: menu_itemsWhereInput[]
     NOT?: menu_itemsWhereInput | menu_itemsWhereInput[]
-    branch_id?: UuidFilter<"menu_items"> | string
+    hotel_id?: UuidFilter<"menu_items"> | string
     category_id?: UuidNullableFilter<"menu_items"> | string | null
+    product_category_id?: UuidNullableFilter<"menu_items"> | string | null
     name?: StringFilter<"menu_items"> | string
     description?: StringNullableFilter<"menu_items"> | string | null
     image_url?: StringNullableFilter<"menu_items"> | string | null
-    price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
     tax_rate?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     is_available?: BoolNullableFilter<"menu_items"> | boolean | null
     is_online?: BoolFilter<"menu_items"> | boolean
     is_kitchen?: BoolNullableFilter<"menu_items"> | boolean | null
     prep_station?: StringNullableFilter<"menu_items"> | string | null
+    product_kind?: StringFilter<"menu_items"> | string
     sort_order?: IntNullableFilter<"menu_items"> | number | null
     created_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
+    hotels?: XOR<HotelsScalarRelationFilter, hotelsWhereInput>
+    menu_categories?: XOR<Menu_categoriesNullableScalarRelationFilter, menu_categoriesWhereInput> | null
+    product_category?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
     menu_item_ingredients?: Menu_item_ingredientsListRelationFilter
     menu_item_modifier_groups?: Menu_item_modifier_groupsListRelationFilter
-    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
-    menu_categories?: XOR<Menu_categoriesNullableScalarRelationFilter, menu_categoriesWhereInput> | null
     order_items?: Order_itemsListRelationFilter
     reviews?: ReviewsListRelationFilter
+    branch_items?: Branch_menu_itemsListRelationFilter
   }, "id">
 
   export type menu_itemsOrderByWithAggregationInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     category_id?: SortOrderInput | SortOrder
+    product_category_id?: SortOrderInput | SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     image_url?: SortOrderInput | SortOrder
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrderInput | SortOrder
     is_available?: SortOrderInput | SortOrder
     is_online?: SortOrder
     is_kitchen?: SortOrderInput | SortOrder
     prep_station?: SortOrderInput | SortOrder
+    product_kind?: SortOrder
     sort_order?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -74449,20 +77312,179 @@ export namespace Prisma {
     OR?: menu_itemsScalarWhereWithAggregatesInput[]
     NOT?: menu_itemsScalarWhereWithAggregatesInput | menu_itemsScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"menu_items"> | string
-    branch_id?: UuidWithAggregatesFilter<"menu_items"> | string
+    hotel_id?: UuidWithAggregatesFilter<"menu_items"> | string
     category_id?: UuidNullableWithAggregatesFilter<"menu_items"> | string | null
+    product_category_id?: UuidNullableWithAggregatesFilter<"menu_items"> | string | null
     name?: StringWithAggregatesFilter<"menu_items"> | string
     description?: StringNullableWithAggregatesFilter<"menu_items"> | string | null
     image_url?: StringNullableWithAggregatesFilter<"menu_items"> | string | null
-    price?: DecimalWithAggregatesFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalWithAggregatesFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
     tax_rate?: DecimalNullableWithAggregatesFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     is_available?: BoolNullableWithAggregatesFilter<"menu_items"> | boolean | null
     is_online?: BoolWithAggregatesFilter<"menu_items"> | boolean
     is_kitchen?: BoolNullableWithAggregatesFilter<"menu_items"> | boolean | null
     prep_station?: StringNullableWithAggregatesFilter<"menu_items"> | string | null
+    product_kind?: StringWithAggregatesFilter<"menu_items"> | string
     sort_order?: IntNullableWithAggregatesFilter<"menu_items"> | number | null
     created_at?: DateTimeNullableWithAggregatesFilter<"menu_items"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"menu_items"> | Date | string | null
+  }
+
+  export type product_categoriesWhereInput = {
+    AND?: product_categoriesWhereInput | product_categoriesWhereInput[]
+    OR?: product_categoriesWhereInput[]
+    NOT?: product_categoriesWhereInput | product_categoriesWhereInput[]
+    id?: UuidFilter<"product_categories"> | string
+    key?: StringFilter<"product_categories"> | string
+    name?: StringFilter<"product_categories"> | string
+    description?: StringNullableFilter<"product_categories"> | string | null
+    icon?: StringNullableFilter<"product_categories"> | string | null
+    image_url?: StringNullableFilter<"product_categories"> | string | null
+    parent_id?: UuidNullableFilter<"product_categories"> | string | null
+    sort_order?: IntNullableFilter<"product_categories"> | number | null
+    is_active?: BoolNullableFilter<"product_categories"> | boolean | null
+    created_at?: DateTimeNullableFilter<"product_categories"> | Date | string | null
+    parent?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
+    children?: Product_categoriesListRelationFilter
+    items?: Menu_itemsListRelationFilter
+    menu_categories?: Menu_categoriesListRelationFilter
+  }
+
+  export type product_categoriesOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    image_url?: SortOrderInput | SortOrder
+    parent_id?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    parent?: product_categoriesOrderByWithRelationInput
+    children?: product_categoriesOrderByRelationAggregateInput
+    items?: menu_itemsOrderByRelationAggregateInput
+    menu_categories?: menu_categoriesOrderByRelationAggregateInput
+  }
+
+  export type product_categoriesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: product_categoriesWhereInput | product_categoriesWhereInput[]
+    OR?: product_categoriesWhereInput[]
+    NOT?: product_categoriesWhereInput | product_categoriesWhereInput[]
+    name?: StringFilter<"product_categories"> | string
+    description?: StringNullableFilter<"product_categories"> | string | null
+    icon?: StringNullableFilter<"product_categories"> | string | null
+    image_url?: StringNullableFilter<"product_categories"> | string | null
+    parent_id?: UuidNullableFilter<"product_categories"> | string | null
+    sort_order?: IntNullableFilter<"product_categories"> | number | null
+    is_active?: BoolNullableFilter<"product_categories"> | boolean | null
+    created_at?: DateTimeNullableFilter<"product_categories"> | Date | string | null
+    parent?: XOR<Product_categoriesNullableScalarRelationFilter, product_categoriesWhereInput> | null
+    children?: Product_categoriesListRelationFilter
+    items?: Menu_itemsListRelationFilter
+    menu_categories?: Menu_categoriesListRelationFilter
+  }, "id" | "key">
+
+  export type product_categoriesOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    image_url?: SortOrderInput | SortOrder
+    parent_id?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: product_categoriesCountOrderByAggregateInput
+    _avg?: product_categoriesAvgOrderByAggregateInput
+    _max?: product_categoriesMaxOrderByAggregateInput
+    _min?: product_categoriesMinOrderByAggregateInput
+    _sum?: product_categoriesSumOrderByAggregateInput
+  }
+
+  export type product_categoriesScalarWhereWithAggregatesInput = {
+    AND?: product_categoriesScalarWhereWithAggregatesInput | product_categoriesScalarWhereWithAggregatesInput[]
+    OR?: product_categoriesScalarWhereWithAggregatesInput[]
+    NOT?: product_categoriesScalarWhereWithAggregatesInput | product_categoriesScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"product_categories"> | string
+    key?: StringWithAggregatesFilter<"product_categories"> | string
+    name?: StringWithAggregatesFilter<"product_categories"> | string
+    description?: StringNullableWithAggregatesFilter<"product_categories"> | string | null
+    icon?: StringNullableWithAggregatesFilter<"product_categories"> | string | null
+    image_url?: StringNullableWithAggregatesFilter<"product_categories"> | string | null
+    parent_id?: UuidNullableWithAggregatesFilter<"product_categories"> | string | null
+    sort_order?: IntNullableWithAggregatesFilter<"product_categories"> | number | null
+    is_active?: BoolNullableWithAggregatesFilter<"product_categories"> | boolean | null
+    created_at?: DateTimeNullableWithAggregatesFilter<"product_categories"> | Date | string | null
+  }
+
+  export type branch_menu_itemsWhereInput = {
+    AND?: branch_menu_itemsWhereInput | branch_menu_itemsWhereInput[]
+    OR?: branch_menu_itemsWhereInput[]
+    NOT?: branch_menu_itemsWhereInput | branch_menu_itemsWhereInput[]
+    branch_id?: UuidFilter<"branch_menu_items"> | string
+    menu_item_id?: UuidFilter<"branch_menu_items"> | string
+    price_override?: DecimalNullableFilter<"branch_menu_items"> | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFilter<"branch_menu_items"> | boolean
+    is_online?: BoolFilter<"branch_menu_items"> | boolean
+    sort_order?: IntNullableFilter<"branch_menu_items"> | number | null
+    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
+    menu_item?: XOR<Menu_itemsScalarRelationFilter, menu_itemsWhereInput>
+  }
+
+  export type branch_menu_itemsOrderByWithRelationInput = {
+    branch_id?: SortOrder
+    menu_item_id?: SortOrder
+    price_override?: SortOrderInput | SortOrder
+    is_available?: SortOrder
+    is_online?: SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    branches?: branchesOrderByWithRelationInput
+    menu_item?: menu_itemsOrderByWithRelationInput
+  }
+
+  export type branch_menu_itemsWhereUniqueInput = Prisma.AtLeast<{
+    branch_id_menu_item_id?: branch_menu_itemsBranch_idMenu_item_idCompoundUniqueInput
+    AND?: branch_menu_itemsWhereInput | branch_menu_itemsWhereInput[]
+    OR?: branch_menu_itemsWhereInput[]
+    NOT?: branch_menu_itemsWhereInput | branch_menu_itemsWhereInput[]
+    branch_id?: UuidFilter<"branch_menu_items"> | string
+    menu_item_id?: UuidFilter<"branch_menu_items"> | string
+    price_override?: DecimalNullableFilter<"branch_menu_items"> | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFilter<"branch_menu_items"> | boolean
+    is_online?: BoolFilter<"branch_menu_items"> | boolean
+    sort_order?: IntNullableFilter<"branch_menu_items"> | number | null
+    branches?: XOR<BranchesScalarRelationFilter, branchesWhereInput>
+    menu_item?: XOR<Menu_itemsScalarRelationFilter, menu_itemsWhereInput>
+  }, "branch_id_menu_item_id">
+
+  export type branch_menu_itemsOrderByWithAggregationInput = {
+    branch_id?: SortOrder
+    menu_item_id?: SortOrder
+    price_override?: SortOrderInput | SortOrder
+    is_available?: SortOrder
+    is_online?: SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    _count?: branch_menu_itemsCountOrderByAggregateInput
+    _avg?: branch_menu_itemsAvgOrderByAggregateInput
+    _max?: branch_menu_itemsMaxOrderByAggregateInput
+    _min?: branch_menu_itemsMinOrderByAggregateInput
+    _sum?: branch_menu_itemsSumOrderByAggregateInput
+  }
+
+  export type branch_menu_itemsScalarWhereWithAggregatesInput = {
+    AND?: branch_menu_itemsScalarWhereWithAggregatesInput | branch_menu_itemsScalarWhereWithAggregatesInput[]
+    OR?: branch_menu_itemsScalarWhereWithAggregatesInput[]
+    NOT?: branch_menu_itemsScalarWhereWithAggregatesInput | branch_menu_itemsScalarWhereWithAggregatesInput[]
+    branch_id?: UuidWithAggregatesFilter<"branch_menu_items"> | string
+    menu_item_id?: UuidWithAggregatesFilter<"branch_menu_items"> | string
+    price_override?: DecimalNullableWithAggregatesFilter<"branch_menu_items"> | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolWithAggregatesFilter<"branch_menu_items"> | boolean
+    is_online?: BoolWithAggregatesFilter<"branch_menu_items"> | boolean
+    sort_order?: IntNullableWithAggregatesFilter<"branch_menu_items"> | number | null
   }
 
   export type menu_item_modifier_groupsWhereInput = {
@@ -77656,6 +80678,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -77663,6 +80686,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
@@ -77677,12 +80702,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
@@ -77696,6 +80724,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77703,6 +80732,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
@@ -77717,12 +80748,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
@@ -77737,6 +80771,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -77751,6 +80786,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77766,6 +80802,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78300,8 +81337,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -78345,8 +81381,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -78390,8 +81425,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -78435,8 +81469,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -78898,16 +81931,18 @@ export namespace Prisma {
     name: string
     sort_order?: number | null
     is_active?: boolean | null
-    branches: branchesCreateNestedOneWithoutMenu_categoriesInput
+    default_product_category?: product_categoriesCreateNestedOneWithoutMenu_categoriesInput
+    hotels: hotelsCreateNestedOneWithoutMenu_categoriesInput
     menu_items?: menu_itemsCreateNestedManyWithoutMenu_categoriesInput
   }
 
   export type menu_categoriesUncheckedCreateInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     name: string
     sort_order?: number | null
     is_active?: boolean | null
+    default_product_category_id?: string | null
     menu_items?: menu_itemsUncheckedCreateNestedManyWithoutMenu_categoriesInput
   }
 
@@ -78916,25 +81951,28 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    branches?: branchesUpdateOneRequiredWithoutMenu_categoriesNestedInput
+    default_product_category?: product_categoriesUpdateOneWithoutMenu_categoriesNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_categoriesNestedInput
     menu_items?: menu_itemsUpdateManyWithoutMenu_categoriesNestedInput
   }
 
   export type menu_categoriesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     menu_items?: menu_itemsUncheckedUpdateManyWithoutMenu_categoriesNestedInput
   }
 
   export type menu_categoriesCreateManyInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     name: string
     sort_order?: number | null
     is_active?: boolean | null
+    default_product_category_id?: string | null
   }
 
   export type menu_categoriesUpdateManyMutationInput = {
@@ -78946,10 +81984,11 @@ export namespace Prisma {
 
   export type menu_categoriesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type menu_itemsCreateInput = {
@@ -78957,36 +81996,41 @@ export namespace Prisma {
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
     menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
-    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -78994,6 +82038,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUpdateInput = {
@@ -79001,36 +82046,41 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
     menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
-    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79038,21 +82088,24 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsCreateManyInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -79063,12 +82116,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79076,20 +82130,185 @@ export namespace Prisma {
 
   export type menu_itemsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type product_categoriesCreateInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    parent?: product_categoriesCreateNestedOneWithoutChildrenInput
+    children?: product_categoriesCreateNestedManyWithoutParentInput
+    items?: menu_itemsCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesUncheckedCreateInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    parent_id?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    children?: product_categoriesUncheckedCreateNestedManyWithoutParentInput
+    items?: menu_itemsUncheckedCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parent?: product_categoriesUpdateOneWithoutChildrenNestedInput
+    children?: product_categoriesUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    children?: product_categoriesUncheckedUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUncheckedUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesCreateManyInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    parent_id?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type product_categoriesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type product_categoriesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type branch_menu_itemsCreateInput = {
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
+    branches: branchesCreateNestedOneWithoutBranch_menu_itemsInput
+    menu_item: menu_itemsCreateNestedOneWithoutBranch_itemsInput
+  }
+
+  export type branch_menu_itemsUncheckedCreateInput = {
+    branch_id: string
+    menu_item_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
+  }
+
+  export type branch_menu_itemsUpdateInput = {
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    branches?: branchesUpdateOneRequiredWithoutBranch_menu_itemsNestedInput
+    menu_item?: menu_itemsUpdateOneRequiredWithoutBranch_itemsNestedInput
+  }
+
+  export type branch_menu_itemsUncheckedUpdateInput = {
+    branch_id?: StringFieldUpdateOperationsInput | string
+    menu_item_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type branch_menu_itemsCreateManyInput = {
+    branch_id: string
+    menu_item_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
+  }
+
+  export type branch_menu_itemsUpdateManyMutationInput = {
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type branch_menu_itemsUncheckedUpdateManyInput = {
+    branch_id?: StringFieldUpdateOperationsInput | string
+    menu_item_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type menu_item_modifier_groupsCreateInput = {
@@ -82463,6 +85682,18 @@ export namespace Prisma {
     none?: expense_categoriesWhereInput
   }
 
+  export type Menu_categoriesListRelationFilter = {
+    every?: menu_categoriesWhereInput
+    some?: menu_categoriesWhereInput
+    none?: menu_categoriesWhereInput
+  }
+
+  export type Menu_itemsListRelationFilter = {
+    every?: menu_itemsWhereInput
+    some?: menu_itemsWhereInput
+    none?: menu_itemsWhereInput
+  }
+
   export type BranchesListRelationFilter = {
     every?: branchesWhereInput
     some?: branchesWhereInput
@@ -82482,6 +85713,14 @@ export namespace Prisma {
   }
 
   export type expense_categoriesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type menu_categoriesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type menu_itemsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -82506,6 +85745,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    business_type?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -82521,6 +85761,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    business_type?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -82536,6 +85777,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
+    business_type?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -83039,16 +86281,10 @@ export namespace Prisma {
     none?: invoicesWhereInput
   }
 
-  export type Menu_categoriesListRelationFilter = {
-    every?: menu_categoriesWhereInput
-    some?: menu_categoriesWhereInput
-    none?: menu_categoriesWhereInput
-  }
-
-  export type Menu_itemsListRelationFilter = {
-    every?: menu_itemsWhereInput
-    some?: menu_itemsWhereInput
-    none?: menu_itemsWhereInput
+  export type Branch_menu_itemsListRelationFilter = {
+    every?: branch_menu_itemsWhereInput
+    some?: branch_menu_itemsWhereInput
+    none?: branch_menu_itemsWhereInput
   }
 
   export type Payment_methodsListRelationFilter = {
@@ -83095,11 +86331,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type menu_categoriesOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type menu_itemsOrderByRelationAggregateInput = {
+  export type branch_menu_itemsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -83433,12 +86665,23 @@ export namespace Prisma {
     guest_count?: SortOrder
   }
 
+  export type Product_categoriesNullableScalarRelationFilter = {
+    is?: product_categoriesWhereInput | null
+    isNot?: product_categoriesWhereInput | null
+  }
+
+  export type menu_categoriesHotel_idNameCompoundUniqueInput = {
+    hotel_id: string
+    name: string
+  }
+
   export type menu_categoriesCountOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     name?: SortOrder
     sort_order?: SortOrder
     is_active?: SortOrder
+    default_product_category_id?: SortOrder
   }
 
   export type menu_categoriesAvgOrderByAggregateInput = {
@@ -83447,22 +86690,29 @@ export namespace Prisma {
 
   export type menu_categoriesMaxOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     name?: SortOrder
     sort_order?: SortOrder
     is_active?: SortOrder
+    default_product_category_id?: SortOrder
   }
 
   export type menu_categoriesMinOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     name?: SortOrder
     sort_order?: SortOrder
     is_active?: SortOrder
+    default_product_category_id?: SortOrder
   }
 
   export type menu_categoriesSumOrderByAggregateInput = {
     sort_order?: SortOrder
+  }
+
+  export type Menu_categoriesNullableScalarRelationFilter = {
+    is?: menu_categoriesWhereInput | null
+    isNot?: menu_categoriesWhereInput | null
   }
 
   export type Menu_item_ingredientsListRelationFilter = {
@@ -83475,11 +86725,6 @@ export namespace Prisma {
     every?: menu_item_modifier_groupsWhereInput
     some?: menu_item_modifier_groupsWhereInput
     none?: menu_item_modifier_groupsWhereInput
-  }
-
-  export type Menu_categoriesNullableScalarRelationFilter = {
-    is?: menu_categoriesWhereInput | null
-    isNot?: menu_categoriesWhereInput | null
   }
 
   export type Order_itemsListRelationFilter = {
@@ -83502,41 +86747,45 @@ export namespace Prisma {
 
   export type menu_itemsCountOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     category_id?: SortOrder
+    product_category_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrder
     is_available?: SortOrder
     is_online?: SortOrder
     is_kitchen?: SortOrder
     prep_station?: SortOrder
+    product_kind?: SortOrder
     sort_order?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type menu_itemsAvgOrderByAggregateInput = {
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrder
     sort_order?: SortOrder
   }
 
   export type menu_itemsMaxOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     category_id?: SortOrder
+    product_category_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrder
     is_available?: SortOrder
     is_online?: SortOrder
     is_kitchen?: SortOrder
     prep_station?: SortOrder
+    product_kind?: SortOrder
     sort_order?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -83544,31 +86793,132 @@ export namespace Prisma {
 
   export type menu_itemsMinOrderByAggregateInput = {
     id?: SortOrder
-    branch_id?: SortOrder
+    hotel_id?: SortOrder
     category_id?: SortOrder
+    product_category_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrder
     is_available?: SortOrder
     is_online?: SortOrder
     is_kitchen?: SortOrder
     prep_station?: SortOrder
+    product_kind?: SortOrder
     sort_order?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type menu_itemsSumOrderByAggregateInput = {
-    price?: SortOrder
+    base_price?: SortOrder
     tax_rate?: SortOrder
+    sort_order?: SortOrder
+  }
+
+  export type Product_categoriesListRelationFilter = {
+    every?: product_categoriesWhereInput
+    some?: product_categoriesWhereInput
+    none?: product_categoriesWhereInput
+  }
+
+  export type product_categoriesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type product_categoriesCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    image_url?: SortOrder
+    parent_id?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type product_categoriesAvgOrderByAggregateInput = {
+    sort_order?: SortOrder
+  }
+
+  export type product_categoriesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    image_url?: SortOrder
+    parent_id?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type product_categoriesMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    image_url?: SortOrder
+    parent_id?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type product_categoriesSumOrderByAggregateInput = {
     sort_order?: SortOrder
   }
 
   export type Menu_itemsScalarRelationFilter = {
     is?: menu_itemsWhereInput
     isNot?: menu_itemsWhereInput
+  }
+
+  export type branch_menu_itemsBranch_idMenu_item_idCompoundUniqueInput = {
+    branch_id: string
+    menu_item_id: string
+  }
+
+  export type branch_menu_itemsCountOrderByAggregateInput = {
+    branch_id?: SortOrder
+    menu_item_id?: SortOrder
+    price_override?: SortOrder
+    is_available?: SortOrder
+    is_online?: SortOrder
+    sort_order?: SortOrder
+  }
+
+  export type branch_menu_itemsAvgOrderByAggregateInput = {
+    price_override?: SortOrder
+    sort_order?: SortOrder
+  }
+
+  export type branch_menu_itemsMaxOrderByAggregateInput = {
+    branch_id?: SortOrder
+    menu_item_id?: SortOrder
+    price_override?: SortOrder
+    is_available?: SortOrder
+    is_online?: SortOrder
+    sort_order?: SortOrder
+  }
+
+  export type branch_menu_itemsMinOrderByAggregateInput = {
+    branch_id?: SortOrder
+    menu_item_id?: SortOrder
+    price_override?: SortOrder
+    is_available?: SortOrder
+    is_online?: SortOrder
+    sort_order?: SortOrder
+  }
+
+  export type branch_menu_itemsSumOrderByAggregateInput = {
+    price_override?: SortOrder
+    sort_order?: SortOrder
   }
 
   export type Menu_item_modifiersListRelationFilter = {
@@ -86419,6 +89769,20 @@ export namespace Prisma {
     connect?: expense_categoriesWhereUniqueInput | expense_categoriesWhereUniqueInput[]
   }
 
+  export type menu_categoriesCreateNestedManyWithoutHotelsInput = {
+    create?: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput> | menu_categoriesCreateWithoutHotelsInput[] | menu_categoriesUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutHotelsInput | menu_categoriesCreateOrConnectWithoutHotelsInput[]
+    createMany?: menu_categoriesCreateManyHotelsInputEnvelope
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+  }
+
+  export type menu_itemsCreateNestedManyWithoutHotelsInput = {
+    create?: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput> | menu_itemsCreateWithoutHotelsInput[] | menu_itemsUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutHotelsInput | menu_itemsCreateOrConnectWithoutHotelsInput[]
+    createMany?: menu_itemsCreateManyHotelsInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  }
+
   export type branchesCreateNestedManyWithoutHotelsInput = {
     create?: XOR<branchesCreateWithoutHotelsInput, branchesUncheckedCreateWithoutHotelsInput> | branchesCreateWithoutHotelsInput[] | branchesUncheckedCreateWithoutHotelsInput[]
     connectOrCreate?: branchesCreateOrConnectWithoutHotelsInput | branchesCreateOrConnectWithoutHotelsInput[]
@@ -86451,6 +89815,20 @@ export namespace Prisma {
     connectOrCreate?: expense_categoriesCreateOrConnectWithoutHotelsInput | expense_categoriesCreateOrConnectWithoutHotelsInput[]
     createMany?: expense_categoriesCreateManyHotelsInputEnvelope
     connect?: expense_categoriesWhereUniqueInput | expense_categoriesWhereUniqueInput[]
+  }
+
+  export type menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput = {
+    create?: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput> | menu_categoriesCreateWithoutHotelsInput[] | menu_categoriesUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutHotelsInput | menu_categoriesCreateOrConnectWithoutHotelsInput[]
+    createMany?: menu_categoriesCreateManyHotelsInputEnvelope
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+  }
+
+  export type menu_itemsUncheckedCreateNestedManyWithoutHotelsInput = {
+    create?: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput> | menu_itemsCreateWithoutHotelsInput[] | menu_itemsUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutHotelsInput | menu_itemsCreateOrConnectWithoutHotelsInput[]
+    createMany?: menu_itemsCreateManyHotelsInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
   }
 
   export type branchesUncheckedCreateNestedManyWithoutHotelsInput = {
@@ -86510,6 +89888,34 @@ export namespace Prisma {
     update?: expense_categoriesUpdateWithWhereUniqueWithoutHotelsInput | expense_categoriesUpdateWithWhereUniqueWithoutHotelsInput[]
     updateMany?: expense_categoriesUpdateManyWithWhereWithoutHotelsInput | expense_categoriesUpdateManyWithWhereWithoutHotelsInput[]
     deleteMany?: expense_categoriesScalarWhereInput | expense_categoriesScalarWhereInput[]
+  }
+
+  export type menu_categoriesUpdateManyWithoutHotelsNestedInput = {
+    create?: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput> | menu_categoriesCreateWithoutHotelsInput[] | menu_categoriesUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutHotelsInput | menu_categoriesCreateOrConnectWithoutHotelsInput[]
+    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutHotelsInput | menu_categoriesUpsertWithWhereUniqueWithoutHotelsInput[]
+    createMany?: menu_categoriesCreateManyHotelsInputEnvelope
+    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    update?: menu_categoriesUpdateWithWhereUniqueWithoutHotelsInput | menu_categoriesUpdateWithWhereUniqueWithoutHotelsInput[]
+    updateMany?: menu_categoriesUpdateManyWithWhereWithoutHotelsInput | menu_categoriesUpdateManyWithWhereWithoutHotelsInput[]
+    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+  }
+
+  export type menu_itemsUpdateManyWithoutHotelsNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput> | menu_itemsCreateWithoutHotelsInput[] | menu_itemsUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutHotelsInput | menu_itemsCreateOrConnectWithoutHotelsInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutHotelsInput | menu_itemsUpsertWithWhereUniqueWithoutHotelsInput[]
+    createMany?: menu_itemsCreateManyHotelsInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutHotelsInput | menu_itemsUpdateWithWhereUniqueWithoutHotelsInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutHotelsInput | menu_itemsUpdateManyWithWhereWithoutHotelsInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
   }
 
   export type branchesUpdateManyWithoutHotelsNestedInput = {
@@ -86576,6 +89982,34 @@ export namespace Prisma {
     update?: expense_categoriesUpdateWithWhereUniqueWithoutHotelsInput | expense_categoriesUpdateWithWhereUniqueWithoutHotelsInput[]
     updateMany?: expense_categoriesUpdateManyWithWhereWithoutHotelsInput | expense_categoriesUpdateManyWithWhereWithoutHotelsInput[]
     deleteMany?: expense_categoriesScalarWhereInput | expense_categoriesScalarWhereInput[]
+  }
+
+  export type menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput = {
+    create?: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput> | menu_categoriesCreateWithoutHotelsInput[] | menu_categoriesUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutHotelsInput | menu_categoriesCreateOrConnectWithoutHotelsInput[]
+    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutHotelsInput | menu_categoriesUpsertWithWhereUniqueWithoutHotelsInput[]
+    createMany?: menu_categoriesCreateManyHotelsInputEnvelope
+    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    update?: menu_categoriesUpdateWithWhereUniqueWithoutHotelsInput | menu_categoriesUpdateWithWhereUniqueWithoutHotelsInput[]
+    updateMany?: menu_categoriesUpdateManyWithWhereWithoutHotelsInput | menu_categoriesUpdateManyWithWhereWithoutHotelsInput[]
+    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput> | menu_itemsCreateWithoutHotelsInput[] | menu_itemsUncheckedCreateWithoutHotelsInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutHotelsInput | menu_itemsCreateOrConnectWithoutHotelsInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutHotelsInput | menu_itemsUpsertWithWhereUniqueWithoutHotelsInput[]
+    createMany?: menu_itemsCreateManyHotelsInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutHotelsInput | menu_itemsUpdateWithWhereUniqueWithoutHotelsInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutHotelsInput | menu_itemsUpdateManyWithWhereWithoutHotelsInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
   }
 
   export type branchesUncheckedUpdateManyWithoutHotelsNestedInput = {
@@ -87010,18 +90444,11 @@ export namespace Prisma {
     connect?: invoicesWhereUniqueInput | invoicesWhereUniqueInput[]
   }
 
-  export type menu_categoriesCreateNestedManyWithoutBranchesInput = {
-    create?: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput> | menu_categoriesCreateWithoutBranchesInput[] | menu_categoriesUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutBranchesInput | menu_categoriesCreateOrConnectWithoutBranchesInput[]
-    createMany?: menu_categoriesCreateManyBranchesInputEnvelope
-    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-  }
-
-  export type menu_itemsCreateNestedManyWithoutBranchesInput = {
-    create?: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput> | menu_itemsCreateWithoutBranchesInput[] | menu_itemsUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranchesInput | menu_itemsCreateOrConnectWithoutBranchesInput[]
-    createMany?: menu_itemsCreateManyBranchesInputEnvelope
-    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  export type branch_menu_itemsCreateNestedManyWithoutBranchesInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput> | branch_menu_itemsCreateWithoutBranchesInput[] | branch_menu_itemsUncheckedCreateWithoutBranchesInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutBranchesInput | branch_menu_itemsCreateOrConnectWithoutBranchesInput[]
+    createMany?: branch_menu_itemsCreateManyBranchesInputEnvelope
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
   }
 
   export type ordersCreateNestedManyWithoutBranchesInput = {
@@ -87171,18 +90598,11 @@ export namespace Prisma {
     connect?: invoicesWhereUniqueInput | invoicesWhereUniqueInput[]
   }
 
-  export type menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput = {
-    create?: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput> | menu_categoriesCreateWithoutBranchesInput[] | menu_categoriesUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutBranchesInput | menu_categoriesCreateOrConnectWithoutBranchesInput[]
-    createMany?: menu_categoriesCreateManyBranchesInputEnvelope
-    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-  }
-
-  export type menu_itemsUncheckedCreateNestedManyWithoutBranchesInput = {
-    create?: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput> | menu_itemsCreateWithoutBranchesInput[] | menu_itemsUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranchesInput | menu_itemsCreateOrConnectWithoutBranchesInput[]
-    createMany?: menu_itemsCreateManyBranchesInputEnvelope
-    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  export type branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput> | branch_menu_itemsCreateWithoutBranchesInput[] | branch_menu_itemsUncheckedCreateWithoutBranchesInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutBranchesInput | branch_menu_itemsCreateOrConnectWithoutBranchesInput[]
+    createMany?: branch_menu_itemsCreateManyBranchesInputEnvelope
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
   }
 
   export type ordersUncheckedCreateNestedManyWithoutBranchesInput = {
@@ -87428,32 +90848,18 @@ export namespace Prisma {
     deleteMany?: invoicesScalarWhereInput | invoicesScalarWhereInput[]
   }
 
-  export type menu_categoriesUpdateManyWithoutBranchesNestedInput = {
-    create?: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput> | menu_categoriesCreateWithoutBranchesInput[] | menu_categoriesUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutBranchesInput | menu_categoriesCreateOrConnectWithoutBranchesInput[]
-    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutBranchesInput | menu_categoriesUpsertWithWhereUniqueWithoutBranchesInput[]
-    createMany?: menu_categoriesCreateManyBranchesInputEnvelope
-    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    update?: menu_categoriesUpdateWithWhereUniqueWithoutBranchesInput | menu_categoriesUpdateWithWhereUniqueWithoutBranchesInput[]
-    updateMany?: menu_categoriesUpdateManyWithWhereWithoutBranchesInput | menu_categoriesUpdateManyWithWhereWithoutBranchesInput[]
-    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
-  }
-
-  export type menu_itemsUpdateManyWithoutBranchesNestedInput = {
-    create?: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput> | menu_itemsCreateWithoutBranchesInput[] | menu_itemsUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranchesInput | menu_itemsCreateOrConnectWithoutBranchesInput[]
-    upsert?: menu_itemsUpsertWithWhereUniqueWithoutBranchesInput | menu_itemsUpsertWithWhereUniqueWithoutBranchesInput[]
-    createMany?: menu_itemsCreateManyBranchesInputEnvelope
-    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    update?: menu_itemsUpdateWithWhereUniqueWithoutBranchesInput | menu_itemsUpdateWithWhereUniqueWithoutBranchesInput[]
-    updateMany?: menu_itemsUpdateManyWithWhereWithoutBranchesInput | menu_itemsUpdateManyWithWhereWithoutBranchesInput[]
-    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  export type branch_menu_itemsUpdateManyWithoutBranchesNestedInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput> | branch_menu_itemsCreateWithoutBranchesInput[] | branch_menu_itemsUncheckedCreateWithoutBranchesInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutBranchesInput | branch_menu_itemsCreateOrConnectWithoutBranchesInput[]
+    upsert?: branch_menu_itemsUpsertWithWhereUniqueWithoutBranchesInput | branch_menu_itemsUpsertWithWhereUniqueWithoutBranchesInput[]
+    createMany?: branch_menu_itemsCreateManyBranchesInputEnvelope
+    set?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    disconnect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    delete?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    update?: branch_menu_itemsUpdateWithWhereUniqueWithoutBranchesInput | branch_menu_itemsUpdateWithWhereUniqueWithoutBranchesInput[]
+    updateMany?: branch_menu_itemsUpdateManyWithWhereWithoutBranchesInput | branch_menu_itemsUpdateManyWithWhereWithoutBranchesInput[]
+    deleteMany?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
   }
 
   export type ordersUpdateManyWithoutBranchesNestedInput = {
@@ -87750,32 +91156,18 @@ export namespace Prisma {
     deleteMany?: invoicesScalarWhereInput | invoicesScalarWhereInput[]
   }
 
-  export type menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput = {
-    create?: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput> | menu_categoriesCreateWithoutBranchesInput[] | menu_categoriesUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutBranchesInput | menu_categoriesCreateOrConnectWithoutBranchesInput[]
-    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutBranchesInput | menu_categoriesUpsertWithWhereUniqueWithoutBranchesInput[]
-    createMany?: menu_categoriesCreateManyBranchesInputEnvelope
-    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
-    update?: menu_categoriesUpdateWithWhereUniqueWithoutBranchesInput | menu_categoriesUpdateWithWhereUniqueWithoutBranchesInput[]
-    updateMany?: menu_categoriesUpdateManyWithWhereWithoutBranchesInput | menu_categoriesUpdateManyWithWhereWithoutBranchesInput[]
-    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
-  }
-
-  export type menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput = {
-    create?: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput> | menu_itemsCreateWithoutBranchesInput[] | menu_itemsUncheckedCreateWithoutBranchesInput[]
-    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranchesInput | menu_itemsCreateOrConnectWithoutBranchesInput[]
-    upsert?: menu_itemsUpsertWithWhereUniqueWithoutBranchesInput | menu_itemsUpsertWithWhereUniqueWithoutBranchesInput[]
-    createMany?: menu_itemsCreateManyBranchesInputEnvelope
-    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
-    update?: menu_itemsUpdateWithWhereUniqueWithoutBranchesInput | menu_itemsUpdateWithWhereUniqueWithoutBranchesInput[]
-    updateMany?: menu_itemsUpdateManyWithWhereWithoutBranchesInput | menu_itemsUpdateManyWithWhereWithoutBranchesInput[]
-    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  export type branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput> | branch_menu_itemsCreateWithoutBranchesInput[] | branch_menu_itemsUncheckedCreateWithoutBranchesInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutBranchesInput | branch_menu_itemsCreateOrConnectWithoutBranchesInput[]
+    upsert?: branch_menu_itemsUpsertWithWhereUniqueWithoutBranchesInput | branch_menu_itemsUpsertWithWhereUniqueWithoutBranchesInput[]
+    createMany?: branch_menu_itemsCreateManyBranchesInputEnvelope
+    set?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    disconnect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    delete?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    update?: branch_menu_itemsUpdateWithWhereUniqueWithoutBranchesInput | branch_menu_itemsUpdateWithWhereUniqueWithoutBranchesInput[]
+    updateMany?: branch_menu_itemsUpdateManyWithWhereWithoutBranchesInput | branch_menu_itemsUpdateManyWithWhereWithoutBranchesInput[]
+    deleteMany?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
   }
 
   export type ordersUncheckedUpdateManyWithoutBranchesNestedInput = {
@@ -88318,10 +91710,16 @@ export namespace Prisma {
     deleteMany?: ordersScalarWhereInput | ordersScalarWhereInput[]
   }
 
-  export type branchesCreateNestedOneWithoutMenu_categoriesInput = {
-    create?: XOR<branchesCreateWithoutMenu_categoriesInput, branchesUncheckedCreateWithoutMenu_categoriesInput>
-    connectOrCreate?: branchesCreateOrConnectWithoutMenu_categoriesInput
-    connect?: branchesWhereUniqueInput
+  export type product_categoriesCreateNestedOneWithoutMenu_categoriesInput = {
+    create?: XOR<product_categoriesCreateWithoutMenu_categoriesInput, product_categoriesUncheckedCreateWithoutMenu_categoriesInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutMenu_categoriesInput
+    connect?: product_categoriesWhereUniqueInput
+  }
+
+  export type hotelsCreateNestedOneWithoutMenu_categoriesInput = {
+    create?: XOR<hotelsCreateWithoutMenu_categoriesInput, hotelsUncheckedCreateWithoutMenu_categoriesInput>
+    connectOrCreate?: hotelsCreateOrConnectWithoutMenu_categoriesInput
+    connect?: hotelsWhereUniqueInput
   }
 
   export type menu_itemsCreateNestedManyWithoutMenu_categoriesInput = {
@@ -88338,12 +91736,22 @@ export namespace Prisma {
     connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
   }
 
-  export type branchesUpdateOneRequiredWithoutMenu_categoriesNestedInput = {
-    create?: XOR<branchesCreateWithoutMenu_categoriesInput, branchesUncheckedCreateWithoutMenu_categoriesInput>
-    connectOrCreate?: branchesCreateOrConnectWithoutMenu_categoriesInput
-    upsert?: branchesUpsertWithoutMenu_categoriesInput
-    connect?: branchesWhereUniqueInput
-    update?: XOR<XOR<branchesUpdateToOneWithWhereWithoutMenu_categoriesInput, branchesUpdateWithoutMenu_categoriesInput>, branchesUncheckedUpdateWithoutMenu_categoriesInput>
+  export type product_categoriesUpdateOneWithoutMenu_categoriesNestedInput = {
+    create?: XOR<product_categoriesCreateWithoutMenu_categoriesInput, product_categoriesUncheckedCreateWithoutMenu_categoriesInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutMenu_categoriesInput
+    upsert?: product_categoriesUpsertWithoutMenu_categoriesInput
+    disconnect?: product_categoriesWhereInput | boolean
+    delete?: product_categoriesWhereInput | boolean
+    connect?: product_categoriesWhereUniqueInput
+    update?: XOR<XOR<product_categoriesUpdateToOneWithWhereWithoutMenu_categoriesInput, product_categoriesUpdateWithoutMenu_categoriesInput>, product_categoriesUncheckedUpdateWithoutMenu_categoriesInput>
+  }
+
+  export type hotelsUpdateOneRequiredWithoutMenu_categoriesNestedInput = {
+    create?: XOR<hotelsCreateWithoutMenu_categoriesInput, hotelsUncheckedCreateWithoutMenu_categoriesInput>
+    connectOrCreate?: hotelsCreateOrConnectWithoutMenu_categoriesInput
+    upsert?: hotelsUpsertWithoutMenu_categoriesInput
+    connect?: hotelsWhereUniqueInput
+    update?: XOR<XOR<hotelsUpdateToOneWithWhereWithoutMenu_categoriesInput, hotelsUpdateWithoutMenu_categoriesInput>, hotelsUncheckedUpdateWithoutMenu_categoriesInput>
   }
 
   export type menu_itemsUpdateManyWithoutMenu_categoriesNestedInput = {
@@ -88374,6 +91782,24 @@ export namespace Prisma {
     deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
   }
 
+  export type hotelsCreateNestedOneWithoutMenu_itemsInput = {
+    create?: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: hotelsCreateOrConnectWithoutMenu_itemsInput
+    connect?: hotelsWhereUniqueInput
+  }
+
+  export type menu_categoriesCreateNestedOneWithoutMenu_itemsInput = {
+    create?: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutMenu_itemsInput
+    connect?: menu_categoriesWhereUniqueInput
+  }
+
+  export type product_categoriesCreateNestedOneWithoutItemsInput = {
+    create?: XOR<product_categoriesCreateWithoutItemsInput, product_categoriesUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutItemsInput
+    connect?: product_categoriesWhereUniqueInput
+  }
+
   export type menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput = {
     create?: XOR<menu_item_ingredientsCreateWithoutMenu_itemsInput, menu_item_ingredientsUncheckedCreateWithoutMenu_itemsInput> | menu_item_ingredientsCreateWithoutMenu_itemsInput[] | menu_item_ingredientsUncheckedCreateWithoutMenu_itemsInput[]
     connectOrCreate?: menu_item_ingredientsCreateOrConnectWithoutMenu_itemsInput | menu_item_ingredientsCreateOrConnectWithoutMenu_itemsInput[]
@@ -88388,18 +91814,6 @@ export namespace Prisma {
     connect?: menu_item_modifier_groupsWhereUniqueInput | menu_item_modifier_groupsWhereUniqueInput[]
   }
 
-  export type branchesCreateNestedOneWithoutMenu_itemsInput = {
-    create?: XOR<branchesCreateWithoutMenu_itemsInput, branchesUncheckedCreateWithoutMenu_itemsInput>
-    connectOrCreate?: branchesCreateOrConnectWithoutMenu_itemsInput
-    connect?: branchesWhereUniqueInput
-  }
-
-  export type menu_categoriesCreateNestedOneWithoutMenu_itemsInput = {
-    create?: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutMenu_itemsInput
-    connect?: menu_categoriesWhereUniqueInput
-  }
-
   export type order_itemsCreateNestedManyWithoutMenu_itemsInput = {
     create?: XOR<order_itemsCreateWithoutMenu_itemsInput, order_itemsUncheckedCreateWithoutMenu_itemsInput> | order_itemsCreateWithoutMenu_itemsInput[] | order_itemsUncheckedCreateWithoutMenu_itemsInput[]
     connectOrCreate?: order_itemsCreateOrConnectWithoutMenu_itemsInput | order_itemsCreateOrConnectWithoutMenu_itemsInput[]
@@ -88412,6 +91826,13 @@ export namespace Prisma {
     connectOrCreate?: reviewsCreateOrConnectWithoutMenu_itemsInput | reviewsCreateOrConnectWithoutMenu_itemsInput[]
     createMany?: reviewsCreateManyMenu_itemsInputEnvelope
     connect?: reviewsWhereUniqueInput | reviewsWhereUniqueInput[]
+  }
+
+  export type branch_menu_itemsCreateNestedManyWithoutMenu_itemInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput> | branch_menu_itemsCreateWithoutMenu_itemInput[] | branch_menu_itemsUncheckedCreateWithoutMenu_itemInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutMenu_itemInput | branch_menu_itemsCreateOrConnectWithoutMenu_itemInput[]
+    createMany?: branch_menu_itemsCreateManyMenu_itemInputEnvelope
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
   }
 
   export type menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput = {
@@ -88442,6 +91863,41 @@ export namespace Prisma {
     connect?: reviewsWhereUniqueInput | reviewsWhereUniqueInput[]
   }
 
+  export type branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput> | branch_menu_itemsCreateWithoutMenu_itemInput[] | branch_menu_itemsUncheckedCreateWithoutMenu_itemInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutMenu_itemInput | branch_menu_itemsCreateOrConnectWithoutMenu_itemInput[]
+    createMany?: branch_menu_itemsCreateManyMenu_itemInputEnvelope
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+  }
+
+  export type hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput = {
+    create?: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: hotelsCreateOrConnectWithoutMenu_itemsInput
+    upsert?: hotelsUpsertWithoutMenu_itemsInput
+    connect?: hotelsWhereUniqueInput
+    update?: XOR<XOR<hotelsUpdateToOneWithWhereWithoutMenu_itemsInput, hotelsUpdateWithoutMenu_itemsInput>, hotelsUncheckedUpdateWithoutMenu_itemsInput>
+  }
+
+  export type menu_categoriesUpdateOneWithoutMenu_itemsNestedInput = {
+    create?: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutMenu_itemsInput
+    upsert?: menu_categoriesUpsertWithoutMenu_itemsInput
+    disconnect?: menu_categoriesWhereInput | boolean
+    delete?: menu_categoriesWhereInput | boolean
+    connect?: menu_categoriesWhereUniqueInput
+    update?: XOR<XOR<menu_categoriesUpdateToOneWithWhereWithoutMenu_itemsInput, menu_categoriesUpdateWithoutMenu_itemsInput>, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
+  }
+
+  export type product_categoriesUpdateOneWithoutItemsNestedInput = {
+    create?: XOR<product_categoriesCreateWithoutItemsInput, product_categoriesUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutItemsInput
+    upsert?: product_categoriesUpsertWithoutItemsInput
+    disconnect?: product_categoriesWhereInput | boolean
+    delete?: product_categoriesWhereInput | boolean
+    connect?: product_categoriesWhereUniqueInput
+    update?: XOR<XOR<product_categoriesUpdateToOneWithWhereWithoutItemsInput, product_categoriesUpdateWithoutItemsInput>, product_categoriesUncheckedUpdateWithoutItemsInput>
+  }
+
   export type menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput = {
     create?: XOR<menu_item_ingredientsCreateWithoutMenu_itemsInput, menu_item_ingredientsUncheckedCreateWithoutMenu_itemsInput> | menu_item_ingredientsCreateWithoutMenu_itemsInput[] | menu_item_ingredientsUncheckedCreateWithoutMenu_itemsInput[]
     connectOrCreate?: menu_item_ingredientsCreateOrConnectWithoutMenu_itemsInput | menu_item_ingredientsCreateOrConnectWithoutMenu_itemsInput[]
@@ -88470,24 +91926,6 @@ export namespace Prisma {
     deleteMany?: menu_item_modifier_groupsScalarWhereInput | menu_item_modifier_groupsScalarWhereInput[]
   }
 
-  export type branchesUpdateOneRequiredWithoutMenu_itemsNestedInput = {
-    create?: XOR<branchesCreateWithoutMenu_itemsInput, branchesUncheckedCreateWithoutMenu_itemsInput>
-    connectOrCreate?: branchesCreateOrConnectWithoutMenu_itemsInput
-    upsert?: branchesUpsertWithoutMenu_itemsInput
-    connect?: branchesWhereUniqueInput
-    update?: XOR<XOR<branchesUpdateToOneWithWhereWithoutMenu_itemsInput, branchesUpdateWithoutMenu_itemsInput>, branchesUncheckedUpdateWithoutMenu_itemsInput>
-  }
-
-  export type menu_categoriesUpdateOneWithoutMenu_itemsNestedInput = {
-    create?: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
-    connectOrCreate?: menu_categoriesCreateOrConnectWithoutMenu_itemsInput
-    upsert?: menu_categoriesUpsertWithoutMenu_itemsInput
-    disconnect?: menu_categoriesWhereInput | boolean
-    delete?: menu_categoriesWhereInput | boolean
-    connect?: menu_categoriesWhereUniqueInput
-    update?: XOR<XOR<menu_categoriesUpdateToOneWithWhereWithoutMenu_itemsInput, menu_categoriesUpdateWithoutMenu_itemsInput>, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
-  }
-
   export type order_itemsUpdateManyWithoutMenu_itemsNestedInput = {
     create?: XOR<order_itemsCreateWithoutMenu_itemsInput, order_itemsUncheckedCreateWithoutMenu_itemsInput> | order_itemsCreateWithoutMenu_itemsInput[] | order_itemsUncheckedCreateWithoutMenu_itemsInput[]
     connectOrCreate?: order_itemsCreateOrConnectWithoutMenu_itemsInput | order_itemsCreateOrConnectWithoutMenu_itemsInput[]
@@ -88514,6 +91952,20 @@ export namespace Prisma {
     update?: reviewsUpdateWithWhereUniqueWithoutMenu_itemsInput | reviewsUpdateWithWhereUniqueWithoutMenu_itemsInput[]
     updateMany?: reviewsUpdateManyWithWhereWithoutMenu_itemsInput | reviewsUpdateManyWithWhereWithoutMenu_itemsInput[]
     deleteMany?: reviewsScalarWhereInput | reviewsScalarWhereInput[]
+  }
+
+  export type branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput> | branch_menu_itemsCreateWithoutMenu_itemInput[] | branch_menu_itemsUncheckedCreateWithoutMenu_itemInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutMenu_itemInput | branch_menu_itemsCreateOrConnectWithoutMenu_itemInput[]
+    upsert?: branch_menu_itemsUpsertWithWhereUniqueWithoutMenu_itemInput | branch_menu_itemsUpsertWithWhereUniqueWithoutMenu_itemInput[]
+    createMany?: branch_menu_itemsCreateManyMenu_itemInputEnvelope
+    set?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    disconnect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    delete?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    update?: branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput | branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput[]
+    updateMany?: branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput | branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput[]
+    deleteMany?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
   }
 
   export type menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput = {
@@ -88570,6 +92022,190 @@ export namespace Prisma {
     update?: reviewsUpdateWithWhereUniqueWithoutMenu_itemsInput | reviewsUpdateWithWhereUniqueWithoutMenu_itemsInput[]
     updateMany?: reviewsUpdateManyWithWhereWithoutMenu_itemsInput | reviewsUpdateManyWithWhereWithoutMenu_itemsInput[]
     deleteMany?: reviewsScalarWhereInput | reviewsScalarWhereInput[]
+  }
+
+  export type branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput = {
+    create?: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput> | branch_menu_itemsCreateWithoutMenu_itemInput[] | branch_menu_itemsUncheckedCreateWithoutMenu_itemInput[]
+    connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutMenu_itemInput | branch_menu_itemsCreateOrConnectWithoutMenu_itemInput[]
+    upsert?: branch_menu_itemsUpsertWithWhereUniqueWithoutMenu_itemInput | branch_menu_itemsUpsertWithWhereUniqueWithoutMenu_itemInput[]
+    createMany?: branch_menu_itemsCreateManyMenu_itemInputEnvelope
+    set?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    disconnect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    delete?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+    update?: branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput | branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput[]
+    updateMany?: branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput | branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput[]
+    deleteMany?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
+  }
+
+  export type product_categoriesCreateNestedOneWithoutChildrenInput = {
+    create?: XOR<product_categoriesCreateWithoutChildrenInput, product_categoriesUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutChildrenInput
+    connect?: product_categoriesWhereUniqueInput
+  }
+
+  export type product_categoriesCreateNestedManyWithoutParentInput = {
+    create?: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput> | product_categoriesCreateWithoutParentInput[] | product_categoriesUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutParentInput | product_categoriesCreateOrConnectWithoutParentInput[]
+    createMany?: product_categoriesCreateManyParentInputEnvelope
+    connect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+  }
+
+  export type menu_itemsCreateNestedManyWithoutProduct_categoryInput = {
+    create?: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput> | menu_itemsCreateWithoutProduct_categoryInput[] | menu_itemsUncheckedCreateWithoutProduct_categoryInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutProduct_categoryInput | menu_itemsCreateOrConnectWithoutProduct_categoryInput[]
+    createMany?: menu_itemsCreateManyProduct_categoryInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  }
+
+  export type menu_categoriesCreateNestedManyWithoutDefault_product_categoryInput = {
+    create?: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput> | menu_categoriesCreateWithoutDefault_product_categoryInput[] | menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput | menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput[]
+    createMany?: menu_categoriesCreateManyDefault_product_categoryInputEnvelope
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+  }
+
+  export type product_categoriesUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput> | product_categoriesCreateWithoutParentInput[] | product_categoriesUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutParentInput | product_categoriesCreateOrConnectWithoutParentInput[]
+    createMany?: product_categoriesCreateManyParentInputEnvelope
+    connect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+  }
+
+  export type menu_itemsUncheckedCreateNestedManyWithoutProduct_categoryInput = {
+    create?: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput> | menu_itemsCreateWithoutProduct_categoryInput[] | menu_itemsUncheckedCreateWithoutProduct_categoryInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutProduct_categoryInput | menu_itemsCreateOrConnectWithoutProduct_categoryInput[]
+    createMany?: menu_itemsCreateManyProduct_categoryInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  }
+
+  export type menu_categoriesUncheckedCreateNestedManyWithoutDefault_product_categoryInput = {
+    create?: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput> | menu_categoriesCreateWithoutDefault_product_categoryInput[] | menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput | menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput[]
+    createMany?: menu_categoriesCreateManyDefault_product_categoryInputEnvelope
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+  }
+
+  export type product_categoriesUpdateOneWithoutChildrenNestedInput = {
+    create?: XOR<product_categoriesCreateWithoutChildrenInput, product_categoriesUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutChildrenInput
+    upsert?: product_categoriesUpsertWithoutChildrenInput
+    disconnect?: product_categoriesWhereInput | boolean
+    delete?: product_categoriesWhereInput | boolean
+    connect?: product_categoriesWhereUniqueInput
+    update?: XOR<XOR<product_categoriesUpdateToOneWithWhereWithoutChildrenInput, product_categoriesUpdateWithoutChildrenInput>, product_categoriesUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type product_categoriesUpdateManyWithoutParentNestedInput = {
+    create?: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput> | product_categoriesCreateWithoutParentInput[] | product_categoriesUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutParentInput | product_categoriesCreateOrConnectWithoutParentInput[]
+    upsert?: product_categoriesUpsertWithWhereUniqueWithoutParentInput | product_categoriesUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: product_categoriesCreateManyParentInputEnvelope
+    set?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    disconnect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    delete?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    connect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    update?: product_categoriesUpdateWithWhereUniqueWithoutParentInput | product_categoriesUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: product_categoriesUpdateManyWithWhereWithoutParentInput | product_categoriesUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: product_categoriesScalarWhereInput | product_categoriesScalarWhereInput[]
+  }
+
+  export type menu_itemsUpdateManyWithoutProduct_categoryNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput> | menu_itemsCreateWithoutProduct_categoryInput[] | menu_itemsUncheckedCreateWithoutProduct_categoryInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutProduct_categoryInput | menu_itemsCreateOrConnectWithoutProduct_categoryInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutProduct_categoryInput | menu_itemsUpsertWithWhereUniqueWithoutProduct_categoryInput[]
+    createMany?: menu_itemsCreateManyProduct_categoryInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutProduct_categoryInput | menu_itemsUpdateWithWhereUniqueWithoutProduct_categoryInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutProduct_categoryInput | menu_itemsUpdateManyWithWhereWithoutProduct_categoryInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  }
+
+  export type menu_categoriesUpdateManyWithoutDefault_product_categoryNestedInput = {
+    create?: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput> | menu_categoriesCreateWithoutDefault_product_categoryInput[] | menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput | menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput[]
+    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutDefault_product_categoryInput | menu_categoriesUpsertWithWhereUniqueWithoutDefault_product_categoryInput[]
+    createMany?: menu_categoriesCreateManyDefault_product_categoryInputEnvelope
+    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    update?: menu_categoriesUpdateWithWhereUniqueWithoutDefault_product_categoryInput | menu_categoriesUpdateWithWhereUniqueWithoutDefault_product_categoryInput[]
+    updateMany?: menu_categoriesUpdateManyWithWhereWithoutDefault_product_categoryInput | menu_categoriesUpdateManyWithWhereWithoutDefault_product_categoryInput[]
+    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+  }
+
+  export type product_categoriesUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput> | product_categoriesCreateWithoutParentInput[] | product_categoriesUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: product_categoriesCreateOrConnectWithoutParentInput | product_categoriesCreateOrConnectWithoutParentInput[]
+    upsert?: product_categoriesUpsertWithWhereUniqueWithoutParentInput | product_categoriesUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: product_categoriesCreateManyParentInputEnvelope
+    set?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    disconnect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    delete?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    connect?: product_categoriesWhereUniqueInput | product_categoriesWhereUniqueInput[]
+    update?: product_categoriesUpdateWithWhereUniqueWithoutParentInput | product_categoriesUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: product_categoriesUpdateManyWithWhereWithoutParentInput | product_categoriesUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: product_categoriesScalarWhereInput | product_categoriesScalarWhereInput[]
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutProduct_categoryNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput> | menu_itemsCreateWithoutProduct_categoryInput[] | menu_itemsUncheckedCreateWithoutProduct_categoryInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutProduct_categoryInput | menu_itemsCreateOrConnectWithoutProduct_categoryInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutProduct_categoryInput | menu_itemsUpsertWithWhereUniqueWithoutProduct_categoryInput[]
+    createMany?: menu_itemsCreateManyProduct_categoryInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutProduct_categoryInput | menu_itemsUpdateWithWhereUniqueWithoutProduct_categoryInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutProduct_categoryInput | menu_itemsUpdateManyWithWhereWithoutProduct_categoryInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  }
+
+  export type menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryNestedInput = {
+    create?: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput> | menu_categoriesCreateWithoutDefault_product_categoryInput[] | menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput[]
+    connectOrCreate?: menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput | menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput[]
+    upsert?: menu_categoriesUpsertWithWhereUniqueWithoutDefault_product_categoryInput | menu_categoriesUpsertWithWhereUniqueWithoutDefault_product_categoryInput[]
+    createMany?: menu_categoriesCreateManyDefault_product_categoryInputEnvelope
+    set?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    disconnect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    delete?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    connect?: menu_categoriesWhereUniqueInput | menu_categoriesWhereUniqueInput[]
+    update?: menu_categoriesUpdateWithWhereUniqueWithoutDefault_product_categoryInput | menu_categoriesUpdateWithWhereUniqueWithoutDefault_product_categoryInput[]
+    updateMany?: menu_categoriesUpdateManyWithWhereWithoutDefault_product_categoryInput | menu_categoriesUpdateManyWithWhereWithoutDefault_product_categoryInput[]
+    deleteMany?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+  }
+
+  export type branchesCreateNestedOneWithoutBranch_menu_itemsInput = {
+    create?: XOR<branchesCreateWithoutBranch_menu_itemsInput, branchesUncheckedCreateWithoutBranch_menu_itemsInput>
+    connectOrCreate?: branchesCreateOrConnectWithoutBranch_menu_itemsInput
+    connect?: branchesWhereUniqueInput
+  }
+
+  export type menu_itemsCreateNestedOneWithoutBranch_itemsInput = {
+    create?: XOR<menu_itemsCreateWithoutBranch_itemsInput, menu_itemsUncheckedCreateWithoutBranch_itemsInput>
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranch_itemsInput
+    connect?: menu_itemsWhereUniqueInput
+  }
+
+  export type branchesUpdateOneRequiredWithoutBranch_menu_itemsNestedInput = {
+    create?: XOR<branchesCreateWithoutBranch_menu_itemsInput, branchesUncheckedCreateWithoutBranch_menu_itemsInput>
+    connectOrCreate?: branchesCreateOrConnectWithoutBranch_menu_itemsInput
+    upsert?: branchesUpsertWithoutBranch_menu_itemsInput
+    connect?: branchesWhereUniqueInput
+    update?: XOR<XOR<branchesUpdateToOneWithWhereWithoutBranch_menu_itemsInput, branchesUpdateWithoutBranch_menu_itemsInput>, branchesUncheckedUpdateWithoutBranch_menu_itemsInput>
+  }
+
+  export type menu_itemsUpdateOneRequiredWithoutBranch_itemsNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutBranch_itemsInput, menu_itemsUncheckedCreateWithoutBranch_itemsInput>
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutBranch_itemsInput
+    upsert?: menu_itemsUpsertWithoutBranch_itemsInput
+    connect?: menu_itemsWhereUniqueInput
+    update?: XOR<XOR<menu_itemsUpdateToOneWithWhereWithoutBranch_itemsInput, menu_itemsUpdateWithoutBranch_itemsInput>, menu_itemsUncheckedUpdateWithoutBranch_itemsInput>
   }
 
   export type menu_itemsCreateNestedOneWithoutMenu_item_modifier_groupsInput = {
@@ -91433,8 +95069,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -91477,8 +95112,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -92193,8 +95827,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -92237,8 +95870,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -93163,6 +96795,92 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type menu_categoriesCreateWithoutHotelsInput = {
+    id?: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    default_product_category?: product_categoriesCreateNestedOneWithoutMenu_categoriesInput
+    menu_items?: menu_itemsCreateNestedManyWithoutMenu_categoriesInput
+  }
+
+  export type menu_categoriesUncheckedCreateWithoutHotelsInput = {
+    id?: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    default_product_category_id?: string | null
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutMenu_categoriesInput
+  }
+
+  export type menu_categoriesCreateOrConnectWithoutHotelsInput = {
+    where: menu_categoriesWhereUniqueInput
+    create: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type menu_categoriesCreateManyHotelsInputEnvelope = {
+    data: menu_categoriesCreateManyHotelsInput | menu_categoriesCreateManyHotelsInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type menu_itemsCreateWithoutHotelsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
+    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsUncheckedCreateWithoutHotelsInput = {
+    id?: string
+    category_id?: string | null
+    product_category_id?: string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsCreateOrConnectWithoutHotelsInput = {
+    where: menu_itemsWhereUniqueInput
+    create: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type menu_itemsCreateManyHotelsInputEnvelope = {
+    data: menu_itemsCreateManyHotelsInput | menu_itemsCreateManyHotelsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type branchesCreateWithoutHotelsInput = {
     id?: string
     name: string
@@ -93192,8 +96910,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -93236,8 +96953,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -93418,6 +97134,73 @@ export namespace Prisma {
     name?: StringFilter<"expense_categories"> | string
     description?: StringNullableFilter<"expense_categories"> | string | null
     is_active?: BoolNullableFilter<"expense_categories"> | boolean | null
+  }
+
+  export type menu_categoriesUpsertWithWhereUniqueWithoutHotelsInput = {
+    where: menu_categoriesWhereUniqueInput
+    update: XOR<menu_categoriesUpdateWithoutHotelsInput, menu_categoriesUncheckedUpdateWithoutHotelsInput>
+    create: XOR<menu_categoriesCreateWithoutHotelsInput, menu_categoriesUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type menu_categoriesUpdateWithWhereUniqueWithoutHotelsInput = {
+    where: menu_categoriesWhereUniqueInput
+    data: XOR<menu_categoriesUpdateWithoutHotelsInput, menu_categoriesUncheckedUpdateWithoutHotelsInput>
+  }
+
+  export type menu_categoriesUpdateManyWithWhereWithoutHotelsInput = {
+    where: menu_categoriesScalarWhereInput
+    data: XOR<menu_categoriesUpdateManyMutationInput, menu_categoriesUncheckedUpdateManyWithoutHotelsInput>
+  }
+
+  export type menu_categoriesScalarWhereInput = {
+    AND?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+    OR?: menu_categoriesScalarWhereInput[]
+    NOT?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
+    id?: UuidFilter<"menu_categories"> | string
+    hotel_id?: UuidFilter<"menu_categories"> | string
+    name?: StringFilter<"menu_categories"> | string
+    sort_order?: IntNullableFilter<"menu_categories"> | number | null
+    is_active?: BoolNullableFilter<"menu_categories"> | boolean | null
+    default_product_category_id?: UuidNullableFilter<"menu_categories"> | string | null
+  }
+
+  export type menu_itemsUpsertWithWhereUniqueWithoutHotelsInput = {
+    where: menu_itemsWhereUniqueInput
+    update: XOR<menu_itemsUpdateWithoutHotelsInput, menu_itemsUncheckedUpdateWithoutHotelsInput>
+    create: XOR<menu_itemsCreateWithoutHotelsInput, menu_itemsUncheckedCreateWithoutHotelsInput>
+  }
+
+  export type menu_itemsUpdateWithWhereUniqueWithoutHotelsInput = {
+    where: menu_itemsWhereUniqueInput
+    data: XOR<menu_itemsUpdateWithoutHotelsInput, menu_itemsUncheckedUpdateWithoutHotelsInput>
+  }
+
+  export type menu_itemsUpdateManyWithWhereWithoutHotelsInput = {
+    where: menu_itemsScalarWhereInput
+    data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutHotelsInput>
+  }
+
+  export type menu_itemsScalarWhereInput = {
+    AND?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+    OR?: menu_itemsScalarWhereInput[]
+    NOT?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+    id?: UuidFilter<"menu_items"> | string
+    hotel_id?: UuidFilter<"menu_items"> | string
+    category_id?: UuidNullableFilter<"menu_items"> | string | null
+    product_category_id?: UuidNullableFilter<"menu_items"> | string | null
+    name?: StringFilter<"menu_items"> | string
+    description?: StringNullableFilter<"menu_items"> | string | null
+    image_url?: StringNullableFilter<"menu_items"> | string | null
+    base_price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
+    tax_rate?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolNullableFilter<"menu_items"> | boolean | null
+    is_online?: BoolFilter<"menu_items"> | boolean
+    is_kitchen?: BoolNullableFilter<"menu_items"> | boolean | null
+    prep_station?: StringNullableFilter<"menu_items"> | string | null
+    product_kind?: StringFilter<"menu_items"> | string
+    sort_order?: IntNullableFilter<"menu_items"> | number | null
+    created_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
   }
 
   export type branchesUpsertWithWhereUniqueWithoutHotelsInput = {
@@ -93612,12 +97395,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
@@ -93632,11 +97418,14 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
@@ -93753,12 +97542,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
@@ -93773,11 +97565,14 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
@@ -93877,12 +97672,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
@@ -93896,12 +97694,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
@@ -94013,6 +97814,7 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
+    business_type?: StringFilter<"hotels"> | string
     delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
@@ -94246,8 +98048,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -94290,8 +98091,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -94449,6 +98249,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -94456,6 +98257,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
   }
@@ -94469,12 +98272,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
   }
@@ -94773,81 +98579,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type menu_categoriesCreateWithoutBranchesInput = {
-    id?: string
-    name: string
-    sort_order?: number | null
-    is_active?: boolean | null
-    menu_items?: menu_itemsCreateNestedManyWithoutMenu_categoriesInput
-  }
-
-  export type menu_categoriesUncheckedCreateWithoutBranchesInput = {
-    id?: string
-    name: string
-    sort_order?: number | null
-    is_active?: boolean | null
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutMenu_categoriesInput
-  }
-
-  export type menu_categoriesCreateOrConnectWithoutBranchesInput = {
-    where: menu_categoriesWhereUniqueInput
-    create: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput>
-  }
-
-  export type menu_categoriesCreateManyBranchesInputEnvelope = {
-    data: menu_categoriesCreateManyBranchesInput | menu_categoriesCreateManyBranchesInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type menu_itemsCreateWithoutBranchesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    is_available?: boolean | null
+  export type branch_menu_itemsCreateWithoutBranchesInput = {
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
     is_online?: boolean
-    is_kitchen?: boolean | null
-    prep_station?: string | null
     sort_order?: number | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
-    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
-    order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
-    reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    menu_item: menu_itemsCreateNestedOneWithoutBranch_itemsInput
   }
 
-  export type menu_itemsUncheckedCreateWithoutBranchesInput = {
-    id?: string
-    category_id?: string | null
-    name: string
-    description?: string | null
-    image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    is_available?: boolean | null
+  export type branch_menu_itemsUncheckedCreateWithoutBranchesInput = {
+    menu_item_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
     is_online?: boolean
-    is_kitchen?: boolean | null
-    prep_station?: string | null
     sort_order?: number | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
-    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
-    order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
-    reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
   }
 
-  export type menu_itemsCreateOrConnectWithoutBranchesInput = {
-    where: menu_itemsWhereUniqueInput
-    create: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput>
+  export type branch_menu_itemsCreateOrConnectWithoutBranchesInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    create: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput>
   }
 
-  export type menu_itemsCreateManyBranchesInputEnvelope = {
-    data: menu_itemsCreateManyBranchesInput | menu_itemsCreateManyBranchesInput[]
+  export type branch_menu_itemsCreateManyBranchesInputEnvelope = {
+    data: branch_menu_itemsCreateManyBranchesInput | branch_menu_itemsCreateManyBranchesInput[]
     skipDuplicates?: boolean
   }
 
@@ -95352,6 +99106,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -95359,6 +99114,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
   }
@@ -95372,12 +99129,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
   }
@@ -95582,68 +99342,32 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"invoices"> | Date | string | null
   }
 
-  export type menu_categoriesUpsertWithWhereUniqueWithoutBranchesInput = {
-    where: menu_categoriesWhereUniqueInput
-    update: XOR<menu_categoriesUpdateWithoutBranchesInput, menu_categoriesUncheckedUpdateWithoutBranchesInput>
-    create: XOR<menu_categoriesCreateWithoutBranchesInput, menu_categoriesUncheckedCreateWithoutBranchesInput>
+  export type branch_menu_itemsUpsertWithWhereUniqueWithoutBranchesInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    update: XOR<branch_menu_itemsUpdateWithoutBranchesInput, branch_menu_itemsUncheckedUpdateWithoutBranchesInput>
+    create: XOR<branch_menu_itemsCreateWithoutBranchesInput, branch_menu_itemsUncheckedCreateWithoutBranchesInput>
   }
 
-  export type menu_categoriesUpdateWithWhereUniqueWithoutBranchesInput = {
-    where: menu_categoriesWhereUniqueInput
-    data: XOR<menu_categoriesUpdateWithoutBranchesInput, menu_categoriesUncheckedUpdateWithoutBranchesInput>
+  export type branch_menu_itemsUpdateWithWhereUniqueWithoutBranchesInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    data: XOR<branch_menu_itemsUpdateWithoutBranchesInput, branch_menu_itemsUncheckedUpdateWithoutBranchesInput>
   }
 
-  export type menu_categoriesUpdateManyWithWhereWithoutBranchesInput = {
-    where: menu_categoriesScalarWhereInput
-    data: XOR<menu_categoriesUpdateManyMutationInput, menu_categoriesUncheckedUpdateManyWithoutBranchesInput>
+  export type branch_menu_itemsUpdateManyWithWhereWithoutBranchesInput = {
+    where: branch_menu_itemsScalarWhereInput
+    data: XOR<branch_menu_itemsUpdateManyMutationInput, branch_menu_itemsUncheckedUpdateManyWithoutBranchesInput>
   }
 
-  export type menu_categoriesScalarWhereInput = {
-    AND?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
-    OR?: menu_categoriesScalarWhereInput[]
-    NOT?: menu_categoriesScalarWhereInput | menu_categoriesScalarWhereInput[]
-    id?: UuidFilter<"menu_categories"> | string
-    branch_id?: UuidFilter<"menu_categories"> | string
-    name?: StringFilter<"menu_categories"> | string
-    sort_order?: IntNullableFilter<"menu_categories"> | number | null
-    is_active?: BoolNullableFilter<"menu_categories"> | boolean | null
-  }
-
-  export type menu_itemsUpsertWithWhereUniqueWithoutBranchesInput = {
-    where: menu_itemsWhereUniqueInput
-    update: XOR<menu_itemsUpdateWithoutBranchesInput, menu_itemsUncheckedUpdateWithoutBranchesInput>
-    create: XOR<menu_itemsCreateWithoutBranchesInput, menu_itemsUncheckedCreateWithoutBranchesInput>
-  }
-
-  export type menu_itemsUpdateWithWhereUniqueWithoutBranchesInput = {
-    where: menu_itemsWhereUniqueInput
-    data: XOR<menu_itemsUpdateWithoutBranchesInput, menu_itemsUncheckedUpdateWithoutBranchesInput>
-  }
-
-  export type menu_itemsUpdateManyWithWhereWithoutBranchesInput = {
-    where: menu_itemsScalarWhereInput
-    data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutBranchesInput>
-  }
-
-  export type menu_itemsScalarWhereInput = {
-    AND?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
-    OR?: menu_itemsScalarWhereInput[]
-    NOT?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
-    id?: UuidFilter<"menu_items"> | string
-    branch_id?: UuidFilter<"menu_items"> | string
-    category_id?: UuidNullableFilter<"menu_items"> | string | null
-    name?: StringFilter<"menu_items"> | string
-    description?: StringNullableFilter<"menu_items"> | string | null
-    image_url?: StringNullableFilter<"menu_items"> | string | null
-    price?: DecimalFilter<"menu_items"> | Decimal | DecimalJsLike | number | string
-    tax_rate?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
-    is_available?: BoolNullableFilter<"menu_items"> | boolean | null
-    is_online?: BoolFilter<"menu_items"> | boolean
-    is_kitchen?: BoolNullableFilter<"menu_items"> | boolean | null
-    prep_station?: StringNullableFilter<"menu_items"> | string | null
-    sort_order?: IntNullableFilter<"menu_items"> | number | null
-    created_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
-    updated_at?: DateTimeNullableFilter<"menu_items"> | Date | string | null
+  export type branch_menu_itemsScalarWhereInput = {
+    AND?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
+    OR?: branch_menu_itemsScalarWhereInput[]
+    NOT?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
+    branch_id?: UuidFilter<"branch_menu_items"> | string
+    menu_item_id?: UuidFilter<"branch_menu_items"> | string
+    price_override?: DecimalNullableFilter<"branch_menu_items"> | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFilter<"branch_menu_items"> | boolean
+    is_online?: BoolFilter<"branch_menu_items"> | boolean
+    sort_order?: IntNullableFilter<"branch_menu_items"> | number | null
   }
 
   export type ordersUpsertWithWhereUniqueWithoutBranchesInput = {
@@ -95905,8 +99629,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -95949,8 +99672,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -95977,6 +99699,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -95984,6 +99707,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
   }
@@ -95997,12 +99722,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
   }
@@ -96052,8 +99780,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -96096,8 +99823,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -96130,6 +99856,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -96137,6 +99864,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
   }
@@ -96150,12 +99879,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
   }
@@ -96168,6 +99900,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -96175,6 +99908,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
   }
@@ -96188,12 +99923,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
   }
@@ -96408,6 +100146,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -96415,6 +100154,8 @@ export namespace Prisma {
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
   }
@@ -96428,12 +100169,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
   }
@@ -96515,8 +100259,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -96559,8 +100302,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -96651,8 +100393,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -96695,8 +100436,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -96772,8 +100512,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -96816,8 +100555,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -96931,8 +100669,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -96975,8 +100712,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -97114,8 +100850,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -97158,8 +100893,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -97342,8 +101076,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -97386,8 +101119,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -97520,97 +101252,88 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type branchesCreateWithoutMenu_categoriesInput = {
+  export type product_categoriesCreateWithoutMenu_categoriesInput = {
     id?: string
+    key: string
     name: string
-    code?: string | null
-    address?: string | null
-    city?: string | null
-    phone?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    currency?: string | null
-    timezone?: string | null
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
-    status?: string | null
-    opening_time?: Date | string | null
-    closing_time?: Date | string | null
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
     created_at?: Date | string | null
-    updated_at?: Date | string | null
-    expenses?: expensesCreateNestedManyWithoutBranchesInput
-    payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
-    staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
-    hotels: hotelsCreateNestedOneWithoutBranchesInput
-    provinces?: provincesCreateNestedOneWithoutBranchesInput
-    users?: usersCreateNestedManyWithoutBranchesInput
-    audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
-    dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
-    dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
-    discounts?: discountsCreateNestedManyWithoutBranchesInput
-    inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
-    invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
-    orders?: ordersCreateNestedManyWithoutBranchesInput
-    payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
-    pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
-    printers?: printersCreateNestedManyWithoutBranchesInput
-    shifts?: shiftsCreateNestedManyWithoutBranchesInput
-    table_sessions?: table_sessionsCreateNestedManyWithoutBranchesInput
-    staff_leave_requests?: staff_leave_requestsCreateNestedManyWithoutBranchInput
-    room_types?: room_typesCreateNestedManyWithoutBranchesInput
-    rooms?: roomsCreateNestedManyWithoutBranchesInput
-    room_stays?: room_staysCreateNestedManyWithoutBranchesInput
-    reviews?: reviewsCreateNestedManyWithoutBranchesInput
+    parent?: product_categoriesCreateNestedOneWithoutChildrenInput
+    children?: product_categoriesCreateNestedManyWithoutParentInput
+    items?: menu_itemsCreateNestedManyWithoutProduct_categoryInput
   }
 
-  export type branchesUncheckedCreateWithoutMenu_categoriesInput = {
+  export type product_categoriesUncheckedCreateWithoutMenu_categoriesInput = {
     id?: string
-    hotel_id: string
-    province_id?: string | null
+    key: string
     name: string
-    code?: string | null
-    address?: string | null
-    city?: string | null
-    phone?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    currency?: string | null
-    timezone?: string | null
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
-    status?: string | null
-    opening_time?: Date | string | null
-    closing_time?: Date | string | null
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    parent_id?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
     created_at?: Date | string | null
-    updated_at?: Date | string | null
-    expenses?: expensesUncheckedCreateNestedManyWithoutBranchesInput
-    payroll_runs?: payroll_runsUncheckedCreateNestedManyWithoutBranchesInput
-    staff_attendance?: staff_attendanceUncheckedCreateNestedManyWithoutBranchesInput
-    users?: usersUncheckedCreateNestedManyWithoutBranchesInput
-    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutBranchesInput
-    dining_areas?: dining_areasUncheckedCreateNestedManyWithoutBranchesInput
-    dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
-    discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
-    inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
-    invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
-    orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
-    payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
-    pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
-    printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
-    shifts?: shiftsUncheckedCreateNestedManyWithoutBranchesInput
-    table_sessions?: table_sessionsUncheckedCreateNestedManyWithoutBranchesInput
-    staff_leave_requests?: staff_leave_requestsUncheckedCreateNestedManyWithoutBranchInput
-    room_types?: room_typesUncheckedCreateNestedManyWithoutBranchesInput
-    rooms?: roomsUncheckedCreateNestedManyWithoutBranchesInput
-    room_stays?: room_staysUncheckedCreateNestedManyWithoutBranchesInput
-    reviews?: reviewsUncheckedCreateNestedManyWithoutBranchesInput
+    children?: product_categoriesUncheckedCreateNestedManyWithoutParentInput
+    items?: menu_itemsUncheckedCreateNestedManyWithoutProduct_categoryInput
   }
 
-  export type branchesCreateOrConnectWithoutMenu_categoriesInput = {
-    where: branchesWhereUniqueInput
-    create: XOR<branchesCreateWithoutMenu_categoriesInput, branchesUncheckedCreateWithoutMenu_categoriesInput>
+  export type product_categoriesCreateOrConnectWithoutMenu_categoriesInput = {
+    where: product_categoriesWhereUniqueInput
+    create: XOR<product_categoriesCreateWithoutMenu_categoriesInput, product_categoriesUncheckedCreateWithoutMenu_categoriesInput>
+  }
+
+  export type hotelsCreateWithoutMenu_categoriesInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    business_type?: string
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
+    hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
+    branches?: branchesCreateNestedManyWithoutHotelsInput
+    customers?: customersCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsUncheckedCreateWithoutMenu_categoriesInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_plan_id?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    business_type?: string
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
+    branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
+    customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsCreateOrConnectWithoutMenu_categoriesInput = {
+    where: hotelsWhereUniqueInput
+    create: XOR<hotelsCreateWithoutMenu_categoriesInput, hotelsUncheckedCreateWithoutMenu_categoriesInput>
   }
 
   export type menu_itemsCreateWithoutMenu_categoriesInput = {
@@ -97618,34 +101341,39 @@ export namespace Prisma {
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
     menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_categoriesInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -97653,6 +101381,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsCreateOrConnectWithoutMenu_categoriesInput = {
@@ -97665,103 +101394,100 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type branchesUpsertWithoutMenu_categoriesInput = {
-    update: XOR<branchesUpdateWithoutMenu_categoriesInput, branchesUncheckedUpdateWithoutMenu_categoriesInput>
-    create: XOR<branchesCreateWithoutMenu_categoriesInput, branchesUncheckedCreateWithoutMenu_categoriesInput>
-    where?: branchesWhereInput
+  export type product_categoriesUpsertWithoutMenu_categoriesInput = {
+    update: XOR<product_categoriesUpdateWithoutMenu_categoriesInput, product_categoriesUncheckedUpdateWithoutMenu_categoriesInput>
+    create: XOR<product_categoriesCreateWithoutMenu_categoriesInput, product_categoriesUncheckedCreateWithoutMenu_categoriesInput>
+    where?: product_categoriesWhereInput
   }
 
-  export type branchesUpdateToOneWithWhereWithoutMenu_categoriesInput = {
-    where?: branchesWhereInput
-    data: XOR<branchesUpdateWithoutMenu_categoriesInput, branchesUncheckedUpdateWithoutMenu_categoriesInput>
+  export type product_categoriesUpdateToOneWithWhereWithoutMenu_categoriesInput = {
+    where?: product_categoriesWhereInput
+    data: XOR<product_categoriesUpdateWithoutMenu_categoriesInput, product_categoriesUncheckedUpdateWithoutMenu_categoriesInput>
   }
 
-  export type branchesUpdateWithoutMenu_categoriesInput = {
+  export type product_categoriesUpdateWithoutMenu_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parent?: product_categoriesUpdateOneWithoutChildrenNestedInput
+    children?: product_categoriesUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUpdateManyWithoutProduct_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateWithoutMenu_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    children?: product_categoriesUncheckedUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUncheckedUpdateManyWithoutProduct_categoryNestedInput
+  }
+
+  export type hotelsUpsertWithoutMenu_categoriesInput = {
+    update: XOR<hotelsUpdateWithoutMenu_categoriesInput, hotelsUncheckedUpdateWithoutMenu_categoriesInput>
+    create: XOR<hotelsCreateWithoutMenu_categoriesInput, hotelsUncheckedCreateWithoutMenu_categoriesInput>
+    where?: hotelsWhereInput
+  }
+
+  export type hotelsUpdateToOneWithWhereWithoutMenu_categoriesInput = {
+    where?: hotelsWhereInput
+    data: XOR<hotelsUpdateWithoutMenu_categoriesInput, hotelsUncheckedUpdateWithoutMenu_categoriesInput>
+  }
+
+  export type hotelsUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
-    timezone?: NullableStringFieldUpdateOperationsInput | string | null
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expenses?: expensesUpdateManyWithoutBranchesNestedInput
-    payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
-    staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
-    hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
-    provinces?: provincesUpdateOneWithoutBranchesNestedInput
-    users?: usersUpdateManyWithoutBranchesNestedInput
-    audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
-    dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
-    dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
-    discounts?: discountsUpdateManyWithoutBranchesNestedInput
-    inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
-    invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
-    orders?: ordersUpdateManyWithoutBranchesNestedInput
-    payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
-    pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
-    printers?: printersUpdateManyWithoutBranchesNestedInput
-    shifts?: shiftsUpdateManyWithoutBranchesNestedInput
-    table_sessions?: table_sessionsUpdateManyWithoutBranchesNestedInput
-    staff_leave_requests?: staff_leave_requestsUpdateManyWithoutBranchNestedInput
-    room_types?: room_typesUpdateManyWithoutBranchesNestedInput
-    rooms?: roomsUpdateManyWithoutBranchesNestedInput
-    room_stays?: room_staysUpdateManyWithoutBranchesNestedInput
-    reviews?: reviewsUpdateManyWithoutBranchesNestedInput
+    verification_status?: StringFieldUpdateOperationsInput | string
+    subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
+    hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUpdateManyWithoutHotelsNestedInput
+    customers?: customersUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
   }
 
-  export type branchesUncheckedUpdateWithoutMenu_categoriesInput = {
+  export type hotelsUncheckedUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    hotel_id?: StringFieldUpdateOperationsInput | string
-    province_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
-    timezone?: NullableStringFieldUpdateOperationsInput | string | null
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
+    delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expenses?: expensesUncheckedUpdateManyWithoutBranchesNestedInput
-    payroll_runs?: payroll_runsUncheckedUpdateManyWithoutBranchesNestedInput
-    staff_attendance?: staff_attendanceUncheckedUpdateManyWithoutBranchesNestedInput
-    users?: usersUncheckedUpdateManyWithoutBranchesNestedInput
-    audit_logs?: audit_logsUncheckedUpdateManyWithoutBranchesNestedInput
-    dining_areas?: dining_areasUncheckedUpdateManyWithoutBranchesNestedInput
-    dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
-    discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
-    inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
-    invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
-    orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
-    payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
-    pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
-    printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
-    shifts?: shiftsUncheckedUpdateManyWithoutBranchesNestedInput
-    table_sessions?: table_sessionsUncheckedUpdateManyWithoutBranchesNestedInput
-    staff_leave_requests?: staff_leave_requestsUncheckedUpdateManyWithoutBranchNestedInput
-    room_types?: room_typesUncheckedUpdateManyWithoutBranchesNestedInput
-    rooms?: roomsUncheckedUpdateManyWithoutBranchesNestedInput
-    room_stays?: room_staysUncheckedUpdateManyWithoutBranchesNestedInput
-    reviews?: reviewsUncheckedUpdateManyWithoutBranchesNestedInput
+    verification_status?: StringFieldUpdateOperationsInput | string
+    hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
+    customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
   }
 
   export type menu_itemsUpsertWithWhereUniqueWithoutMenu_categoriesInput = {
@@ -97778,6 +101504,113 @@ export namespace Prisma {
   export type menu_itemsUpdateManyWithWhereWithoutMenu_categoriesInput = {
     where: menu_itemsScalarWhereInput
     data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutMenu_categoriesInput>
+  }
+
+  export type hotelsCreateWithoutMenu_itemsInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    business_type?: string
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
+    hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    branches?: branchesCreateNestedManyWithoutHotelsInput
+    customers?: customersCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsUncheckedCreateWithoutMenu_itemsInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_plan_id?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    business_type?: string
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
+    customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsCreateOrConnectWithoutMenu_itemsInput = {
+    where: hotelsWhereUniqueInput
+    create: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
+  }
+
+  export type menu_categoriesCreateWithoutMenu_itemsInput = {
+    id?: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    default_product_category?: product_categoriesCreateNestedOneWithoutMenu_categoriesInput
+    hotels: hotelsCreateNestedOneWithoutMenu_categoriesInput
+  }
+
+  export type menu_categoriesUncheckedCreateWithoutMenu_itemsInput = {
+    id?: string
+    hotel_id: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    default_product_category_id?: string | null
+  }
+
+  export type menu_categoriesCreateOrConnectWithoutMenu_itemsInput = {
+    where: menu_categoriesWhereUniqueInput
+    create: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
+  }
+
+  export type product_categoriesCreateWithoutItemsInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    parent?: product_categoriesCreateNestedOneWithoutChildrenInput
+    children?: product_categoriesCreateNestedManyWithoutParentInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesUncheckedCreateWithoutItemsInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    parent_id?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    children?: product_categoriesUncheckedCreateNestedManyWithoutParentInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesCreateOrConnectWithoutItemsInput = {
+    where: product_categoriesWhereUniqueInput
+    create: XOR<product_categoriesCreateWithoutItemsInput, product_categoriesUncheckedCreateWithoutItemsInput>
   }
 
   export type menu_item_ingredientsCreateWithoutMenu_itemsInput = {
@@ -97824,120 +101657,6 @@ export namespace Prisma {
   export type menu_item_modifier_groupsCreateManyMenu_itemsInputEnvelope = {
     data: menu_item_modifier_groupsCreateManyMenu_itemsInput | menu_item_modifier_groupsCreateManyMenu_itemsInput[]
     skipDuplicates?: boolean
-  }
-
-  export type branchesCreateWithoutMenu_itemsInput = {
-    id?: string
-    name: string
-    code?: string | null
-    address?: string | null
-    city?: string | null
-    phone?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    currency?: string | null
-    timezone?: string | null
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
-    status?: string | null
-    opening_time?: Date | string | null
-    closing_time?: Date | string | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    expenses?: expensesCreateNestedManyWithoutBranchesInput
-    payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
-    staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
-    hotels: hotelsCreateNestedOneWithoutBranchesInput
-    provinces?: provincesCreateNestedOneWithoutBranchesInput
-    users?: usersCreateNestedManyWithoutBranchesInput
-    audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
-    dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
-    dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
-    discounts?: discountsCreateNestedManyWithoutBranchesInput
-    inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
-    invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    orders?: ordersCreateNestedManyWithoutBranchesInput
-    payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
-    pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
-    printers?: printersCreateNestedManyWithoutBranchesInput
-    shifts?: shiftsCreateNestedManyWithoutBranchesInput
-    table_sessions?: table_sessionsCreateNestedManyWithoutBranchesInput
-    staff_leave_requests?: staff_leave_requestsCreateNestedManyWithoutBranchInput
-    room_types?: room_typesCreateNestedManyWithoutBranchesInput
-    rooms?: roomsCreateNestedManyWithoutBranchesInput
-    room_stays?: room_staysCreateNestedManyWithoutBranchesInput
-    reviews?: reviewsCreateNestedManyWithoutBranchesInput
-  }
-
-  export type branchesUncheckedCreateWithoutMenu_itemsInput = {
-    id?: string
-    hotel_id: string
-    province_id?: string | null
-    name: string
-    code?: string | null
-    address?: string | null
-    city?: string | null
-    phone?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
-    currency?: string | null
-    timezone?: string | null
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
-    status?: string | null
-    opening_time?: Date | string | null
-    closing_time?: Date | string | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    expenses?: expensesUncheckedCreateNestedManyWithoutBranchesInput
-    payroll_runs?: payroll_runsUncheckedCreateNestedManyWithoutBranchesInput
-    staff_attendance?: staff_attendanceUncheckedCreateNestedManyWithoutBranchesInput
-    users?: usersUncheckedCreateNestedManyWithoutBranchesInput
-    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutBranchesInput
-    dining_areas?: dining_areasUncheckedCreateNestedManyWithoutBranchesInput
-    dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
-    discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
-    inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
-    invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
-    payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
-    pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
-    printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
-    shifts?: shiftsUncheckedCreateNestedManyWithoutBranchesInput
-    table_sessions?: table_sessionsUncheckedCreateNestedManyWithoutBranchesInput
-    staff_leave_requests?: staff_leave_requestsUncheckedCreateNestedManyWithoutBranchInput
-    room_types?: room_typesUncheckedCreateNestedManyWithoutBranchesInput
-    rooms?: roomsUncheckedCreateNestedManyWithoutBranchesInput
-    room_stays?: room_staysUncheckedCreateNestedManyWithoutBranchesInput
-    reviews?: reviewsUncheckedCreateNestedManyWithoutBranchesInput
-  }
-
-  export type branchesCreateOrConnectWithoutMenu_itemsInput = {
-    where: branchesWhereUniqueInput
-    create: XOR<branchesCreateWithoutMenu_itemsInput, branchesUncheckedCreateWithoutMenu_itemsInput>
-  }
-
-  export type menu_categoriesCreateWithoutMenu_itemsInput = {
-    id?: string
-    name: string
-    sort_order?: number | null
-    is_active?: boolean | null
-    branches: branchesCreateNestedOneWithoutMenu_categoriesInput
-  }
-
-  export type menu_categoriesUncheckedCreateWithoutMenu_itemsInput = {
-    id?: string
-    branch_id: string
-    name: string
-    sort_order?: number | null
-    is_active?: boolean | null
-  }
-
-  export type menu_categoriesCreateOrConnectWithoutMenu_itemsInput = {
-    where: menu_categoriesWhereUniqueInput
-    create: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
   }
 
   export type order_itemsCreateWithoutMenu_itemsInput = {
@@ -98006,6 +101725,157 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type branch_menu_itemsCreateWithoutMenu_itemInput = {
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
+    branches: branchesCreateNestedOneWithoutBranch_menu_itemsInput
+  }
+
+  export type branch_menu_itemsUncheckedCreateWithoutMenu_itemInput = {
+    branch_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
+  }
+
+  export type branch_menu_itemsCreateOrConnectWithoutMenu_itemInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    create: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput>
+  }
+
+  export type branch_menu_itemsCreateManyMenu_itemInputEnvelope = {
+    data: branch_menu_itemsCreateManyMenu_itemInput | branch_menu_itemsCreateManyMenu_itemInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type hotelsUpsertWithoutMenu_itemsInput = {
+    update: XOR<hotelsUpdateWithoutMenu_itemsInput, hotelsUncheckedUpdateWithoutMenu_itemsInput>
+    create: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
+    where?: hotelsWhereInput
+  }
+
+  export type hotelsUpdateToOneWithWhereWithoutMenu_itemsInput = {
+    where?: hotelsWhereInput
+    data: XOR<hotelsUpdateWithoutMenu_itemsInput, hotelsUncheckedUpdateWithoutMenu_itemsInput>
+  }
+
+  export type hotelsUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
+    delivery_type?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verification_status?: StringFieldUpdateOperationsInput | string
+    subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
+    hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUpdateManyWithoutHotelsNestedInput
+    customers?: customersUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
+  }
+
+  export type hotelsUncheckedUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
+    delivery_type?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verification_status?: StringFieldUpdateOperationsInput | string
+    hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
+    customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
+  }
+
+  export type menu_categoriesUpsertWithoutMenu_itemsInput = {
+    update: XOR<menu_categoriesUpdateWithoutMenu_itemsInput, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
+    create: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
+    where?: menu_categoriesWhereInput
+  }
+
+  export type menu_categoriesUpdateToOneWithWhereWithoutMenu_itemsInput = {
+    where?: menu_categoriesWhereInput
+    data: XOR<menu_categoriesUpdateWithoutMenu_itemsInput, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
+  }
+
+  export type menu_categoriesUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category?: product_categoriesUpdateOneWithoutMenu_categoriesNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_categoriesNestedInput
+  }
+
+  export type menu_categoriesUncheckedUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type product_categoriesUpsertWithoutItemsInput = {
+    update: XOR<product_categoriesUpdateWithoutItemsInput, product_categoriesUncheckedUpdateWithoutItemsInput>
+    create: XOR<product_categoriesCreateWithoutItemsInput, product_categoriesUncheckedCreateWithoutItemsInput>
+    where?: product_categoriesWhereInput
+  }
+
+  export type product_categoriesUpdateToOneWithWhereWithoutItemsInput = {
+    where?: product_categoriesWhereInput
+    data: XOR<product_categoriesUpdateWithoutItemsInput, product_categoriesUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type product_categoriesUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parent?: product_categoriesUpdateOneWithoutChildrenNestedInput
+    children?: product_categoriesUpdateManyWithoutParentNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    children?: product_categoriesUncheckedUpdateManyWithoutParentNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
   export type menu_item_ingredientsUpsertWithWhereUniqueWithoutMenu_itemsInput = {
     where: menu_item_ingredientsWhereUniqueInput
     update: XOR<menu_item_ingredientsUpdateWithoutMenu_itemsInput, menu_item_ingredientsUncheckedUpdateWithoutMenu_itemsInput>
@@ -98058,132 +101928,6 @@ export namespace Prisma {
     max_selectable?: IntNullableFilter<"menu_item_modifier_groups"> | number | null
   }
 
-  export type branchesUpsertWithoutMenu_itemsInput = {
-    update: XOR<branchesUpdateWithoutMenu_itemsInput, branchesUncheckedUpdateWithoutMenu_itemsInput>
-    create: XOR<branchesCreateWithoutMenu_itemsInput, branchesUncheckedCreateWithoutMenu_itemsInput>
-    where?: branchesWhereInput
-  }
-
-  export type branchesUpdateToOneWithWhereWithoutMenu_itemsInput = {
-    where?: branchesWhereInput
-    data: XOR<branchesUpdateWithoutMenu_itemsInput, branchesUncheckedUpdateWithoutMenu_itemsInput>
-  }
-
-  export type branchesUpdateWithoutMenu_itemsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
-    timezone?: NullableStringFieldUpdateOperationsInput | string | null
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expenses?: expensesUpdateManyWithoutBranchesNestedInput
-    payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
-    staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
-    hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
-    provinces?: provincesUpdateOneWithoutBranchesNestedInput
-    users?: usersUpdateManyWithoutBranchesNestedInput
-    audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
-    dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
-    dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
-    discounts?: discountsUpdateManyWithoutBranchesNestedInput
-    inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
-    invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    orders?: ordersUpdateManyWithoutBranchesNestedInput
-    payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
-    pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
-    printers?: printersUpdateManyWithoutBranchesNestedInput
-    shifts?: shiftsUpdateManyWithoutBranchesNestedInput
-    table_sessions?: table_sessionsUpdateManyWithoutBranchesNestedInput
-    staff_leave_requests?: staff_leave_requestsUpdateManyWithoutBranchNestedInput
-    room_types?: room_typesUpdateManyWithoutBranchesNestedInput
-    rooms?: roomsUpdateManyWithoutBranchesNestedInput
-    room_stays?: room_staysUpdateManyWithoutBranchesNestedInput
-    reviews?: reviewsUpdateManyWithoutBranchesNestedInput
-  }
-
-  export type branchesUncheckedUpdateWithoutMenu_itemsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    hotel_id?: StringFieldUpdateOperationsInput | string
-    province_id?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    code?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    currency?: NullableStringFieldUpdateOperationsInput | string | null
-    timezone?: NullableStringFieldUpdateOperationsInput | string | null
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
-    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expenses?: expensesUncheckedUpdateManyWithoutBranchesNestedInput
-    payroll_runs?: payroll_runsUncheckedUpdateManyWithoutBranchesNestedInput
-    staff_attendance?: staff_attendanceUncheckedUpdateManyWithoutBranchesNestedInput
-    users?: usersUncheckedUpdateManyWithoutBranchesNestedInput
-    audit_logs?: audit_logsUncheckedUpdateManyWithoutBranchesNestedInput
-    dining_areas?: dining_areasUncheckedUpdateManyWithoutBranchesNestedInput
-    dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
-    discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
-    inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
-    invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
-    payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
-    pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
-    printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
-    shifts?: shiftsUncheckedUpdateManyWithoutBranchesNestedInput
-    table_sessions?: table_sessionsUncheckedUpdateManyWithoutBranchesNestedInput
-    staff_leave_requests?: staff_leave_requestsUncheckedUpdateManyWithoutBranchNestedInput
-    room_types?: room_typesUncheckedUpdateManyWithoutBranchesNestedInput
-    rooms?: roomsUncheckedUpdateManyWithoutBranchesNestedInput
-    room_stays?: room_staysUncheckedUpdateManyWithoutBranchesNestedInput
-    reviews?: reviewsUncheckedUpdateManyWithoutBranchesNestedInput
-  }
-
-  export type menu_categoriesUpsertWithoutMenu_itemsInput = {
-    update: XOR<menu_categoriesUpdateWithoutMenu_itemsInput, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
-    create: XOR<menu_categoriesCreateWithoutMenu_itemsInput, menu_categoriesUncheckedCreateWithoutMenu_itemsInput>
-    where?: menu_categoriesWhereInput
-  }
-
-  export type menu_categoriesUpdateToOneWithWhereWithoutMenu_itemsInput = {
-    where?: menu_categoriesWhereInput
-    data: XOR<menu_categoriesUpdateWithoutMenu_itemsInput, menu_categoriesUncheckedUpdateWithoutMenu_itemsInput>
-  }
-
-  export type menu_categoriesUpdateWithoutMenu_itemsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    branches?: branchesUpdateOneRequiredWithoutMenu_categoriesNestedInput
-  }
-
-  export type menu_categoriesUncheckedUpdateWithoutMenu_itemsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-  }
-
   export type order_itemsUpsertWithWhereUniqueWithoutMenu_itemsInput = {
     where: order_itemsWhereUniqueInput
     update: XOR<order_itemsUpdateWithoutMenu_itemsInput, order_itemsUncheckedUpdateWithoutMenu_itemsInput>
@@ -98232,46 +101976,634 @@ export namespace Prisma {
     data: XOR<reviewsUpdateManyMutationInput, reviewsUncheckedUpdateManyWithoutMenu_itemsInput>
   }
 
+  export type branch_menu_itemsUpsertWithWhereUniqueWithoutMenu_itemInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    update: XOR<branch_menu_itemsUpdateWithoutMenu_itemInput, branch_menu_itemsUncheckedUpdateWithoutMenu_itemInput>
+    create: XOR<branch_menu_itemsCreateWithoutMenu_itemInput, branch_menu_itemsUncheckedCreateWithoutMenu_itemInput>
+  }
+
+  export type branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput = {
+    where: branch_menu_itemsWhereUniqueInput
+    data: XOR<branch_menu_itemsUpdateWithoutMenu_itemInput, branch_menu_itemsUncheckedUpdateWithoutMenu_itemInput>
+  }
+
+  export type branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput = {
+    where: branch_menu_itemsScalarWhereInput
+    data: XOR<branch_menu_itemsUpdateManyMutationInput, branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemInput>
+  }
+
+  export type product_categoriesCreateWithoutChildrenInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    parent?: product_categoriesCreateNestedOneWithoutChildrenInput
+    items?: menu_itemsCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesUncheckedCreateWithoutChildrenInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    parent_id?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    items?: menu_itemsUncheckedCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesCreateOrConnectWithoutChildrenInput = {
+    where: product_categoriesWhereUniqueInput
+    create: XOR<product_categoriesCreateWithoutChildrenInput, product_categoriesUncheckedCreateWithoutChildrenInput>
+  }
+
+  export type product_categoriesCreateWithoutParentInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    children?: product_categoriesCreateNestedManyWithoutParentInput
+    items?: menu_itemsCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesUncheckedCreateWithoutParentInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    children?: product_categoriesUncheckedCreateNestedManyWithoutParentInput
+    items?: menu_itemsUncheckedCreateNestedManyWithoutProduct_categoryInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutDefault_product_categoryInput
+  }
+
+  export type product_categoriesCreateOrConnectWithoutParentInput = {
+    where: product_categoriesWhereUniqueInput
+    create: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput>
+  }
+
+  export type product_categoriesCreateManyParentInputEnvelope = {
+    data: product_categoriesCreateManyParentInput | product_categoriesCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type menu_itemsCreateWithoutProduct_categoryInput = {
+    id?: string
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsUncheckedCreateWithoutProduct_categoryInput = {
+    id?: string
+    hotel_id: string
+    category_id?: string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsCreateOrConnectWithoutProduct_categoryInput = {
+    where: menu_itemsWhereUniqueInput
+    create: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput>
+  }
+
+  export type menu_itemsCreateManyProduct_categoryInputEnvelope = {
+    data: menu_itemsCreateManyProduct_categoryInput | menu_itemsCreateManyProduct_categoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type menu_categoriesCreateWithoutDefault_product_categoryInput = {
+    id?: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    hotels: hotelsCreateNestedOneWithoutMenu_categoriesInput
+    menu_items?: menu_itemsCreateNestedManyWithoutMenu_categoriesInput
+  }
+
+  export type menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput = {
+    id?: string
+    hotel_id: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutMenu_categoriesInput
+  }
+
+  export type menu_categoriesCreateOrConnectWithoutDefault_product_categoryInput = {
+    where: menu_categoriesWhereUniqueInput
+    create: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput>
+  }
+
+  export type menu_categoriesCreateManyDefault_product_categoryInputEnvelope = {
+    data: menu_categoriesCreateManyDefault_product_categoryInput | menu_categoriesCreateManyDefault_product_categoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type product_categoriesUpsertWithoutChildrenInput = {
+    update: XOR<product_categoriesUpdateWithoutChildrenInput, product_categoriesUncheckedUpdateWithoutChildrenInput>
+    create: XOR<product_categoriesCreateWithoutChildrenInput, product_categoriesUncheckedCreateWithoutChildrenInput>
+    where?: product_categoriesWhereInput
+  }
+
+  export type product_categoriesUpdateToOneWithWhereWithoutChildrenInput = {
+    where?: product_categoriesWhereInput
+    data: XOR<product_categoriesUpdateWithoutChildrenInput, product_categoriesUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type product_categoriesUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parent?: product_categoriesUpdateOneWithoutChildrenNestedInput
+    items?: menu_itemsUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    items?: menu_itemsUncheckedUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUpsertWithWhereUniqueWithoutParentInput = {
+    where: product_categoriesWhereUniqueInput
+    update: XOR<product_categoriesUpdateWithoutParentInput, product_categoriesUncheckedUpdateWithoutParentInput>
+    create: XOR<product_categoriesCreateWithoutParentInput, product_categoriesUncheckedCreateWithoutParentInput>
+  }
+
+  export type product_categoriesUpdateWithWhereUniqueWithoutParentInput = {
+    where: product_categoriesWhereUniqueInput
+    data: XOR<product_categoriesUpdateWithoutParentInput, product_categoriesUncheckedUpdateWithoutParentInput>
+  }
+
+  export type product_categoriesUpdateManyWithWhereWithoutParentInput = {
+    where: product_categoriesScalarWhereInput
+    data: XOR<product_categoriesUpdateManyMutationInput, product_categoriesUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type product_categoriesScalarWhereInput = {
+    AND?: product_categoriesScalarWhereInput | product_categoriesScalarWhereInput[]
+    OR?: product_categoriesScalarWhereInput[]
+    NOT?: product_categoriesScalarWhereInput | product_categoriesScalarWhereInput[]
+    id?: UuidFilter<"product_categories"> | string
+    key?: StringFilter<"product_categories"> | string
+    name?: StringFilter<"product_categories"> | string
+    description?: StringNullableFilter<"product_categories"> | string | null
+    icon?: StringNullableFilter<"product_categories"> | string | null
+    image_url?: StringNullableFilter<"product_categories"> | string | null
+    parent_id?: UuidNullableFilter<"product_categories"> | string | null
+    sort_order?: IntNullableFilter<"product_categories"> | number | null
+    is_active?: BoolNullableFilter<"product_categories"> | boolean | null
+    created_at?: DateTimeNullableFilter<"product_categories"> | Date | string | null
+  }
+
+  export type menu_itemsUpsertWithWhereUniqueWithoutProduct_categoryInput = {
+    where: menu_itemsWhereUniqueInput
+    update: XOR<menu_itemsUpdateWithoutProduct_categoryInput, menu_itemsUncheckedUpdateWithoutProduct_categoryInput>
+    create: XOR<menu_itemsCreateWithoutProduct_categoryInput, menu_itemsUncheckedCreateWithoutProduct_categoryInput>
+  }
+
+  export type menu_itemsUpdateWithWhereUniqueWithoutProduct_categoryInput = {
+    where: menu_itemsWhereUniqueInput
+    data: XOR<menu_itemsUpdateWithoutProduct_categoryInput, menu_itemsUncheckedUpdateWithoutProduct_categoryInput>
+  }
+
+  export type menu_itemsUpdateManyWithWhereWithoutProduct_categoryInput = {
+    where: menu_itemsScalarWhereInput
+    data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutProduct_categoryInput>
+  }
+
+  export type menu_categoriesUpsertWithWhereUniqueWithoutDefault_product_categoryInput = {
+    where: menu_categoriesWhereUniqueInput
+    update: XOR<menu_categoriesUpdateWithoutDefault_product_categoryInput, menu_categoriesUncheckedUpdateWithoutDefault_product_categoryInput>
+    create: XOR<menu_categoriesCreateWithoutDefault_product_categoryInput, menu_categoriesUncheckedCreateWithoutDefault_product_categoryInput>
+  }
+
+  export type menu_categoriesUpdateWithWhereUniqueWithoutDefault_product_categoryInput = {
+    where: menu_categoriesWhereUniqueInput
+    data: XOR<menu_categoriesUpdateWithoutDefault_product_categoryInput, menu_categoriesUncheckedUpdateWithoutDefault_product_categoryInput>
+  }
+
+  export type menu_categoriesUpdateManyWithWhereWithoutDefault_product_categoryInput = {
+    where: menu_categoriesScalarWhereInput
+    data: XOR<menu_categoriesUpdateManyMutationInput, menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryInput>
+  }
+
+  export type branchesCreateWithoutBranch_menu_itemsInput = {
+    id?: string
+    name: string
+    code?: string | null
+    address?: string | null
+    city?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    currency?: string | null
+    timezone?: string | null
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
+    status?: string | null
+    opening_time?: Date | string | null
+    closing_time?: Date | string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    expenses?: expensesCreateNestedManyWithoutBranchesInput
+    payroll_runs?: payroll_runsCreateNestedManyWithoutBranchesInput
+    staff_attendance?: staff_attendanceCreateNestedManyWithoutBranchesInput
+    hotels: hotelsCreateNestedOneWithoutBranchesInput
+    provinces?: provincesCreateNestedOneWithoutBranchesInput
+    users?: usersCreateNestedManyWithoutBranchesInput
+    audit_logs?: audit_logsCreateNestedManyWithoutBranchesInput
+    dining_areas?: dining_areasCreateNestedManyWithoutBranchesInput
+    dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
+    discounts?: discountsCreateNestedManyWithoutBranchesInput
+    inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
+    invoices?: invoicesCreateNestedManyWithoutBranchesInput
+    orders?: ordersCreateNestedManyWithoutBranchesInput
+    payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
+    pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
+    printers?: printersCreateNestedManyWithoutBranchesInput
+    shifts?: shiftsCreateNestedManyWithoutBranchesInput
+    table_sessions?: table_sessionsCreateNestedManyWithoutBranchesInput
+    staff_leave_requests?: staff_leave_requestsCreateNestedManyWithoutBranchInput
+    room_types?: room_typesCreateNestedManyWithoutBranchesInput
+    rooms?: roomsCreateNestedManyWithoutBranchesInput
+    room_stays?: room_staysCreateNestedManyWithoutBranchesInput
+    reviews?: reviewsCreateNestedManyWithoutBranchesInput
+  }
+
+  export type branchesUncheckedCreateWithoutBranch_menu_itemsInput = {
+    id?: string
+    hotel_id: string
+    province_id?: string | null
+    name: string
+    code?: string | null
+    address?: string | null
+    city?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    currency?: string | null
+    timezone?: string | null
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: Decimal | DecimalJsLike | number | string | null
+    status?: string | null
+    opening_time?: Date | string | null
+    closing_time?: Date | string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    expenses?: expensesUncheckedCreateNestedManyWithoutBranchesInput
+    payroll_runs?: payroll_runsUncheckedCreateNestedManyWithoutBranchesInput
+    staff_attendance?: staff_attendanceUncheckedCreateNestedManyWithoutBranchesInput
+    users?: usersUncheckedCreateNestedManyWithoutBranchesInput
+    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutBranchesInput
+    dining_areas?: dining_areasUncheckedCreateNestedManyWithoutBranchesInput
+    dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
+    discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
+    inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
+    orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
+    payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
+    pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
+    printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
+    shifts?: shiftsUncheckedCreateNestedManyWithoutBranchesInput
+    table_sessions?: table_sessionsUncheckedCreateNestedManyWithoutBranchesInput
+    staff_leave_requests?: staff_leave_requestsUncheckedCreateNestedManyWithoutBranchInput
+    room_types?: room_typesUncheckedCreateNestedManyWithoutBranchesInput
+    rooms?: roomsUncheckedCreateNestedManyWithoutBranchesInput
+    room_stays?: room_staysUncheckedCreateNestedManyWithoutBranchesInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutBranchesInput
+  }
+
+  export type branchesCreateOrConnectWithoutBranch_menu_itemsInput = {
+    where: branchesWhereUniqueInput
+    create: XOR<branchesCreateWithoutBranch_menu_itemsInput, branchesUncheckedCreateWithoutBranch_menu_itemsInput>
+  }
+
+  export type menu_itemsCreateWithoutBranch_itemsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
+    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+  }
+
+  export type menu_itemsUncheckedCreateWithoutBranch_itemsInput = {
+    id?: string
+    hotel_id: string
+    category_id?: string | null
+    product_category_id?: string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+  }
+
+  export type menu_itemsCreateOrConnectWithoutBranch_itemsInput = {
+    where: menu_itemsWhereUniqueInput
+    create: XOR<menu_itemsCreateWithoutBranch_itemsInput, menu_itemsUncheckedCreateWithoutBranch_itemsInput>
+  }
+
+  export type branchesUpsertWithoutBranch_menu_itemsInput = {
+    update: XOR<branchesUpdateWithoutBranch_menu_itemsInput, branchesUncheckedUpdateWithoutBranch_menu_itemsInput>
+    create: XOR<branchesCreateWithoutBranch_menu_itemsInput, branchesUncheckedCreateWithoutBranch_menu_itemsInput>
+    where?: branchesWhereInput
+  }
+
+  export type branchesUpdateToOneWithWhereWithoutBranch_menu_itemsInput = {
+    where?: branchesWhereInput
+    data: XOR<branchesUpdateWithoutBranch_menu_itemsInput, branchesUncheckedUpdateWithoutBranch_menu_itemsInput>
+  }
+
+  export type branchesUpdateWithoutBranch_menu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expenses?: expensesUpdateManyWithoutBranchesNestedInput
+    payroll_runs?: payroll_runsUpdateManyWithoutBranchesNestedInput
+    staff_attendance?: staff_attendanceUpdateManyWithoutBranchesNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutBranchesNestedInput
+    provinces?: provincesUpdateOneWithoutBranchesNestedInput
+    users?: usersUpdateManyWithoutBranchesNestedInput
+    audit_logs?: audit_logsUpdateManyWithoutBranchesNestedInput
+    dining_areas?: dining_areasUpdateManyWithoutBranchesNestedInput
+    dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
+    discounts?: discountsUpdateManyWithoutBranchesNestedInput
+    inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
+    invoices?: invoicesUpdateManyWithoutBranchesNestedInput
+    orders?: ordersUpdateManyWithoutBranchesNestedInput
+    payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
+    pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
+    printers?: printersUpdateManyWithoutBranchesNestedInput
+    shifts?: shiftsUpdateManyWithoutBranchesNestedInput
+    table_sessions?: table_sessionsUpdateManyWithoutBranchesNestedInput
+    staff_leave_requests?: staff_leave_requestsUpdateManyWithoutBranchNestedInput
+    room_types?: room_typesUpdateManyWithoutBranchesNestedInput
+    rooms?: roomsUpdateManyWithoutBranchesNestedInput
+    room_stays?: room_staysUpdateManyWithoutBranchesNestedInput
+    reviews?: reviewsUpdateManyWithoutBranchesNestedInput
+  }
+
+  export type branchesUncheckedUpdateWithoutBranch_menu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    province_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    service_charge_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    opening_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closing_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expenses?: expensesUncheckedUpdateManyWithoutBranchesNestedInput
+    payroll_runs?: payroll_runsUncheckedUpdateManyWithoutBranchesNestedInput
+    staff_attendance?: staff_attendanceUncheckedUpdateManyWithoutBranchesNestedInput
+    users?: usersUncheckedUpdateManyWithoutBranchesNestedInput
+    audit_logs?: audit_logsUncheckedUpdateManyWithoutBranchesNestedInput
+    dining_areas?: dining_areasUncheckedUpdateManyWithoutBranchesNestedInput
+    dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
+    discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
+    inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
+    orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
+    payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
+    pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
+    printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
+    shifts?: shiftsUncheckedUpdateManyWithoutBranchesNestedInput
+    table_sessions?: table_sessionsUncheckedUpdateManyWithoutBranchesNestedInput
+    staff_leave_requests?: staff_leave_requestsUncheckedUpdateManyWithoutBranchNestedInput
+    room_types?: room_typesUncheckedUpdateManyWithoutBranchesNestedInput
+    rooms?: roomsUncheckedUpdateManyWithoutBranchesNestedInput
+    room_stays?: room_staysUncheckedUpdateManyWithoutBranchesNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutBranchesNestedInput
+  }
+
+  export type menu_itemsUpsertWithoutBranch_itemsInput = {
+    update: XOR<menu_itemsUpdateWithoutBranch_itemsInput, menu_itemsUncheckedUpdateWithoutBranch_itemsInput>
+    create: XOR<menu_itemsCreateWithoutBranch_itemsInput, menu_itemsUncheckedCreateWithoutBranch_itemsInput>
+    where?: menu_itemsWhereInput
+  }
+
+  export type menu_itemsUpdateToOneWithWhereWithoutBranch_itemsInput = {
+    where?: menu_itemsWhereInput
+    data: XOR<menu_itemsUpdateWithoutBranch_itemsInput, menu_itemsUncheckedUpdateWithoutBranch_itemsInput>
+  }
+
+  export type menu_itemsUpdateWithoutBranch_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
+    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateWithoutBranch_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+  }
+
   export type menu_itemsCreateWithoutMenu_item_modifier_groupsInput = {
     id?: string
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
     menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
+    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_item_modifier_groupsInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsCreateOrConnectWithoutMenu_item_modifier_groupsInput = {
@@ -98317,41 +102649,47 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
     menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
+    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_item_modifier_groupsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_item_modifiersUpsertWithWhereUniqueWithoutMenu_item_modifier_groupsInput = {
@@ -98457,8 +102795,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -98501,8 +102838,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -98609,8 +102945,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -98653,8 +102988,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -98732,41 +103066,47 @@ export namespace Prisma {
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
-    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
     menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_item_ingredientsInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsCreateOrConnectWithoutMenu_item_ingredientsInput = {
@@ -98823,41 +103163,47 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
     menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_item_ingredientsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type usersCreateWithoutInventory_transactionsInput = {
@@ -99518,8 +103864,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
     printers?: printersCreateNestedManyWithoutBranchesInput
@@ -99562,8 +103907,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
     printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
@@ -100087,8 +104431,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
     printers?: printersUpdateManyWithoutBranchesNestedInput
@@ -100131,8 +104474,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
     printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
@@ -100755,41 +105097,47 @@ export namespace Prisma {
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
     menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
-    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateWithoutOrder_itemsInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsCreateOrConnectWithoutOrder_itemsInput = {
@@ -100910,41 +105258,47 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
     menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
-    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutOrder_itemsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type ordersUpsertWithoutOrder_itemsInput = {
@@ -101337,41 +105691,47 @@ export namespace Prisma {
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
     menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
-    branches: branchesCreateNestedOneWithoutMenu_itemsInput
-    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsUncheckedCreateWithoutReviewsInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
     category_id?: string | null
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
   }
 
   export type menu_itemsCreateOrConnectWithoutReviewsInput = {
@@ -101409,8 +105769,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -101453,8 +105812,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -101598,41 +105956,47 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
     menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
-    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutReviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type branchesUpsertWithoutReviewsInput = {
@@ -101676,8 +106040,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -101720,8 +106083,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -101885,8 +106247,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -101929,8 +106290,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -102011,8 +106371,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -102055,8 +106414,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -102492,8 +106850,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
     printers?: printersCreateNestedManyWithoutBranchesInput
@@ -102536,8 +106893,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
     printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
@@ -102688,8 +107044,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
     printers?: printersUpdateManyWithoutBranchesNestedInput
@@ -102732,8 +107087,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
     printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
@@ -103459,8 +107813,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesCreateNestedManyWithoutBranchesInput
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -103503,8 +107856,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedCreateNestedManyWithoutBranchesInput
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -103636,8 +107988,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUpdateManyWithoutBranchesNestedInput
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -103680,8 +108031,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesUncheckedUpdateManyWithoutBranchesNestedInput
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -103885,8 +108235,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     printers?: printersCreateNestedManyWithoutBranchesInput
@@ -103929,8 +108278,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     printers?: printersUncheckedCreateNestedManyWithoutBranchesInput
@@ -104076,8 +108424,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     printers?: printersUpdateManyWithoutBranchesNestedInput
@@ -104120,8 +108467,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     printers?: printersUncheckedUpdateManyWithoutBranchesNestedInput
@@ -104164,8 +108510,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -104208,8 +108553,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -104268,8 +108612,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -104312,8 +108655,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -104356,8 +108698,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -104400,8 +108741,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -104541,8 +108881,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -104585,8 +108924,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -104797,8 +109135,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -104841,8 +109178,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -105069,8 +109405,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -105113,8 +109448,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -105222,12 +109556,15 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
     branches?: branchesCreateNestedManyWithoutHotelsInput
     customers?: customersCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
@@ -105242,11 +109579,14 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
     hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
     branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
     customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
     audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
@@ -105326,12 +109666,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
@@ -105346,11 +109689,14 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
@@ -105401,8 +109747,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -105445,8 +109790,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -105713,8 +110057,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -105757,8 +110100,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -106201,8 +110543,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -106245,8 +110586,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -106422,8 +110762,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -106466,8 +110805,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -107258,8 +111596,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -107302,8 +111639,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -107449,8 +111785,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -107493,8 +111828,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -107538,8 +111872,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -107582,8 +111915,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -107678,8 +112010,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -107722,8 +112053,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -107782,8 +112112,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -107826,8 +112155,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -107975,8 +112303,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -108019,8 +112346,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -108108,8 +112434,7 @@ export namespace Prisma {
     discounts?: discountsCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsCreateNestedManyWithoutBranchesInput
     invoices?: invoicesCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsCreateNestedManyWithoutBranchesInput
     orders?: ordersCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesCreateNestedManyWithoutBranchesInput
@@ -108152,8 +112477,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedCreateNestedManyWithoutBranchesInput
     inventory_items?: inventory_itemsUncheckedCreateNestedManyWithoutBranchesInput
     invoices?: invoicesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutBranchesInput
-    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
+    branch_menu_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutBranchesInput
     orders?: ordersUncheckedCreateNestedManyWithoutBranchesInput
     payment_methods?: payment_methodsUncheckedCreateNestedManyWithoutBranchesInput
     pos_devices?: pos_devicesUncheckedCreateNestedManyWithoutBranchesInput
@@ -108593,8 +112917,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -108637,8 +112960,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -110601,6 +114923,33 @@ export namespace Prisma {
     is_active?: boolean | null
   }
 
+  export type menu_categoriesCreateManyHotelsInput = {
+    id?: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+    default_product_category_id?: string | null
+  }
+
+  export type menu_itemsCreateManyHotelsInput = {
+    id?: string
+    category_id?: string | null
+    product_category_id?: string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
   export type branchesCreateManyHotelsInput = {
     id?: string
     province_id?: string | null
@@ -110667,6 +115016,99 @@ export namespace Prisma {
     is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
+  export type menu_categoriesUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category?: product_categoriesUpdateOneWithoutMenu_categoriesNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutMenu_categoriesNestedInput
+  }
+
+  export type menu_categoriesUncheckedUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutMenu_categoriesNestedInput
+  }
+
+  export type menu_categoriesUncheckedUpdateManyWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type menu_itemsUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
+    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type branchesUpdateWithoutHotelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -110696,8 +115138,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -110740,8 +115181,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -110862,6 +115302,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
+    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -110910,12 +115351,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
     branches?: branchesUpdateManyWithoutHotelsNestedInput
     customers?: customersUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
@@ -110929,12 +115373,15 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
     hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
     branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
     customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
     audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
@@ -110948,6 +115395,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
+    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -111076,8 +115524,7 @@ export namespace Prisma {
     discounts?: discountsUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUpdateManyWithoutBranchesNestedInput
     orders?: ordersUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUpdateManyWithoutBranchesNestedInput
@@ -111120,8 +115567,7 @@ export namespace Prisma {
     discounts?: discountsUncheckedUpdateManyWithoutBranchesNestedInput
     inventory_items?: inventory_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     invoices?: invoicesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutBranchesNestedInput
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
+    branch_menu_items?: branch_menu_itemsUncheckedUpdateManyWithoutBranchesNestedInput
     orders?: ordersUncheckedUpdateManyWithoutBranchesNestedInput
     payment_methods?: payment_methodsUncheckedUpdateManyWithoutBranchesNestedInput
     pos_devices?: pos_devicesUncheckedUpdateManyWithoutBranchesNestedInput
@@ -111272,28 +115718,12 @@ export namespace Prisma {
     created_at?: Date | string | null
   }
 
-  export type menu_categoriesCreateManyBranchesInput = {
-    id?: string
-    name: string
-    sort_order?: number | null
-    is_active?: boolean | null
-  }
-
-  export type menu_itemsCreateManyBranchesInput = {
-    id?: string
-    category_id?: string | null
-    name: string
-    description?: string | null
-    image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
-    tax_rate?: Decimal | DecimalJsLike | number | string | null
-    is_available?: boolean | null
+  export type branch_menu_itemsCreateManyBranchesInput = {
+    menu_item_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
     is_online?: boolean
-    is_kitchen?: boolean | null
-    prep_station?: string | null
     sort_order?: number | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
   }
 
   export type ordersCreateManyBranchesInput = {
@@ -111842,86 +116272,28 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type menu_categoriesUpdateWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    menu_items?: menu_itemsUpdateManyWithoutMenu_categoriesNestedInput
-  }
-
-  export type menu_categoriesUncheckedUpdateWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    menu_items?: menu_itemsUncheckedUpdateManyWithoutMenu_categoriesNestedInput
-  }
-
-  export type menu_categoriesUncheckedUpdateManyWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
-  }
-
-  export type menu_itemsUpdateWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  export type branch_menu_itemsUpdateWithoutBranchesInput = {
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
-    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
-    order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
-    reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    menu_item?: menu_itemsUpdateOneRequiredWithoutBranch_itemsNestedInput
   }
 
-  export type menu_itemsUncheckedUpdateWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    category_id?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  export type branch_menu_itemsUncheckedUpdateWithoutBranchesInput = {
+    menu_item_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
-    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
-    order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
-    reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
   }
 
-  export type menu_itemsUncheckedUpdateManyWithoutBranchesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    category_id?: NullableStringFieldUpdateOperationsInput | string | null
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  export type branch_menu_itemsUncheckedUpdateManyWithoutBranchesInput = {
+    menu_item_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ordersUpdateWithoutBranchesInput = {
@@ -112888,16 +117260,18 @@ export namespace Prisma {
 
   export type menu_itemsCreateManyMenu_categoriesInput = {
     id?: string
-    branch_id: string
+    hotel_id: string
+    product_category_id?: string | null
     name: string
     description?: string | null
     image_url?: string | null
-    price: Decimal | DecimalJsLike | number | string
+    base_price: Decimal | DecimalJsLike | number | string
     tax_rate?: Decimal | DecimalJsLike | number | string | null
     is_available?: boolean | null
     is_online?: boolean
     is_kitchen?: boolean | null
     prep_station?: string | null
+    product_kind?: string
     sort_order?: number | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -112908,34 +117282,39 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
     menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
-    branches?: branchesUpdateOneRequiredWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -112943,20 +117322,23 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
   }
 
   export type menu_itemsUncheckedUpdateManyWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    branch_id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
     is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
     prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
     sort_order?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -112994,6 +117376,14 @@ export namespace Prisma {
     rating: number
     comment?: string | null
     created_at?: Date | string | null
+  }
+
+  export type branch_menu_itemsCreateManyMenu_itemInput = {
+    branch_id: string
+    price_override?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean
+    is_online?: boolean
+    sort_order?: number | null
   }
 
   export type menu_item_ingredientsUpdateWithoutMenu_itemsInput = {
@@ -113100,6 +117490,204 @@ export namespace Prisma {
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type branch_menu_itemsUpdateWithoutMenu_itemInput = {
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    branches?: branchesUpdateOneRequiredWithoutBranch_menu_itemsNestedInput
+  }
+
+  export type branch_menu_itemsUncheckedUpdateWithoutMenu_itemInput = {
+    branch_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemInput = {
+    branch_id?: StringFieldUpdateOperationsInput | string
+    price_override?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: BoolFieldUpdateOperationsInput | boolean
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type product_categoriesCreateManyParentInput = {
+    id?: string
+    key: string
+    name: string
+    description?: string | null
+    icon?: string | null
+    image_url?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type menu_itemsCreateManyProduct_categoryInput = {
+    id?: string
+    hotel_id: string
+    category_id?: string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type menu_categoriesCreateManyDefault_product_categoryInput = {
+    id?: string
+    hotel_id: string
+    name: string
+    sort_order?: number | null
+    is_active?: boolean | null
+  }
+
+  export type product_categoriesUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    children?: product_categoriesUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    children?: product_categoriesUncheckedUpdateManyWithoutParentNestedInput
+    items?: menu_itemsUncheckedUpdateManyWithoutProduct_categoryNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryNestedInput
+  }
+
+  export type product_categoriesUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type menu_itemsUpdateWithoutProduct_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateWithoutProduct_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutProduct_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type menu_categoriesUpdateWithoutDefault_product_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_categoriesNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutMenu_categoriesNestedInput
+  }
+
+  export type menu_categoriesUncheckedUpdateWithoutDefault_product_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutMenu_categoriesNestedInput
+  }
+
+  export type menu_categoriesUncheckedUpdateManyWithoutDefault_product_categoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type menu_item_modifiersCreateManyMenu_item_modifier_groupsInput = {

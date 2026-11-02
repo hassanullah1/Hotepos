@@ -12,8 +12,7 @@ import {
  * GET /api/owners/hotel?hotelId=<uuid>
  *
  * Returns every hotel linked to the current owner (via hotel_owners),
- * plus the full details + branches for the selected one. If no hotelId
- * query param is given, the first linked hotel is used as the default.
+ * plus the full details + branches for the selected one.
  */
 export async function GET(request) {
   const user = await getCurrentUser(request);
@@ -64,7 +63,11 @@ export async function GET(request) {
       orderBy: { created_at: "asc" },
       include: {
         _count: {
-          select: { users: true, dining_tables: true, menu_items: true },
+          select: {
+            users: true,
+            dining_tables: true,
+            branch_menu_items: true, // ← FIXED (was menu_items)
+          },
         },
       },
     });
@@ -75,12 +78,12 @@ export async function GET(request) {
         ...rest,
         staff_count: _count.users,
         table_count: _count.dining_tables,
-        menu_item_count: _count.menu_items,
+        menu_item_count: _count.branch_menu_items, // ← FIXED (was _count.menu_items)
       };
     });
 
     return NextResponse.json({
-      hotels: hotelsList, // full list, for the picker
+      hotels: hotelsList,
       selectedHotelId: hotel.id,
       hotel: {
         id: hotel.id,
@@ -89,11 +92,16 @@ export async function GET(request) {
         logo_url: hotel.logo_url,
         subscription_plan: hotel.subscription_plans,
         subscription_status: hotel.subscription_status,
+        subscription_expires_at: hotel.subscription_expires_at, // ← added: PlanCard needs this
+        verification_status: hotel.verification_status, // ← added: status pill needs this
         address: selectedOwnerProfile?.address ?? null,
+        hesabpay_account_number:
+          selectedOwnerProfile?.hesabpay_account_number ?? null, // ← added: form field needs this
       },
       branches,
     });
   } catch (err) {
+    console.error("[owners/hotel] load failed:", err); // ← actually log it
     return NextResponse.json(
       { error: err.message || "Failed to load hotel" },
       { status: 500 },

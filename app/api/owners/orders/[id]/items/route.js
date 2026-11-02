@@ -123,9 +123,24 @@ export async function POST(request, { params }) {
       { status: 400 },
     );
 
+  /* ─────────────────────────────────────────────────────────────
+     MENU LOOKUP — items live at hotel level; per-branch availability
+     and price live in branch_menu_items. The `branch_items.some`
+     filter already guarantees the item is sold at this branch.
+     ───────────────────────────────────────────────────────────── */
   const menu = await prisma.menu_items.findFirst({
-    where: { id: body.menu_item_id, branch_id: order.branch_id },
-    select: { id: true, price: true },
+    where: {
+      id: body.menu_item_id,
+      branch_items: { some: { branch_id: order.branch_id } },
+    },
+    select: {
+      id: true,
+      base_price: true,
+      branch_items: {
+        where: { branch_id: order.branch_id },
+        select: { price_override: true, is_available: true },
+      },
+    },
   });
   if (!menu)
     return NextResponse.json(
@@ -133,8 +148,9 @@ export async function POST(request, { params }) {
       { status: 404 },
     );
 
+  const bi = menu.branch_items?.[0];
   const qty = Math.max(1, Number(body.quantity) || 1);
-  const unit = Number(menu.price);
+  const unit = Number(bi?.price_override ?? menu.base_price);
   const lineTotal = +(unit * qty).toFixed(2);
 
   try {
@@ -152,9 +168,7 @@ export async function POST(request, { params }) {
 
     const newSubtotal = await recalcTotals(id);
 
-    // Keep the room stay's running total in sync when this order is room-scoped
     if (order.room_stay_id) {
-      // We recalc from scratch for accuracy instead of blind increments.
       const rows = await prisma.order_items.findMany({
         where: { orders: { room_stay_id: order.room_stay_id } },
         select: { line_total: true },
@@ -173,7 +187,6 @@ export async function POST(request, { params }) {
         },
       });
     } else {
-      // Unused variable guard; keep subtotal accessible if needed later
       void newSubtotal;
     }
 
@@ -209,7 +222,6 @@ export async function DELETE(request, { params }) {
     });
     await recalcTotals(id);
 
-    // Keep the room stay's running total in sync when this order is room-scoped
     if (order.room_stay_id) {
       const rows = await prisma.order_items.findMany({
         where: { orders: { room_stay_id: order.room_stay_id } },

@@ -23,9 +23,9 @@ import {
   ShoppingBag,
   MapPin,
   Flame,
-  ShieldCheck,
   ChevronDown,
   Check,
+  LayoutGrid,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -46,6 +46,15 @@ type Item = {
 
 type Province = { id: string; name: string };
 
+type ProductCategory = {
+  id: string;
+  key: string;
+  name: string;
+  icon: string | null;
+  image_url: string | null;
+  item_count: number;
+};
+
 const SORT_KEYS = [
   "recommended",
   "near",
@@ -54,182 +63,6 @@ const SORT_KEYS = [
   "price_asc",
   "price_desc",
 ] as const;
-
-const CARD_BASE =
-  "wallet-card-body relative h-[42px] w-[66px] shrink-0 overflow-hidden rounded-[7px] ring-1 select-none";
-
-function Chip({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      className={`absolute ${className}`}
-      width="12"
-      height="9"
-      viewBox="0 0 12 9"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="chipGold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#F9E7A0" />
-          <stop offset="0.5" stopColor="#D4A93A" />
-          <stop offset="1" stopColor="#9A7416" />
-        </linearGradient>
-      </defs>
-      <rect
-        x="0.4"
-        y="0.4"
-        width="11.2"
-        height="8.2"
-        rx="1.6"
-        fill="url(#chipGold)"
-        stroke="#7A5A10"
-        strokeWidth="0.4"
-      />
-      <path
-        d="M0.4 3h3.6v3H0.4M8 3h3.6v3H8M4 0.4v8.2M8 0.4v8.2M4 3h4M4 6h4"
-        fill="none"
-        stroke="#7A5A10"
-        strokeWidth="0.35"
-      />
-    </svg>
-  );
-}
-
-function Contactless({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      className={`absolute ${className}`}
-      width="8"
-      height="9"
-      viewBox="0 0 8 9"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="0.9"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M1.2 2.2c1.6 1.4 1.6 3.2 0 4.6" />
-      <path d="M3.4 1.2c2.4 2 2.4 4.6 0 6.6" />
-      <path d="M5.6 0.4c3 2.6 3 5.6 0 8.2" />
-    </svg>
-  );
-}
-
-function CardFinish() {
-  return (
-    <>
-      <span className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/25" />
-      <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/15 to-transparent" />
-      <span className="card-sheen pointer-events-none absolute inset-0" />
-    </>
-  );
-}
-
-const EMBOSS = {
-  textShadow: "0 0.5px 0 rgba(0,0,0,0.55), 0 -0.3px 0 rgba(255,255,255,0.25)",
-};
-
-function MiniVisa() {
-  return (
-    <div
-      className={`${CARD_BASE} bg-gradient-to-br from-[#2F3BB8] via-[#1A1F71] to-[#0B0E40] text-white/90 ring-white/20`}
-    >
-      <span className="absolute -right-6 -top-8 h-20 w-20 rounded-full bg-white/10" />
-      <span className="absolute -bottom-10 -left-6 h-20 w-24 rounded-full bg-[#4C5BFF]/20" />
-      <span className="absolute right-[6px] top-[4px] text-[11px] font-black italic leading-none tracking-tight text-white">
-        VISA
-      </span>
-      <Chip className="left-[7px] top-[14px]" />
-      <Contactless className="left-[22px] top-[14px] opacity-80" />
-      <span
-        className="absolute bottom-[10px] left-[7px] font-mono text-[4.6px] leading-none tracking-[0.14em]"
-        style={EMBOSS}
-      >
-        4242 •••• •••• 1881
-      </span>
-      <span
-        className="absolute bottom-[4px] left-[7px] text-[3.6px] font-medium uppercase leading-none tracking-wider text-white/75"
-        style={EMBOSS}
-      >
-        A. Ahmadi
-      </span>
-      <span
-        className="absolute bottom-[4px] right-[7px] font-mono text-[3.6px] leading-none text-white/75"
-        style={EMBOSS}
-      >
-        12/28
-      </span>
-      <CardFinish />
-    </div>
-  );
-}
-
-function MiniMastercard() {
-  return (
-    <div
-      className={`${CARD_BASE} bg-gradient-to-br from-[#3B3B40] via-[#1B1B1F] to-[#0A0A0C] text-white/90 ring-white/15`}
-    >
-      <span className="absolute -left-8 -top-10 h-24 w-24 rounded-full bg-white/[0.06]" />
-      <span className="absolute -bottom-12 right-0 h-24 w-24 rounded-full bg-[#EB001B]/10" />
-      <Chip className="left-[7px] top-[7px]" />
-      <Contactless className="left-[22px] top-[7px] opacity-80" />
-      <span
-        className="absolute left-[7px] top-[21px] font-mono text-[4.6px] leading-none tracking-[0.14em]"
-        style={EMBOSS}
-      >
-        5412 •••• •••• 7730
-      </span>
-      <span
-        className="absolute bottom-[4px] left-[7px] text-[3.6px] font-medium uppercase leading-none tracking-wider text-white/75"
-        style={EMBOSS}
-      >
-        A. Ahmadi
-      </span>
-      <span
-        className="absolute bottom-[4px] left-[34px] font-mono text-[3.6px] leading-none text-white/75"
-        style={EMBOSS}
-      >
-        09/29
-      </span>
-      <span className="absolute bottom-[3px] right-[6px] flex items-center">
-        <span className="h-[12px] w-[12px] rounded-full bg-[#EB001B]" />
-        <span className="-ml-[5px] h-[12px] w-[12px] rounded-full bg-[#F79E1B]/90 mix-blend-screen" />
-      </span>
-      <CardFinish />
-    </div>
-  );
-}
-
-function MiniAfPay() {
-  return (
-    <div className={`${CARD_BASE} bg-white ring-black/15`}>
-      <img
-        src="/afpay.png"
-        alt="AfPay"
-        className="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      <CardFinish />
-    </div>
-  );
-}
-
-function MiniHesabPay() {
-  return (
-    <div
-      className={`${CARD_BASE} bg-gradient-to-br from-[#F0CB55] via-[#C9A227] to-[#7A5C12] text-[#2A1F00] ring-white/30`}
-    >
-      <img
-        src="/hesab.jpg"
-        alt="HesabPay"
-        className="h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      <CardFinish />
-    </div>
-  );
-}
 
 const orderText = {
   en: {
@@ -247,9 +80,6 @@ const orderText = {
     loadMore: "Load more",
     loadingMore: "Loading…",
     showingCount: "Showing {shown} of {total} dishes",
-    payWith: "Pay with",
-    secure: "Secure",
-    payHook: "Choose how you pay",
     orderIn: "Order in",
     loadingProvinces: "Loading provinces…",
     noProvinces: "No provinces available",
@@ -257,21 +87,8 @@ const orderText = {
       "Provinces haven't been set up yet. Ask the platform admin to add them.",
     searchProvince: "Search province…",
     noProvinceResults: "No province matches",
-    payMsg: {
-      visa: {
-        title: "Visa, tap and order",
-        sub: "Pay with your card in seconds",
-      },
-      mc: { title: "Mastercard welcome", sub: "Use any card, zero hassle" },
-      afpay: {
-        title: "AfPay, pay from your phone",
-        sub: "Your wallet, your dinner, done",
-      },
-      hesab: {
-        title: "HesabPay, local speed",
-        sub: "Fast, simple, made for you",
-      },
-    },
+    allCategories: "All",
+    loadingCategories: "Loading categories…",
     sort: {
       recommended: "Recommended",
       near: "Near me",
@@ -296,27 +113,14 @@ const orderText = {
     loadMore: "نور ښودل",
     loadingMore: "بارول…",
     showingCount: "{shown} له {total} خواړو ښودل کیږي",
-    payWith: "تادیه د",
-    secure: "خوندي",
-    payHook: "خپل تادیه غوره کړئ",
     orderIn: "فرمایش په",
     loadingProvinces: "ولایتونه بارول…",
     noProvinces: "هیڅ ولایت نشته",
     noProvinceHint: "ولایتونه لا نه دي جوړ شوي. له اډمین څخه وغواړئ.",
     searchProvince: "ولایت ولټوئ…",
     noProvinceResults: "هیڅ ولایت ونه موندل شو",
-    payMsg: {
-      visa: {
-        title: "ویزا، ټک کړئ او فرمایش ورکړئ",
-        sub: "په څو ثانیو کې د کارت تادیه",
-      },
-      mc: { title: "ماسټرکارډ ښه راغلاست", sub: "هر کارت وکاروئ، بې ستونزې" },
-      afpay: {
-        title: "AfPay، له موبایل څخه تادیه",
-        sub: "ستاسو والټ، ستاسو خواړه",
-      },
-      hesab: { title: "حسابپی، ګړندی او ساده", sub: "ستاسو لپاره جوړ شوی" },
-    },
+    allCategories: "ټول",
+    loadingCategories: "کټګورۍ بارول…",
     sort: {
       recommended: "وړاندیز شوی",
       near: "زما نږدې",
@@ -341,24 +145,14 @@ const orderText = {
     loadMore: "بیشتر",
     loadingMore: "در حال بارگذاری…",
     showingCount: "نمایش {shown} از {total} غذا",
-    payWith: "پرداخت با",
-    secure: "امن",
-    payHook: "روش پرداخت خود را انتخاب کنید",
     orderIn: "سفارش در",
     loadingProvinces: "در حال بارگذاری ولایت‌ها…",
     noProvinces: "ولایتی موجود نیست",
     noProvinceHint: "ولایت‌ها هنوز تنظیم نشده‌اند. از مدیر پلتفرم بخواهید.",
     searchProvince: "جستجوی ولایت…",
     noProvinceResults: "ولایتی مطابقت ندارد",
-    payMsg: {
-      visa: {
-        title: "ویزا، لمس کنید و سفارش دهید",
-        sub: "پرداخت با کارت در چند ثانیه",
-      },
-      mc: { title: "مستر کارت خوش آمدید", sub: "هر کارتی، بدون دردسر" },
-      afpay: { title: "AfPay، پرداخت از موبایل", sub: "کیف پول شما، غذای شما" },
-      hesab: { title: "حساب‌پی، سریع و ساده", sub: "ساخته شده برای شما" },
-    },
+    allCategories: "همه",
+    loadingCategories: "در حال بارگذاری دسته‌ها…",
     sort: {
       recommended: "پیشنهادی",
       near: "نزدیک من",
@@ -427,19 +221,13 @@ function ProvinceCombobox({
     return provinces.filter((p) => p.name.toLowerCase().includes(s));
   }, [provinces, search]);
 
-  // Measure + follow the button on scroll / resize
   useLayoutEffect(() => {
     if (!open) return;
     const update = () => {
       const btn = buttonRef.current;
       if (!btn) return;
       const r = btn.getBoundingClientRect();
-      setRect({
-        top: r.top,
-        bottom: r.bottom,
-        left: r.left,
-        width: r.width,
-      });
+      setRect({ top: r.top, bottom: r.bottom, left: r.left, width: r.width });
     };
     update();
     window.addEventListener("scroll", update, true);
@@ -450,7 +238,6 @@ function ProvinceCombobox({
     };
   }, [open]);
 
-  // Close on outside click (button or portal)
   useEffect(() => {
     if (!open) return;
     function onDoc(e: MouseEvent) {
@@ -508,7 +295,6 @@ function ProvinceCombobox({
     ? t.loadingProvinces
     : selected?.name || (provinces.length ? t.orderIn : t.noProvinces);
 
-  // Compute clamped position
   const dropdownWidth = rect ? Math.max(rect.width, 200) : 220;
   const viewportW =
     typeof window !== "undefined" ? window.innerWidth : dropdownWidth + 32;
@@ -568,7 +354,6 @@ function ProvinceCombobox({
                 : "border-[#E4DFD4] bg-white shadow-[#00000030]"
             }`}
           >
-            {/* search */}
             <div
               className={`relative border-b p-2 ${
                 isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
@@ -597,7 +382,6 @@ function ProvinceCombobox({
               />
             </div>
 
-            {/* list */}
             <div ref={listRef} className="max-h-72 overflow-y-auto p-1">
               {filtered.length === 0 && (
                 <div
@@ -652,143 +436,127 @@ function ProvinceCombobox({
   );
 }
 
-/* ---------------- Payment wallet ---------------- */
-function PaymentWallet({
-  isDark,
+/* ---------------- Product category bar ---------------- */
+function CategoryBar({
+  categories,
+  totalItems,
+  value,
+  onChange,
   t,
-  isRTL,
+  isDark,
+  isReady,
 }: {
-  isDark: boolean;
+  categories: ProductCategory[];
+  totalItems: number;
+  value: string;
+  onChange: (id: string) => void;
   t: any;
-  isRTL: boolean;
+  isDark: boolean;
+  isReady: boolean;
 }) {
-  const methods = [
-    { id: "visa", label: "Visa", node: <MiniVisa /> },
-    { id: "mc", label: "Mastercard", node: <MiniMastercard /> },
-    { id: "afpay", label: "AfPay", node: <MiniAfPay /> },
-    { id: "hesab", label: "HesabPay", node: <MiniHesabPay /> },
-  ];
-  const n = methods.length;
-  const INTERVAL = 3200;
+  const itemBase =
+    "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-all duration-300";
+  const activeCls =
+    "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25";
+  const idleCls = isDark
+    ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:-translate-y-0.5 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
+    : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:-translate-y-0.5 hover:border-[#A9821E]/60 hover:text-[#8A6E1A]";
 
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
-
-  useEffect(() => {
-    if (paused || reduced) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % n), INTERVAL);
-    return () => clearInterval(id);
-  }, [paused, reduced, n]);
-
-  const msg = t.payMsg?.[methods[index].id];
-
-  const dir = isRTL ? -1 : 1;
-  const ANGLES = [0, 9, 18, 27].map((a) => a * dir);
-  const frontLeft = isRTL ? "calc(100% - 50px)" : "50px";
+  const Count = ({ n, active }: { n: number; active: boolean }) =>
+    n > 0 ? (
+      <span
+        className={`ml-1 inline-flex min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold leading-[16px] ${
+          active
+            ? "bg-[#1D1707]/15 text-[#1D1707]"
+            : isDark
+              ? "bg-white/10 text-[#B7B2C4]"
+              : "bg-[#1D1A22]/8 text-[#6E687A]"
+        }`}
+      >
+        {n}
+      </span>
+    ) : null;
 
   return (
     <div
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       className={`mb-3 overflow-hidden rounded-2xl border transition-colors ${
         isDark
           ? "border-[#2E2938] bg-[#1E1B26]/90"
           : "border-[#E4DFD4] bg-white/90"
       }`}
     >
-      <div className="flex items-center gap-3 px-3 py-2.5">
-        <div
-          dir="ltr"
-          className="pw-stage relative h-[80px] w-[142px] shrink-0"
-          style={{ ["--pw-dir" as any]: dir }}
-        >
-          <span className="pw-glow" aria-hidden="true" />
-          {methods.map((m, i) => {
-            const offset = (i - index + n) % n;
-            const leaving = offset === n - 1;
-            return (
-              <div
-                key={m.id}
-                className="pw-arm"
-                style={{
-                  left: frontLeft,
-                  transform: `rotate(${ANGLES[offset]}deg)`,
-                  zIndex: n - offset,
-                  opacity: offset === 0 ? 1 : 0.9 - offset * 0.18,
-                }}
-              >
-                <div
-                  className={`pw-card ${offset === 0 ? "pw-front" : ""} ${
-                    leaving ? "pw-leaving" : ""
-                  }`}
-                  style={{
-                    transform: `scale(${
-                      offset === 0 ? 1.12 : 0.97 - offset * 0.05
-                    })`,
-                    filter:
-                      offset === 0
-                        ? "none"
-                        : `brightness(${1 - offset * 0.14})`,
-                  }}
-                >
-                  {m.node}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <p
-            className={`text-start text-[9.5px] font-semibold uppercase ${
-              isRTL ? "tracking-normal" : "tracking-[0.18em]"
-            } ${isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"}`}
-          >
-            {t.payHook}
-          </p>
-
-          <div key={`msg-${index}`} className="pw-msg mt-1 text-start">
-            <p
-              className={`truncate text-[13px] font-semibold leading-tight ${
-                isDark ? "text-[#F0EAE2]" : "text-[#1D1A22]"
-              }`}
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {msg?.title ?? methods[index].label}
-            </p>
-            <p
-              className={`mt-0.5 truncate text-[11px] leading-tight ${
-                isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-              }`}
-            >
-              {msg?.sub}
-            </p>
-          </div>
-        </div>
-
-        <div
-          className={`hidden shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[9.5px] font-semibold leading-none sm:flex ${
-            isDark
-              ? "bg-emerald-500/15 text-emerald-300"
-              : "bg-emerald-50 text-emerald-700"
+      <div
+        className="flex items-center gap-2 overflow-x-auto px-3 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        dir={t.dir}
+      >
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className={`${itemBase} inline-flex items-center gap-1.5 ${
+            value === "" ? activeCls : idleCls
           }`}
         >
-          <ShieldCheck className="h-3 w-3" />
-          {t.secure}
-        </div>
-      </div>
+          <LayoutGrid size={13} />
+          {t.allCategories}
+          <Count n={totalItems} active={value === ""} />
+        </button>
 
-      <style dangerouslySetInnerHTML={{ __html: WALLET_CSS }} />
+        {!isReady && (
+          <span
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ${
+              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+            }`}
+          >
+            <Loader2 size={12} className="animate-spin" />
+            {t.loadingCategories}
+          </span>
+        )}
+
+        {isReady &&
+          categories.map((cat) => {
+            const active = cat.id === value;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => onChange(cat.id)}
+                className={`${itemBase} inline-flex items-center gap-1.5 ${
+                  active ? activeCls : idleCls
+                }`}
+                title={`${cat.name} — ${cat.item_count}`}
+              >
+                {cat.icon ? (
+                  <span className="text-[13px] leading-none">{cat.icon}</span>
+                ) : cat.image_url ? (
+                  <img
+                    src={cat.image_url}
+                    alt=""
+                    className="h-4 w-4 rounded-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : null}
+                {cat.name}
+                <Count n={cat.item_count} active={active} />
+              </button>
+            );
+          })}
+
+        {isReady && categories.length === 0 && (
+          <span
+            className={`shrink-0 px-2 text-[12px] ${
+              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+            }`}
+          >
+            —
+          </span>
+        )}
+      </div>
     </div>
   );
 }
 
-/* ---------------- Dish card (memoized so typing doesn't re-render the grid) ---------------- */
+/* ---------------- Dish card ---------------- */
 const DishCard = memo(function DishCard({
   it,
   idx,
@@ -929,8 +697,6 @@ const DishCard = memo(function DishCard({
             )}
           </div>
 
-          {/* description only on bigger screens */}
-          {/* description only on bigger screens, cut with "..." if too long */}
           {it.description && (
             <p
               className={`mt-2 line-clamp-2 hidden text-xs leading-relaxed sm:block ${
@@ -1009,6 +775,12 @@ export default function BuyerMenuDiscoveryPage() {
   const [provinceId, setProvinceId] = useState<string>("");
   const [provinceReady, setProvinceReady] = useState(false);
 
+  // ── Product categories ──
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [categoriesReady, setCategoriesReady] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -1063,6 +835,49 @@ export default function BuyerMenuDiscoveryPage() {
     };
   }, []);
 
+  // ---- Load product categories (scoped to province) ----
+  useEffect(() => {
+    if (!provinceReady || !provinceId) {
+      setCategories([]);
+      setTotalItems(0);
+      setCategoriesReady(false);
+      return;
+    }
+
+    let cancelled = false;
+    setCategoriesReady(false);
+
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/public/product-categories?province_id=${provinceId}`,
+        );
+        if (!res.ok) throw new Error("Failed to load categories");
+        const data = await res.json();
+        if (cancelled) return;
+        setCategories(data.categories || []);
+        setTotalItems(Number(data.total_items) || 0);
+      } catch {
+        if (!cancelled) {
+          setCategories([]);
+          setTotalItems(0);
+        }
+      } finally {
+        if (!cancelled) setCategoriesReady(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [provinceId, provinceReady]);
+
+  // A category that existed in the old province may not exist in the new one,
+  // so drop the selection whenever the province changes.
+  useEffect(() => {
+    setSelectedCategory("");
+  }, [provinceId]);
+
   useEffect(() => {
     if (!provinceReady) return;
     try {
@@ -1085,7 +900,6 @@ export default function BuyerMenuDiscoveryPage() {
     async (targetPage: number, append = false) => {
       if (!provinceId) return;
 
-      // cancel any request still in flight so old results never overwrite new ones
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -1103,6 +917,8 @@ export default function BuyerMenuDiscoveryPage() {
           province_id: provinceId,
         });
         if (debouncedQ) params.set("q", debouncedQ);
+        if (selectedCategory)
+          params.set("product_category_id", selectedCategory);
         if (coords && sort === "near") {
           params.set("lat", String(coords.lat));
           params.set("lng", String(coords.lng));
@@ -1128,14 +944,14 @@ export default function BuyerMenuDiscoveryPage() {
         setLoading(false);
         setLoadingMore(false);
       } catch (err: any) {
-        if (err?.name === "AbortError") return; // a newer request took over
+        if (err?.name === "AbortError") return;
         setError(err?.message || "Something went wrong");
         busyRef.current = false;
         setLoading(false);
         setLoadingMore(false);
       }
     },
-    [debouncedQ, coords, sort, provinceId],
+    [debouncedQ, coords, sort, provinceId, selectedCategory],
   );
 
   useEffect(() => {
@@ -1156,7 +972,7 @@ export default function BuyerMenuDiscoveryPage() {
       abortRef.current?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQ, sort, coords, provinceId, provinceReady]);
+  }, [debouncedQ, sort, coords, provinceId, provinceReady, selectedCategory]);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -1240,8 +1056,6 @@ export default function BuyerMenuDiscoveryPage() {
       }`}
       dir={t.dir}
     >
-      {/* decorative layers — clipped in their own wrapper so the page
-          itself does not clip the province dropdown */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <svg
           className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${
@@ -1283,7 +1097,15 @@ export default function BuyerMenuDiscoveryPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-6">
-        <PaymentWallet isDark={isDark} t={t} isRTL={isRTL} />
+        <CategoryBar
+          categories={categories}
+          totalItems={totalItems}
+          value={selectedCategory}
+          onChange={setSelectedCategory}
+          t={t}
+          isDark={isDark}
+          isReady={categoriesReady}
+        />
 
         <div className="rounded-2xl bg-gradient-to-br from-[#C9A227]/45 via-[#C9A227]/10 to-[#C9A227]/25 p-px shadow-sm">
           <div
@@ -1544,164 +1366,12 @@ export default function BuyerMenuDiscoveryPage() {
         </div>
       </div>
 
-      {/* global because DishCard is a separate component */}
       <style dangerouslySetInnerHTML={{ __html: PAGE_CSS }} />
     </div>
   );
 }
 
-/* ---------------- Global CSS (plain <style>, no styled-jsx hashes => no hydration mismatch) ---------------- */
-const WALLET_CSS = `
-        .pw-arm {
-          position: absolute;
-          top: 10px;
-          width: 66px;
-          height: 42px;
-          margin-left: -33px;
-          transform-origin: 50% 141px;
-          transition:
-            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
-            opacity 0.6s ease;
-          will-change: transform;
-        }
-        .pw-card {
-          width: 100%;
-          height: 100%;
-          transform-origin: 50% 50%;
-          transition:
-            transform 0.95s cubic-bezier(0.34, 1.35, 0.5, 1),
-            filter 0.6s ease;
-          box-shadow:
-            0 1px 0 rgba(255, 255, 255, 0.25) inset,
-            0 8px 14px -6px rgba(0, 0, 0, 0.6);
-          border-radius: 7px;
-          perspective: 320px;
-        }
-        .pw-front > .wallet-card-body {
-          animation: pw-tilt 3.8s ease-in-out infinite;
-          transform-style: preserve-3d;
-        }
-        @keyframes pw-tilt {
-          0%,
-          100% {
-            transform: rotateY(-12deg) rotateX(5deg);
-          }
-          50% {
-            transform: rotateY(12deg) rotateX(-4deg);
-          }
-        }
-        .pw-front {
-          animation: pw-float 2.6s ease-in-out 0.9s infinite;
-          box-shadow:
-            0 10px 18px -8px rgba(0, 0, 0, 0.6),
-            0 0 18px -4px rgba(201, 162, 39, 0.55);
-        }
-        @keyframes pw-float {
-          0%,
-          100% {
-            translate: 0 0;
-            rotate: -1.5deg;
-          }
-          50% {
-            translate: 0 -3px;
-            rotate: 1.5deg;
-          }
-        }
-        .pw-leaving {
-          animation: pw-leave 0.95s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @keyframes pw-leave {
-          0% {
-            translate: 0 0;
-          }
-          35% {
-            translate: 0 -14px;
-            rotate: calc(10deg * var(--pw-dir, 1));
-          }
-          100% {
-            translate: 0 0;
-            rotate: 0deg;
-          }
-        }
-        .pw-glow {
-          position: absolute;
-          left: 50%;
-          bottom: -2px;
-          width: 120px;
-          height: 16px;
-          transform: translateX(-50%);
-          border-radius: 999px;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(201, 162, 39, 0.55),
-            transparent 72%
-          );
-          filter: blur(5px);
-          animation: pw-glow 3.2s ease-in-out infinite;
-          pointer-events: none;
-        }
-        @keyframes pw-glow {
-          0%,
-          100% {
-            opacity: 0.35;
-            transform: translateX(-50%) scaleX(0.8);
-          }
-          50% {
-            opacity: 0.9;
-            transform: translateX(-50%) scaleX(1.1);
-          }
-        }
-        .pw-msg {
-          animation: pw-msg-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-          animation-delay: 0.12s;
-        }
-        @keyframes pw-msg-in {
-          0% {
-            opacity: 0;
-            transform: translateY(8px);
-            filter: blur(3px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-          }
-        }
-        .card-sheen {
-          background: linear-gradient(
-            115deg,
-            transparent 30%,
-            rgba(255, 255, 255, 0.65) 48%,
-            transparent 66%
-          );
-          transform: translateX(-140%);
-          animation: sheen-run 4.5s ease-in-out infinite;
-        }
-        @keyframes sheen-run {
-          0%,
-          55% {
-            transform: translateX(-140%);
-          }
-          78%,
-          100% {
-            transform: translateX(140%);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .pw-arm,
-          .pw-card,
-          .pw-front,
-          .pw-leaving,
-          .pw-front > .wallet-card-body,
-          .pw-glow,
-          .pw-msg,
-          .card-sheen {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-      `;
-
+/* ---------------- Global CSS ---------------- */
 const PAGE_CSS = `
         .dish-slot {
           position: relative;

@@ -178,6 +178,7 @@ exports.Prisma.HotelsScalarFieldEnum = {
   subscription_status: 'subscription_status',
   subscription_expires_at: 'subscription_expires_at',
   is_online: 'is_online',
+  business_type: 'business_type',
   delivery_type: 'delivery_type',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -329,28 +330,53 @@ exports.Prisma.Table_sessionsScalarFieldEnum = {
 
 exports.Prisma.Menu_categoriesScalarFieldEnum = {
   id: 'id',
-  branch_id: 'branch_id',
+  hotel_id: 'hotel_id',
   name: 'name',
   sort_order: 'sort_order',
-  is_active: 'is_active'
+  is_active: 'is_active',
+  default_product_category_id: 'default_product_category_id'
 };
 
 exports.Prisma.Menu_itemsScalarFieldEnum = {
   id: 'id',
-  branch_id: 'branch_id',
+  hotel_id: 'hotel_id',
   category_id: 'category_id',
+  product_category_id: 'product_category_id',
   name: 'name',
   description: 'description',
   image_url: 'image_url',
-  price: 'price',
+  base_price: 'base_price',
   tax_rate: 'tax_rate',
   is_available: 'is_available',
   is_online: 'is_online',
   is_kitchen: 'is_kitchen',
   prep_station: 'prep_station',
+  product_kind: 'product_kind',
   sort_order: 'sort_order',
   created_at: 'created_at',
   updated_at: 'updated_at'
+};
+
+exports.Prisma.Product_categoriesScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  description: 'description',
+  icon: 'icon',
+  image_url: 'image_url',
+  parent_id: 'parent_id',
+  sort_order: 'sort_order',
+  is_active: 'is_active',
+  created_at: 'created_at'
+};
+
+exports.Prisma.Branch_menu_itemsScalarFieldEnum = {
+  branch_id: 'branch_id',
+  menu_item_id: 'menu_item_id',
+  price_override: 'price_override',
+  is_available: 'is_available',
+  is_online: 'is_online',
+  sort_order: 'sort_order'
 };
 
 exports.Prisma.Menu_item_modifier_groupsScalarFieldEnum = {
@@ -803,6 +829,8 @@ exports.Prisma.ModelName = {
   table_sessions: 'table_sessions',
   menu_categories: 'menu_categories',
   menu_items: 'menu_items',
+  product_categories: 'product_categories',
+  branch_menu_items: 'branch_menu_items',
   menu_item_modifier_groups: 'menu_item_modifier_groups',
   menu_item_modifiers: 'menu_item_modifiers',
   inventory_items: 'inventory_items',

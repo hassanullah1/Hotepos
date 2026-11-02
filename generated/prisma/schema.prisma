@@ -139,6 +139,7 @@ model hotels {
   subscription_status     String?   @default("trial")
   subscription_expires_at DateTime? @db.Timestamptz(6)
   is_online               Boolean   @default(false)
+  business_type           String    @default("hotel") @db.VarChar(30)
   delivery_type           String    @default("none") @db.VarChar(20) // ← must be here
   created_at              DateTime? @default(now()) @db.Timestamptz(6)
   updated_at              DateTime? @default(now()) @db.Timestamptz(6)
@@ -148,6 +149,8 @@ model hotels {
   // the single owner profile for this hotel (1-to-1)
   hotel_owner         hotel_owners?
   expense_categories  expense_categories[]
+  menu_categories     menu_categories[]
+  menu_items          menu_items[]
 
   branches   branches[]
   customers  customers[]
@@ -303,8 +306,7 @@ model branches {
   discounts            discounts[]
   inventory_items      inventory_items[]
   invoices             invoices[]
-  menu_categories      menu_categories[]
-  menu_items           menu_items[]
+  branch_menu_items    branch_menu_items[]
   orders               orders[]
   payment_methods      payment_methods[]
   pos_devices          pos_devices[]
@@ -419,41 +421,101 @@ model table_sessions {
 // =========================================================
 
 model menu_categories {
-  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  branch_id  String       @db.Uuid
-  name       String       @db.VarChar(100)
-  sort_order Int?         @default(0)
-  is_active  Boolean?     @default(true)
-  branches   branches     @relation(fields: [branch_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hotel_id   String   @db.Uuid
+  name       String   @db.VarChar(100)
+  sort_order Int?     @default(0)
+  is_active  Boolean? @default(true)
+
+  default_product_category_id String?             @db.Uuid // ← NEW: auto-tag items
+  default_product_category    product_categories? @relation("category_default", fields: [default_product_category_id], references: [id], onDelete: SetNull, onUpdate: NoAction) // ← NEW
+
+  // ── relations ────────────────────────────────────────────
+  hotels     hotels       @relation(fields: [hotel_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   menu_items menu_items[]
+
+  // ── indexes ──────────────────────────────────────────────
+  @@unique([hotel_id, name])
+  @@index([hotel_id], map: "idx_menu_categories_hotel")
+  @@index([default_product_category_id], map: "idx_menu_categories_default_product") // ← NEW
 }
 
 model menu_items {
-  id                        String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  branch_id                 String                      @db.Uuid
-  category_id               String?                     @db.Uuid
-  name                      String                      @db.VarChar(150)
-  description               String?
-  image_url                 String?
-  price                     Decimal                     @db.Decimal(12, 2)
-  tax_rate                  Decimal?                    @default(0) @db.Decimal(5, 2)
-  is_available              Boolean?                    @default(true)
-  is_online                 Boolean                     @default(false)
-  is_kitchen                Boolean?                    @default(true)
-  prep_station              String?                     @db.VarChar(50)
-  sort_order                Int?                        @default(0)
-  created_at                DateTime?                   @default(now()) @db.Timestamptz(6)
-  updated_at                DateTime?                   @default(now()) @db.Timestamptz(6)
+  id                  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hotel_id            String  @db.Uuid
+  category_id         String? @db.Uuid
+  product_category_id String? @db.Uuid // ← NEW: platform-wide tag
+
+  name         String    @db.VarChar(150)
+  description  String?
+  image_url    String?
+  base_price   Decimal   @db.Decimal(12, 2)
+  tax_rate     Decimal?  @default(0) @db.Decimal(5, 2)
+  is_available Boolean?  @default(true)
+  is_online    Boolean   @default(false)
+  is_kitchen   Boolean?  @default(true)
+  prep_station String?   @db.VarChar(50)
+  product_kind String    @default("prepared") @db.VarChar(20) // prepared | packaged | retail | ingredient
+  sort_order   Int?      @default(0)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime? @default(now()) @db.Timestamptz(6)
+
+  // ── relations ────────────────────────────────────────────
+  hotels           hotels              @relation(fields: [hotel_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  menu_categories  menu_categories?    @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  product_category product_categories? @relation(fields: [product_category_id], references: [id], onDelete: SetNull, onUpdate: NoAction) // ← NEW
+
   menu_item_ingredients     menu_item_ingredients[]
   menu_item_modifier_groups menu_item_modifier_groups[]
-  branches                  branches                    @relation(fields: [branch_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  menu_categories           menu_categories?            @relation(fields: [category_id], references: [id], onUpdate: NoAction)
   order_items               order_items[]
   reviews                   reviews[]
+  branch_items              branch_menu_items[]
 
-  @@index([branch_id], map: "idx_menu_items_branch")
+  // ── indexes ──────────────────────────────────────────────
+  @@index([hotel_id], map: "idx_menu_items_hotel")
   @@index([category_id], map: "idx_menu_items_category")
-  @@index([branch_id, is_available, is_online], map: "idx_menu_items_public")
+  @@index([product_category_id], map: "idx_menu_items_product_category") // ← NEW
+  @@index([hotel_id, is_available, is_online], map: "idx_menu_items_public")
+  @@index([product_category_id, is_available, is_online], map: "idx_menu_items_product_category_public") // ← NEW (fast browse-by-category)
+}
+
+model product_categories {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String    @unique @db.VarChar(50)
+  name        String    @db.VarChar(100)
+  description String?
+  icon        String?   @db.VarChar(50)
+  image_url   String?
+  parent_id   String?   @db.Uuid
+  sort_order  Int?      @default(0)
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  parent   product_categories?  @relation("cat_tree", fields: [parent_id], references: [id], onDelete: SetNull)
+  children product_categories[] @relation("cat_tree")
+  items    menu_items[]
+
+  menu_categories menu_categories[] @relation("category_default") // ← ADD THIS
+
+  @@index([parent_id], map: "idx_product_categories_parent")
+  @@index([is_active, sort_order], map: "idx_product_categories_active")
+}
+
+model branch_menu_items {
+  branch_id    String @db.Uuid
+  menu_item_id String @db.Uuid
+
+  price_override Decimal? @db.Decimal(12, 2) // null → use menu_items.base_price
+  is_available   Boolean  @default(true) // sold out at this branch?
+  is_online      Boolean  @default(true) // shown in online menu for this branch?
+  sort_order     Int?     @default(0)
+
+  branches  branches   @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+  menu_item menu_items @relation(fields: [menu_item_id], references: [id], onDelete: Cascade)
+
+  @@id([branch_id, menu_item_id])
+  @@index([menu_item_id], map: "idx_bmi_item")
+  @@index([branch_id, is_online], map: "idx_bmi_branch_online")
 }
 
 model menu_item_modifier_groups {
