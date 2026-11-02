@@ -337,11 +337,22 @@ exports.Prisma.Menu_categoriesScalarFieldEnum = {
   default_product_category_id: 'default_product_category_id'
 };
 
+exports.Prisma.UnitsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  short_name: 'short_name',
+  sort_order: 'sort_order',
+  is_active: 'is_active',
+  created_at: 'created_at'
+};
+
 exports.Prisma.Menu_itemsScalarFieldEnum = {
   id: 'id',
   hotel_id: 'hotel_id',
   category_id: 'category_id',
   product_category_id: 'product_category_id',
+  unit_id: 'unit_id',
+  unit_quantity: 'unit_quantity',
   name: 'name',
   description: 'description',
   image_url: 'image_url',
@@ -828,6 +839,7 @@ exports.Prisma.ModelName = {
   dining_tables: 'dining_tables',
   table_sessions: 'table_sessions',
   menu_categories: 'menu_categories',
+  units: 'units',
   menu_items: 'menu_items',
   product_categories: 'product_categories',
   branch_menu_items: 'branch_menu_items',

@@ -16,19 +16,6 @@ async function loadItemScoped(id: string, userId: string) {
   return item;
 }
 
-/**
- * PATCH /api/owners/menu-items/[id]
- *
- * Body may contain hotel-level fields:
- *   name, description, image_url, base_price, tax_rate,
- *   is_kitchen, prep_station, sort_order,
- *   category_id, product_category_id
- *
- * AND/OR branch-level fields (requires branch_id in the body):
- *   branch_id, is_online, is_available, price_override
- *
- * Branch-level fields update `branch_menu_items` for that branch only.
- */
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -53,7 +40,6 @@ export async function PATCH(
       body.price_override !== undefined);
 
   if (hasBranchFields) {
-    // Guard: verify the branch belongs to this hotel
     const branch = await prisma.branches.findFirst({
       where: { id: branchId, hotel_id: existing.hotel_id },
       select: { id: true },
@@ -89,7 +75,6 @@ export async function PATCH(
   if (body.image_url !== undefined) hu.image_url = body.image_url || null;
   if (body.base_price !== undefined) hu.base_price = body.base_price;
   if (body.price !== undefined && body.base_price === undefined) {
-    // backwards compatibility: if caller still sends `price`, treat as base_price
     hu.base_price = body.price;
   }
   if (body.tax_rate !== undefined) hu.tax_rate = body.tax_rate;
@@ -113,6 +98,24 @@ export async function PATCH(
   if (body.product_category_id !== undefined)
     hu.product_category_id = body.product_category_id || null;
 
+  // ── unit fields ──────────────────────────────────────────────────
+  if (body.unit_id !== undefined) {
+    const newUnitId = body.unit_id || null;
+    hu.unit_id = newUnitId;
+    // clear quantity when unit is removed (unless caller sent an explicit value)
+    if (newUnitId === null && body.unit_quantity === undefined) {
+      hu.unit_quantity = null;
+    }
+  }
+  if (body.unit_quantity !== undefined) {
+    hu.unit_quantity =
+      body.unit_quantity === null ||
+      body.unit_quantity === "" ||
+      body.unit_quantity === undefined
+        ? null
+        : Number(body.unit_quantity);
+  }
+
   try {
     if (Object.keys(hu).length > 0) {
       await prisma.menu_items.update({ where: { id }, data: hu });
@@ -123,6 +126,7 @@ export async function PATCH(
       include: {
         menu_categories: { select: { id: true, name: true } },
         product_category: { select: { id: true, key: true, name: true } },
+        unit: { select: { id: true, name: true, short_name: true } },
         branch_items: branchId ? { where: { branch_id: branchId } } : true,
       },
     });
@@ -150,7 +154,6 @@ export async function DELETE(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   try {
-    // branch_menu_items cascade-deletes with the item
     await prisma.menu_items.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (err) {

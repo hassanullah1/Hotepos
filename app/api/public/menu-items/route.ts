@@ -23,6 +23,10 @@ type Row = {
   order_count: number | string;
   distance_km: number | string | null;
   total: number | string;
+  // ── unit fields ──
+  unit_name: string | null;
+  unit_short_name: string | null;
+  unit_quantity: number | string | null;
 };
 
 const SORTS = new Set([
@@ -34,7 +38,6 @@ const SORTS = new Set([
   "price_desc",
 ]);
 
-/** Returns the haversine SQL as a plain string, pushing lat/lng onto `params`. */
 function haversineExpr(
   push: (v: unknown) => string,
   lat: number,
@@ -97,41 +100,15 @@ export async function GET(request: Request) {
     const hasGeo = lat !== null && lng !== null;
     if (sort === "near" && !hasGeo) sort = "recommended";
 
-    // ── plain-string SQL builder ─────────────────────────────
     const params: unknown[] = [];
     const P = (v: unknown): string => {
       params.push(v);
       return `$${params.length}`;
     };
 
-    // ── ALL 6 filters are ON on purpose ──────────────────────────────
-    // These conditions are what guarantee a buyer only ever sees:
-    //   • an item that is published online AND available,
-    //   • attached to a branch whose own online + available flags are on,
-    //   • sitting under a branch that is active,
-    //   • owned by a hotel that is online.
-    //
-    // If the grid looks empty while a category badge says "2", it is
-    // ALWAYS because one of these 6 columns is false in the database.
-    // Run this to find the culprit — do NOT comment out the filters:
-    //
-    //   SELECT mi.name, mi.is_available, mi.is_online,
-    //          b.status AS branch_status, h.is_online AS hotel_online,
-    //          bmi.is_online AS bmi_online, bmi.is_available AS bmi_avail
-    //   FROM menu_items mi
-    //   JOIN branch_menu_items bmi ON bmi.menu_item_id = mi.id
-    //   JOIN branches b            ON b.id = bmi.branch_id
-    //   JOIN hotels   h            ON h.id = b.hotel_id
-    //   WHERE mi.product_category_id = '<category-uuid>';
-    //
-    // Any column that prints `f` is the one to fix. Most common is
-    // h.is_online = false (hotel created but never published).
-    // ─────────────────────────────────────────────────────────────────
     const where: string[] = [
-     
-     
-       `bmi.is_available = true`,
-       `bmi.is_online = true`,
+      `bmi.is_available = true`,
+      `bmi.is_online = true`,
       `COALESCE(b.status, 'active') = 'active'`,
       `h.is_online = true`,
     ];
@@ -165,7 +142,6 @@ export async function GET(request: Request) {
       where.push(`${haversineExpr(P, lat!, lng!)} <= ${P(radius)}::float8`);
     }
 
-    // Plain string, always typed float8. No Prisma.Sql/Raw involved.
     const distanceExpr = hasGeo
       ? `(${haversineExpr(P, lat!, lng!)})::float8`
       : `NULL::float8`;
@@ -179,16 +155,9 @@ export async function GET(request: Request) {
       recommended: `(avg_rating * ln(1 + review_count) + ln(1 + order_count)) DESC, name ASC`,
     };
 
-    // ── PERF: which sorts need review/order counts to order the WHOLE set? ──
-    // For near / price_asc / price_desc the sort key is already available
-    // in `base`, so we can LIMIT first and aggregate reviews/orders only
-    // for the ~24 rows on this page. For recommended / reviews / orders
-    // the counts ARE the sort key, so the full aggregation is unavoidable.
     const needsGlobalAggregate =
       sort === "recommended" || sort === "reviews" || sort === "orders";
 
-    // Common CTEs: filter → dedupe → count (count sits BEFORE the joins to
-    // reviews/order_items so it never touches the full joined row count).
     const commonCTE = `
       WITH avail AS (
         SELECT mi.id,
@@ -204,11 +173,15 @@ export async function GET(request: Request) {
                h.name                                              AS hotel_name,
                h.logo_url                                          AS logo_url,
                COALESCE(bmi.sort_order::int, 0)                    AS branch_sort,
-               ${distanceExpr}                                     AS distance_km
+               ${distanceExpr}                                     AS distance_km,
+               u.name                                              AS unit_name,
+               u.short_name                                        AS unit_short_name,
+               mi.unit_quantity::float8                            AS unit_quantity
         FROM menu_items mi
         JOIN branch_menu_items bmi ON bmi.menu_item_id = mi.id
         JOIN branches          b   ON b.id            = bmi.branch_id
         JOIN hotels            h   ON h.id            = b.hotel_id
+        LEFT JOIN units        u   ON u.id            = mi.unit_id
         WHERE ${where.join(" AND ")}
       ),
       base AS (
@@ -226,9 +199,6 @@ export async function GET(request: Request) {
     let sql: string;
 
     if (!needsGlobalAggregate) {
-      // ── FAST PATH ──
-      // LIMIT the base rows first, THEN aggregate reviews/order counts
-      // only for the page of results we are actually returning.
       sql = `
         ${commonCTE},
         paged AS (
@@ -263,9 +233,6 @@ export async function GET(request: Request) {
         ORDER BY ${orderBy[sort]}
       `;
     } else {
-      // ── SLOW PATH (correct but required) ──
-      // The sort itself depends on the aggregates, so we must aggregate
-      // the entire candidate set before ORDER BY + LIMIT.
       sql = `
         ${commonCTE},
         rv AS (
@@ -318,15 +285,21 @@ export async function GET(request: Request) {
         review_count: Number(r.review_count),
         order_count: Number(r.order_count),
         distance_km: r.distance_km === null ? null : Number(r.distance_km),
+        // ── unit (null when the item has no unit) ──
+        unit: r.unit_name
+          ? {
+              name: r.unit_name,
+              short_name: r.unit_short_name,
+              quantity:
+                r.unit_quantity != null ? Number(r.unit_quantity) : null,
+            }
+          : null,
       })),
       page,
       total,
       totalPages: Math.max(1, Math.ceil(total / limit)),
     });
 
-    // Cache for CDN + browser. No-geo results are province-stable enough
-    // to serve for ~30s; without a province (first-visit "any" fallback)
-    // we still want a short cache so successive page loads are fast.
     if (!hasGeo) {
       res.headers.set(
         "Cache-Control",

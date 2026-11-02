@@ -124,6 +124,13 @@ export type table_sessions = $Result.DefaultSelection<Prisma.$table_sessionsPayl
  */
 export type menu_categories = $Result.DefaultSelection<Prisma.$menu_categoriesPayload>
 /**
+ * Model units
+ * Master list of unit names. No conversions, no base unit.
+ * Examples: Piece, Plate, Bowl, Cup, Slice, Bottle, Gram, Kg, ML, Liter.
+ * Each menu item picks one + sets its own quantity.
+ */
+export type units = $Result.DefaultSelection<Prisma.$unitsPayload>
+/**
  * Model menu_items
  * 
  */
@@ -636,6 +643,16 @@ export class PrismaClient<
     * ```
     */
   get menu_categories(): Prisma.menu_categoriesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.units`: Exposes CRUD operations for the **units** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Units
+    * const units = await prisma.units.findMany()
+    * ```
+    */
+  get units(): Prisma.unitsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.menu_items`: Exposes CRUD operations for the **menu_items** model.
@@ -1450,6 +1467,7 @@ export namespace Prisma {
     dining_tables: 'dining_tables',
     table_sessions: 'table_sessions',
     menu_categories: 'menu_categories',
+    units: 'units',
     menu_items: 'menu_items',
     product_categories: 'product_categories',
     branch_menu_items: 'branch_menu_items',
@@ -1501,7 +1519,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "menu_items" | "product_categories" | "branch_menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "units" | "menu_items" | "product_categories" | "branch_menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2982,6 +3000,80 @@ export namespace Prisma {
           count: {
             args: Prisma.menu_categoriesCountArgs<ExtArgs>
             result: $Utils.Optional<Menu_categoriesCountAggregateOutputType> | number
+          }
+        }
+      }
+      units: {
+        payload: Prisma.$unitsPayload<ExtArgs>
+        fields: Prisma.unitsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.unitsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.unitsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          findFirst: {
+            args: Prisma.unitsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.unitsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          findMany: {
+            args: Prisma.unitsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>[]
+          }
+          create: {
+            args: Prisma.unitsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          createMany: {
+            args: Prisma.unitsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.unitsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>[]
+          }
+          delete: {
+            args: Prisma.unitsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          update: {
+            args: Prisma.unitsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          deleteMany: {
+            args: Prisma.unitsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.unitsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.unitsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>[]
+          }
+          upsert: {
+            args: Prisma.unitsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$unitsPayload>
+          }
+          aggregate: {
+            args: Prisma.UnitsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUnits>
+          }
+          groupBy: {
+            args: Prisma.unitsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UnitsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.unitsCountArgs<ExtArgs>
+            result: $Utils.Optional<UnitsCountAggregateOutputType> | number
           }
         }
       }
@@ -5777,6 +5869,7 @@ export namespace Prisma {
     dining_tables?: dining_tablesOmit
     table_sessions?: table_sessionsOmit
     menu_categories?: menu_categoriesOmit
+    units?: unitsOmit
     menu_items?: menu_itemsOmit
     product_categories?: product_categoriesOmit
     branch_menu_items?: branch_menu_itemsOmit
@@ -6795,6 +6888,37 @@ export namespace Prisma {
    * Menu_categoriesCountOutputType without action
    */
   export type Menu_categoriesCountOutputTypeCountMenu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: menu_itemsWhereInput
+  }
+
+
+  /**
+   * Count Type UnitsCountOutputType
+   */
+
+  export type UnitsCountOutputType = {
+    menu_items: number
+  }
+
+  export type UnitsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    menu_items?: boolean | UnitsCountOutputTypeCountMenu_itemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UnitsCountOutputType without action
+   */
+  export type UnitsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UnitsCountOutputType
+     */
+    select?: UnitsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UnitsCountOutputType without action
+   */
+  export type UnitsCountOutputTypeCountMenu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: menu_itemsWhereInput
   }
 
@@ -31649,6 +31773,1128 @@ export namespace Prisma {
 
 
   /**
+   * Model units
+   */
+
+  export type AggregateUnits = {
+    _count: UnitsCountAggregateOutputType | null
+    _avg: UnitsAvgAggregateOutputType | null
+    _sum: UnitsSumAggregateOutputType | null
+    _min: UnitsMinAggregateOutputType | null
+    _max: UnitsMaxAggregateOutputType | null
+  }
+
+  export type UnitsAvgAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type UnitsSumAggregateOutputType = {
+    sort_order: number | null
+  }
+
+  export type UnitsMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    short_name: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type UnitsMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    short_name: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+  }
+
+  export type UnitsCountAggregateOutputType = {
+    id: number
+    name: number
+    short_name: number
+    sort_order: number
+    is_active: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type UnitsAvgAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type UnitsSumAggregateInputType = {
+    sort_order?: true
+  }
+
+  export type UnitsMinAggregateInputType = {
+    id?: true
+    name?: true
+    short_name?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type UnitsMaxAggregateInputType = {
+    id?: true
+    name?: true
+    short_name?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+  }
+
+  export type UnitsCountAggregateInputType = {
+    id?: true
+    name?: true
+    short_name?: true
+    sort_order?: true
+    is_active?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type UnitsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which units to aggregate.
+     */
+    where?: unitsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of units to fetch.
+     */
+    orderBy?: unitsOrderByWithRelationInput | unitsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: unitsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` units from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` units.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned units
+    **/
+    _count?: true | UnitsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UnitsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UnitsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UnitsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UnitsMaxAggregateInputType
+  }
+
+  export type GetUnitsAggregateType<T extends UnitsAggregateArgs> = {
+        [P in keyof T & keyof AggregateUnits]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUnits[P]>
+      : GetScalarType<T[P], AggregateUnits[P]>
+  }
+
+
+
+
+  export type unitsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: unitsWhereInput
+    orderBy?: unitsOrderByWithAggregationInput | unitsOrderByWithAggregationInput[]
+    by: UnitsScalarFieldEnum[] | UnitsScalarFieldEnum
+    having?: unitsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UnitsCountAggregateInputType | true
+    _avg?: UnitsAvgAggregateInputType
+    _sum?: UnitsSumAggregateInputType
+    _min?: UnitsMinAggregateInputType
+    _max?: UnitsMaxAggregateInputType
+  }
+
+  export type UnitsGroupByOutputType = {
+    id: string
+    name: string
+    short_name: string | null
+    sort_order: number | null
+    is_active: boolean | null
+    created_at: Date | null
+    _count: UnitsCountAggregateOutputType | null
+    _avg: UnitsAvgAggregateOutputType | null
+    _sum: UnitsSumAggregateOutputType | null
+    _min: UnitsMinAggregateOutputType | null
+    _max: UnitsMaxAggregateOutputType | null
+  }
+
+  type GetUnitsGroupByPayload<T extends unitsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UnitsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UnitsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UnitsGroupByOutputType[P]>
+            : GetScalarType<T[P], UnitsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type unitsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    short_name?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+    menu_items?: boolean | units$menu_itemsArgs<ExtArgs>
+    _count?: boolean | UnitsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["units"]>
+
+  export type unitsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    short_name?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["units"]>
+
+  export type unitsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    short_name?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["units"]>
+
+  export type unitsSelectScalar = {
+    id?: boolean
+    name?: boolean
+    short_name?: boolean
+    sort_order?: boolean
+    is_active?: boolean
+    created_at?: boolean
+  }
+
+  export type unitsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "short_name" | "sort_order" | "is_active" | "created_at", ExtArgs["result"]["units"]>
+  export type unitsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    menu_items?: boolean | units$menu_itemsArgs<ExtArgs>
+    _count?: boolean | UnitsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type unitsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type unitsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $unitsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "units"
+    objects: {
+      menu_items: Prisma.$menu_itemsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      short_name: string | null
+      sort_order: number | null
+      is_active: boolean | null
+      created_at: Date | null
+    }, ExtArgs["result"]["units"]>
+    composites: {}
+  }
+
+  type unitsGetPayload<S extends boolean | null | undefined | unitsDefaultArgs> = $Result.GetResult<Prisma.$unitsPayload, S>
+
+  type unitsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<unitsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UnitsCountAggregateInputType | true
+    }
+
+  export interface unitsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['units'], meta: { name: 'units' } }
+    /**
+     * Find zero or one Units that matches the filter.
+     * @param {unitsFindUniqueArgs} args - Arguments to find a Units
+     * @example
+     * // Get one Units
+     * const units = await prisma.units.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends unitsFindUniqueArgs>(args: SelectSubset<T, unitsFindUniqueArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Units that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {unitsFindUniqueOrThrowArgs} args - Arguments to find a Units
+     * @example
+     * // Get one Units
+     * const units = await prisma.units.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends unitsFindUniqueOrThrowArgs>(args: SelectSubset<T, unitsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Units that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsFindFirstArgs} args - Arguments to find a Units
+     * @example
+     * // Get one Units
+     * const units = await prisma.units.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends unitsFindFirstArgs>(args?: SelectSubset<T, unitsFindFirstArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Units that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsFindFirstOrThrowArgs} args - Arguments to find a Units
+     * @example
+     * // Get one Units
+     * const units = await prisma.units.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends unitsFindFirstOrThrowArgs>(args?: SelectSubset<T, unitsFindFirstOrThrowArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Units that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Units
+     * const units = await prisma.units.findMany()
+     * 
+     * // Get first 10 Units
+     * const units = await prisma.units.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const unitsWithIdOnly = await prisma.units.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends unitsFindManyArgs>(args?: SelectSubset<T, unitsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Units.
+     * @param {unitsCreateArgs} args - Arguments to create a Units.
+     * @example
+     * // Create one Units
+     * const Units = await prisma.units.create({
+     *   data: {
+     *     // ... data to create a Units
+     *   }
+     * })
+     * 
+     */
+    create<T extends unitsCreateArgs>(args: SelectSubset<T, unitsCreateArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Units.
+     * @param {unitsCreateManyArgs} args - Arguments to create many Units.
+     * @example
+     * // Create many Units
+     * const units = await prisma.units.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends unitsCreateManyArgs>(args?: SelectSubset<T, unitsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Units and returns the data saved in the database.
+     * @param {unitsCreateManyAndReturnArgs} args - Arguments to create many Units.
+     * @example
+     * // Create many Units
+     * const units = await prisma.units.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Units and only return the `id`
+     * const unitsWithIdOnly = await prisma.units.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends unitsCreateManyAndReturnArgs>(args?: SelectSubset<T, unitsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Units.
+     * @param {unitsDeleteArgs} args - Arguments to delete one Units.
+     * @example
+     * // Delete one Units
+     * const Units = await prisma.units.delete({
+     *   where: {
+     *     // ... filter to delete one Units
+     *   }
+     * })
+     * 
+     */
+    delete<T extends unitsDeleteArgs>(args: SelectSubset<T, unitsDeleteArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Units.
+     * @param {unitsUpdateArgs} args - Arguments to update one Units.
+     * @example
+     * // Update one Units
+     * const units = await prisma.units.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends unitsUpdateArgs>(args: SelectSubset<T, unitsUpdateArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Units.
+     * @param {unitsDeleteManyArgs} args - Arguments to filter Units to delete.
+     * @example
+     * // Delete a few Units
+     * const { count } = await prisma.units.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends unitsDeleteManyArgs>(args?: SelectSubset<T, unitsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Units.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Units
+     * const units = await prisma.units.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends unitsUpdateManyArgs>(args: SelectSubset<T, unitsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Units and returns the data updated in the database.
+     * @param {unitsUpdateManyAndReturnArgs} args - Arguments to update many Units.
+     * @example
+     * // Update many Units
+     * const units = await prisma.units.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Units and only return the `id`
+     * const unitsWithIdOnly = await prisma.units.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends unitsUpdateManyAndReturnArgs>(args: SelectSubset<T, unitsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Units.
+     * @param {unitsUpsertArgs} args - Arguments to update or create a Units.
+     * @example
+     * // Update or create a Units
+     * const units = await prisma.units.upsert({
+     *   create: {
+     *     // ... data to create a Units
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Units we want to update
+     *   }
+     * })
+     */
+    upsert<T extends unitsUpsertArgs>(args: SelectSubset<T, unitsUpsertArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Units.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsCountArgs} args - Arguments to filter Units to count.
+     * @example
+     * // Count the number of Units
+     * const count = await prisma.units.count({
+     *   where: {
+     *     // ... the filter for the Units we want to count
+     *   }
+     * })
+    **/
+    count<T extends unitsCountArgs>(
+      args?: Subset<T, unitsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UnitsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Units.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UnitsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UnitsAggregateArgs>(args: Subset<T, UnitsAggregateArgs>): Prisma.PrismaPromise<GetUnitsAggregateType<T>>
+
+    /**
+     * Group by Units.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {unitsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends unitsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: unitsGroupByArgs['orderBy'] }
+        : { orderBy?: unitsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, unitsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUnitsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the units model
+   */
+  readonly fields: unitsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for units.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__unitsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    menu_items<T extends units$menu_itemsArgs<ExtArgs> = {}>(args?: Subset<T, units$menu_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the units model
+   */
+  interface unitsFieldRefs {
+    readonly id: FieldRef<"units", 'String'>
+    readonly name: FieldRef<"units", 'String'>
+    readonly short_name: FieldRef<"units", 'String'>
+    readonly sort_order: FieldRef<"units", 'Int'>
+    readonly is_active: FieldRef<"units", 'Boolean'>
+    readonly created_at: FieldRef<"units", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * units findUnique
+   */
+  export type unitsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter, which units to fetch.
+     */
+    where: unitsWhereUniqueInput
+  }
+
+  /**
+   * units findUniqueOrThrow
+   */
+  export type unitsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter, which units to fetch.
+     */
+    where: unitsWhereUniqueInput
+  }
+
+  /**
+   * units findFirst
+   */
+  export type unitsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter, which units to fetch.
+     */
+    where?: unitsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of units to fetch.
+     */
+    orderBy?: unitsOrderByWithRelationInput | unitsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for units.
+     */
+    cursor?: unitsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` units from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` units.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of units.
+     */
+    distinct?: UnitsScalarFieldEnum | UnitsScalarFieldEnum[]
+  }
+
+  /**
+   * units findFirstOrThrow
+   */
+  export type unitsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter, which units to fetch.
+     */
+    where?: unitsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of units to fetch.
+     */
+    orderBy?: unitsOrderByWithRelationInput | unitsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for units.
+     */
+    cursor?: unitsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` units from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` units.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of units.
+     */
+    distinct?: UnitsScalarFieldEnum | UnitsScalarFieldEnum[]
+  }
+
+  /**
+   * units findMany
+   */
+  export type unitsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter, which units to fetch.
+     */
+    where?: unitsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of units to fetch.
+     */
+    orderBy?: unitsOrderByWithRelationInput | unitsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing units.
+     */
+    cursor?: unitsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` units from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` units.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of units.
+     */
+    distinct?: UnitsScalarFieldEnum | UnitsScalarFieldEnum[]
+  }
+
+  /**
+   * units create
+   */
+  export type unitsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a units.
+     */
+    data: XOR<unitsCreateInput, unitsUncheckedCreateInput>
+  }
+
+  /**
+   * units createMany
+   */
+  export type unitsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many units.
+     */
+    data: unitsCreateManyInput | unitsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * units createManyAndReturn
+   */
+  export type unitsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * The data used to create many units.
+     */
+    data: unitsCreateManyInput | unitsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * units update
+   */
+  export type unitsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a units.
+     */
+    data: XOR<unitsUpdateInput, unitsUncheckedUpdateInput>
+    /**
+     * Choose, which units to update.
+     */
+    where: unitsWhereUniqueInput
+  }
+
+  /**
+   * units updateMany
+   */
+  export type unitsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update units.
+     */
+    data: XOR<unitsUpdateManyMutationInput, unitsUncheckedUpdateManyInput>
+    /**
+     * Filter which units to update
+     */
+    where?: unitsWhereInput
+    /**
+     * Limit how many units to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * units updateManyAndReturn
+   */
+  export type unitsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * The data used to update units.
+     */
+    data: XOR<unitsUpdateManyMutationInput, unitsUncheckedUpdateManyInput>
+    /**
+     * Filter which units to update
+     */
+    where?: unitsWhereInput
+    /**
+     * Limit how many units to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * units upsert
+   */
+  export type unitsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the units to update in case it exists.
+     */
+    where: unitsWhereUniqueInput
+    /**
+     * In case the units found by the `where` argument doesn't exist, create a new units with this data.
+     */
+    create: XOR<unitsCreateInput, unitsUncheckedCreateInput>
+    /**
+     * In case the units was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<unitsUpdateInput, unitsUncheckedUpdateInput>
+  }
+
+  /**
+   * units delete
+   */
+  export type unitsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    /**
+     * Filter which units to delete.
+     */
+    where: unitsWhereUniqueInput
+  }
+
+  /**
+   * units deleteMany
+   */
+  export type unitsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which units to delete
+     */
+    where?: unitsWhereInput
+    /**
+     * Limit how many units to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * units.menu_items
+   */
+  export type units$menu_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the menu_items
+     */
+    select?: menu_itemsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the menu_items
+     */
+    omit?: menu_itemsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: menu_itemsInclude<ExtArgs> | null
+    where?: menu_itemsWhereInput
+    orderBy?: menu_itemsOrderByWithRelationInput | menu_itemsOrderByWithRelationInput[]
+    cursor?: menu_itemsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Menu_itemsScalarFieldEnum | Menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * units without action
+   */
+  export type unitsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model menu_items
    */
 
@@ -31661,12 +32907,14 @@ export namespace Prisma {
   }
 
   export type Menu_itemsAvgAggregateOutputType = {
+    unit_quantity: Decimal | null
     base_price: Decimal | null
     tax_rate: Decimal | null
     sort_order: number | null
   }
 
   export type Menu_itemsSumAggregateOutputType = {
+    unit_quantity: Decimal | null
     base_price: Decimal | null
     tax_rate: Decimal | null
     sort_order: number | null
@@ -31677,6 +32925,8 @@ export namespace Prisma {
     hotel_id: string | null
     category_id: string | null
     product_category_id: string | null
+    unit_id: string | null
+    unit_quantity: Decimal | null
     name: string | null
     description: string | null
     image_url: string | null
@@ -31697,6 +32947,8 @@ export namespace Prisma {
     hotel_id: string | null
     category_id: string | null
     product_category_id: string | null
+    unit_id: string | null
+    unit_quantity: Decimal | null
     name: string | null
     description: string | null
     image_url: string | null
@@ -31717,6 +32969,8 @@ export namespace Prisma {
     hotel_id: number
     category_id: number
     product_category_id: number
+    unit_id: number
+    unit_quantity: number
     name: number
     description: number
     image_url: number
@@ -31735,12 +32989,14 @@ export namespace Prisma {
 
 
   export type Menu_itemsAvgAggregateInputType = {
+    unit_quantity?: true
     base_price?: true
     tax_rate?: true
     sort_order?: true
   }
 
   export type Menu_itemsSumAggregateInputType = {
+    unit_quantity?: true
     base_price?: true
     tax_rate?: true
     sort_order?: true
@@ -31751,6 +33007,8 @@ export namespace Prisma {
     hotel_id?: true
     category_id?: true
     product_category_id?: true
+    unit_id?: true
+    unit_quantity?: true
     name?: true
     description?: true
     image_url?: true
@@ -31771,6 +33029,8 @@ export namespace Prisma {
     hotel_id?: true
     category_id?: true
     product_category_id?: true
+    unit_id?: true
+    unit_quantity?: true
     name?: true
     description?: true
     image_url?: true
@@ -31791,6 +33051,8 @@ export namespace Prisma {
     hotel_id?: true
     category_id?: true
     product_category_id?: true
+    unit_id?: true
+    unit_quantity?: true
     name?: true
     description?: true
     image_url?: true
@@ -31898,6 +33160,8 @@ export namespace Prisma {
     hotel_id: string
     category_id: string | null
     product_category_id: string | null
+    unit_id: string | null
+    unit_quantity: Decimal | null
     name: string
     description: string | null
     image_url: string | null
@@ -31937,6 +33201,8 @@ export namespace Prisma {
     hotel_id?: boolean
     category_id?: boolean
     product_category_id?: boolean
+    unit_id?: boolean
+    unit_quantity?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
@@ -31958,6 +33224,7 @@ export namespace Prisma {
     order_items?: boolean | menu_items$order_itemsArgs<ExtArgs>
     reviews?: boolean | menu_items$reviewsArgs<ExtArgs>
     branch_items?: boolean | menu_items$branch_itemsArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
     _count?: boolean | Menu_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
@@ -31966,6 +33233,8 @@ export namespace Prisma {
     hotel_id?: boolean
     category_id?: boolean
     product_category_id?: boolean
+    unit_id?: boolean
+    unit_quantity?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
@@ -31982,6 +33251,7 @@ export namespace Prisma {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
   export type menu_itemsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -31989,6 +33259,8 @@ export namespace Prisma {
     hotel_id?: boolean
     category_id?: boolean
     product_category_id?: boolean
+    unit_id?: boolean
+    unit_quantity?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
@@ -32005,6 +33277,7 @@ export namespace Prisma {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
   }, ExtArgs["result"]["menu_items"]>
 
   export type menu_itemsSelectScalar = {
@@ -32012,6 +33285,8 @@ export namespace Prisma {
     hotel_id?: boolean
     category_id?: boolean
     product_category_id?: boolean
+    unit_id?: boolean
+    unit_quantity?: boolean
     name?: boolean
     description?: boolean
     image_url?: boolean
@@ -32027,7 +33302,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type menu_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "category_id" | "product_category_id" | "name" | "description" | "image_url" | "base_price" | "tax_rate" | "is_available" | "is_online" | "is_kitchen" | "prep_station" | "product_kind" | "sort_order" | "created_at" | "updated_at", ExtArgs["result"]["menu_items"]>
+  export type menu_itemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "hotel_id" | "category_id" | "product_category_id" | "unit_id" | "unit_quantity" | "name" | "description" | "image_url" | "base_price" | "tax_rate" | "is_available" | "is_online" | "is_kitchen" | "prep_station" | "product_kind" | "sort_order" | "created_at" | "updated_at", ExtArgs["result"]["menu_items"]>
   export type menu_itemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
@@ -32037,17 +33312,20 @@ export namespace Prisma {
     order_items?: boolean | menu_items$order_itemsArgs<ExtArgs>
     reviews?: boolean | menu_items$reviewsArgs<ExtArgs>
     branch_items?: boolean | menu_items$branch_itemsArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
     _count?: boolean | Menu_itemsCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type menu_itemsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
   }
   export type menu_itemsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     hotels?: boolean | hotelsDefaultArgs<ExtArgs>
     menu_categories?: boolean | menu_items$menu_categoriesArgs<ExtArgs>
     product_category?: boolean | menu_items$product_categoryArgs<ExtArgs>
+    unit?: boolean | menu_items$unitArgs<ExtArgs>
   }
 
   export type $menu_itemsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -32061,12 +33339,15 @@ export namespace Prisma {
       order_items: Prisma.$order_itemsPayload<ExtArgs>[]
       reviews: Prisma.$reviewsPayload<ExtArgs>[]
       branch_items: Prisma.$branch_menu_itemsPayload<ExtArgs>[]
+      unit: Prisma.$unitsPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       hotel_id: string
       category_id: string | null
       product_category_id: string | null
+      unit_id: string | null
+      unit_quantity: Prisma.Decimal | null
       name: string
       description: string | null
       image_url: string | null
@@ -32482,6 +33763,7 @@ export namespace Prisma {
     order_items<T extends menu_items$order_itemsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$order_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$order_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends menu_items$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$reviewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch_items<T extends menu_items$branch_itemsArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$branch_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$branch_menu_itemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    unit<T extends menu_items$unitArgs<ExtArgs> = {}>(args?: Subset<T, menu_items$unitArgs<ExtArgs>>): Prisma__unitsClient<$Result.GetResult<Prisma.$unitsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32515,6 +33797,8 @@ export namespace Prisma {
     readonly hotel_id: FieldRef<"menu_items", 'String'>
     readonly category_id: FieldRef<"menu_items", 'String'>
     readonly product_category_id: FieldRef<"menu_items", 'String'>
+    readonly unit_id: FieldRef<"menu_items", 'String'>
+    readonly unit_quantity: FieldRef<"menu_items", 'Decimal'>
     readonly name: FieldRef<"menu_items", 'String'>
     readonly description: FieldRef<"menu_items", 'String'>
     readonly image_url: FieldRef<"menu_items", 'String'>
@@ -33084,6 +34368,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Branch_menu_itemsScalarFieldEnum | Branch_menu_itemsScalarFieldEnum[]
+  }
+
+  /**
+   * menu_items.unit
+   */
+  export type menu_items$unitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the units
+     */
+    select?: unitsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the units
+     */
+    omit?: unitsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: unitsInclude<ExtArgs> | null
+    where?: unitsWhereInput
   }
 
   /**
@@ -74881,11 +76184,25 @@ export namespace Prisma {
   export type Menu_categoriesScalarFieldEnum = (typeof Menu_categoriesScalarFieldEnum)[keyof typeof Menu_categoriesScalarFieldEnum]
 
 
+  export const UnitsScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    short_name: 'short_name',
+    sort_order: 'sort_order',
+    is_active: 'is_active',
+    created_at: 'created_at'
+  };
+
+  export type UnitsScalarFieldEnum = (typeof UnitsScalarFieldEnum)[keyof typeof UnitsScalarFieldEnum]
+
+
   export const Menu_itemsScalarFieldEnum: {
     id: 'id',
     hotel_id: 'hotel_id',
     category_id: 'category_id',
     product_category_id: 'product_category_id',
+    unit_id: 'unit_id',
+    unit_quantity: 'unit_quantity',
     name: 'name',
     description: 'description',
     image_url: 'image_url',
@@ -77192,6 +78509,68 @@ export namespace Prisma {
     default_product_category_id?: UuidNullableWithAggregatesFilter<"menu_categories"> | string | null
   }
 
+  export type unitsWhereInput = {
+    AND?: unitsWhereInput | unitsWhereInput[]
+    OR?: unitsWhereInput[]
+    NOT?: unitsWhereInput | unitsWhereInput[]
+    id?: UuidFilter<"units"> | string
+    name?: StringFilter<"units"> | string
+    short_name?: StringNullableFilter<"units"> | string | null
+    sort_order?: IntNullableFilter<"units"> | number | null
+    is_active?: BoolNullableFilter<"units"> | boolean | null
+    created_at?: DateTimeNullableFilter<"units"> | Date | string | null
+    menu_items?: Menu_itemsListRelationFilter
+  }
+
+  export type unitsOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    short_name?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    menu_items?: menu_itemsOrderByRelationAggregateInput
+  }
+
+  export type unitsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: unitsWhereInput | unitsWhereInput[]
+    OR?: unitsWhereInput[]
+    NOT?: unitsWhereInput | unitsWhereInput[]
+    short_name?: StringNullableFilter<"units"> | string | null
+    sort_order?: IntNullableFilter<"units"> | number | null
+    is_active?: BoolNullableFilter<"units"> | boolean | null
+    created_at?: DateTimeNullableFilter<"units"> | Date | string | null
+    menu_items?: Menu_itemsListRelationFilter
+  }, "id" | "name">
+
+  export type unitsOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    short_name?: SortOrderInput | SortOrder
+    sort_order?: SortOrderInput | SortOrder
+    is_active?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: unitsCountOrderByAggregateInput
+    _avg?: unitsAvgOrderByAggregateInput
+    _max?: unitsMaxOrderByAggregateInput
+    _min?: unitsMinOrderByAggregateInput
+    _sum?: unitsSumOrderByAggregateInput
+  }
+
+  export type unitsScalarWhereWithAggregatesInput = {
+    AND?: unitsScalarWhereWithAggregatesInput | unitsScalarWhereWithAggregatesInput[]
+    OR?: unitsScalarWhereWithAggregatesInput[]
+    NOT?: unitsScalarWhereWithAggregatesInput | unitsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"units"> | string
+    name?: StringWithAggregatesFilter<"units"> | string
+    short_name?: StringNullableWithAggregatesFilter<"units"> | string | null
+    sort_order?: IntNullableWithAggregatesFilter<"units"> | number | null
+    is_active?: BoolNullableWithAggregatesFilter<"units"> | boolean | null
+    created_at?: DateTimeNullableWithAggregatesFilter<"units"> | Date | string | null
+  }
+
   export type menu_itemsWhereInput = {
     AND?: menu_itemsWhereInput | menu_itemsWhereInput[]
     OR?: menu_itemsWhereInput[]
@@ -77200,6 +78579,8 @@ export namespace Prisma {
     hotel_id?: UuidFilter<"menu_items"> | string
     category_id?: UuidNullableFilter<"menu_items"> | string | null
     product_category_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_quantity?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     name?: StringFilter<"menu_items"> | string
     description?: StringNullableFilter<"menu_items"> | string | null
     image_url?: StringNullableFilter<"menu_items"> | string | null
@@ -77221,6 +78602,7 @@ export namespace Prisma {
     order_items?: Order_itemsListRelationFilter
     reviews?: ReviewsListRelationFilter
     branch_items?: Branch_menu_itemsListRelationFilter
+    unit?: XOR<UnitsNullableScalarRelationFilter, unitsWhereInput> | null
   }
 
   export type menu_itemsOrderByWithRelationInput = {
@@ -77228,6 +78610,8 @@ export namespace Prisma {
     hotel_id?: SortOrder
     category_id?: SortOrderInput | SortOrder
     product_category_id?: SortOrderInput | SortOrder
+    unit_id?: SortOrderInput | SortOrder
+    unit_quantity?: SortOrderInput | SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     image_url?: SortOrderInput | SortOrder
@@ -77249,6 +78633,7 @@ export namespace Prisma {
     order_items?: order_itemsOrderByRelationAggregateInput
     reviews?: reviewsOrderByRelationAggregateInput
     branch_items?: branch_menu_itemsOrderByRelationAggregateInput
+    unit?: unitsOrderByWithRelationInput
   }
 
   export type menu_itemsWhereUniqueInput = Prisma.AtLeast<{
@@ -77259,6 +78644,8 @@ export namespace Prisma {
     hotel_id?: UuidFilter<"menu_items"> | string
     category_id?: UuidNullableFilter<"menu_items"> | string | null
     product_category_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_quantity?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     name?: StringFilter<"menu_items"> | string
     description?: StringNullableFilter<"menu_items"> | string | null
     image_url?: StringNullableFilter<"menu_items"> | string | null
@@ -77280,6 +78667,7 @@ export namespace Prisma {
     order_items?: Order_itemsListRelationFilter
     reviews?: ReviewsListRelationFilter
     branch_items?: Branch_menu_itemsListRelationFilter
+    unit?: XOR<UnitsNullableScalarRelationFilter, unitsWhereInput> | null
   }, "id">
 
   export type menu_itemsOrderByWithAggregationInput = {
@@ -77287,6 +78675,8 @@ export namespace Prisma {
     hotel_id?: SortOrder
     category_id?: SortOrderInput | SortOrder
     product_category_id?: SortOrderInput | SortOrder
+    unit_id?: SortOrderInput | SortOrder
+    unit_quantity?: SortOrderInput | SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     image_url?: SortOrderInput | SortOrder
@@ -77315,6 +78705,8 @@ export namespace Prisma {
     hotel_id?: UuidWithAggregatesFilter<"menu_items"> | string
     category_id?: UuidNullableWithAggregatesFilter<"menu_items"> | string | null
     product_category_id?: UuidNullableWithAggregatesFilter<"menu_items"> | string | null
+    unit_id?: UuidNullableWithAggregatesFilter<"menu_items"> | string | null
+    unit_quantity?: DecimalNullableWithAggregatesFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     name?: StringWithAggregatesFilter<"menu_items"> | string
     description?: StringNullableWithAggregatesFilter<"menu_items"> | string | null
     image_url?: StringNullableWithAggregatesFilter<"menu_items"> | string | null
@@ -81991,8 +83383,76 @@ export namespace Prisma {
     default_product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type unitsCreateInput = {
+    id?: string
+    name: string
+    short_name?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    menu_items?: menu_itemsCreateNestedManyWithoutUnitInput
+  }
+
+  export type unitsUncheckedCreateInput = {
+    id?: string
+    name: string
+    short_name?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutUnitInput
+  }
+
+  export type unitsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_items?: menu_itemsUpdateManyWithoutUnitNestedInput
+  }
+
+  export type unitsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutUnitNestedInput
+  }
+
+  export type unitsCreateManyInput = {
+    id?: string
+    name: string
+    short_name?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type unitsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type unitsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type menu_itemsCreateInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -82014,6 +83474,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateInput = {
@@ -82021,6 +83482,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -82043,6 +83506,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82064,6 +83528,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateInput = {
@@ -82071,6 +83536,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82096,6 +83563,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -82113,6 +83582,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82133,6 +83603,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -86710,6 +88182,41 @@ export namespace Prisma {
     sort_order?: SortOrder
   }
 
+  export type unitsCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    short_name?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type unitsAvgOrderByAggregateInput = {
+    sort_order?: SortOrder
+  }
+
+  export type unitsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    short_name?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type unitsMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    short_name?: SortOrder
+    sort_order?: SortOrder
+    is_active?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type unitsSumOrderByAggregateInput = {
+    sort_order?: SortOrder
+  }
+
   export type Menu_categoriesNullableScalarRelationFilter = {
     is?: menu_categoriesWhereInput | null
     isNot?: menu_categoriesWhereInput | null
@@ -86733,6 +88240,11 @@ export namespace Prisma {
     none?: order_itemsWhereInput
   }
 
+  export type UnitsNullableScalarRelationFilter = {
+    is?: unitsWhereInput | null
+    isNot?: unitsWhereInput | null
+  }
+
   export type menu_item_ingredientsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -86750,6 +88262,8 @@ export namespace Prisma {
     hotel_id?: SortOrder
     category_id?: SortOrder
     product_category_id?: SortOrder
+    unit_id?: SortOrder
+    unit_quantity?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
@@ -86766,6 +88280,7 @@ export namespace Prisma {
   }
 
   export type menu_itemsAvgOrderByAggregateInput = {
+    unit_quantity?: SortOrder
     base_price?: SortOrder
     tax_rate?: SortOrder
     sort_order?: SortOrder
@@ -86776,6 +88291,8 @@ export namespace Prisma {
     hotel_id?: SortOrder
     category_id?: SortOrder
     product_category_id?: SortOrder
+    unit_id?: SortOrder
+    unit_quantity?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
@@ -86796,6 +88313,8 @@ export namespace Prisma {
     hotel_id?: SortOrder
     category_id?: SortOrder
     product_category_id?: SortOrder
+    unit_id?: SortOrder
+    unit_quantity?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image_url?: SortOrder
@@ -86812,6 +88331,7 @@ export namespace Prisma {
   }
 
   export type menu_itemsSumOrderByAggregateInput = {
+    unit_quantity?: SortOrder
     base_price?: SortOrder
     tax_rate?: SortOrder
     sort_order?: SortOrder
@@ -91782,6 +93302,48 @@ export namespace Prisma {
     deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
   }
 
+  export type menu_itemsCreateNestedManyWithoutUnitInput = {
+    create?: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput> | menu_itemsCreateWithoutUnitInput[] | menu_itemsUncheckedCreateWithoutUnitInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutUnitInput | menu_itemsCreateOrConnectWithoutUnitInput[]
+    createMany?: menu_itemsCreateManyUnitInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  }
+
+  export type menu_itemsUncheckedCreateNestedManyWithoutUnitInput = {
+    create?: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput> | menu_itemsCreateWithoutUnitInput[] | menu_itemsUncheckedCreateWithoutUnitInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutUnitInput | menu_itemsCreateOrConnectWithoutUnitInput[]
+    createMany?: menu_itemsCreateManyUnitInputEnvelope
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+  }
+
+  export type menu_itemsUpdateManyWithoutUnitNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput> | menu_itemsCreateWithoutUnitInput[] | menu_itemsUncheckedCreateWithoutUnitInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutUnitInput | menu_itemsCreateOrConnectWithoutUnitInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutUnitInput | menu_itemsUpsertWithWhereUniqueWithoutUnitInput[]
+    createMany?: menu_itemsCreateManyUnitInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutUnitInput | menu_itemsUpdateWithWhereUniqueWithoutUnitInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutUnitInput | menu_itemsUpdateManyWithWhereWithoutUnitInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutUnitNestedInput = {
+    create?: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput> | menu_itemsCreateWithoutUnitInput[] | menu_itemsUncheckedCreateWithoutUnitInput[]
+    connectOrCreate?: menu_itemsCreateOrConnectWithoutUnitInput | menu_itemsCreateOrConnectWithoutUnitInput[]
+    upsert?: menu_itemsUpsertWithWhereUniqueWithoutUnitInput | menu_itemsUpsertWithWhereUniqueWithoutUnitInput[]
+    createMany?: menu_itemsCreateManyUnitInputEnvelope
+    set?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    disconnect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    delete?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    connect?: menu_itemsWhereUniqueInput | menu_itemsWhereUniqueInput[]
+    update?: menu_itemsUpdateWithWhereUniqueWithoutUnitInput | menu_itemsUpdateWithWhereUniqueWithoutUnitInput[]
+    updateMany?: menu_itemsUpdateManyWithWhereWithoutUnitInput | menu_itemsUpdateManyWithWhereWithoutUnitInput[]
+    deleteMany?: menu_itemsScalarWhereInput | menu_itemsScalarWhereInput[]
+  }
+
   export type hotelsCreateNestedOneWithoutMenu_itemsInput = {
     create?: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
     connectOrCreate?: hotelsCreateOrConnectWithoutMenu_itemsInput
@@ -91833,6 +93395,12 @@ export namespace Prisma {
     connectOrCreate?: branch_menu_itemsCreateOrConnectWithoutMenu_itemInput | branch_menu_itemsCreateOrConnectWithoutMenu_itemInput[]
     createMany?: branch_menu_itemsCreateManyMenu_itemInputEnvelope
     connect?: branch_menu_itemsWhereUniqueInput | branch_menu_itemsWhereUniqueInput[]
+  }
+
+  export type unitsCreateNestedOneWithoutMenu_itemsInput = {
+    create?: XOR<unitsCreateWithoutMenu_itemsInput, unitsUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: unitsCreateOrConnectWithoutMenu_itemsInput
+    connect?: unitsWhereUniqueInput
   }
 
   export type menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput = {
@@ -91966,6 +93534,16 @@ export namespace Prisma {
     update?: branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput | branch_menu_itemsUpdateWithWhereUniqueWithoutMenu_itemInput[]
     updateMany?: branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput | branch_menu_itemsUpdateManyWithWhereWithoutMenu_itemInput[]
     deleteMany?: branch_menu_itemsScalarWhereInput | branch_menu_itemsScalarWhereInput[]
+  }
+
+  export type unitsUpdateOneWithoutMenu_itemsNestedInput = {
+    create?: XOR<unitsCreateWithoutMenu_itemsInput, unitsUncheckedCreateWithoutMenu_itemsInput>
+    connectOrCreate?: unitsCreateOrConnectWithoutMenu_itemsInput
+    upsert?: unitsUpsertWithoutMenu_itemsInput
+    disconnect?: unitsWhereInput | boolean
+    delete?: unitsWhereInput | boolean
+    connect?: unitsWhereUniqueInput
+    update?: XOR<XOR<unitsUpdateToOneWithWhereWithoutMenu_itemsInput, unitsUpdateWithoutMenu_itemsInput>, unitsUncheckedUpdateWithoutMenu_itemsInput>
   }
 
   export type menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput = {
@@ -96825,6 +98403,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutHotelsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -96845,12 +98424,15 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutHotelsInput = {
     id?: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -97188,6 +98770,8 @@ export namespace Prisma {
     hotel_id?: UuidFilter<"menu_items"> | string
     category_id?: UuidNullableFilter<"menu_items"> | string | null
     product_category_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_id?: UuidNullableFilter<"menu_items"> | string | null
+    unit_quantity?: DecimalNullableFilter<"menu_items"> | Decimal | DecimalJsLike | number | string | null
     name?: StringFilter<"menu_items"> | string
     description?: StringNullableFilter<"menu_items"> | string | null
     image_url?: StringNullableFilter<"menu_items"> | string | null
@@ -101338,6 +102922,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutMenu_categoriesInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -101358,12 +102943,15 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_categoriesInput = {
     id?: string
     hotel_id: string
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -101504,6 +103092,84 @@ export namespace Prisma {
   export type menu_itemsUpdateManyWithWhereWithoutMenu_categoriesInput = {
     where: menu_itemsScalarWhereInput
     data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutMenu_categoriesInput>
+  }
+
+  export type menu_itemsCreateWithoutUnitInput = {
+    id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    hotels: hotelsCreateNestedOneWithoutMenu_itemsInput
+    menu_categories?: menu_categoriesCreateNestedOneWithoutMenu_itemsInput
+    product_category?: product_categoriesCreateNestedOneWithoutItemsInput
+    menu_item_ingredients?: menu_item_ingredientsCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsUncheckedCreateWithoutUnitInput = {
+    id?: string
+    hotel_id: string
+    category_id?: string | null
+    product_category_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    order_items?: order_itemsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    reviews?: reviewsUncheckedCreateNestedManyWithoutMenu_itemsInput
+    branch_items?: branch_menu_itemsUncheckedCreateNestedManyWithoutMenu_itemInput
+  }
+
+  export type menu_itemsCreateOrConnectWithoutUnitInput = {
+    where: menu_itemsWhereUniqueInput
+    create: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput>
+  }
+
+  export type menu_itemsCreateManyUnitInputEnvelope = {
+    data: menu_itemsCreateManyUnitInput | menu_itemsCreateManyUnitInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type menu_itemsUpsertWithWhereUniqueWithoutUnitInput = {
+    where: menu_itemsWhereUniqueInput
+    update: XOR<menu_itemsUpdateWithoutUnitInput, menu_itemsUncheckedUpdateWithoutUnitInput>
+    create: XOR<menu_itemsCreateWithoutUnitInput, menu_itemsUncheckedCreateWithoutUnitInput>
+  }
+
+  export type menu_itemsUpdateWithWhereUniqueWithoutUnitInput = {
+    where: menu_itemsWhereUniqueInput
+    data: XOR<menu_itemsUpdateWithoutUnitInput, menu_itemsUncheckedUpdateWithoutUnitInput>
+  }
+
+  export type menu_itemsUpdateManyWithWhereWithoutUnitInput = {
+    where: menu_itemsScalarWhereInput
+    data: XOR<menu_itemsUpdateManyMutationInput, menu_itemsUncheckedUpdateManyWithoutUnitInput>
   }
 
   export type hotelsCreateWithoutMenu_itemsInput = {
@@ -101751,6 +103417,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type unitsCreateWithoutMenu_itemsInput = {
+    id?: string
+    name: string
+    short_name?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type unitsUncheckedCreateWithoutMenu_itemsInput = {
+    id?: string
+    name: string
+    short_name?: string | null
+    sort_order?: number | null
+    is_active?: boolean | null
+    created_at?: Date | string | null
+  }
+
+  export type unitsCreateOrConnectWithoutMenu_itemsInput = {
+    where: unitsWhereUniqueInput
+    create: XOR<unitsCreateWithoutMenu_itemsInput, unitsUncheckedCreateWithoutMenu_itemsInput>
+  }
+
   export type hotelsUpsertWithoutMenu_itemsInput = {
     update: XOR<hotelsUpdateWithoutMenu_itemsInput, hotelsUncheckedUpdateWithoutMenu_itemsInput>
     create: XOR<hotelsCreateWithoutMenu_itemsInput, hotelsUncheckedCreateWithoutMenu_itemsInput>
@@ -101992,6 +103681,35 @@ export namespace Prisma {
     data: XOR<branch_menu_itemsUpdateManyMutationInput, branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemInput>
   }
 
+  export type unitsUpsertWithoutMenu_itemsInput = {
+    update: XOR<unitsUpdateWithoutMenu_itemsInput, unitsUncheckedUpdateWithoutMenu_itemsInput>
+    create: XOR<unitsCreateWithoutMenu_itemsInput, unitsUncheckedCreateWithoutMenu_itemsInput>
+    where?: unitsWhereInput
+  }
+
+  export type unitsUpdateToOneWithWhereWithoutMenu_itemsInput = {
+    where?: unitsWhereInput
+    data: XOR<unitsUpdateWithoutMenu_itemsInput, unitsUncheckedUpdateWithoutMenu_itemsInput>
+  }
+
+  export type unitsUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type unitsUncheckedUpdateWithoutMenu_itemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    short_name?: NullableStringFieldUpdateOperationsInput | string | null
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    is_active?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type product_categoriesCreateWithoutChildrenInput = {
     id?: string
     key: string
@@ -102069,6 +103787,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutProduct_categoryInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102089,12 +103808,15 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutProduct_categoryInput = {
     id?: string
     hotel_id: string
     category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102351,6 +104073,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutBranch_itemsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102371,6 +104094,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutBranch_itemsInput = {
@@ -102378,6 +104102,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102512,6 +104238,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutBranch_itemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102532,6 +104259,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutBranch_itemsInput = {
@@ -102539,6 +104267,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102560,6 +104290,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutMenu_item_modifier_groupsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102580,6 +104311,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_item_modifier_groupsInput = {
@@ -102587,6 +104319,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -102646,6 +104380,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutMenu_item_modifier_groupsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -102666,6 +104401,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_item_modifier_groupsInput = {
@@ -102673,6 +104409,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -103063,6 +104801,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutMenu_item_ingredientsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -103083,6 +104822,7 @@ export namespace Prisma {
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutMenu_item_ingredientsInput = {
@@ -103090,6 +104830,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -103160,6 +104902,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutMenu_item_ingredientsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -103180,6 +104923,7 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_item_ingredientsInput = {
@@ -103187,6 +104931,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -105094,6 +106840,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutOrder_itemsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -105114,6 +106861,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
     reviews?: reviewsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutOrder_itemsInput = {
@@ -105121,6 +106869,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -105255,6 +107005,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutOrder_itemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -105275,6 +107026,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutOrder_itemsInput = {
@@ -105282,6 +107034,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -105688,6 +107442,7 @@ export namespace Prisma {
 
   export type menu_itemsCreateWithoutReviewsInput = {
     id?: string
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -105708,6 +107463,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsCreateNestedManyWithoutMenu_itemsInput
     order_items?: order_itemsCreateNestedManyWithoutMenu_itemsInput
     branch_items?: branch_menu_itemsCreateNestedManyWithoutMenu_itemInput
+    unit?: unitsCreateNestedOneWithoutMenu_itemsInput
   }
 
   export type menu_itemsUncheckedCreateWithoutReviewsInput = {
@@ -105715,6 +107471,8 @@ export namespace Prisma {
     hotel_id: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -105953,6 +107711,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutReviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -105973,6 +107732,7 @@ export namespace Prisma {
     menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutReviewsInput = {
@@ -105980,6 +107740,8 @@ export namespace Prisma {
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -114935,6 +116697,8 @@ export namespace Prisma {
     id?: string
     category_id?: string | null
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -115044,6 +116808,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutHotelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -115064,12 +116829,15 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutHotelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -115094,6 +116862,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117262,6 +119032,8 @@ export namespace Prisma {
     id?: string
     hotel_id: string
     product_category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -117279,6 +119051,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117299,12 +119072,15 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutMenu_categoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117329,6 +119105,102 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
     product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type menu_itemsCreateManyUnitInput = {
+    id?: string
+    hotel_id: string
+    category_id?: string | null
+    product_category_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
+    name: string
+    description?: string | null
+    image_url?: string | null
+    base_price: Decimal | DecimalJsLike | number | string
+    tax_rate?: Decimal | DecimalJsLike | number | string | null
+    is_available?: boolean | null
+    is_online?: boolean
+    is_kitchen?: boolean | null
+    prep_station?: string | null
+    product_kind?: string
+    sort_order?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type menu_itemsUpdateWithoutUnitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    hotels?: hotelsUpdateOneRequiredWithoutMenu_itemsNestedInput
+    menu_categories?: menu_categoriesUpdateOneWithoutMenu_itemsNestedInput
+    product_category?: product_categoriesUpdateOneWithoutItemsNestedInput
+    menu_item_ingredients?: menu_item_ingredientsUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateWithoutUnitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    base_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    tax_rate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_available?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    is_kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    prep_station?: NullableStringFieldUpdateOperationsInput | string | null
+    product_kind?: StringFieldUpdateOperationsInput | string
+    sort_order?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    menu_item_ingredients?: menu_item_ingredientsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    menu_item_modifier_groups?: menu_item_modifier_groupsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    order_items?: order_itemsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    reviews?: reviewsUncheckedUpdateManyWithoutMenu_itemsNestedInput
+    branch_items?: branch_menu_itemsUncheckedUpdateManyWithoutMenu_itemNestedInput
+  }
+
+  export type menu_itemsUncheckedUpdateManyWithoutUnitInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    hotel_id?: StringFieldUpdateOperationsInput | string
+    category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    product_category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117532,6 +119404,8 @@ export namespace Prisma {
     id?: string
     hotel_id: string
     category_id?: string | null
+    unit_id?: string | null
+    unit_quantity?: Decimal | DecimalJsLike | number | string | null
     name: string
     description?: string | null
     image_url?: string | null
@@ -117599,6 +119473,7 @@ export namespace Prisma {
 
   export type menu_itemsUpdateWithoutProduct_categoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117619,12 +119494,15 @@ export namespace Prisma {
     order_items?: order_itemsUpdateManyWithoutMenu_itemsNestedInput
     reviews?: reviewsUpdateManyWithoutMenu_itemsNestedInput
     branch_items?: branch_menu_itemsUpdateManyWithoutMenu_itemNestedInput
+    unit?: unitsUpdateOneWithoutMenu_itemsNestedInput
   }
 
   export type menu_itemsUncheckedUpdateWithoutProduct_categoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -117649,6 +119527,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     hotel_id?: StringFieldUpdateOperationsInput | string
     category_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_id?: NullableStringFieldUpdateOperationsInput | string | null
+    unit_quantity?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image_url?: NullableStringFieldUpdateOperationsInput | string | null

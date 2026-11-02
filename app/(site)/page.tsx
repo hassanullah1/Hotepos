@@ -29,6 +29,12 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
+type ItemUnit = {
+  name: string;
+  short_name: string | null;
+  quantity: number | null;
+};
+
 type Item = {
   id: string;
   name: string;
@@ -42,6 +48,7 @@ type Item = {
   review_count: number;
   order_count: number;
   distance_km: number | null;
+  unit: ItemUnit | null;
 };
 
 type Province = { id: string; name: string };
@@ -127,17 +134,15 @@ const orderText = {
     noProvinceHint: "ولایتونه لا نه دي جوړ شوي. له اډمین څخه وغواړئ.",
     searchProvince: "ولایت ولټوئ…",
     noProvinceResults: "هیڅ ولایت ونه موندل شو",
-
     allCategories: "ټول",
     foods: "خواړه",
     sweets: "خواږه",
     meat: "غوښه",
-    dairy: "لبنيات",
+    dairy: "لبنیات",
     cakes: "کیک او کلچي",
     oil: "غوړي",
     fruits: "مېوې",
     drinks: "څښاک",
-
     loadingCategories: "کټګورۍ بارول…",
     sort: {
       recommended: "وړاندیز شوی",
@@ -200,10 +205,22 @@ function shorten(text: string, max = 80) {
   return clean.length > max ? clean.slice(0, max).trimEnd() + "..." : clean;
 }
 
+// ── unit formatter — "1 Plate", "250 Gram", or null ──
+function formatUnit(unit: ItemUnit | null): string | null {
+  if (!unit) return null;
+  if (unit.quantity != null && Number.isFinite(unit.quantity)) {
+    const qty = Number(unit.quantity);
+    // drop trailing .0 → 1 instead of 1.0
+    const qtyStr = Number.isInteger(qty) ? String(qty) : qty.toString();
+    return `${qtyStr} : ${unit.short_name}`;
+  }
+  return unit.short_name;
+}
+
 const PAGE_SIZE = 24;
 const PROVINCE_STORAGE_KEY = "buyer_province_id";
 
-/* ---------------- Province combobox (portal, always on top) ---------------- */
+/* ---------------- Province combobox ---------------- */
 function ProvinceCombobox({
   provinces,
   value,
@@ -462,12 +479,7 @@ function ProvinceCombobox({
   );
 }
 
-/* ---------------- Product category bar ----------------
- * Mobile  (< sm): round "tiles" — big tappable icon/photo with the label
- *                 under it, horizontal scroll-snap, faded edges, active tile
- *                 auto-centers, skeleton while loading.
- * Desktop (>= sm): compact pills with counts (same as before, polished).
- */
+/* ---------------- Product category bar ---------------- */
 function CategoryBar({
   categories,
   totalItems,
@@ -488,32 +500,25 @@ function CategoryBar({
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const desktopScrollRef = useRef<HTMLDivElement>(null);
 
-  // Read the localized label straight from orderText by the DB `key`.
-  // If the key isn't in the map (admin added a category later),
-  // fall back to the name column stored in the database.
   const labelFor = (key: string, fallback: string): string => {
     const v = (t as Record<string, unknown>)[key];
     return typeof v === "string" && v.length > 0 ? v : fallback;
   };
 
-  // Keep the selected category visible: scroll it to the center of the row
-  // (horizontally only — never moves the page vertically).
   useEffect(() => {
     [mobileScrollRef.current, desktopScrollRef.current].forEach((box) => {
       if (!box) return;
       const el = box.querySelector<HTMLElement>('[data-active="true"]');
-      if (!el || box.offsetParent === null) return; // skip hidden layout
+      if (!el || box.offsetParent === null) return;
       const target = el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2;
       box.scrollTo({ left: target, behavior: "smooth" });
     });
   }, [value, isReady]);
 
-  /* ---------- shared styles ---------- */
   const fade =
     "[mask-image:linear-gradient(to_right,transparent,#000_20px,#000_calc(100%-20px),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_20px,#000_calc(100%-20px),transparent)]";
   const noScrollbar = "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 
-  /* ---------- MOBILE tile ---------- */
   const Tile = ({
     id,
     label,
@@ -602,7 +607,6 @@ function CategoryBar({
     </button>
   );
 
-  /* ---------- DESKTOP pill ---------- */
   const pillBase =
     "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-all duration-300 inline-flex items-center gap-1.5";
   const pillActive =
@@ -628,7 +632,6 @@ function CategoryBar({
 
   return (
     <div className="mb-3 sm:mb-4">
-      {/* ===== Mobile: tiles ===== */}
       <div
         ref={mobileScrollRef}
         dir={t.dir}
@@ -676,7 +679,6 @@ function CategoryBar({
           ))}
       </div>
 
-      {/* ===== Desktop: pills ===== */}
       <div
         className={`hidden overflow-hidden rounded-2xl border transition-colors sm:block ${
           isDark
@@ -772,6 +774,7 @@ const DishCard = memo(function DishCard({
   onOpen: (item: Item) => void;
   onPrefetch: (item: Item) => void;
 }) {
+  const unitText = formatUnit(it.unit);
   return (
     <div
       className="dish-slot"
@@ -909,27 +912,41 @@ const DishCard = memo(function DishCard({
 
           <div className="mt-auto">
             <div
-              className={`mt-2 flex items-center justify-between gap-1 border-t pt-2 sm:mt-3 sm:pt-3 ${
+              className={`mt-2 flex items-end justify-between gap-1 border-t pt-2 sm:mt-3 sm:pt-3 ${
                 isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
               }`}
             >
-              <span
-                className={`text-[13px] font-semibold sm:text-base ${
-                  isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
-                }`}
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {Number(it.price).toFixed(2)}{" "}
+              <div className="flex min-w-0 flex-col">
                 <span
-                  className={`text-[10px] font-medium sm:text-xs ${
-                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                  className={`text-[13px] font-semibold sm:text-base ${
+                    isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
                   }`}
+                  style={{ fontFamily: "var(--font-display)" }}
                 >
-                  {it.currency}
+                  {Number(it.price).toFixed(2)}{" "}
+                  <span
+                    className={`text-[10px] font-medium sm:text-xs ${
+                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                    }`}
+                  >
+                    {it.currency}
+                  </span>
                 </span>
-              </span>
+
+                {unitText && (
+                  <span
+                    className={`mt-0.5 truncate text-[9.5px] font-medium sm:text-[10.5px] ${
+                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
+                    }`}
+                    title={unitText}
+                  >
+                    {unitText}
+                  </span>
+                )}
+              </div>
+
               <span
-                className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
+                className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
                   isDark
                     ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
                     : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
@@ -976,8 +993,6 @@ export default function BuyerMenuDiscoveryPage() {
   const [provinceReady, setProvinceReady] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate cached province on mount, then mark page "hydrated" so the items
-  // effect can fire before /provinces responds.
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
@@ -988,7 +1003,6 @@ export default function BuyerMenuDiscoveryPage() {
     setHydrated(true);
   }, []);
 
-  // ── Product categories ──
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [categoriesReady, setCategoriesReady] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
@@ -1011,7 +1025,6 @@ export default function BuyerMenuDiscoveryPage() {
   const abortRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
 
-  // ---- Load provinces ----
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -1036,7 +1049,7 @@ export default function BuyerMenuDiscoveryPage() {
           setProvinceId(list[0].id);
         }
       } catch {
-        /* ignore — items effect handles failures */
+        /* ignore */
       } finally {
         if (!cancelled) setProvinceReady(true);
       }
@@ -1046,7 +1059,6 @@ export default function BuyerMenuDiscoveryPage() {
     };
   }, []);
 
-  // ---- Load product categories (scoped to province) ----
   useEffect(() => {
     if (!provinceId) {
       setCategories([]);
@@ -1083,7 +1095,6 @@ export default function BuyerMenuDiscoveryPage() {
     };
   }, [provinceId]);
 
-  // A category from the old province may not exist in the new one.
   useEffect(() => {
     setSelectedCategory("");
   }, [provinceId]);
@@ -1303,7 +1314,6 @@ export default function BuyerMenuDiscoveryPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-6">
-        {/* Search + province + sorting come first on mobile, then categories */}
         <div className="rounded-2xl bg-gradient-to-br from-[#C9A227]/45 via-[#C9A227]/10 to-[#C9A227]/25 p-px shadow-sm">
           <div
             className={`rounded-[15px] p-3 backdrop-blur-md transition-colors sm:p-5 ${
@@ -1342,7 +1352,6 @@ export default function BuyerMenuDiscoveryPage() {
               </div>
             </div>
 
-            {/* Sort chips: one swipeable row on mobile, wrap on desktop */}
             <div
               className={`-mx-3 mt-2.5 flex items-center gap-1.5 overflow-x-auto px-3 pb-0.5 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
             >
@@ -1582,7 +1591,6 @@ export default function BuyerMenuDiscoveryPage() {
   );
 }
 
-/* ---------------- Global CSS ---------------- */
 const PAGE_CSS = `
         .dish-slot {
           position: relative;

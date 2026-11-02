@@ -16,8 +16,11 @@ const ITEM_SELECT = {
   sort_order: true,
   category_id: true,
   product_category_id: true,
+  unit_id: true,
+  unit_quantity: true,
   menu_categories: { select: { id: true, name: true } },
   product_category: { select: { id: true, key: true, name: true } },
+  unit: { select: { id: true, name: true, short_name: true } },
   branch_items: {
     select: {
       branch_id: true,
@@ -37,11 +40,8 @@ function serialize(i, branchId) {
     description: i.description,
     image_url: i.image_url,
 
-    // hotel-level raw values (edit form)
     base_price: i.base_price,
     price_override: bi?.price_override ?? null,
-
-    // effective values for THIS branch (card display)
     price: effectivePrice,
     is_available: bi?.is_available ?? true,
     is_online: bi?.is_online ?? false,
@@ -52,14 +52,16 @@ function serialize(i, branchId) {
     sort_order: i.sort_order,
     category: i.menu_categories,
     product_category: i.product_category,
+
+    // ── unit fields ──
+    unit_id: i.unit_id,
+    unit_quantity: i.unit_quantity,
+    unit: i.unit,
   };
 }
 
 /**
  * GET /api/owners/menu-items?branch_id=X&category_id=Y&q=foo
- *
- * Items are HOTEL-level. branch_id is used to (a) authorize the caller,
- * (b) determine the hotel, and (c) merge in per-branch availability/price.
  */
 export async function GET(request) {
   const user = await getAuthUser(request);
@@ -101,10 +103,13 @@ export async function GET(request) {
 
 /**
  * POST /api/owners/menu-items
- * Body: { branch_id, name, base_price, category_id?, product_category_id?, ... }
- *
- * Creates one hotel-level item + a branch_menu_items row for EVERY branch
- * of the hotel (so the item is instantly visible everywhere).
+ * Body: {
+ *   branch_id, name, base_price,
+ *   category_id?, product_category_id?, description?, image_url?,
+ *   tax_rate?, is_kitchen?, prep_station?, sort_order?,
+ *   is_available?, is_online?,
+ *   unit_id?, unit_quantity?
+ * }
  */
 export async function POST(request) {
   const user = await getAuthUser(request);
@@ -137,6 +142,15 @@ export async function POST(request) {
       );
   }
 
+  const unitId = body.unit_id || null;
+  const unitQty =
+    unitId &&
+    body.unit_quantity !== undefined &&
+    body.unit_quantity !== null &&
+    body.unit_quantity !== ""
+      ? Number(body.unit_quantity)
+      : null;
+
   try {
     const item = await prisma.$transaction(async (tx) => {
       const created = await tx.menu_items.create({
@@ -152,10 +166,12 @@ export async function POST(request) {
           is_kitchen: body.is_kitchen ?? true,
           prep_station: body.prep_station || null,
           sort_order: body.sort_order ?? 0,
+
+          unit_id: unitId,
+          unit_quantity: unitQty,
         },
       });
 
-      // Link to every branch of this hotel
       const allBranches = await tx.branches.findMany({
         where: { hotel_id: branch.hotel_id },
         select: { id: true },
@@ -175,7 +191,6 @@ export async function POST(request) {
       return created;
     });
 
-    // Return the freshly loaded item (with branch context)
     const fresh = await prisma.menu_items.findUnique({
       where: { id: item.id },
       select: ITEM_SELECT,

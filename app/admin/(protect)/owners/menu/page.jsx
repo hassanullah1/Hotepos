@@ -39,12 +39,24 @@ const EMPTY_ITEM = {
   category_id: "",
   product_category_id: "",
   image_url: "",
+  unit_id: "",
+  unit_quantity: "",
 };
 
 const inputClass =
-  "w-full text-sm border border-teal-200 dark:border-teal-800 rounded-lg px-3 py-2 bg-white dark:bg-teal-900/40 text-teal-900 dark:text-teal-100 placeholder:text-teal-400/70 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500";
+  "w-full text-sm border border-teal-200 dark:border-teal-800 rounded-lg px-3 py-2 bg-white dark:bg-teal-900/40 text-teal-900 dark:text-teal-100 placeholder:text-teal-400/70 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 disabled:opacity-50";
 const labelClass =
   "block text-xs font-medium text-teal-800 dark:text-teal-200 mb-1.5";
+
+// Unit display helper — "1 Plate", "250 Gram", or nothing
+function displayUnit(item) {
+  if (!item.unit) return null;
+  const qty =
+    item.unit_quantity != null && item.unit_quantity !== ""
+      ? Number(item.unit_quantity)
+      : 1;
+  return `${qty} ${item.unit.name}`;
+}
 
 export default function MenuPage() {
   const router = useRouter();
@@ -64,6 +76,7 @@ export default function MenuPage() {
 
   const [categories, setCategories] = useState([]);
   const [productCategories, setProductCategories] = useState([]);
+  const [units, setUnits] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [items, setItems] = useState([]);
   const [loadingItems, setLoadingItems] = useState(false);
@@ -88,7 +101,6 @@ export default function MenuPage() {
     return false;
   }
 
-  /* ---------- load user ---------- */
   useEffect(() => {
     (async () => {
       try {
@@ -106,7 +118,6 @@ export default function MenuPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ---------- load product categories (platform-wide) ---------- */
   useEffect(() => {
     (async () => {
       try {
@@ -114,13 +125,21 @@ export default function MenuPage() {
         if (!res.ok) return;
         const data = await res.json();
         setProductCategories(data.categories || []);
-      } catch {
-        /* non-fatal */
-      }
+      } catch {}
     })();
   }, []);
 
-  /* ---------- owner: load hotels + branches ---------- */
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetchWithAuth("/api/units");
+        if (!res.ok) return;
+        const data = await res.json();
+        setUnits(data.units || []);
+      } catch {}
+    })();
+  }, []);
+
   async function loadHotels() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
@@ -160,7 +179,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- categories (hotel-scoped) ---------- */
   async function loadCategories() {
     if (!branchId) return;
     try {
@@ -175,7 +193,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- items (hotel-scoped, per-branch merged) ---------- */
   async function loadItems() {
     if (!branchId) return;
     setLoadingItems(true);
@@ -195,7 +212,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- HesabPay guard ---------- */
   async function loadHesabpayStatus(hotelId) {
     if (!hotelId) {
       setHesabpayStatus("missing");
@@ -216,7 +232,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- orchestration effects ---------- */
   useEffect(() => {
     if (isOwner) {
       loadHotels();
@@ -274,7 +289,6 @@ export default function MenuPage() {
     return true;
   }
 
-  /* ---------- category save ---------- */
   async function saveCategory(e) {
     e.preventDefault();
     setSaving(true);
@@ -363,10 +377,14 @@ export default function MenuPage() {
       category_id: i.category?.id || "",
       product_category_id: i.product_category?.id || "",
       image_url: i.image_url || "",
+      unit_id: i.unit_id || "",
+      unit_quantity:
+        i.unit_quantity != null && i.unit_quantity !== ""
+          ? String(i.unit_quantity)
+          : "",
     });
   }
 
-  /* ---------- item save (create or update) ---------- */
   async function saveItem(e) {
     e.preventDefault();
     if (itemForm.is_online && !guardOnline(true)) return;
@@ -377,6 +395,8 @@ export default function MenuPage() {
     const url = isEdit
       ? `/api/owners/menu-items/${itemForm.id}`
       : "/api/owners/menu-items";
+
+    const unitId = itemForm.unit_id || null;
 
     const payload = {
       branch_id: branchId,
@@ -390,6 +410,15 @@ export default function MenuPage() {
       product_category_id: itemForm.product_category_id || null,
       is_available: itemForm.is_available,
       is_online: itemForm.is_online,
+
+      unit_id: unitId,
+      unit_quantity:
+        unitId &&
+        itemForm.unit_quantity !== "" &&
+        itemForm.unit_quantity !== null &&
+        itemForm.unit_quantity !== undefined
+          ? Number(itemForm.unit_quantity)
+          : null,
     };
 
     try {
@@ -430,7 +459,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- quick price (per-branch override) ---------- */
   async function quickPrice(i, newPrice) {
     const n = Number(newPrice);
     if (!Number.isFinite(n)) return;
@@ -449,7 +477,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- online toggle (per-branch) ---------- */
   async function toggleOnline(item) {
     const desired = !item.is_online;
     if (!guardOnline(desired)) return;
@@ -476,7 +503,6 @@ export default function MenuPage() {
     }
   }
 
-  /* ---------- image upload ---------- */
   async function handleImageSelect(e) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -542,7 +568,6 @@ export default function MenuPage() {
   return (
     <div className="min-h-screen p-4" dir={dir}>
       <div className="max-w-6xl mx-auto">
-        {/* header */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
@@ -610,7 +635,6 @@ export default function MenuPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 items-start">
-          {/* categories */}
           <div className="min-w-0">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
@@ -673,7 +697,6 @@ export default function MenuPage() {
             </div>
           </div>
 
-          {/* items */}
           <div className="min-w-0">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
@@ -709,109 +732,118 @@ export default function MenuPage() {
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                {items.map((i) => (
-                  <div
-                    key={i.id}
-                    className="flex flex-col rounded-2xl border border-teal-200 dark:border-teal-800 overflow-hidden bg-white dark:bg-teal-950/60 shadow-sm hover:shadow-md transition"
-                  >
-                    <div className="relative w-full aspect-[4/3] bg-teal-50 dark:bg-teal-900/40">
-                      {i.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={i.image_url}
-                          alt={i.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-teal-400">
-                          <ImageOff size={22} />
-                        </div>
-                      )}
-                      <span
-                        className={`absolute top-2 rtl:left-2 ltr:right-2 text-[11px] font-semibold px-2 py-0.5 rounded-full backdrop-blur ${
-                          i.is_available
-                            ? "bg-teal-50/90 text-teal-700"
-                            : "bg-red-50/90 text-red-700"
-                        }`}
-                      >
-                        {i.is_available
-                          ? t.branch.items.available
-                          : t.branch.items.unavailable}
-                      </span>
-                    </div>
-
-                    <div className="p-3 flex flex-col gap-2 flex-1">
-                      <div className="flex flex-col gap-1">
-                        <h3 className="text-sm font-semibold text-teal-950 dark:text-teal-50 leading-snug">
-                          {i.name}
-                        </h3>
-                        {i.category?.name && (
-                          <span className="self-start text-[11px] text-teal-700/70 dark:text-teal-300/70 border border-teal-200 dark:border-teal-800 rounded-full px-2 py-0.5">
-                            {i.category.name}
-                          </span>
-                        )}
-                      </div>
-
-                      <input
-                        type="number"
-                        step="0.01"
-                        defaultValue={i.price}
-                        onBlur={(e) =>
-                          e.target.value !== String(i.price) &&
-                          quickPrice(i, e.target.value)
-                        }
-                        className="w-24 text-sm font-bold text-amber-700 bg-amber-50 rounded-md px-2 py-1 border border-transparent focus:outline-none focus:border-amber-500 dark:bg-amber-900/30 dark:text-amber-400"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => toggleOnline(i)}
-                        disabled={togglingId === i.id}
-                        title={
-                          i.is_online
-                            ? "Visible to online customers at this branch — click to hide"
-                            : "Hidden from online at this branch — click to show"
-                        }
-                        className={`inline-flex items-center gap-1 self-start rounded-full px-2.5 py-1 text-[11px] font-semibold transition disabled:opacity-50 ${
-                          i.is_online
-                            ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
-                        }`}
-                      >
-                        {i.is_online ? (
-                          <Globe size={11} />
+                {items.map((i) => {
+                  const unitText = displayUnit(i);
+                  return (
+                    <div
+                      key={i.id}
+                      className="flex flex-col rounded-2xl border border-teal-200 dark:border-teal-800 overflow-hidden bg-white dark:bg-teal-950/60 shadow-sm hover:shadow-md transition"
+                    >
+                      <div className="relative w-full aspect-[4/3] bg-teal-50 dark:bg-teal-900/40">
+                        {i.image_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={i.image_url}
+                            alt={i.name}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
-                          <Store size={11} />
+                          <div className="w-full h-full flex items-center justify-center text-teal-400">
+                            <ImageOff size={22} />
+                          </div>
                         )}
-                        {i.is_online ? "Online" : "POS only"}
-                      </button>
+                        <span
+                          className={`absolute top-2 rtl:left-2 ltr:right-2 text-[11px] font-semibold px-2 py-0.5 rounded-full backdrop-blur ${
+                            i.is_available
+                              ? "bg-teal-50/90 text-teal-700"
+                              : "bg-red-50/90 text-red-700"
+                          }`}
+                        >
+                          {i.is_available
+                            ? t.branch.items.available
+                            : t.branch.items.unavailable}
+                        </span>
+                      </div>
 
-                      <div className="mt-auto pt-1 flex gap-4">
+                      <div className="p-3 flex flex-col gap-2 flex-1">
+                        <div className="flex flex-col gap-1">
+                          <h3 className="text-sm font-semibold text-teal-950 dark:text-teal-50 leading-snug">
+                            {i.name}
+                          </h3>
+                          {i.category?.name && (
+                            <span className="self-start text-[11px] text-teal-700/70 dark:text-teal-300/70 border border-teal-200 dark:border-teal-800 rounded-full px-2 py-0.5">
+                              {i.category.name}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <input
+                            type="number"
+                            step="0.01"
+                            defaultValue={i.price}
+                            onBlur={(e) =>
+                              e.target.value !== String(i.price) &&
+                              quickPrice(i, e.target.value)
+                            }
+                            className="w-24 text-sm font-bold text-amber-700 bg-amber-50 rounded-md px-2 py-1 border border-transparent focus:outline-none focus:border-amber-500 dark:bg-amber-900/30 dark:text-amber-400"
+                          />
+                          {unitText && (
+                            <span className="text-[11px] font-medium text-teal-700/80 dark:text-teal-300/80 bg-teal-50 dark:bg-teal-900/40 border border-teal-200 dark:border-teal-800 rounded-full px-2 py-0.5">
+                              {unitText}
+                            </span>
+                          )}
+                        </div>
+
                         <button
-                          onClick={() => openEditItem(i)}
-                          className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-teal-700 dark:text-teal-300/70 dark:hover:text-teal-300"
+                          type="button"
+                          onClick={() => toggleOnline(i)}
+                          disabled={togglingId === i.id}
+                          title={
+                            i.is_online
+                              ? "Visible to online customers at this branch — click to hide"
+                              : "Hidden from online at this branch — click to show"
+                          }
+                          className={`inline-flex items-center gap-1 self-start rounded-full px-2.5 py-1 text-[11px] font-semibold transition disabled:opacity-50 ${
+                            i.is_online
+                              ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400"
+                              : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
+                          }`}
                         >
-                          <Pencil size={13} />
-                          {t.common.edit}
+                          {i.is_online ? (
+                            <Globe size={11} />
+                          ) : (
+                            <Store size={11} />
+                          )}
+                          {i.is_online ? "Online" : "POS only"}
                         </button>
-                        <button
-                          onClick={() => deleteItem(i)}
-                          className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
-                        >
-                          <Trash2 size={13} />
-                          {t.common.delete}
-                        </button>
+
+                        <div className="mt-auto pt-1 flex gap-4">
+                          <button
+                            onClick={() => openEditItem(i)}
+                            className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-teal-700 dark:text-teal-300/70 dark:hover:text-teal-300"
+                          >
+                            <Pencil size={13} />
+                            {t.common.edit}
+                          </button>
+                          <button
+                            onClick={() => deleteItem(i)}
+                            className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
+                          >
+                            <Trash2 size={13} />
+                            {t.common.delete}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* modals */}
       {categoryForm && (
         <CategoryModal
           t={t}
@@ -834,6 +866,7 @@ export default function MenuPage() {
           setForm={setItemForm}
           categories={categories}
           productCategories={productCategories}
+          units={units}
           onSubmit={saveItem}
           onClose={() => !saving && setItemForm(null)}
           saving={saving}
@@ -859,7 +892,6 @@ export default function MenuPage() {
   );
 }
 
-/* ---------- HesabpayRequiredModal (unchanged) ---------- */
 function HesabpayRequiredModal({ t, dir, isOwner, onClose, onGoToProfile }) {
   useEffect(() => {
     function onKey(e) {
@@ -930,7 +962,6 @@ function HesabpayRequiredModal({ t, dir, isOwner, onClose, onGoToProfile }) {
   );
 }
 
-/* ---------- CategoryModal (new: product category dropdown) ---------- */
 function CategoryModal({
   t,
   dir,
@@ -1087,7 +1118,6 @@ function CategoryModal({
   );
 }
 
-/* ---------- ItemModal (new: product category dropdown + base_price) ---------- */
 function ItemModal({
   t,
   dir,
@@ -1095,6 +1125,7 @@ function ItemModal({
   setForm,
   categories,
   productCategories,
+  units,
   onSubmit,
   onClose,
   saving,
@@ -1154,7 +1185,6 @@ function ItemModal({
             </div>
           )}
 
-          {/* image */}
           <div className="flex items-start gap-3">
             <div className="h-24 w-24 shrink-0 rounded-xl overflow-hidden border border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center">
               {form.image_url ? (
@@ -1292,6 +1322,59 @@ function ItemModal({
               />
             </div>
           </div>
+
+          {/* ── unit row (unit + quantity) ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>
+                {t.branch.items.unitLabel || "Unit (optional)"}
+              </label>
+              <select
+                value={form.unit_id || ""}
+                onChange={(e) => {
+                  const newUnitId = e.target.value;
+                  setForm({
+                    ...form,
+                    unit_id: newUnitId,
+                    unit_quantity: newUnitId ? form.unit_quantity : "",
+                  });
+                }}
+                className={inputClass}
+              >
+                <option value="">
+                  {t.branch.items.noUnit || "— No unit —"}
+                </option>
+                {units.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                    {u.short_name ? ` (${u.short_name})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelClass}>
+                {t.branch.items.unitQuantityLabel || "Quantity"}
+              </label>
+              <input
+                type="number"
+                step="0.001"
+                value={form.unit_quantity ?? ""}
+                onChange={(e) =>
+                  setForm({ ...form, unit_quantity: e.target.value })
+                }
+                disabled={!form.unit_id}
+                placeholder="1, 250, 500…"
+                dir="ltr"
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <p className="text-[11px] text-teal-700/60 dark:text-teal-300/60 -mt-2">
+            {t.branch.items.unitHint ||
+              "Shown on the public home page next to the price (e.g. “1 Plate”, “250 Gram”). Leave empty for items without a portion."}
+          </p>
 
           <div>
             <label className={labelClass}>
