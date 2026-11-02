@@ -166,7 +166,7 @@ export default function ItemDetailPage() {
       >
         <p className="text-sm text-red-500">{error || t.notFound}</p>
         <Link
-          href="/order"
+          href="/"
           className={`inline-flex items-center gap-1.5 text-xs font-semibold ${
             isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
           }`}
