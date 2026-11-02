@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 const EARTH_KM = 6371;
 const toRad = (d: number) => (d * Math.PI) / 180;
@@ -44,32 +44,30 @@ export async function GET(request: Request) {
     Math.max(0.5, Number(searchParams.get("radius") || 20)),
   );
 
-  // ---- build where clause ----
-  const where: any = { status: "active" };
+  // ── only branches whose hotel is online, active status ──
+  const where: any = {
+    OR: [{ status: "active" }, { status: null }],
+    hotels: { is_online: true },
+  };
 
   if (q) {
-    where.OR = [
-      { name: { contains: q, mode: "insensitive" } },
-      { city: { contains: q, mode: "insensitive" } },
-      { address: { contains: q, mode: "insensitive" } },
-      { hotels: { name: { contains: q, mode: "insensitive" } } },
+    where.AND = [
+      {
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { city: { contains: q, mode: "insensitive" } },
+          { address: { contains: q, mode: "insensitive" } },
+          { hotels: { name: { contains: q, mode: "insensitive" } } },
+        ],
+      },
     ];
   }
 
-  // If coords given, pre-filter by bounding box for speed
   if (hasCoords) {
     const latDelta = radiusKm / 111;
     const lngDelta = radiusKm / (111 * Math.cos(toRad(lat)) || 1);
-    where.latitude = {
-      not: null,
-      gte: lat - latDelta,
-      lte: lat + latDelta,
-    };
-    where.longitude = {
-      not: null,
-      gte: lng - lngDelta,
-      lte: lng + lngDelta,
-    };
+    where.latitude = { not: null, gte: lat - latDelta, lte: lat + latDelta };
+    where.longitude = { not: null, gte: lng - lngDelta, lte: lng + lngDelta };
   }
 
   const select = {
@@ -84,9 +82,12 @@ export async function GET(request: Request) {
     opening_time: true,
     closing_time: true,
     hotels: { select: { id: true, name: true, logo_url: true } },
+    // ── FIX: menu_items is linked via branch_menu_items, not directly ──
     _count: {
       select: {
-        menu_items: { where: { is_available: true } },
+        branch_menu_items: {
+          where: { is_online: true, is_available: true },
+        },
       },
     },
   } as const;
@@ -97,7 +98,7 @@ export async function GET(request: Request) {
       where,
       select,
       orderBy: { name: "asc" },
-      skip: hasCoords ? 0 : skip, // when sorting by distance, we page in memory
+      skip: hasCoords ? 0 : skip,
       take: hasCoords ? undefined : limit,
     }),
   ]);
@@ -119,7 +120,7 @@ export async function GET(request: Request) {
       closing_time: b.closing_time,
       latitude: bLat,
       longitude: bLng,
-      menu_item_count: b._count.menu_items,
+      menu_item_count: b._count.branch_menu_items,
       distance_km:
         hasCoords && bLat !== null && bLng !== null
           ? +haversineKm(lat, lng, bLat, bLng).toFixed(2)
@@ -127,13 +128,11 @@ export async function GET(request: Request) {
     };
   });
 
-  // Filter by exact radius when sorting by distance
   if (hasCoords) {
     list = list
       .filter((b) => b.distance_km !== null && b.distance_km <= radiusKm)
       .sort((a, b) => (a.distance_km ?? 0) - (b.distance_km ?? 0));
 
-    // page in memory since ordering was distance-based
     const totalFiltered = list.length;
     list = list.slice(skip, skip + limit);
 
@@ -147,7 +146,6 @@ export async function GET(request: Request) {
     });
   }
 
-  // No coords → alphabetical, paged by DB
   return NextResponse.json({
     branches: list,
     page,

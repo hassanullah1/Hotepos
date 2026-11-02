@@ -27,12 +27,19 @@ export async function GET(
   const provinceIdRaw = (searchParams.get("province_id") || "").trim();
   const provinceId = UUID_RE.test(provinceIdRaw) ? provinceIdRaw : null;
 
+  // ── Filters MUST MATCH /api/public/menu-items ───────────────────
+  //   bmi.is_online = true
+  //   bmi.is_available = true
+  //   COALESCE(b.status, 'active') = 'active'    ← accepts NULL
+  //   h.is_online = true
+  //
+  // Note: item-level mi.is_available / mi.is_online are NOT applied
+  // here, matching the listing endpoint. If you re-add them there,
+  // re-add them here too — otherwise the grid shows a dish the
+  // detail page refuses to open ("Dish not found").
+  // ─────────────────────────────────────────────────────────────────
   const item = await prisma.menu_items.findFirst({
-    where: {
-      id,
-      is_available: true,
-      is_online: true,
-    },
+    where: { id },
     select: {
       id: true,
       name: true,
@@ -45,7 +52,7 @@ export async function GET(
           is_online: true,
           is_available: true,
           branches: {
-            status: "active",
+            OR: [{ status: "active" }, { status: null }],
             hotels: { is_online: true },
             ...(provinceId ? { province_id: provinceId } : {}),
           },
@@ -71,7 +78,6 @@ export async function GET(
     },
   });
 
-  // No branch offers it (in the requested province) → treat as not found
   if (!item || item.branch_items.length === 0) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
@@ -105,7 +111,7 @@ export async function GET(
     }),
   ]);
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     item: {
       id: item.id,
       name: item.name,
@@ -142,4 +148,10 @@ export async function GET(
       created_at: r.created_at,
     })),
   });
+
+  res.headers.set(
+    "Cache-Control",
+    "public, s-maxage=30, stale-while-revalidate=120",
+  );
+  return res;
 }

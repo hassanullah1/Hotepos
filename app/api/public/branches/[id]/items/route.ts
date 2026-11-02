@@ -18,57 +18,79 @@ export async function GET(
   const q = (searchParams.get("q") || "").trim();
 
   const branch = await prisma.branches.findFirst({
-    where: { id, status: "active", hotels: { is_online: true } },
+    where: {
+      id,
+      OR: [{ status: "active" }, { status: null }],
+      hotels: { is_online: true },
+    },
     select: { id: true },
   });
-  if (!branch)
+  if (!branch) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
-  const where: any = {
-    branch_id: id,
-    is_available: true,
-    is_online: true,
-  };
+  // ── Filters match /api/public/menu-items exactly:
+  //    bmi.is_online, bmi.is_available, branch active (or NULL),
+  //    hotel online. NO mi.is_online / mi.is_available — those were
+  //    dropped from the listing on purpose, so they must be dropped
+  //    here too or the grid will silently show 0.
+  // ──
+  const menuItemWhere: any = {};
 
   if (categoryId === "__uncategorized__") {
-    where.category_id = null;
+    menuItemWhere.category_id = null;
   } else if (categoryId !== "all") {
-    where.category_id = categoryId;
+    menuItemWhere.category_id = categoryId;
   }
 
   if (q) {
-    where.OR = [
+    menuItemWhere.OR = [
       { name: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
     ];
   }
 
-  const [total, items] = await prisma.$transaction([
-    prisma.menu_items.count({ where }),
-    prisma.menu_items.findMany({
+  const where: any = {
+    branch_id: id,
+    is_online: true,
+    is_available: true,
+  };
+  if (Object.keys(menuItemWhere).length > 0) {
+    where.menu_item = menuItemWhere;
+  }
+
+  const [total, rows] = await prisma.$transaction([
+    prisma.branch_menu_items.count({ where }),
+    prisma.branch_menu_items.findMany({
       where,
-      orderBy: [{ sort_order: "asc" }, { name: "asc" }],
+      orderBy: [{ sort_order: "asc" }, { menu_item: { name: "asc" } }],
       skip,
       take: limit,
       select: {
-        id: true,
-        name: true,
-        description: true,
-        image_url: true,
-        price: true,
-        category_id: true,
+        menu_item_id: true,
+        price_override: true,
+        menu_item: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            image_url: true,
+            base_price: true,
+            category_id: true,
+          },
+        },
       },
     }),
   ]);
 
   return NextResponse.json({
-    items: items.map((i) => ({
-      id: i.id,
-      name: i.name,
-      description: i.description,
-      image_url: i.image_url,
-      price: Number(i.price),
-      category_id: i.category_id,
+    items: rows.map((r) => ({
+      id: r.menu_item.id,
+      name: r.menu_item.name,
+      description: r.menu_item.description,
+      image_url: r.menu_item.image_url,
+      price: Number(r.price_override ?? r.menu_item.base_price),
+      category_id: r.menu_item.category_id,
     })),
     page,
     limit,

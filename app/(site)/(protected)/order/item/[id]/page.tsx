@@ -76,6 +76,9 @@ const itemText = {
   },
 };
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
@@ -101,11 +104,25 @@ export default function ItemDetailPage() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // Read province_id from the URL — the listing page already puts
+    // it in the link (`?province_id=…`), so we forward it to the API
+    // to pick the same branch the user clicked. Falls back to "any
+    // province" when the link has no province (direct links, SEO).
+    let province: string | null = null;
+    if (typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search);
+      const raw = (sp.get("province_id") || "").trim();
+      if (UUID_RE.test(raw)) province = raw;
+    }
+
+    const url = province
+      ? `/api/public/menu-items/${id}?province_id=${province}`
+      : `/api/public/menu-items/${id}`;
+
     (async () => {
       try {
-        const res = await fetch(`/api/public/menu-items/${id}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(url);
         if (!res.ok) throw new Error(t.notFound);
         const d = await res.json();
         if (!cancelled) setData(d);
@@ -149,7 +166,7 @@ export default function ItemDetailPage() {
       >
         <p className="text-sm text-red-500">{error || t.notFound}</p>
         <Link
-          href="/"
+          href="/order"
           className={`inline-flex items-center gap-1.5 text-xs font-semibold ${
             isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
           }`}
@@ -182,7 +199,6 @@ export default function ItemDetailPage() {
       }`}
       dir={t.dir}
     >
-      {/* Soft glow */}
       <div
         className={`pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full blur-3xl ${
           isDark ? "bg-[#C9A227]/10" : "bg-[#C9A227]/15"
@@ -191,9 +207,8 @@ export default function ItemDetailPage() {
       />
 
       <div className="relative mx-auto max-w-3xl px-4 py-4 pb-20 sm:px-6 sm:py-6 sm:pb-8">
-        {/* Back link */}
         <Link
-          href="/"
+          href="/order"
           className={`group mb-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition active:scale-95 ${panel} ${soft} hover:text-[#E0B93A]`}
         >
           <ArrowBack
@@ -203,14 +218,12 @@ export default function ItemDetailPage() {
           {t.back}
         </Link>
 
-        {/* Dish card */}
         <div
           className={`overflow-hidden rounded-2xl border shadow-lg backdrop-blur-sm ${panel} ${
             isDark ? "shadow-black/30" : "shadow-[#8A6E1A]/10"
           }`}
         >
           <div className="grid sm:grid-cols-[1fr_1fr]">
-            {/* Image */}
             <div
               className={`group relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-[340px] ${
                 isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
@@ -243,9 +256,7 @@ export default function ItemDetailPage() {
               )}
             </div>
 
-            {/* Info */}
             <div className="flex flex-col p-4 sm:p-5">
-              {/* Restaurant chip */}
               {restaurantName && (
                 <div className="mb-2">
                   {hasMap ? (
@@ -283,7 +294,6 @@ export default function ItemDetailPage() {
                 {item.name}
               </h1>
 
-              {/* Stats */}
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <div
                   className={`rounded-xl border px-2.5 py-1.5 ${
@@ -318,7 +328,9 @@ export default function ItemDetailPage() {
                   <p className="flex items-center gap-1 text-sm font-semibold">
                     <Flame
                       size={15}
-                      className={item.order_count > 0 ? "text-[#E0873A]" : muted}
+                      className={
+                        item.order_count > 0 ? "text-[#E0873A]" : muted
+                      }
                     />
                     {item.order_count || 0}
                   </p>
@@ -331,7 +343,6 @@ export default function ItemDetailPage() {
                 </p>
               )}
 
-              {/* Price + order */}
               <div
                 className={`mt-auto border-t pt-4 ${
                   isDark ? "border-[#2E2938]" : "border-[#E4DFD4]"
@@ -354,7 +365,6 @@ export default function ItemDetailPage() {
           </div>
         </div>
 
-        {/* Reviews */}
         <div className="mt-6">
           <div className="mb-4 flex items-center gap-2">
             <MessageSquare
@@ -469,9 +479,6 @@ export default function ItemDetailPage() {
         </div>
       </div>
 
-      {/* Sticky order pill: always visible on mobile and desktop.
-          Rendered in document.body so parent layouts can't break
-          position: fixed. */}
       {mounted &&
         createPortal(
           <div
