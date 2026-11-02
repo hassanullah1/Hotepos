@@ -217,7 +217,7 @@ export async function GET(request: Request) {
       LIMIT ${P(limit)} OFFSET ${P(offset)}
     `;
 
-    const rows = await prisma.$queryRawUnsafe<Row[]>(sql, ...params);
+    const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as Row[];
 
     const total = rows.length > 0 ? Number(rows[0].total) : 0;
 

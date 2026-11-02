@@ -1,10 +1,11 @@
-// /api/owners/menu-items/[id]/route.js
+// /api/owners/menu-items/[id]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { ownsHotel } from "@/lib/owner-scope";
+import type { Prisma } from "@/generated/prisma";
 
-async function loadItemScoped(id, userId) {
+async function loadItemScoped(id: string, userId: string) {
   const item = await prisma.menu_items.findUnique({
     where: { id },
     select: { id: true, hotel_id: true },
@@ -28,7 +29,10 @@ async function loadItemScoped(id, userId) {
  *
  * Branch-level fields update `branch_menu_items` for that branch only.
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,7 +45,7 @@ export async function PATCH(request, { params }) {
   const body = await request.json();
 
   // ── 1. Branch-scoped fields → branch_menu_items ──────────────────
-  const branchId = body.branch_id;
+  const branchId: string | undefined = body.branch_id;
   const hasBranchFields =
     branchId &&
     (body.is_online !== undefined ||
@@ -61,7 +65,7 @@ export async function PATCH(request, { params }) {
       );
     }
 
-    const bu = {};
+    const bu: Prisma.branch_menu_itemsUncheckedUpdateInput = {};
     if (body.is_online !== undefined) bu.is_online = !!body.is_online;
     if (body.is_available !== undefined) bu.is_available = !!body.is_available;
     if (body.price_override !== undefined) {
@@ -79,7 +83,7 @@ export async function PATCH(request, { params }) {
   }
 
   // ── 2. Hotel-level fields → menu_items ────────────────────────────
-  const hu = {};
+  const hu: Prisma.menu_itemsUncheckedUpdateInput = {};
   if (body.name !== undefined) hu.name = body.name;
   if (body.description !== undefined) hu.description = body.description || null;
   if (body.image_url !== undefined) hu.image_url = body.image_url || null;
@@ -132,7 +136,10 @@ export async function PATCH(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const user = await getAuthUser(request);
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
