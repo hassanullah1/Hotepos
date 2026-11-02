@@ -128,12 +128,12 @@ export async function GET(request: Request) {
     // h.is_online = false (hotel created but never published).
     // ─────────────────────────────────────────────────────────────────
     const where: string[] = [
-      `COALESCE(mi.is_available, true) = true`,
-     // `mi.is_online = true`,
+     
+     
        `bmi.is_available = true`,
        `bmi.is_online = true`,
       `COALESCE(b.status, 'active') = 'active'`,
-      // `h.is_online = true`,
+      `h.is_online = true`,
     ];
 
     if (provinceId) where.push(`b.province_id = ${P(provinceId)}::uuid`);
