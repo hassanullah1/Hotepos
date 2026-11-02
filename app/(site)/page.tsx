@@ -205,12 +205,11 @@ function shorten(text: string, max = 80) {
   return clean.length > max ? clean.slice(0, max).trimEnd() + "..." : clean;
 }
 
-// ── unit formatter — "1 Plate", "250 Gram", or null ──
+// ── unit formatter — "1 : Plate", "250 : g", or null ──
 function formatUnit(unit: ItemUnit | null): string | null {
   if (!unit) return null;
   if (unit.quantity != null && Number.isFinite(unit.quantity)) {
     const qty = Number(unit.quantity);
-    // drop trailing .0 → 1 instead of 1.0
     const qtyStr = Number.isInteger(qty) ? String(qty) : qty.toString();
     return `${qtyStr} : ${unit.short_name}`;
   }
@@ -847,12 +846,27 @@ const DishCard = memo(function DishCard({
         </div>
 
         <div className="flex flex-1 flex-col p-2.5 sm:p-3.5">
-          <h3
-            className="line-clamp-1 text-[13px] font-medium sm:text-sm"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {it.name}
-          </h3>
+          {/* name + unit side by side */}
+          <div className="flex items-baseline justify-between gap-1.5">
+            <h3
+              className="line-clamp-1 min-w-0 flex-1 text-[13px] font-medium sm:text-sm"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {it.name}
+            </h3>
+            {unitText && (
+              <span
+                className={`shrink-0 whitespace-nowrap rounded-full border px-1.5 py-0.5 text-[9px] font-semibold leading-none sm:text-[10px] ${
+                  isDark
+                    ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A]"
+                    : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A]"
+                }`}
+                title={unitText}
+              >
+                {unitText}
+              </span>
+            )}
+          </div>
 
           <p
             className={`mt-0.5 line-clamp-1 text-[10.5px] sm:mt-1 sm:text-xs ${
@@ -912,38 +926,25 @@ const DishCard = memo(function DishCard({
 
           <div className="mt-auto">
             <div
-              className={`mt-2 flex items-end justify-between gap-1 border-t pt-2 sm:mt-3 sm:pt-3 ${
+              className={`mt-2 flex items-center justify-between gap-1 border-t pt-2 sm:mt-3 sm:pt-3 ${
                 isDark ? "border-[#2E2938]" : "border-[#EFEAE0]"
               }`}
             >
-              <div className="flex min-w-0 flex-col">
+              <span
+                className={`text-[13px] font-semibold sm:text-base ${
+                  isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                }`}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {Number(it.price).toFixed(2)}{" "}
                 <span
-                  className={`text-[13px] font-semibold sm:text-base ${
-                    isDark ? "text-[#E0B93A]" : "text-[#8A6E1A]"
+                  className={`text-[10px] font-medium sm:text-xs ${
+                    isDark ? "text-[#9691A6]" : "text-[#8A8496]"
                   }`}
-                  style={{ fontFamily: "var(--font-display)" }}
                 >
-                  {Number(it.price).toFixed(2)}{" "}
-                  <span
-                    className={`text-[10px] font-medium sm:text-xs ${
-                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                    }`}
-                  >
-                    {it.currency}
-                  </span>
+                  {it.currency}
                 </span>
-
-                {unitText && (
-                  <span
-                    className={`mt-0.5 truncate text-[9.5px] font-medium sm:text-[10.5px] ${
-                      isDark ? "text-[#9691A6]" : "text-[#8A8496]"
-                    }`}
-                    title={unitText}
-                  >
-                    {unitText}
-                  </span>
-                )}
-              </div>
+              </span>
 
               <span
                 className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
