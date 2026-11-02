@@ -156,7 +156,17 @@ export async function GET(request: Request) {
       recommended: `(avg_rating * ln(1 + review_count) + ln(1 + order_count)) DESC, name ASC`,
     };
 
-    const sql = `
+    // ── PERF: which sorts need review/order counts to order the WHOLE set? ──
+    // For near / price_asc / price_desc the sort key is already available
+    // in `base`, so we can LIMIT first and aggregate reviews/orders only
+    // for the ~24 rows on this page. For recommended / reviews / orders
+    // the counts ARE the sort key, so the full aggregation is unavoidable.
+    const needsGlobalAggregate =
+      sort === "recommended" || sort === "reviews" || sort === "orders";
+
+    // Common CTEs: filter → dedupe → count (count sits BEFORE the joins to
+    // reviews/order_items so it never touches the full joined row count).
+    const commonCTE = `
       WITH avail AS (
         SELECT mi.id,
                mi.name,
@@ -185,37 +195,87 @@ export async function GET(request: Request) {
                  COALESCE(distance_km::float8, 1e9::float8) ASC,
                  branch_sort ASC NULLS LAST
       ),
-      rv AS (
-        SELECT r.menu_item_id,
-               AVG(r.rating)::float8 AS avg_rating,
-               COUNT(*)::int         AS review_count
-        FROM reviews r
-        WHERE r.menu_item_id IN (SELECT id FROM base)
-        GROUP BY r.menu_item_id
-      ),
-      oc AS (
-        SELECT oi.menu_item_id,
-               COALESCE(SUM(oi.quantity), 0::bigint)::int AS order_count
-        FROM order_items oi
-        JOIN orders o ON o.id = oi.order_id
-        WHERE oi.menu_item_id IN (SELECT id FROM base)
-          AND o.status NOT IN ('cancelled', 'canceled', 'void')
-        GROUP BY oi.menu_item_id
-      ),
-      ranked AS (
-        SELECT base.*,
+      counted AS (
+        SELECT *, (COUNT(*) OVER ())::int AS total FROM base
+      )
+    `;
+
+    let sql: string;
+
+    if (!needsGlobalAggregate) {
+      // ── FAST PATH ──
+      // LIMIT the base rows first, THEN aggregate reviews/order counts
+      // only for the page of results we are actually returning.
+      sql = `
+        ${commonCTE},
+        paged AS (
+          SELECT * FROM counted
+          ORDER BY ${orderBy[sort]}
+          LIMIT ${P(limit)} OFFSET ${P(offset)}
+        ),
+        rv AS (
+          SELECT r.menu_item_id,
+                 AVG(r.rating)::float8 AS avg_rating,
+                 COUNT(*)::int         AS review_count
+          FROM reviews r
+          WHERE r.menu_item_id IN (SELECT id FROM paged)
+          GROUP BY r.menu_item_id
+        ),
+        oc AS (
+          SELECT oi.menu_item_id,
+                 COALESCE(SUM(oi.quantity), 0::bigint)::int AS order_count
+          FROM order_items oi
+          JOIN orders o ON o.id = oi.order_id
+          WHERE oi.menu_item_id IN (SELECT id FROM paged)
+            AND o.status NOT IN ('cancelled', 'canceled', 'void')
+          GROUP BY oi.menu_item_id
+        )
+        SELECT p.*,
                COALESCE(rv.avg_rating,   0::float8)::float8 AS avg_rating,
                COALESCE(rv.review_count, 0::int)::int       AS review_count,
-               COALESCE(oc.order_count,  0::int)::int       AS order_count,
-               (COUNT(*) OVER ())::int                      AS total
-        FROM base
-        LEFT JOIN rv ON rv.menu_item_id = base.id
-        LEFT JOIN oc ON oc.menu_item_id = base.id
-      )
-      SELECT * FROM ranked
-      ORDER BY ${orderBy[sort]}
-      LIMIT ${P(limit)} OFFSET ${P(offset)}
-    `;
+               COALESCE(oc.order_count,  0::int)::int       AS order_count
+        FROM paged p
+        LEFT JOIN rv ON rv.menu_item_id = p.id
+        LEFT JOIN oc ON oc.menu_item_id = p.id
+        ORDER BY ${orderBy[sort]}
+      `;
+    } else {
+      // ── SLOW PATH (correct but required) ──
+      // The sort itself depends on the aggregates, so we must aggregate
+      // the entire candidate set before ORDER BY + LIMIT.
+      sql = `
+        ${commonCTE},
+        rv AS (
+          SELECT r.menu_item_id,
+                 AVG(r.rating)::float8 AS avg_rating,
+                 COUNT(*)::int         AS review_count
+          FROM reviews r
+          WHERE r.menu_item_id IN (SELECT id FROM counted)
+          GROUP BY r.menu_item_id
+        ),
+        oc AS (
+          SELECT oi.menu_item_id,
+                 COALESCE(SUM(oi.quantity), 0::bigint)::int AS order_count
+          FROM order_items oi
+          JOIN orders o ON o.id = oi.order_id
+          WHERE oi.menu_item_id IN (SELECT id FROM counted)
+            AND o.status NOT IN ('cancelled', 'canceled', 'void')
+          GROUP BY oi.menu_item_id
+        ),
+        ranked AS (
+          SELECT counted.*,
+                 COALESCE(rv.avg_rating,   0::float8)::float8 AS avg_rating,
+                 COALESCE(rv.review_count, 0::int)::int       AS review_count,
+                 COALESCE(oc.order_count,  0::int)::int       AS order_count
+          FROM counted
+          LEFT JOIN rv ON rv.menu_item_id = counted.id
+          LEFT JOIN oc ON oc.menu_item_id = counted.id
+        )
+        SELECT * FROM ranked
+        ORDER BY ${orderBy[sort]}
+        LIMIT ${P(limit)} OFFSET ${P(offset)}
+      `;
+    }
 
     const rows = (await prisma.$queryRawUnsafe(sql, ...params)) as Row[];
 

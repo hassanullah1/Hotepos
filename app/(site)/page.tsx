@@ -798,7 +798,19 @@ export default function BuyerMenuDiscoveryPage() {
   const abortRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
 
-  // ---- Load provinces + AUTO-SELECT first (or saved) ----
+  // ── PERF: hydrate cached province immediately so /menu-items can fire
+  // in parallel with /provinces and /product-categories on the very first
+  // paint instead of waiting for the provinces round-trip. ──
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
+      if (saved) setProvinceId(saved);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // ---- Load provinces (fills the dropdown + supplies a fallback) ----
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -836,8 +848,9 @@ export default function BuyerMenuDiscoveryPage() {
   }, []);
 
   // ---- Load product categories (scoped to province) ----
+  // No longer gated on provinceReady — fires in parallel with /provinces.
   useEffect(() => {
-    if (!provinceReady || !provinceId) {
+    if (!provinceId) {
       setCategories([]);
       setTotalItems(0);
       setCategoriesReady(false);
@@ -870,7 +883,7 @@ export default function BuyerMenuDiscoveryPage() {
     return () => {
       cancelled = true;
     };
-  }, [provinceId, provinceReady]);
+  }, [provinceId]);
 
   // A category that existed in the old province may not exist in the new one,
   // so drop the selection whenever the province changes.
@@ -954,25 +967,35 @@ export default function BuyerMenuDiscoveryPage() {
     [debouncedQ, coords, sort, provinceId, selectedCategory],
   );
 
+  // ── PERF: provinceReady is INTENTIONALLY not in the dependency list.
+  // If we already have a cached province the fetch starts on the first
+  // render, before /provinces resolves. We only re-fetch when the user
+  // changes province, search, sort, coords, or category. ──
   useEffect(() => {
     setItems([]);
     setPage(1);
-    if (!provinceReady) return;
+
     if (!provinceId) {
       abortRef.current?.abort();
       busyRef.current = false;
-      setLoading(false);
       setLoadingMore(false);
-      setTotal(0);
-      setTotalPages(1);
+      // Keep the skeleton up while provinces are still discovering.
+      // If there are no provinces at all, /provinces already set
+      // loading=false — we just make sure not to clobber that.
+      if (provinceReady) {
+        setLoading(false);
+        setTotal(0);
+        setTotalPages(1);
+      }
       return;
     }
+
     fetchItems(1, false);
     return () => {
       abortRef.current?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQ, sort, coords, provinceId, provinceReady, selectedCategory]);
+  }, [debouncedQ, sort, coords, provinceId, selectedCategory]);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
