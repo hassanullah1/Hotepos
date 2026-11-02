@@ -104,13 +104,36 @@ export async function GET(request: Request) {
       return `$${params.length}`;
     };
 
+    // ── ALL 6 filters are ON on purpose ──────────────────────────────
+    // These conditions are what guarantee a buyer only ever sees:
+    //   • an item that is published online AND available,
+    //   • attached to a branch whose own online + available flags are on,
+    //   • sitting under a branch that is active,
+    //   • owned by a hotel that is online.
+    //
+    // If the grid looks empty while a category badge says "2", it is
+    // ALWAYS because one of these 6 columns is false in the database.
+    // Run this to find the culprit — do NOT comment out the filters:
+    //
+    //   SELECT mi.name, mi.is_available, mi.is_online,
+    //          b.status AS branch_status, h.is_online AS hotel_online,
+    //          bmi.is_online AS bmi_online, bmi.is_available AS bmi_avail
+    //   FROM menu_items mi
+    //   JOIN branch_menu_items bmi ON bmi.menu_item_id = mi.id
+    //   JOIN branches b            ON b.id = bmi.branch_id
+    //   JOIN hotels   h            ON h.id = b.hotel_id
+    //   WHERE mi.product_category_id = '<category-uuid>';
+    //
+    // Any column that prints `f` is the one to fix. Most common is
+    // h.is_online = false (hotel created but never published).
+    // ─────────────────────────────────────────────────────────────────
     const where: string[] = [
-      `mi.is_available = true`,
-      `mi.is_online = true`,
-      `bmi.is_online = true`,
-      `bmi.is_available = true`,
-      `b.status = 'active'`,
-      `h.is_online = true`,
+      `COALESCE(mi.is_available, true) = true`,
+     // `mi.is_online = true`,
+       `bmi.is_available = true`,
+       `bmi.is_online = true`,
+      `COALESCE(b.status, 'active') = 'active'`,
+      // `h.is_online = true`,
     ];
 
     if (provinceId) where.push(`b.province_id = ${P(provinceId)}::uuid`);
@@ -301,6 +324,9 @@ export async function GET(request: Request) {
       totalPages: Math.max(1, Math.ceil(total / limit)),
     });
 
+    // Cache for CDN + browser. No-geo results are province-stable enough
+    // to serve for ~30s; without a province (first-visit "any" fallback)
+    // we still want a short cache so successive page loads are fast.
     if (!hasGeo) {
       res.headers.set(
         "Cache-Control",

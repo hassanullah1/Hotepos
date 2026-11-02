@@ -774,6 +774,21 @@ export default function BuyerMenuDiscoveryPage() {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [provinceId, setProvinceId] = useState<string>("");
   const [provinceReady, setProvinceReady] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // ── PERF: hydrate the cached province on mount, then immediately mark
+  // the page "hydrated" so the items effect below can fire even before
+  // /provinces responds. First visit = 1 fast fetch (no province) then
+  // 1 scoped fetch when /provinces lands. Returning visit = 1 fetch.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
+      if (saved) setProvinceId(saved);
+    } catch {
+      /* ignore */
+    }
+    setHydrated(true);
+  }, []);
 
   // ── Product categories ──
   const [categories, setCategories] = useState<ProductCategory[]>([]);
@@ -798,19 +813,7 @@ export default function BuyerMenuDiscoveryPage() {
   const abortRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
 
-  // ── PERF: hydrate cached province immediately so /menu-items can fire
-  // in parallel with /provinces and /product-categories on the very first
-  // paint instead of waiting for the provinces round-trip. ──
-  useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
-      if (saved) setProvinceId(saved);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  // ---- Load provinces (fills the dropdown + supplies a fallback) ----
+  // ---- Load provinces (fills the dropdown + provides a fallback) ----
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -833,11 +836,9 @@ export default function BuyerMenuDiscoveryPage() {
           setProvinceId(saved);
         } else if (list.length > 0) {
           setProvinceId(list[0].id);
-        } else {
-          setLoading(false);
         }
       } catch {
-        if (!cancelled) setLoading(false);
+        /* ignore — items effect handles failures */
       } finally {
         if (!cancelled) setProvinceReady(true);
       }
@@ -848,7 +849,8 @@ export default function BuyerMenuDiscoveryPage() {
   }, []);
 
   // ---- Load product categories (scoped to province) ----
-  // No longer gated on provinceReady — fires in parallel with /provinces.
+  // Fires as soon as a province is known, in parallel with /provinces
+  // on the first visit (after hydration + province arrival).
   useEffect(() => {
     if (!provinceId) {
       setCategories([]);
@@ -911,8 +913,10 @@ export default function BuyerMenuDiscoveryPage() {
 
   const fetchItems = useCallback(
     async (targetPage: number, append = false) => {
-      if (!provinceId) return;
-
+      // ── Do NOT bail on empty provinceId. Fetching without a province
+      // returns items across all provinces — better than a blank screen
+      // while /provinces is still in flight. The next render (with the
+      // real province) immediately refetches and swaps them out.
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -927,8 +931,8 @@ export default function BuyerMenuDiscoveryPage() {
           page: String(targetPage),
           limit: String(PAGE_SIZE),
           sort,
-          province_id: provinceId,
         });
+        if (provinceId) params.set("province_id", provinceId);
         if (debouncedQ) params.set("q", debouncedQ);
         if (selectedCategory)
           params.set("product_category_id", selectedCategory);
@@ -967,35 +971,23 @@ export default function BuyerMenuDiscoveryPage() {
     [debouncedQ, coords, sort, provinceId, selectedCategory],
   );
 
-  // ── PERF: provinceReady is INTENTIONALLY not in the dependency list.
-  // If we already have a cached province the fetch starts on the first
-  // render, before /provinces resolves. We only re-fetch when the user
-  // changes province, search, sort, coords, or category. ──
+  // ── PERF: the items effect no longer waits for `provinceReady`.
+  // It fires once `hydrated` is true (right after mount, when we've read
+  // localStorage). If a cached province exists → 1 fetch. If not → 1
+  // empty-province fetch now, plus 1 scoped fetch when /provinces lands.
+  // Either way the user sees dishes in the first network round-trip.
   useEffect(() => {
+    if (!hydrated) return;
+
     setItems([]);
     setPage(1);
-
-    if (!provinceId) {
-      abortRef.current?.abort();
-      busyRef.current = false;
-      setLoadingMore(false);
-      // Keep the skeleton up while provinces are still discovering.
-      // If there are no provinces at all, /provinces already set
-      // loading=false — we just make sure not to clobber that.
-      if (provinceReady) {
-        setLoading(false);
-        setTotal(0);
-        setTotalPages(1);
-      }
-      return;
-    }
-
     fetchItems(1, false);
+
     return () => {
       abortRef.current?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQ, sort, coords, provinceId, selectedCategory]);
+  }, [hydrated, debouncedQ, sort, coords, provinceId, selectedCategory]);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -1006,8 +998,7 @@ export default function BuyerMenuDiscoveryPage() {
         if (
           entries[0].isIntersecting &&
           !busyRef.current &&
-          page < totalPages &&
-          provinceId
+          page < totalPages
         ) {
           fetchItems(page + 1, true);
         }
@@ -1016,7 +1007,7 @@ export default function BuyerMenuDiscoveryPage() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [items.length, page, totalPages, fetchItems, provinceId]);
+  }, [items.length, page, totalPages, fetchItems]);
 
   function requestLocation() {
     if (!navigator.geolocation) {
@@ -1052,14 +1043,16 @@ export default function BuyerMenuDiscoveryPage() {
 
   const openItem = useCallback(
     (item: Item) => {
-      router.push(`/order/item/${item.id}?province_id=${provinceId}`);
+      const suffix = provinceId ? `?province_id=${provinceId}` : "";
+      router.push(`/order/item/${item.id}${suffix}`);
     },
     [router, provinceId],
   );
 
   const prefetchItem = useCallback(
     (item: Item) => {
-      router.prefetch(`/order/item/${item.id}?province_id=${provinceId}`);
+      const suffix = provinceId ? `?province_id=${provinceId}` : "";
+      router.prefetch(`/order/item/${item.id}${suffix}`);
     },
     [router, provinceId],
   );
@@ -1071,6 +1064,10 @@ export default function BuyerMenuDiscoveryPage() {
       total,
     });
   }, [items.length, total, t]);
+
+  const showNoProvinces = provinceReady && provinces.length === 0;
+  const showNoDishes =
+    !loading && !error && items.length === 0 && !showNoProvinces;
 
   return (
     <div
@@ -1159,7 +1156,6 @@ export default function BuyerMenuDiscoveryPage() {
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={t.searchPlaceholder}
                   dir={t.dir}
-                  disabled={!provinceId}
                   className={`w-full rounded-xl border py-2.5 text-sm outline-none transition-all duration-300 focus:ring-4 focus:ring-[#C9A227]/20 disabled:cursor-not-allowed disabled:opacity-60 ${
                     isDark
                       ? "border-[#332C3E] bg-[#161320] text-[#F0EAE2] placeholder:text-[#5E5670] focus:border-[#C9A227] focus:shadow-[0_0_0_1px_rgba(201,162,39,0.4)]"
@@ -1194,7 +1190,7 @@ export default function BuyerMenuDiscoveryPage() {
                   <button
                     key={key}
                     onClick={() => handleSortClick(key)}
-                    disabled={!provinceId || (loading && active)}
+                    disabled={loading && active}
                     className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
                       active
                         ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25"
@@ -1230,7 +1226,7 @@ export default function BuyerMenuDiscoveryPage() {
             </div>
           )}
 
-          {provinceReady && provinces.length === 0 && (
+          {showNoProvinces && (
             <div
               className={`rounded-2xl border border-dashed px-6 py-14 text-center ${
                 isDark ? "border-[#332C3E]" : "border-[#E4DFD4]"
@@ -1264,7 +1260,7 @@ export default function BuyerMenuDiscoveryPage() {
             </div>
           )}
 
-          {loading && items.length === 0 && provinceId && (
+          {loading && items.length === 0 && !showNoProvinces && (
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
@@ -1279,7 +1275,7 @@ export default function BuyerMenuDiscoveryPage() {
             </div>
           )}
 
-          {!loading && !error && provinceId && items.length === 0 && (
+          {showNoDishes && (
             <div
               className={`rounded-2xl border border-dashed px-6 py-14 text-center ${
                 isDark ? "border-[#332C3E]" : "border-[#E4DFD4]"
