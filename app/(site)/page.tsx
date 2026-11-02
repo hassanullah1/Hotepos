@@ -348,7 +348,7 @@ function ProvinceCombobox({
         />
         <span className="min-w-0 flex-1 truncate">
           {!isReady && (
-            <Loader2 size={12} className="mr-1 inline animate-spin" />
+            <Loader2 size={12} className="me-1 inline animate-spin" />
           )}
           {btnText}
         </span>
@@ -432,7 +432,7 @@ function ProvinceCombobox({
                       setOpen(false);
                       setSearch("");
                     }}
-                    className={`flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-start text-xs font-medium transition ${
+                    className={`flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-start text-xs font-medium transition ${
                       highlighted
                         ? isDark
                           ? "bg-[#C9A227]/20 text-[#E0B93A]"
@@ -462,8 +462,12 @@ function ProvinceCombobox({
   );
 }
 
-/* ---------------- Product category bar ---------------- */
-
+/* ---------------- Product category bar ----------------
+ * Mobile  (< sm): round "tiles" — big tappable icon/photo with the label
+ *                 under it, horizontal scroll-snap, faded edges, active tile
+ *                 auto-centers, skeleton while loading.
+ * Desktop (>= sm): compact pills with counts (same as before, polished).
+ */
 function CategoryBar({
   categories,
   totalItems,
@@ -481,28 +485,8 @@ function CategoryBar({
   isDark: boolean;
   isReady: boolean;
 }) {
-  const itemBase =
-    "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-all duration-300";
-  const activeCls =
-    "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25";
-  const idleCls = isDark
-    ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:-translate-y-0.5 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
-    : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:-translate-y-0.5 hover:border-[#A9821E]/60 hover:text-[#8A6E1A]";
-
-  const Count = ({ n, active }: { n: number; active: boolean }) =>
-    n > 0 ? (
-      <span
-        className={`ml-1 inline-flex min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold leading-[16px] ${
-          active
-            ? "bg-[#1D1707]/15 text-[#1D1707]"
-            : isDark
-              ? "bg-white/10 text-[#B7B2C4]"
-              : "bg-[#1D1A22]/8 text-[#6E687A]"
-        }`}
-      >
-        {n}
-      </span>
-    ) : null;
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
 
   // Read the localized label straight from orderText by the DB `key`.
   // If the key isn't in the map (admin added a category later),
@@ -512,85 +496,266 @@ function CategoryBar({
     return typeof v === "string" && v.length > 0 ? v : fallback;
   };
 
-  return (
-    <div
-      className={`mb-3 overflow-hidden rounded-2xl border transition-colors ${
-        isDark
-          ? "border-[#2E2938] bg-[#1E1B26]/90"
-          : "border-[#E4DFD4] bg-white/90"
-      }`}
+  // Keep the selected category visible: scroll it to the center of the row
+  // (horizontally only — never moves the page vertically).
+  useEffect(() => {
+    [mobileScrollRef.current, desktopScrollRef.current].forEach((box) => {
+      if (!box) return;
+      const el = box.querySelector<HTMLElement>('[data-active="true"]');
+      if (!el || box.offsetParent === null) return; // skip hidden layout
+      const target = el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2;
+      box.scrollTo({ left: target, behavior: "smooth" });
+    });
+  }, [value, isReady]);
+
+  /* ---------- shared styles ---------- */
+  const fade =
+    "[mask-image:linear-gradient(to_right,transparent,#000_20px,#000_calc(100%-20px),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_20px,#000_calc(100%-20px),transparent)]";
+  const noScrollbar = "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+
+  /* ---------- MOBILE tile ---------- */
+  const Tile = ({
+    id,
+    label,
+    count,
+    icon,
+    image,
+    active,
+    isAll,
+  }: {
+    id: string;
+    label: string;
+    count: number;
+    icon?: string | null;
+    image?: string | null;
+    active: boolean;
+    isAll?: boolean;
+  }) => (
+    <button
+      type="button"
+      data-active={active}
+      onClick={() => onChange(id)}
+      aria-pressed={active}
+      className="group flex w-[68px] shrink-0 snap-center flex-col items-center gap-1.5 outline-none"
     >
-      <div
-        className="flex items-center gap-2 overflow-x-auto px-3 py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        dir={t.dir}
-      >
-        <button
-          type="button"
-          onClick={() => onChange("")}
-          className={`${itemBase} inline-flex items-center gap-1.5 ${
-            value === "" ? activeCls : idleCls
+      <span className="relative">
+        <span
+          className={`flex h-[58px] w-[58px] items-center justify-center overflow-hidden rounded-[20px] transition-all duration-300 group-active:scale-95 ${
+            active
+              ? "bg-gradient-to-br from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-lg shadow-[#C9A227]/30 ring-2 ring-[#C9A227]/60 ring-offset-2 " +
+                (isDark ? "ring-offset-[#15121C]" : "ring-offset-[#F7F4EE]")
+              : isDark
+                ? "border border-[#332C3E] bg-[#1E1B26] text-[#E0B93A]"
+                : "border border-[#E4DFD4] bg-white text-[#8A6E1A] shadow-sm"
           }`}
         >
-          <LayoutGrid size={13} />
-          {t.allCategories}
-          <Count n={totalItems} active={value === ""} />
-        </button>
+          {isAll ? (
+            <LayoutGrid size={22} strokeWidth={1.8} />
+          ) : icon ? (
+            <span className="text-[26px] leading-none">{icon}</span>
+          ) : image ? (
+            <img
+              src={image}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <span
+              className="text-lg font-semibold"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {label.trim().charAt(0).toUpperCase()}
+            </span>
+          )}
+        </span>
 
-        {!isReady && (
+        {count > 0 && (
           <span
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ${
-              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-            }`}
+            className={`absolute -top-1 -end-1 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none ring-2 ${
+              active
+                ? "bg-[#1D1707] text-[#E0B93A]"
+                : isDark
+                  ? "bg-[#C9A227] text-[#1D1707]"
+                  : "bg-[#1D1A22] text-white"
+            } ${isDark ? "ring-[#15121C]" : "ring-[#F7F4EE]"}`}
           >
-            <Loader2 size={12} className="animate-spin" />
-            {t.loadingCategories}
+            {count > 99 ? "99+" : count}
           </span>
         )}
+      </span>
+
+      <span
+        className={`line-clamp-2 w-full text-center text-[11px] leading-[1.25] transition-colors ${
+          active
+            ? isDark
+              ? "font-semibold text-[#E0B93A]"
+              : "font-semibold text-[#8A6E1A]"
+            : isDark
+              ? "font-medium text-[#B7B2C4]"
+              : "font-medium text-[#6E687A]"
+        }`}
+      >
+        {label}
+      </span>
+    </button>
+  );
+
+  /* ---------- DESKTOP pill ---------- */
+  const pillBase =
+    "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-all duration-300 inline-flex items-center gap-1.5";
+  const pillActive =
+    "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25";
+  const pillIdle = isDark
+    ? "border border-[#332C3E] bg-[#161320] text-[#B7B2C4] hover:-translate-y-0.5 hover:border-[#C9A227]/60 hover:text-[#E0B93A]"
+    : "border border-[#E4DFD4] bg-white text-[#6E687A] hover:-translate-y-0.5 hover:border-[#A9821E]/60 hover:text-[#8A6E1A]";
+
+  const Count = ({ n, active }: { n: number; active: boolean }) =>
+    n > 0 ? (
+      <span
+        className={`ms-0.5 inline-flex min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold leading-[16px] ${
+          active
+            ? "bg-[#1D1707]/15 text-[#1D1707]"
+            : isDark
+              ? "bg-white/10 text-[#B7B2C4]"
+              : "bg-[#1D1A22]/10 text-[#6E687A]"
+        }`}
+      >
+        {n}
+      </span>
+    ) : null;
+
+  return (
+    <div className="mb-3 sm:mb-4">
+      {/* ===== Mobile: tiles ===== */}
+      <div
+        ref={mobileScrollRef}
+        dir={t.dir}
+        className={`-mx-3 flex snap-x snap-proximity items-start gap-2.5 overflow-x-auto px-3 pb-1 pt-2 sm:hidden ${noScrollbar} ${fade}`}
+      >
+        <Tile
+          id=""
+          label={t.allCategories}
+          count={totalItems}
+          active={value === ""}
+          isAll
+        />
+
+        {!isReady &&
+          Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex w-[68px] shrink-0 flex-col items-center gap-1.5"
+              aria-hidden="true"
+            >
+              <div
+                className={`h-[58px] w-[58px] animate-pulse rounded-[20px] ${
+                  isDark ? "bg-[#1E1B26]" : "bg-[#EDE8DE]"
+                }`}
+              />
+              <div
+                className={`h-2.5 w-10 animate-pulse rounded-full ${
+                  isDark ? "bg-[#1E1B26]" : "bg-[#EDE8DE]"
+                }`}
+              />
+            </div>
+          ))}
 
         {isReady &&
-          categories.map((cat) => {
-            const active = cat.id === value;
-            const label = labelFor(cat.key, cat.name);
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => onChange(cat.id)}
-                className={`${itemBase} inline-flex items-center gap-1.5 ${
-                  active ? activeCls : idleCls
-                }`}
-                title={`${label} — ${cat.item_count}`}
-              >
-                {cat.icon ? (
-                  <span className="text-[13px] leading-none">{cat.icon}</span>
-                ) : cat.image_url ? (
-                  <img
-                    src={cat.image_url}
-                    alt=""
-                    className="h-4 w-4 rounded-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : null}
-                {label}
-                <Count n={cat.item_count} active={active} />
-              </button>
-            );
-          })}
+          categories.map((cat) => (
+            <Tile
+              key={cat.id}
+              id={cat.id}
+              label={labelFor(cat.key, cat.name)}
+              count={cat.item_count}
+              icon={cat.icon}
+              image={cat.image_url}
+              active={cat.id === value}
+            />
+          ))}
+      </div>
 
-        {isReady && categories.length === 0 && (
-          <span
-            className={`shrink-0 px-2 text-[12px] ${
-              isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
-            }`}
+      {/* ===== Desktop: pills ===== */}
+      <div
+        className={`hidden overflow-hidden rounded-2xl border transition-colors sm:block ${
+          isDark
+            ? "border-[#2E2938] bg-[#1E1B26]/90"
+            : "border-[#E4DFD4] bg-white/90"
+        }`}
+      >
+        <div
+          ref={desktopScrollRef}
+          dir={t.dir}
+          className={`flex items-center gap-2 overflow-x-auto px-3 py-2.5 ${noScrollbar}`}
+        >
+          <button
+            type="button"
+            data-active={value === ""}
+            onClick={() => onChange("")}
+            className={`${pillBase} ${value === "" ? pillActive : pillIdle}`}
           >
-            —
-          </span>
-        )}
+            <LayoutGrid size={13} />
+            {t.allCategories}
+            <Count n={totalItems} active={value === ""} />
+          </button>
+
+          {!isReady && (
+            <span
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ${
+                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+              }`}
+            >
+              <Loader2 size={12} className="animate-spin" />
+              {t.loadingCategories}
+            </span>
+          )}
+
+          {isReady &&
+            categories.map((cat) => {
+              const active = cat.id === value;
+              const label = labelFor(cat.key, cat.name);
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  data-active={active}
+                  onClick={() => onChange(cat.id)}
+                  className={`${pillBase} ${active ? pillActive : pillIdle}`}
+                  title={`${label} — ${cat.item_count}`}
+                >
+                  {cat.icon ? (
+                    <span className="text-[13px] leading-none">{cat.icon}</span>
+                  ) : cat.image_url ? (
+                    <img
+                      src={cat.image_url}
+                      alt=""
+                      className="h-4 w-4 rounded-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : null}
+                  {label}
+                  <Count n={cat.item_count} active={active} />
+                </button>
+              );
+            })}
+
+          {isReady && categories.length === 0 && (
+            <span
+              className={`shrink-0 px-2 text-[12px] ${
+                isDark ? "text-[#6E687A]" : "text-[#A39D8F]"
+              }`}
+            >
+              —
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
 /* ---------------- Dish card ---------------- */
 const DishCard = memo(function DishCard({
   it,
@@ -616,7 +781,7 @@ const DishCard = memo(function DishCard({
         onClick={() => onOpen(it)}
         onMouseEnter={() => onPrefetch(it)}
         onFocus={() => onPrefetch(it)}
-        className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-xl border text-start backdrop-blur-sm sm:rounded-2xl ${
+        className={`dish-card group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border text-start backdrop-blur-sm ${
           isDark
             ? "border-[#2E2938] bg-[#1E1B26]/90 hover:border-[#C9A227]/60"
             : "border-[#E4DFD4] bg-white hover:border-[#A9821E]/50"
@@ -625,7 +790,7 @@ const DishCard = memo(function DishCard({
         <span className="dish-sheen pointer-events-none absolute inset-0 z-20" />
 
         <div
-          className={`relative aspect-square overflow-hidden sm:aspect-[4/3] ${
+          className={`relative aspect-[4/3] overflow-hidden ${
             isDark ? "bg-[#161320]" : "bg-[#EDE8DE]"
           }`}
         >
@@ -657,7 +822,7 @@ const DishCard = memo(function DishCard({
 
           {it.distance_km !== null && (
             <span
-              className={`absolute left-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-semibold backdrop-blur-sm sm:left-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px] ${
+              className={`absolute start-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-semibold backdrop-blur-sm sm:start-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px] ${
                 isDark
                   ? "bg-[#15121C]/90 text-[#E0B93A]"
                   : "bg-white/95 text-[#8A6E1A] shadow-sm"
@@ -671,7 +836,7 @@ const DishCard = memo(function DishCard({
           )}
 
           {it.order_count > 50 && (
-            <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-1.5 py-0.5 text-[9px] font-semibold text-[#1D1707] shadow-sm sm:right-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px]">
+            <span className="absolute end-1.5 top-1.5 inline-flex items-center gap-0.5 rounded-full bg-gradient-to-r from-[#E0B93A] to-[#A9821E] px-1.5 py-0.5 text-[9px] font-semibold text-[#1D1707] shadow-sm sm:end-2 sm:top-2 sm:gap-1 sm:px-2 sm:text-[10px]">
               <Flame size={9} />
               <span className="hidden min-[380px]:inline">{t.popular}</span>
             </span>
@@ -764,7 +929,7 @@ const DishCard = memo(function DishCard({
                 </span>
               </span>
               <span
-                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
+                className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-[#E0B93A] group-hover:to-[#A9821E] group-hover:text-[#1D1707] group-hover:shadow-md group-hover:shadow-[#C9A227]/30 sm:px-3 sm:py-1 sm:text-[11px] ${
                   isDark
                     ? "border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E0B93A] group-hover:border-[#C9A227]"
                     : "border-[#A9821E]/40 bg-[#C9A227]/10 text-[#8A6E1A] group-hover:border-[#A9821E]"
@@ -811,10 +976,8 @@ export default function BuyerMenuDiscoveryPage() {
   const [provinceReady, setProvinceReady] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // ── PERF: hydrate the cached province on mount, then immediately mark
-  // the page "hydrated" so the items effect below can fire even before
-  // /provinces responds. First visit = 1 fast fetch (no province) then
-  // 1 scoped fetch when /provinces lands. Returning visit = 1 fetch.
+  // Hydrate cached province on mount, then mark page "hydrated" so the items
+  // effect can fire before /provinces responds.
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(PROVINCE_STORAGE_KEY);
@@ -848,7 +1011,7 @@ export default function BuyerMenuDiscoveryPage() {
   const abortRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
 
-  // ---- Load provinces (fills the dropdown + provides a fallback) ----
+  // ---- Load provinces ----
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -884,8 +1047,6 @@ export default function BuyerMenuDiscoveryPage() {
   }, []);
 
   // ---- Load product categories (scoped to province) ----
-  // Fires as soon as a province is known, in parallel with /provinces
-  // on the first visit (after hydration + province arrival).
   useEffect(() => {
     if (!provinceId) {
       setCategories([]);
@@ -922,8 +1083,7 @@ export default function BuyerMenuDiscoveryPage() {
     };
   }, [provinceId]);
 
-  // A category that existed in the old province may not exist in the new one,
-  // so drop the selection whenever the province changes.
+  // A category from the old province may not exist in the new one.
   useEffect(() => {
     setSelectedCategory("");
   }, [provinceId]);
@@ -948,10 +1108,6 @@ export default function BuyerMenuDiscoveryPage() {
 
   const fetchItems = useCallback(
     async (targetPage: number, append = false) => {
-      // ── Do NOT bail on empty provinceId. Fetching without a province
-      // returns items across all provinces — better than a blank screen
-      // while /provinces is still in flight. The next render (with the
-      // real province) immediately refetches and swaps them out.
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -1006,11 +1162,6 @@ export default function BuyerMenuDiscoveryPage() {
     [debouncedQ, coords, sort, provinceId, selectedCategory],
   );
 
-  // ── PERF: the items effect no longer waits for `provinceReady`.
-  // It fires once `hydrated` is true (right after mount, when we've read
-  // localStorage). If a cached province exists → 1 fetch. If not → 1
-  // empty-province fetch now, plus 1 scoped fetch when /provinces lands.
-  // Either way the user sees dishes in the first network round-trip.
   useEffect(() => {
     if (!hydrated) return;
 
@@ -1152,19 +1303,10 @@ export default function BuyerMenuDiscoveryPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-6">
-        <CategoryBar
-          categories={categories}
-          totalItems={totalItems}
-          value={selectedCategory}
-          onChange={setSelectedCategory}
-          t={t}
-          isDark={isDark}
-          isReady={categoriesReady}
-        />
-
+        {/* Search + province + sorting come first on mobile, then categories */}
         <div className="rounded-2xl bg-gradient-to-br from-[#C9A227]/45 via-[#C9A227]/10 to-[#C9A227]/25 p-px shadow-sm">
           <div
-            className={`rounded-[15px] p-3.5 backdrop-blur-md transition-colors sm:p-5 ${
+            className={`rounded-[15px] p-3 backdrop-blur-md transition-colors sm:p-5 ${
               isDark ? "bg-[#1E1B26]/95" : "bg-white/95"
             }`}
           >
@@ -1200,14 +1342,17 @@ export default function BuyerMenuDiscoveryPage() {
               </div>
             </div>
 
-            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+            {/* Sort chips: one swipeable row on mobile, wrap on desktop */}
+            <div
+              className={`-mx-3 mt-2.5 flex items-center gap-1.5 overflow-x-auto px-3 pb-0.5 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+            >
               {coords && (
                 <button
                   onClick={() => {
                     setCoords(null);
                     if (sort === "near") setSort("recommended");
                   }}
-                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition ${
+                  className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-2.5 py-1.5 text-[11px] font-semibold transition sm:py-1 ${
                     isDark
                       ? "border-[#C9A227] bg-[#C9A227]/15 text-[#E0B93A] hover:bg-[#C9A227]/25"
                       : "border-[#A9821E] bg-[#C9A227]/15 text-[#8A6E1A] hover:bg-[#C9A227]/25"
@@ -1226,7 +1371,7 @@ export default function BuyerMenuDiscoveryPage() {
                     key={key}
                     onClick={() => handleSortClick(key)}
                     disabled={loading && active}
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
+                    className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 sm:px-2.5 sm:py-1 ${
                       active
                         ? "bg-gradient-to-r from-[#E0B93A] to-[#A9821E] text-[#1D1707] shadow-md shadow-[#C9A227]/25"
                         : isDark
@@ -1248,7 +1393,19 @@ export default function BuyerMenuDiscoveryPage() {
           </div>
         </div>
 
-        <div className="mt-4 sm:mt-5">
+        <div className="mt-3 sm:mt-4">
+          <CategoryBar
+            categories={categories}
+            totalItems={totalItems}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            t={t}
+            isDark={isDark}
+            isReady={categoriesReady}
+          />
+        </div>
+
+        <div className="mt-1 sm:mt-2">
           {error && (
             <div
               className={`mb-4 rounded-xl border px-3.5 py-2 text-sm ${
@@ -1300,7 +1457,7 @@ export default function BuyerMenuDiscoveryPage() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className={`h-52 animate-pulse rounded-xl border sm:h-64 sm:rounded-2xl ${
+                  className={`h-56 animate-pulse rounded-2xl border sm:h-64 ${
                     isDark
                       ? "border-[#2E2938] bg-[#1E1B26]/60"
                       : "border-[#E4DFD4] bg-white/60"
