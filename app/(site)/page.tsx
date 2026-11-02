@@ -88,6 +88,14 @@ const orderText = {
     searchProvince: "Search province…",
     noProvinceResults: "No province matches",
     allCategories: "All",
+    foods: "Foods",
+    sweets: "Sweets",
+    cakes: "Cakes & cookies",
+    meat: "Meat",
+    dairy: "Dairy",
+    oil: "Oil",
+    fruits: "Fruits",
+    drinks: "Drinks",
     loadingCategories: "Loading categories…",
     sort: {
       recommended: "Recommended",
@@ -119,7 +127,17 @@ const orderText = {
     noProvinceHint: "ولایتونه لا نه دي جوړ شوي. له اډمین څخه وغواړئ.",
     searchProvince: "ولایت ولټوئ…",
     noProvinceResults: "هیڅ ولایت ونه موندل شو",
+
     allCategories: "ټول",
+    foods: "خواړه",
+    sweets: "خواږه",
+    meat: "غوښه",
+    dairy: "لبنيات",
+    cakes: "کیک او کلچي",
+    oil: "غوړي",
+    fruits: "مېوې",
+    drinks: "څښاک",
+
     loadingCategories: "کټګورۍ بارول…",
     sort: {
       recommended: "وړاندیز شوی",
@@ -152,6 +170,14 @@ const orderText = {
     searchProvince: "جستجوی ولایت…",
     noProvinceResults: "ولایتی مطابقت ندارد",
     allCategories: "همه",
+    foods: "غذاها",
+    sweets: "شیرینی‌ها",
+    meat: "گوشت",
+    dairy: "لبنیات",
+    oil: "روغن",
+    cakes: "کیک و کلچه",
+    fruits: "میوه‌ها",
+    drinks: "نوشیدنی‌ها",
     loadingCategories: "در حال بارگذاری دسته‌ها…",
     sort: {
       recommended: "پیشنهادی",
@@ -437,6 +463,7 @@ function ProvinceCombobox({
 }
 
 /* ---------------- Product category bar ---------------- */
+
 function CategoryBar({
   categories,
   totalItems,
@@ -477,6 +504,14 @@ function CategoryBar({
       </span>
     ) : null;
 
+  // Read the localized label straight from orderText by the DB `key`.
+  // If the key isn't in the map (admin added a category later),
+  // fall back to the name column stored in the database.
+  const labelFor = (key: string, fallback: string): string => {
+    const v = (t as Record<string, unknown>)[key];
+    return typeof v === "string" && v.length > 0 ? v : fallback;
+  };
+
   return (
     <div
       className={`mb-3 overflow-hidden rounded-2xl border transition-colors ${
@@ -515,6 +550,7 @@ function CategoryBar({
         {isReady &&
           categories.map((cat) => {
             const active = cat.id === value;
+            const label = labelFor(cat.key, cat.name);
             return (
               <button
                 key={cat.id}
@@ -523,7 +559,7 @@ function CategoryBar({
                 className={`${itemBase} inline-flex items-center gap-1.5 ${
                   active ? activeCls : idleCls
                 }`}
-                title={`${cat.name} — ${cat.item_count}`}
+                title={`${label} — ${cat.item_count}`}
               >
                 {cat.icon ? (
                   <span className="text-[13px] leading-none">{cat.icon}</span>
@@ -536,7 +572,7 @@ function CategoryBar({
                     decoding="async"
                   />
                 ) : null}
-                {cat.name}
+                {label}
                 <Count n={cat.item_count} active={active} />
               </button>
             );
@@ -555,7 +591,6 @@ function CategoryBar({
     </div>
   );
 }
-
 /* ---------------- Dish card ---------------- */
 const DishCard = memo(function DishCard({
   it,
