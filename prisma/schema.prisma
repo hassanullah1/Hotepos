@@ -124,6 +124,18 @@ model buyers {
   @@index([reset_token], map: "idx_buyers_reset_token")
 }
 
+model business_types {
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key        String  @unique @db.VarChar(50)
+  name       String  @db.VarChar(100)
+  is_active  Boolean @default(true)
+
+  hotels hotels[]
+    pending_signups pending_signups[]  
+
+  @@index([is_active], map: "idx_business_types_active")
+}
+
 // =========================================================
 // PLATFORM / TENANCY
 // =========================================================
@@ -139,14 +151,18 @@ model hotels {
   subscription_status     String?   @default("trial")
   subscription_expires_at DateTime? @db.Timestamptz(6)
   is_online               Boolean   @default(false)
-  business_type           String    @default("hotel") @db.VarChar(30)
-  delivery_type           String    @default("none") @db.VarChar(20) // ← must be here
+
+  // ✅ single nullable FK — no old string column
+  business_type_id String?         @db.Uuid
+  business_type    business_types? @relation(fields: [business_type_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  delivery_type           String    @default("none") @db.VarChar(20)
   created_at              DateTime? @default(now()) @db.Timestamptz(6)
   updated_at              DateTime? @default(now()) @db.Timestamptz(6)
 
   subscription_plans  subscription_plans?  @relation(fields: [subscription_plan_id], references: [id])
   verification_status String               @default("pending") @db.VarChar(20)
-  // the single owner profile for this hotel (1-to-1)
+
   hotel_owner         hotel_owners?
   expense_categories  expense_categories[]
   menu_categories     menu_categories[]
@@ -155,8 +171,9 @@ model hotels {
   branches   branches[]
   customers  customers[]
   audit_logs audit_logs[]
-}
 
+  @@index([business_type_id], map: "idx_hotels_business_type")
+}
 /// Hotel Owner profile — 1-to-1 with users, 1-to-1 with hotels.
 /// user_id IS the primary key: this is a profile, not a separate login.
 /// One user owns exactly one hotel; one hotel has exactly one owner.
@@ -180,6 +197,7 @@ model pending_signups {
   owner_name           String  @db.VarChar(150)
   email                String  @db.VarChar(150)
   phone                String? @db.VarChar(30)
+  business_type_id String? @db.Uuid
 
   reveal_password   String?   @db.VarChar(64)
   reveal_expires_at DateTime? @db.Timestamptz(6)
@@ -193,7 +211,7 @@ model pending_signups {
   paid_at            DateTime?          @db.Timestamptz(6)
   expires_at         DateTime?          @db.Timestamptz(6)
   subscription_plans subscription_plans @relation(fields: [subscription_plan_id], references: [id])
-
+  business_types business_types? @relation(fields: [business_type_id], references: [id], onDelete: SetNull)
   @@index([subscription_plan_id], map: "idx_pending_signups_plan")
   @@index([status], map: "idx_pending_signups_status")
   @@index([expires_at], map: "idx_pending_signups_expires")

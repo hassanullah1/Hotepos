@@ -45,6 +45,11 @@ export type role_permissions = $Result.DefaultSelection<Prisma.$role_permissions
  */
 export type buyers = $Result.DefaultSelection<Prisma.$buyersPayload>
 /**
+ * Model business_types
+ * 
+ */
+export type business_types = $Result.DefaultSelection<Prisma.$business_typesPayload>
+/**
  * Model hotels
  * This table contains check constraints and requires additional setup for migrations.
  */
@@ -493,6 +498,16 @@ export class PrismaClient<
     * ```
     */
   get buyers(): Prisma.buyersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.business_types`: Exposes CRUD operations for the **business_types** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Business_types
+    * const business_types = await prisma.business_types.findMany()
+    * ```
+    */
+  get business_types(): Prisma.business_typesDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.hotels`: Exposes CRUD operations for the **hotels** model.
@@ -1452,6 +1467,7 @@ export namespace Prisma {
     permissions: 'permissions',
     role_permissions: 'role_permissions',
     buyers: 'buyers',
+    business_types: 'business_types',
     hotels: 'hotels',
     hotel_owners: 'hotel_owners',
     pending_signups: 'pending_signups',
@@ -1519,7 +1535,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "units" | "menu_items" | "product_categories" | "branch_menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
+      modelProps: "users" | "roles" | "permissions" | "role_permissions" | "buyers" | "business_types" | "hotels" | "hotel_owners" | "pending_signups" | "email_verifications" | "subscription_plans" | "sections" | "plan_sections" | "provinces" | "branches" | "audit_logs" | "customers" | "dining_areas" | "dining_tables" | "table_sessions" | "menu_categories" | "units" | "menu_items" | "product_categories" | "branch_menu_items" | "menu_item_modifier_groups" | "menu_item_modifiers" | "inventory_items" | "menu_item_ingredients" | "inventory_transactions" | "orders" | "online_order_details" | "platform_settings" | "order_payouts" | "order_items" | "kitchen_ticket_items" | "kitchen_tickets" | "reviews" | "discounts" | "order_discounts" | "payment_methods" | "payments" | "invoices" | "pos_devices" | "printers" | "shifts" | "staff_leave_requests" | "expense_categories" | "expenses" | "staff_salaries" | "payroll_runs" | "payslips" | "staff_advances" | "tutorials" | "staff_attendance" | "room_types" | "rooms" | "room_stays"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1890,6 +1906,80 @@ export namespace Prisma {
           count: {
             args: Prisma.buyersCountArgs<ExtArgs>
             result: $Utils.Optional<BuyersCountAggregateOutputType> | number
+          }
+        }
+      }
+      business_types: {
+        payload: Prisma.$business_typesPayload<ExtArgs>
+        fields: Prisma.business_typesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.business_typesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.business_typesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          findFirst: {
+            args: Prisma.business_typesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.business_typesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          findMany: {
+            args: Prisma.business_typesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>[]
+          }
+          create: {
+            args: Prisma.business_typesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          createMany: {
+            args: Prisma.business_typesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.business_typesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>[]
+          }
+          delete: {
+            args: Prisma.business_typesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          update: {
+            args: Prisma.business_typesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          deleteMany: {
+            args: Prisma.business_typesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.business_typesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.business_typesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>[]
+          }
+          upsert: {
+            args: Prisma.business_typesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$business_typesPayload>
+          }
+          aggregate: {
+            args: Prisma.Business_typesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBusiness_types>
+          }
+          groupBy: {
+            args: Prisma.business_typesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Business_typesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.business_typesCountArgs<ExtArgs>
+            result: $Utils.Optional<Business_typesCountAggregateOutputType> | number
           }
         }
       }
@@ -5854,6 +5944,7 @@ export namespace Prisma {
     permissions?: permissionsOmit
     role_permissions?: role_permissionsOmit
     buyers?: buyersOmit
+    business_types?: business_typesOmit
     hotels?: hotelsOmit
     hotel_owners?: hotel_ownersOmit
     pending_signups?: pending_signupsOmit
@@ -6309,6 +6400,37 @@ export namespace Prisma {
    */
   export type BuyersCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: paymentsWhereInput
+  }
+
+
+  /**
+   * Count Type Business_typesCountOutputType
+   */
+
+  export type Business_typesCountOutputType = {
+    hotels: number
+  }
+
+  export type Business_typesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotels?: boolean | Business_typesCountOutputTypeCountHotelsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Business_typesCountOutputType without action
+   */
+  export type Business_typesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Business_typesCountOutputType
+     */
+    select?: Business_typesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Business_typesCountOutputType without action
+   */
+  export type Business_typesCountOutputTypeCountHotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: hotelsWhereInput
   }
 
 
@@ -13674,6 +13796,1068 @@ export namespace Prisma {
 
 
   /**
+   * Model business_types
+   */
+
+  export type AggregateBusiness_types = {
+    _count: Business_typesCountAggregateOutputType | null
+    _min: Business_typesMinAggregateOutputType | null
+    _max: Business_typesMaxAggregateOutputType | null
+  }
+
+  export type Business_typesMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    is_active: boolean | null
+  }
+
+  export type Business_typesMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    is_active: boolean | null
+  }
+
+  export type Business_typesCountAggregateOutputType = {
+    id: number
+    key: number
+    name: number
+    is_active: number
+    _all: number
+  }
+
+
+  export type Business_typesMinAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    is_active?: true
+  }
+
+  export type Business_typesMaxAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    is_active?: true
+  }
+
+  export type Business_typesCountAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    is_active?: true
+    _all?: true
+  }
+
+  export type Business_typesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which business_types to aggregate.
+     */
+    where?: business_typesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of business_types to fetch.
+     */
+    orderBy?: business_typesOrderByWithRelationInput | business_typesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: business_typesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` business_types from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` business_types.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned business_types
+    **/
+    _count?: true | Business_typesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Business_typesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Business_typesMaxAggregateInputType
+  }
+
+  export type GetBusiness_typesAggregateType<T extends Business_typesAggregateArgs> = {
+        [P in keyof T & keyof AggregateBusiness_types]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBusiness_types[P]>
+      : GetScalarType<T[P], AggregateBusiness_types[P]>
+  }
+
+
+
+
+  export type business_typesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: business_typesWhereInput
+    orderBy?: business_typesOrderByWithAggregationInput | business_typesOrderByWithAggregationInput[]
+    by: Business_typesScalarFieldEnum[] | Business_typesScalarFieldEnum
+    having?: business_typesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Business_typesCountAggregateInputType | true
+    _min?: Business_typesMinAggregateInputType
+    _max?: Business_typesMaxAggregateInputType
+  }
+
+  export type Business_typesGroupByOutputType = {
+    id: string
+    key: string
+    name: string
+    is_active: boolean
+    _count: Business_typesCountAggregateOutputType | null
+    _min: Business_typesMinAggregateOutputType | null
+    _max: Business_typesMaxAggregateOutputType | null
+  }
+
+  type GetBusiness_typesGroupByPayload<T extends business_typesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Business_typesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Business_typesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Business_typesGroupByOutputType[P]>
+            : GetScalarType<T[P], Business_typesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type business_typesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    is_active?: boolean
+    hotels?: boolean | business_types$hotelsArgs<ExtArgs>
+    _count?: boolean | Business_typesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["business_types"]>
+
+  export type business_typesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    is_active?: boolean
+  }, ExtArgs["result"]["business_types"]>
+
+  export type business_typesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    is_active?: boolean
+  }, ExtArgs["result"]["business_types"]>
+
+  export type business_typesSelectScalar = {
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    is_active?: boolean
+  }
+
+  export type business_typesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "name" | "is_active", ExtArgs["result"]["business_types"]>
+  export type business_typesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    hotels?: boolean | business_types$hotelsArgs<ExtArgs>
+    _count?: boolean | Business_typesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type business_typesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type business_typesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $business_typesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "business_types"
+    objects: {
+      hotels: Prisma.$hotelsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      name: string
+      is_active: boolean
+    }, ExtArgs["result"]["business_types"]>
+    composites: {}
+  }
+
+  type business_typesGetPayload<S extends boolean | null | undefined | business_typesDefaultArgs> = $Result.GetResult<Prisma.$business_typesPayload, S>
+
+  type business_typesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<business_typesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Business_typesCountAggregateInputType | true
+    }
+
+  export interface business_typesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['business_types'], meta: { name: 'business_types' } }
+    /**
+     * Find zero or one Business_types that matches the filter.
+     * @param {business_typesFindUniqueArgs} args - Arguments to find a Business_types
+     * @example
+     * // Get one Business_types
+     * const business_types = await prisma.business_types.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends business_typesFindUniqueArgs>(args: SelectSubset<T, business_typesFindUniqueArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Business_types that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {business_typesFindUniqueOrThrowArgs} args - Arguments to find a Business_types
+     * @example
+     * // Get one Business_types
+     * const business_types = await prisma.business_types.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends business_typesFindUniqueOrThrowArgs>(args: SelectSubset<T, business_typesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Business_types that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesFindFirstArgs} args - Arguments to find a Business_types
+     * @example
+     * // Get one Business_types
+     * const business_types = await prisma.business_types.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends business_typesFindFirstArgs>(args?: SelectSubset<T, business_typesFindFirstArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Business_types that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesFindFirstOrThrowArgs} args - Arguments to find a Business_types
+     * @example
+     * // Get one Business_types
+     * const business_types = await prisma.business_types.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends business_typesFindFirstOrThrowArgs>(args?: SelectSubset<T, business_typesFindFirstOrThrowArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Business_types that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Business_types
+     * const business_types = await prisma.business_types.findMany()
+     * 
+     * // Get first 10 Business_types
+     * const business_types = await prisma.business_types.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const business_typesWithIdOnly = await prisma.business_types.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends business_typesFindManyArgs>(args?: SelectSubset<T, business_typesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Business_types.
+     * @param {business_typesCreateArgs} args - Arguments to create a Business_types.
+     * @example
+     * // Create one Business_types
+     * const Business_types = await prisma.business_types.create({
+     *   data: {
+     *     // ... data to create a Business_types
+     *   }
+     * })
+     * 
+     */
+    create<T extends business_typesCreateArgs>(args: SelectSubset<T, business_typesCreateArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Business_types.
+     * @param {business_typesCreateManyArgs} args - Arguments to create many Business_types.
+     * @example
+     * // Create many Business_types
+     * const business_types = await prisma.business_types.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends business_typesCreateManyArgs>(args?: SelectSubset<T, business_typesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Business_types and returns the data saved in the database.
+     * @param {business_typesCreateManyAndReturnArgs} args - Arguments to create many Business_types.
+     * @example
+     * // Create many Business_types
+     * const business_types = await prisma.business_types.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Business_types and only return the `id`
+     * const business_typesWithIdOnly = await prisma.business_types.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends business_typesCreateManyAndReturnArgs>(args?: SelectSubset<T, business_typesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Business_types.
+     * @param {business_typesDeleteArgs} args - Arguments to delete one Business_types.
+     * @example
+     * // Delete one Business_types
+     * const Business_types = await prisma.business_types.delete({
+     *   where: {
+     *     // ... filter to delete one Business_types
+     *   }
+     * })
+     * 
+     */
+    delete<T extends business_typesDeleteArgs>(args: SelectSubset<T, business_typesDeleteArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Business_types.
+     * @param {business_typesUpdateArgs} args - Arguments to update one Business_types.
+     * @example
+     * // Update one Business_types
+     * const business_types = await prisma.business_types.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends business_typesUpdateArgs>(args: SelectSubset<T, business_typesUpdateArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Business_types.
+     * @param {business_typesDeleteManyArgs} args - Arguments to filter Business_types to delete.
+     * @example
+     * // Delete a few Business_types
+     * const { count } = await prisma.business_types.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends business_typesDeleteManyArgs>(args?: SelectSubset<T, business_typesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Business_types.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Business_types
+     * const business_types = await prisma.business_types.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends business_typesUpdateManyArgs>(args: SelectSubset<T, business_typesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Business_types and returns the data updated in the database.
+     * @param {business_typesUpdateManyAndReturnArgs} args - Arguments to update many Business_types.
+     * @example
+     * // Update many Business_types
+     * const business_types = await prisma.business_types.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Business_types and only return the `id`
+     * const business_typesWithIdOnly = await prisma.business_types.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends business_typesUpdateManyAndReturnArgs>(args: SelectSubset<T, business_typesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Business_types.
+     * @param {business_typesUpsertArgs} args - Arguments to update or create a Business_types.
+     * @example
+     * // Update or create a Business_types
+     * const business_types = await prisma.business_types.upsert({
+     *   create: {
+     *     // ... data to create a Business_types
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Business_types we want to update
+     *   }
+     * })
+     */
+    upsert<T extends business_typesUpsertArgs>(args: SelectSubset<T, business_typesUpsertArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Business_types.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesCountArgs} args - Arguments to filter Business_types to count.
+     * @example
+     * // Count the number of Business_types
+     * const count = await prisma.business_types.count({
+     *   where: {
+     *     // ... the filter for the Business_types we want to count
+     *   }
+     * })
+    **/
+    count<T extends business_typesCountArgs>(
+      args?: Subset<T, business_typesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Business_typesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Business_types.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Business_typesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Business_typesAggregateArgs>(args: Subset<T, Business_typesAggregateArgs>): Prisma.PrismaPromise<GetBusiness_typesAggregateType<T>>
+
+    /**
+     * Group by Business_types.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {business_typesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends business_typesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: business_typesGroupByArgs['orderBy'] }
+        : { orderBy?: business_typesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, business_typesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBusiness_typesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the business_types model
+   */
+  readonly fields: business_typesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for business_types.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__business_typesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    hotels<T extends business_types$hotelsArgs<ExtArgs> = {}>(args?: Subset<T, business_types$hotelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$hotelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the business_types model
+   */
+  interface business_typesFieldRefs {
+    readonly id: FieldRef<"business_types", 'String'>
+    readonly key: FieldRef<"business_types", 'String'>
+    readonly name: FieldRef<"business_types", 'String'>
+    readonly is_active: FieldRef<"business_types", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * business_types findUnique
+   */
+  export type business_typesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter, which business_types to fetch.
+     */
+    where: business_typesWhereUniqueInput
+  }
+
+  /**
+   * business_types findUniqueOrThrow
+   */
+  export type business_typesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter, which business_types to fetch.
+     */
+    where: business_typesWhereUniqueInput
+  }
+
+  /**
+   * business_types findFirst
+   */
+  export type business_typesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter, which business_types to fetch.
+     */
+    where?: business_typesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of business_types to fetch.
+     */
+    orderBy?: business_typesOrderByWithRelationInput | business_typesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for business_types.
+     */
+    cursor?: business_typesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` business_types from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` business_types.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of business_types.
+     */
+    distinct?: Business_typesScalarFieldEnum | Business_typesScalarFieldEnum[]
+  }
+
+  /**
+   * business_types findFirstOrThrow
+   */
+  export type business_typesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter, which business_types to fetch.
+     */
+    where?: business_typesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of business_types to fetch.
+     */
+    orderBy?: business_typesOrderByWithRelationInput | business_typesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for business_types.
+     */
+    cursor?: business_typesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` business_types from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` business_types.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of business_types.
+     */
+    distinct?: Business_typesScalarFieldEnum | Business_typesScalarFieldEnum[]
+  }
+
+  /**
+   * business_types findMany
+   */
+  export type business_typesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter, which business_types to fetch.
+     */
+    where?: business_typesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of business_types to fetch.
+     */
+    orderBy?: business_typesOrderByWithRelationInput | business_typesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing business_types.
+     */
+    cursor?: business_typesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` business_types from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` business_types.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of business_types.
+     */
+    distinct?: Business_typesScalarFieldEnum | Business_typesScalarFieldEnum[]
+  }
+
+  /**
+   * business_types create
+   */
+  export type business_typesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a business_types.
+     */
+    data: XOR<business_typesCreateInput, business_typesUncheckedCreateInput>
+  }
+
+  /**
+   * business_types createMany
+   */
+  export type business_typesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many business_types.
+     */
+    data: business_typesCreateManyInput | business_typesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * business_types createManyAndReturn
+   */
+  export type business_typesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * The data used to create many business_types.
+     */
+    data: business_typesCreateManyInput | business_typesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * business_types update
+   */
+  export type business_typesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a business_types.
+     */
+    data: XOR<business_typesUpdateInput, business_typesUncheckedUpdateInput>
+    /**
+     * Choose, which business_types to update.
+     */
+    where: business_typesWhereUniqueInput
+  }
+
+  /**
+   * business_types updateMany
+   */
+  export type business_typesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update business_types.
+     */
+    data: XOR<business_typesUpdateManyMutationInput, business_typesUncheckedUpdateManyInput>
+    /**
+     * Filter which business_types to update
+     */
+    where?: business_typesWhereInput
+    /**
+     * Limit how many business_types to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * business_types updateManyAndReturn
+   */
+  export type business_typesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * The data used to update business_types.
+     */
+    data: XOR<business_typesUpdateManyMutationInput, business_typesUncheckedUpdateManyInput>
+    /**
+     * Filter which business_types to update
+     */
+    where?: business_typesWhereInput
+    /**
+     * Limit how many business_types to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * business_types upsert
+   */
+  export type business_typesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the business_types to update in case it exists.
+     */
+    where: business_typesWhereUniqueInput
+    /**
+     * In case the business_types found by the `where` argument doesn't exist, create a new business_types with this data.
+     */
+    create: XOR<business_typesCreateInput, business_typesUncheckedCreateInput>
+    /**
+     * In case the business_types was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<business_typesUpdateInput, business_typesUncheckedUpdateInput>
+  }
+
+  /**
+   * business_types delete
+   */
+  export type business_typesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    /**
+     * Filter which business_types to delete.
+     */
+    where: business_typesWhereUniqueInput
+  }
+
+  /**
+   * business_types deleteMany
+   */
+  export type business_typesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which business_types to delete
+     */
+    where?: business_typesWhereInput
+    /**
+     * Limit how many business_types to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * business_types.hotels
+   */
+  export type business_types$hotelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the hotels
+     */
+    select?: hotelsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the hotels
+     */
+    omit?: hotelsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: hotelsInclude<ExtArgs> | null
+    where?: hotelsWhereInput
+    orderBy?: hotelsOrderByWithRelationInput | hotelsOrderByWithRelationInput[]
+    cursor?: hotelsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HotelsScalarFieldEnum | HotelsScalarFieldEnum[]
+  }
+
+  /**
+   * business_types without action
+   */
+  export type business_typesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model hotels
    */
 
@@ -13692,7 +14876,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
-    business_type: string | null
+    business_type_id: string | null
     delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -13708,7 +14892,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean | null
-    business_type: string | null
+    business_type_id: string | null
     delivery_type: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -13724,7 +14908,7 @@ export namespace Prisma {
     subscription_status: number
     subscription_expires_at: number
     is_online: number
-    business_type: number
+    business_type_id: number
     delivery_type: number
     created_at: number
     updated_at: number
@@ -13742,7 +14926,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
-    business_type?: true
+    business_type_id?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13758,7 +14942,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
-    business_type?: true
+    business_type_id?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13774,7 +14958,7 @@ export namespace Prisma {
     subscription_status?: true
     subscription_expires_at?: true
     is_online?: true
-    business_type?: true
+    business_type_id?: true
     delivery_type?: true
     created_at?: true
     updated_at?: true
@@ -13863,7 +15047,7 @@ export namespace Prisma {
     subscription_status: string | null
     subscription_expires_at: Date | null
     is_online: boolean
-    business_type: string
+    business_type_id: string | null
     delivery_type: string
     created_at: Date | null
     updated_at: Date | null
@@ -13896,11 +15080,12 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
-    business_type?: boolean
+    business_type_id?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
     hotel_owner?: boolean | hotels$hotel_ownerArgs<ExtArgs>
     expense_categories?: boolean | hotels$expense_categoriesArgs<ExtArgs>
@@ -13921,11 +15106,12 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
-    business_type?: boolean
+    business_type_id?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
   }, ExtArgs["result"]["hotels"]>
 
@@ -13938,11 +15124,12 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
-    business_type?: boolean
+    business_type_id?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
   }, ExtArgs["result"]["hotels"]>
 
@@ -13955,15 +15142,16 @@ export namespace Prisma {
     subscription_status?: boolean
     subscription_expires_at?: boolean
     is_online?: boolean
-    business_type?: boolean
+    business_type_id?: boolean
     delivery_type?: boolean
     created_at?: boolean
     updated_at?: boolean
     verification_status?: boolean
   }
 
-  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "business_type" | "delivery_type" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
+  export type hotelsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo_url" | "subscription_plan_id" | "subscription_status" | "subscription_expires_at" | "is_online" | "business_type_id" | "delivery_type" | "created_at" | "updated_at" | "verification_status", ExtArgs["result"]["hotels"]>
   export type hotelsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
     hotel_owner?: boolean | hotels$hotel_ownerArgs<ExtArgs>
     expense_categories?: boolean | hotels$expense_categoriesArgs<ExtArgs>
@@ -13975,15 +15163,18 @@ export namespace Prisma {
     _count?: boolean | HotelsCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type hotelsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
   }
   export type hotelsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business_type?: boolean | hotels$business_typeArgs<ExtArgs>
     subscription_plans?: boolean | hotels$subscription_plansArgs<ExtArgs>
   }
 
   export type $hotelsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "hotels"
     objects: {
+      business_type: Prisma.$business_typesPayload<ExtArgs> | null
       subscription_plans: Prisma.$subscription_plansPayload<ExtArgs> | null
       hotel_owner: Prisma.$hotel_ownersPayload<ExtArgs> | null
       expense_categories: Prisma.$expense_categoriesPayload<ExtArgs>[]
@@ -14002,7 +15193,7 @@ export namespace Prisma {
       subscription_status: string | null
       subscription_expires_at: Date | null
       is_online: boolean
-      business_type: string
+      business_type_id: string | null
       delivery_type: string
       created_at: Date | null
       updated_at: Date | null
@@ -14401,6 +15592,7 @@ export namespace Prisma {
    */
   export interface Prisma__hotelsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    business_type<T extends hotels$business_typeArgs<ExtArgs> = {}>(args?: Subset<T, hotels$business_typeArgs<ExtArgs>>): Prisma__business_typesClient<$Result.GetResult<Prisma.$business_typesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     subscription_plans<T extends hotels$subscription_plansArgs<ExtArgs> = {}>(args?: Subset<T, hotels$subscription_plansArgs<ExtArgs>>): Prisma__subscription_plansClient<$Result.GetResult<Prisma.$subscription_plansPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     hotel_owner<T extends hotels$hotel_ownerArgs<ExtArgs> = {}>(args?: Subset<T, hotels$hotel_ownerArgs<ExtArgs>>): Prisma__hotel_ownersClient<$Result.GetResult<Prisma.$hotel_ownersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     expense_categories<T extends hotels$expense_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, hotels$expense_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$expense_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14446,7 +15638,7 @@ export namespace Prisma {
     readonly subscription_status: FieldRef<"hotels", 'String'>
     readonly subscription_expires_at: FieldRef<"hotels", 'DateTime'>
     readonly is_online: FieldRef<"hotels", 'Boolean'>
-    readonly business_type: FieldRef<"hotels", 'String'>
+    readonly business_type_id: FieldRef<"hotels", 'String'>
     readonly delivery_type: FieldRef<"hotels", 'String'>
     readonly created_at: FieldRef<"hotels", 'DateTime'>
     readonly updated_at: FieldRef<"hotels", 'DateTime'>
@@ -14849,6 +16041,25 @@ export namespace Prisma {
      * Limit how many hotels to delete.
      */
     limit?: number
+  }
+
+  /**
+   * hotels.business_type
+   */
+  export type hotels$business_typeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the business_types
+     */
+    select?: business_typesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the business_types
+     */
+    omit?: business_typesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: business_typesInclude<ExtArgs> | null
+    where?: business_typesWhereInput
   }
 
   /**
@@ -75971,6 +77182,16 @@ export namespace Prisma {
   export type BuyersScalarFieldEnum = (typeof BuyersScalarFieldEnum)[keyof typeof BuyersScalarFieldEnum]
 
 
+  export const Business_typesScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    is_active: 'is_active'
+  };
+
+  export type Business_typesScalarFieldEnum = (typeof Business_typesScalarFieldEnum)[keyof typeof Business_typesScalarFieldEnum]
+
+
   export const HotelsScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -75980,7 +77201,7 @@ export namespace Prisma {
     subscription_status: 'subscription_status',
     subscription_expires_at: 'subscription_expires_at',
     is_online: 'is_online',
-    business_type: 'business_type',
+    business_type_id: 'business_type_id',
     delivery_type: 'delivery_type',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -77288,6 +78509,56 @@ export namespace Prisma {
     updated_at?: DateTimeNullableWithAggregatesFilter<"buyers"> | Date | string | null
   }
 
+  export type business_typesWhereInput = {
+    AND?: business_typesWhereInput | business_typesWhereInput[]
+    OR?: business_typesWhereInput[]
+    NOT?: business_typesWhereInput | business_typesWhereInput[]
+    id?: UuidFilter<"business_types"> | string
+    key?: StringFilter<"business_types"> | string
+    name?: StringFilter<"business_types"> | string
+    is_active?: BoolFilter<"business_types"> | boolean
+    hotels?: HotelsListRelationFilter
+  }
+
+  export type business_typesOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    is_active?: SortOrder
+    hotels?: hotelsOrderByRelationAggregateInput
+  }
+
+  export type business_typesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: business_typesWhereInput | business_typesWhereInput[]
+    OR?: business_typesWhereInput[]
+    NOT?: business_typesWhereInput | business_typesWhereInput[]
+    name?: StringFilter<"business_types"> | string
+    is_active?: BoolFilter<"business_types"> | boolean
+    hotels?: HotelsListRelationFilter
+  }, "id" | "key">
+
+  export type business_typesOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    is_active?: SortOrder
+    _count?: business_typesCountOrderByAggregateInput
+    _max?: business_typesMaxOrderByAggregateInput
+    _min?: business_typesMinOrderByAggregateInput
+  }
+
+  export type business_typesScalarWhereWithAggregatesInput = {
+    AND?: business_typesScalarWhereWithAggregatesInput | business_typesScalarWhereWithAggregatesInput[]
+    OR?: business_typesScalarWhereWithAggregatesInput[]
+    NOT?: business_typesScalarWhereWithAggregatesInput | business_typesScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"business_types"> | string
+    key?: StringWithAggregatesFilter<"business_types"> | string
+    name?: StringWithAggregatesFilter<"business_types"> | string
+    is_active?: BoolWithAggregatesFilter<"business_types"> | boolean
+  }
+
   export type hotelsWhereInput = {
     AND?: hotelsWhereInput | hotelsWhereInput[]
     OR?: hotelsWhereInput[]
@@ -77300,11 +78571,12 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
-    business_type?: StringFilter<"hotels"> | string
+    business_type_id?: UuidNullableFilter<"hotels"> | string | null
     delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     verification_status?: StringFilter<"hotels"> | string
+    business_type?: XOR<Business_typesNullableScalarRelationFilter, business_typesWhereInput> | null
     subscription_plans?: XOR<Subscription_plansNullableScalarRelationFilter, subscription_plansWhereInput> | null
     hotel_owner?: XOR<Hotel_ownersNullableScalarRelationFilter, hotel_ownersWhereInput> | null
     expense_categories?: Expense_categoriesListRelationFilter
@@ -77324,11 +78596,12 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
-    business_type?: SortOrder
+    business_type_id?: SortOrderInput | SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     verification_status?: SortOrder
+    business_type?: business_typesOrderByWithRelationInput
     subscription_plans?: subscription_plansOrderByWithRelationInput
     hotel_owner?: hotel_ownersOrderByWithRelationInput
     expense_categories?: expense_categoriesOrderByRelationAggregateInput
@@ -77351,11 +78624,12 @@ export namespace Prisma {
     subscription_status?: StringNullableFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     is_online?: BoolFilter<"hotels"> | boolean
-    business_type?: StringFilter<"hotels"> | string
+    business_type_id?: UuidNullableFilter<"hotels"> | string | null
     delivery_type?: StringFilter<"hotels"> | string
     created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
     verification_status?: StringFilter<"hotels"> | string
+    business_type?: XOR<Business_typesNullableScalarRelationFilter, business_typesWhereInput> | null
     subscription_plans?: XOR<Subscription_plansNullableScalarRelationFilter, subscription_plansWhereInput> | null
     hotel_owner?: XOR<Hotel_ownersNullableScalarRelationFilter, hotel_ownersWhereInput> | null
     expense_categories?: Expense_categoriesListRelationFilter
@@ -77375,7 +78649,7 @@ export namespace Prisma {
     subscription_status?: SortOrderInput | SortOrder
     subscription_expires_at?: SortOrderInput | SortOrder
     is_online?: SortOrder
-    business_type?: SortOrder
+    business_type_id?: SortOrderInput | SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -77397,7 +78671,7 @@ export namespace Prisma {
     subscription_status?: StringNullableWithAggregatesFilter<"hotels"> | string | null
     subscription_expires_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     is_online?: BoolWithAggregatesFilter<"hotels"> | boolean
-    business_type?: StringWithAggregatesFilter<"hotels"> | string
+    business_type_id?: UuidNullableWithAggregatesFilter<"hotels"> | string | null
     delivery_type?: StringWithAggregatesFilter<"hotels"> | string
     created_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"hotels"> | Date | string | null
@@ -82062,6 +83336,59 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type business_typesCreateInput = {
+    id?: string
+    key: string
+    name: string
+    is_active?: boolean
+    hotels?: hotelsCreateNestedManyWithoutBusiness_typeInput
+  }
+
+  export type business_typesUncheckedCreateInput = {
+    id?: string
+    key: string
+    name: string
+    is_active?: boolean
+    hotels?: hotelsUncheckedCreateNestedManyWithoutBusiness_typeInput
+  }
+
+  export type business_typesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    hotels?: hotelsUpdateManyWithoutBusiness_typeNestedInput
+  }
+
+  export type business_typesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    hotels?: hotelsUncheckedUpdateManyWithoutBusiness_typeNestedInput
+  }
+
+  export type business_typesCreateManyInput = {
+    id?: string
+    key: string
+    name: string
+    is_active?: boolean
+  }
+
+  export type business_typesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type business_typesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type hotelsCreateInput = {
     id?: string
     name: string
@@ -82070,11 +83397,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -82094,7 +83421,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -82116,11 +83443,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -82140,7 +83467,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -82163,7 +83490,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -82178,7 +83505,6 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -82194,7 +83520,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -87138,6 +88464,50 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type HotelsListRelationFilter = {
+    every?: hotelsWhereInput
+    some?: hotelsWhereInput
+    none?: hotelsWhereInput
+  }
+
+  export type hotelsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type business_typesCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    is_active?: SortOrder
+  }
+
+  export type business_typesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    is_active?: SortOrder
+  }
+
+  export type business_typesMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    is_active?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type Business_typesNullableScalarRelationFilter = {
+    is?: business_typesWhereInput | null
+    isNot?: business_typesWhereInput | null
+  }
+
   export type Subscription_plansNullableScalarRelationFilter = {
     is?: subscription_plansWhereInput | null
     isNot?: subscription_plansWhereInput | null
@@ -87217,7 +88587,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
-    business_type?: SortOrder
+    business_type_id?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -87233,7 +88603,7 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
-    business_type?: SortOrder
+    business_type_id?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -87249,19 +88619,11 @@ export namespace Prisma {
     subscription_status?: SortOrder
     subscription_expires_at?: SortOrder
     is_online?: SortOrder
-    business_type?: SortOrder
+    business_type_id?: SortOrder
     delivery_type?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     verification_status?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type UsersScalarRelationFilter = {
@@ -87464,12 +88826,6 @@ export namespace Prisma {
     none?: plan_sectionsWhereInput
   }
 
-  export type HotelsListRelationFilter = {
-    every?: hotelsWhereInput
-    some?: hotelsWhereInput
-    none?: hotelsWhereInput
-  }
-
   export type Pending_signupsListRelationFilter = {
     every?: pending_signupsWhereInput
     some?: pending_signupsWhereInput
@@ -87477,10 +88833,6 @@ export namespace Prisma {
   }
 
   export type plan_sectionsOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type hotelsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -91270,6 +92622,58 @@ export namespace Prisma {
     deleteMany?: paymentsScalarWhereInput | paymentsScalarWhereInput[]
   }
 
+  export type hotelsCreateNestedManyWithoutBusiness_typeInput = {
+    create?: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput> | hotelsCreateWithoutBusiness_typeInput[] | hotelsUncheckedCreateWithoutBusiness_typeInput[]
+    connectOrCreate?: hotelsCreateOrConnectWithoutBusiness_typeInput | hotelsCreateOrConnectWithoutBusiness_typeInput[]
+    createMany?: hotelsCreateManyBusiness_typeInputEnvelope
+    connect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+  }
+
+  export type hotelsUncheckedCreateNestedManyWithoutBusiness_typeInput = {
+    create?: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput> | hotelsCreateWithoutBusiness_typeInput[] | hotelsUncheckedCreateWithoutBusiness_typeInput[]
+    connectOrCreate?: hotelsCreateOrConnectWithoutBusiness_typeInput | hotelsCreateOrConnectWithoutBusiness_typeInput[]
+    createMany?: hotelsCreateManyBusiness_typeInputEnvelope
+    connect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type hotelsUpdateManyWithoutBusiness_typeNestedInput = {
+    create?: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput> | hotelsCreateWithoutBusiness_typeInput[] | hotelsUncheckedCreateWithoutBusiness_typeInput[]
+    connectOrCreate?: hotelsCreateOrConnectWithoutBusiness_typeInput | hotelsCreateOrConnectWithoutBusiness_typeInput[]
+    upsert?: hotelsUpsertWithWhereUniqueWithoutBusiness_typeInput | hotelsUpsertWithWhereUniqueWithoutBusiness_typeInput[]
+    createMany?: hotelsCreateManyBusiness_typeInputEnvelope
+    set?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    disconnect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    delete?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    connect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    update?: hotelsUpdateWithWhereUniqueWithoutBusiness_typeInput | hotelsUpdateWithWhereUniqueWithoutBusiness_typeInput[]
+    updateMany?: hotelsUpdateManyWithWhereWithoutBusiness_typeInput | hotelsUpdateManyWithWhereWithoutBusiness_typeInput[]
+    deleteMany?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
+  }
+
+  export type hotelsUncheckedUpdateManyWithoutBusiness_typeNestedInput = {
+    create?: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput> | hotelsCreateWithoutBusiness_typeInput[] | hotelsUncheckedCreateWithoutBusiness_typeInput[]
+    connectOrCreate?: hotelsCreateOrConnectWithoutBusiness_typeInput | hotelsCreateOrConnectWithoutBusiness_typeInput[]
+    upsert?: hotelsUpsertWithWhereUniqueWithoutBusiness_typeInput | hotelsUpsertWithWhereUniqueWithoutBusiness_typeInput[]
+    createMany?: hotelsCreateManyBusiness_typeInputEnvelope
+    set?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    disconnect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    delete?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    connect?: hotelsWhereUniqueInput | hotelsWhereUniqueInput[]
+    update?: hotelsUpdateWithWhereUniqueWithoutBusiness_typeInput | hotelsUpdateWithWhereUniqueWithoutBusiness_typeInput[]
+    updateMany?: hotelsUpdateManyWithWhereWithoutBusiness_typeInput | hotelsUpdateManyWithWhereWithoutBusiness_typeInput[]
+    deleteMany?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
+  }
+
+  export type business_typesCreateNestedOneWithoutHotelsInput = {
+    create?: XOR<business_typesCreateWithoutHotelsInput, business_typesUncheckedCreateWithoutHotelsInput>
+    connectOrCreate?: business_typesCreateOrConnectWithoutHotelsInput
+    connect?: business_typesWhereUniqueInput
+  }
+
   export type subscription_plansCreateNestedOneWithoutHotelsInput = {
     create?: XOR<subscription_plansCreateWithoutHotelsInput, subscription_plansUncheckedCreateWithoutHotelsInput>
     connectOrCreate?: subscription_plansCreateOrConnectWithoutHotelsInput
@@ -91372,8 +92776,14 @@ export namespace Prisma {
     connect?: audit_logsWhereUniqueInput | audit_logsWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type business_typesUpdateOneWithoutHotelsNestedInput = {
+    create?: XOR<business_typesCreateWithoutHotelsInput, business_typesUncheckedCreateWithoutHotelsInput>
+    connectOrCreate?: business_typesCreateOrConnectWithoutHotelsInput
+    upsert?: business_typesUpsertWithoutHotelsInput
+    disconnect?: business_typesWhereInput | boolean
+    delete?: business_typesWhereInput | boolean
+    connect?: business_typesWhereUniqueInput
+    update?: XOR<XOR<business_typesUpdateToOneWithWhereWithoutHotelsInput, business_typesUpdateWithoutHotelsInput>, business_typesUncheckedUpdateWithoutHotelsInput>
   }
 
   export type subscription_plansUpdateOneWithoutHotelsNestedInput = {
@@ -98297,6 +99707,114 @@ export namespace Prisma {
     data: XOR<paymentsUpdateManyMutationInput, paymentsUncheckedUpdateManyWithoutBuyersInput>
   }
 
+  export type hotelsCreateWithoutBusiness_typeInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
+    hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsCreateNestedManyWithoutHotelsInput
+    branches?: branchesCreateNestedManyWithoutHotelsInput
+    customers?: customersCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsUncheckedCreateWithoutBusiness_typeInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_plan_id?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+    hotel_owner?: hotel_ownersUncheckedCreateNestedOneWithoutHotelsInput
+    expense_categories?: expense_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_categories?: menu_categoriesUncheckedCreateNestedManyWithoutHotelsInput
+    menu_items?: menu_itemsUncheckedCreateNestedManyWithoutHotelsInput
+    branches?: branchesUncheckedCreateNestedManyWithoutHotelsInput
+    customers?: customersUncheckedCreateNestedManyWithoutHotelsInput
+    audit_logs?: audit_logsUncheckedCreateNestedManyWithoutHotelsInput
+  }
+
+  export type hotelsCreateOrConnectWithoutBusiness_typeInput = {
+    where: hotelsWhereUniqueInput
+    create: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput>
+  }
+
+  export type hotelsCreateManyBusiness_typeInputEnvelope = {
+    data: hotelsCreateManyBusiness_typeInput | hotelsCreateManyBusiness_typeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type hotelsUpsertWithWhereUniqueWithoutBusiness_typeInput = {
+    where: hotelsWhereUniqueInput
+    update: XOR<hotelsUpdateWithoutBusiness_typeInput, hotelsUncheckedUpdateWithoutBusiness_typeInput>
+    create: XOR<hotelsCreateWithoutBusiness_typeInput, hotelsUncheckedCreateWithoutBusiness_typeInput>
+  }
+
+  export type hotelsUpdateWithWhereUniqueWithoutBusiness_typeInput = {
+    where: hotelsWhereUniqueInput
+    data: XOR<hotelsUpdateWithoutBusiness_typeInput, hotelsUncheckedUpdateWithoutBusiness_typeInput>
+  }
+
+  export type hotelsUpdateManyWithWhereWithoutBusiness_typeInput = {
+    where: hotelsScalarWhereInput
+    data: XOR<hotelsUpdateManyMutationInput, hotelsUncheckedUpdateManyWithoutBusiness_typeInput>
+  }
+
+  export type hotelsScalarWhereInput = {
+    AND?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
+    OR?: hotelsScalarWhereInput[]
+    NOT?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
+    id?: UuidFilter<"hotels"> | string
+    name?: StringFilter<"hotels"> | string
+    slug?: StringFilter<"hotels"> | string
+    logo_url?: StringNullableFilter<"hotels"> | string | null
+    subscription_plan_id?: UuidNullableFilter<"hotels"> | string | null
+    subscription_status?: StringNullableFilter<"hotels"> | string | null
+    subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
+    is_online?: BoolFilter<"hotels"> | boolean
+    business_type_id?: UuidNullableFilter<"hotels"> | string | null
+    delivery_type?: StringFilter<"hotels"> | string
+    created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
+    verification_status?: StringFilter<"hotels"> | string
+  }
+
+  export type business_typesCreateWithoutHotelsInput = {
+    id?: string
+    key: string
+    name: string
+    is_active?: boolean
+  }
+
+  export type business_typesUncheckedCreateWithoutHotelsInput = {
+    id?: string
+    key: string
+    name: string
+    is_active?: boolean
+  }
+
+  export type business_typesCreateOrConnectWithoutHotelsInput = {
+    where: business_typesWhereUniqueInput
+    create: XOR<business_typesCreateWithoutHotelsInput, business_typesUncheckedCreateWithoutHotelsInput>
+  }
+
   export type subscription_plansCreateWithoutHotelsInput = {
     id?: string
     name: string
@@ -98627,6 +100145,31 @@ export namespace Prisma {
   export type audit_logsCreateManyHotelsInputEnvelope = {
     data: audit_logsCreateManyHotelsInput | audit_logsCreateManyHotelsInput[]
     skipDuplicates?: boolean
+  }
+
+  export type business_typesUpsertWithoutHotelsInput = {
+    update: XOR<business_typesUpdateWithoutHotelsInput, business_typesUncheckedUpdateWithoutHotelsInput>
+    create: XOR<business_typesCreateWithoutHotelsInput, business_typesUncheckedCreateWithoutHotelsInput>
+    where?: business_typesWhereInput
+  }
+
+  export type business_typesUpdateToOneWithWhereWithoutHotelsInput = {
+    where?: business_typesWhereInput
+    data: XOR<business_typesUpdateWithoutHotelsInput, business_typesUncheckedUpdateWithoutHotelsInput>
+  }
+
+  export type business_typesUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type business_typesUncheckedUpdateWithoutHotelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type subscription_plansUpsertWithoutHotelsInput = {
@@ -98979,11 +100522,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
     menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
@@ -99002,7 +100545,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -99126,11 +100669,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
     menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
@@ -99149,7 +100692,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -99256,11 +100799,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
     menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
@@ -99278,7 +100821,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -99384,25 +100927,6 @@ export namespace Prisma {
   export type hotelsUpdateManyWithWhereWithoutSubscription_plansInput = {
     where: hotelsScalarWhereInput
     data: XOR<hotelsUpdateManyMutationInput, hotelsUncheckedUpdateManyWithoutSubscription_plansInput>
-  }
-
-  export type hotelsScalarWhereInput = {
-    AND?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
-    OR?: hotelsScalarWhereInput[]
-    NOT?: hotelsScalarWhereInput | hotelsScalarWhereInput[]
-    id?: UuidFilter<"hotels"> | string
-    name?: StringFilter<"hotels"> | string
-    slug?: StringFilter<"hotels"> | string
-    logo_url?: StringNullableFilter<"hotels"> | string | null
-    subscription_plan_id?: UuidNullableFilter<"hotels"> | string | null
-    subscription_status?: StringNullableFilter<"hotels"> | string | null
-    subscription_expires_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
-    is_online?: BoolFilter<"hotels"> | boolean
-    business_type?: StringFilter<"hotels"> | string
-    delivery_type?: StringFilter<"hotels"> | string
-    created_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
-    updated_at?: DateTimeNullableFilter<"hotels"> | Date | string | null
-    verification_status?: StringFilter<"hotels"> | string
   }
 
   export type pending_signupsUpsertWithWhereUniqueWithoutSubscription_plansInput = {
@@ -99833,11 +101357,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -99856,7 +101380,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -100690,11 +102214,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -100713,7 +102237,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -101283,11 +102807,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -101306,7 +102830,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -101440,11 +102964,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -101463,7 +102987,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -101484,11 +103008,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -101507,7 +103031,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -101730,11 +103254,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -101753,7 +103277,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -102879,11 +104403,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -102902,7 +104426,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -103042,11 +104566,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -103065,7 +104589,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -103180,11 +104704,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     expense_categories?: expense_categoriesCreateNestedManyWithoutHotelsInput
@@ -103203,7 +104727,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -103459,11 +104983,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
@@ -103482,7 +105006,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -111318,11 +112842,11 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     verification_status?: string
+    business_type?: business_typesCreateNestedOneWithoutHotelsInput
     subscription_plans?: subscription_plansCreateNestedOneWithoutHotelsInput
     hotel_owner?: hotel_ownersCreateNestedOneWithoutHotelsInput
     menu_categories?: menu_categoriesCreateNestedManyWithoutHotelsInput
@@ -111341,7 +112865,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -111428,11 +112952,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
@@ -111451,7 +112975,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -116678,6 +118202,80 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type hotelsCreateManyBusiness_typeInput = {
+    id?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    subscription_plan_id?: string | null
+    subscription_status?: string | null
+    subscription_expires_at?: Date | string | null
+    is_online?: boolean
+    delivery_type?: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    verification_status?: string
+  }
+
+  export type hotelsUpdateWithoutBusiness_typeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verification_status?: StringFieldUpdateOperationsInput | string
+    subscription_plans?: subscription_plansUpdateOneWithoutHotelsNestedInput
+    hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUpdateManyWithoutHotelsNestedInput
+    customers?: customersUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUpdateManyWithoutHotelsNestedInput
+  }
+
+  export type hotelsUncheckedUpdateWithoutBusiness_typeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verification_status?: StringFieldUpdateOperationsInput | string
+    hotel_owner?: hotel_ownersUncheckedUpdateOneWithoutHotelsNestedInput
+    expense_categories?: expense_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_categories?: menu_categoriesUncheckedUpdateManyWithoutHotelsNestedInput
+    menu_items?: menu_itemsUncheckedUpdateManyWithoutHotelsNestedInput
+    branches?: branchesUncheckedUpdateManyWithoutHotelsNestedInput
+    customers?: customersUncheckedUpdateManyWithoutHotelsNestedInput
+    audit_logs?: audit_logsUncheckedUpdateManyWithoutHotelsNestedInput
+  }
+
+  export type hotelsUncheckedUpdateManyWithoutBusiness_typeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    is_online?: BoolFieldUpdateOperationsInput | boolean
+    delivery_type?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verification_status?: StringFieldUpdateOperationsInput | string
+  }
+
   export type expense_categoriesCreateManyHotelsInput = {
     id?: string
     name: string
@@ -117072,7 +118670,7 @@ export namespace Prisma {
     subscription_status?: string | null
     subscription_expires_at?: Date | string | null
     is_online?: boolean
-    business_type?: string
+    business_type_id?: string | null
     delivery_type?: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -117121,11 +118719,11 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     verification_status?: StringFieldUpdateOperationsInput | string
+    business_type?: business_typesUpdateOneWithoutHotelsNestedInput
     hotel_owner?: hotel_ownersUpdateOneWithoutHotelsNestedInput
     expense_categories?: expense_categoriesUpdateManyWithoutHotelsNestedInput
     menu_categories?: menu_categoriesUpdateManyWithoutHotelsNestedInput
@@ -117143,7 +118741,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -117165,7 +118763,7 @@ export namespace Prisma {
     subscription_status?: NullableStringFieldUpdateOperationsInput | string | null
     subscription_expires_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     is_online?: BoolFieldUpdateOperationsInput | boolean
-    business_type?: StringFieldUpdateOperationsInput | string
+    business_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     delivery_type?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

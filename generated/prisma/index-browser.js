@@ -169,6 +169,13 @@ exports.Prisma.BuyersScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.Business_typesScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  is_active: 'is_active'
+};
+
 exports.Prisma.HotelsScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -178,7 +185,7 @@ exports.Prisma.HotelsScalarFieldEnum = {
   subscription_status: 'subscription_status',
   subscription_expires_at: 'subscription_expires_at',
   is_online: 'is_online',
-  business_type: 'business_type',
+  business_type_id: 'business_type_id',
   delivery_type: 'delivery_type',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -824,6 +831,7 @@ exports.Prisma.ModelName = {
   permissions: 'permissions',
   role_permissions: 'role_permissions',
   buyers: 'buyers',
+  business_types: 'business_types',
   hotels: 'hotels',
   hotel_owners: 'hotel_owners',
   pending_signups: 'pending_signups',

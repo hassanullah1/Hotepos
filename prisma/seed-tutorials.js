@@ -77,7 +77,7 @@ const TUTORIALS = [
     language: "ps",
     category: "پیل کول",
     title: "ښه راغلاست او لومړنی تنظیم",
-    description: "ننوځئ، خپل هوټل تنظیم کړئ او لومړنی څانګه اضافه کړئ.",
+    description: "ننوځئ، خپل تجارت تنظیم کړئ او لومړنی څانګه اضافه کړئ.",
     youtube_id: "dQw4w9WgXcQ",
     duration: "3:24",
     sort_order: 0,
@@ -135,7 +135,7 @@ const TUTORIALS = [
     category: "شروع به کار",
     title: "خوش آمدید و راه‌اندازی اولیه",
     description:
-      "وارد شوید، هوتل خود را تنظیم کنید و اولین شعبه را اضافه کنید.",
+      "وارد شوید، تجارت خود را تنظیم کنید و اولین شعبه را اضافه کنید.",
     youtube_id: "dQw4w9WgXcQ",
     duration: "3:24",
     sort_order: 0,

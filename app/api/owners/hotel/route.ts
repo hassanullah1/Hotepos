@@ -14,7 +14,7 @@ import {
  * Returns every hotel linked to the current owner (via hotel_owners),
  * plus the full details + branches for the selected one.
  */
-export async function GET(request) {
+export async function GET(request: Request) {
   const user = await getCurrentUser(request);
   if (!user) return unauthorized();
   if (!requireRole(user, ["hotel_owner"])) return forbidden();
@@ -66,7 +66,7 @@ export async function GET(request) {
           select: {
             users: true,
             dining_tables: true,
-            branch_menu_items: true, // ← FIXED (was menu_items)
+            branch_menu_items: true,
           },
         },
       },
@@ -78,7 +78,7 @@ export async function GET(request) {
         ...rest,
         staff_count: _count.users,
         table_count: _count.dining_tables,
-        menu_item_count: _count.branch_menu_items, // ← FIXED (was _count.menu_items)
+        menu_item_count: _count.branch_menu_items,
       };
     });
 
@@ -90,18 +90,19 @@ export async function GET(request) {
         name: hotel.name,
         slug: hotel.slug,
         logo_url: hotel.logo_url,
+        delivery_type: hotel.delivery_type ?? "none",
         subscription_plan: hotel.subscription_plans,
         subscription_status: hotel.subscription_status,
-        subscription_expires_at: hotel.subscription_expires_at, // ← added: PlanCard needs this
-        verification_status: hotel.verification_status, // ← added: status pill needs this
+        subscription_expires_at: hotel.subscription_expires_at,
+        verification_status: hotel.verification_status,
         address: selectedOwnerProfile?.address ?? null,
         hesabpay_account_number:
-          selectedOwnerProfile?.hesabpay_account_number ?? null, // ← added: form field needs this
+          selectedOwnerProfile?.hesabpay_account_number ?? null,
       },
       branches,
     });
-  } catch (err) {
-    console.error("[owners/hotel] load failed:", err); // ← actually log it
+  } catch (err: any) {
+    console.error("[owners/hotel] load failed:", err);
     return NextResponse.json(
       { error: err.message || "Failed to load hotel" },
       { status: 500 },

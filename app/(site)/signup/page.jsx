@@ -14,11 +14,16 @@ import {
   BadgeCheck,
   MonitorSmartphone,
   ArrowLeft,
+  Utensils,
+  Coffee,
+  Pill,
+  ShoppingCart,
+  Milk,
+  Package,
+  Store,
 } from "lucide-react";
 import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import { useTranslation } from "@/hooks/useTranslation";
-
-
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
@@ -27,6 +32,16 @@ const FIELD_ICONS = {
   owner_name: User,
   email: Mail,
   phone: Phone,
+};
+
+const BUSINESS_TYPE_ICONS = {
+  hotel: Building2,
+  restaurant: Utensils,
+  cafe: Coffee,
+  pharmacy: Pill,
+  superstore: ShoppingCart,
+  dairy: Milk,
+  wholesale: Package,
 };
 
 const isNil = (v) => v === null || v === undefined;
@@ -274,11 +289,16 @@ export default function SignupPage() {
   const [planLoading, setPlanLoading] = useState(true);
   const [planError, setPlanError] = useState("");
 
+  const [businessTypes, setBusinessTypes] = useState([]);
+  const [businessTypesLoading, setBusinessTypesLoading] = useState(true);
+  const [businessTypesError, setBusinessTypesError] = useState("");
+
   const [form, setForm] = useState({
     hotel_name: "",
     owner_name: "",
     email: "",
     phone: "",
+    business_type_id: "",
   });
   const [focusedField, setFocusedField] = useState("");
   const [touched, setTouched] = useState({});
@@ -296,6 +316,7 @@ export default function SignupPage() {
   const [sendingOtp, setSendingOtp] = useState(false);
   const otpRefs = useRef([]);
 
+  /* ---- load plan ---- */
   useEffect(() => {
     if (!planId) {
       setPlanError(tRef.current.signupErrorNoPlan || "No plan selected.");
@@ -338,6 +359,34 @@ export default function SignupPage() {
     };
   }, [planId]);
 
+  /* ---- load business types ---- */
+  useEffect(() => {
+    let cancelled = false;
+    async function loadBusinessTypes() {
+      setBusinessTypesLoading(true);
+      setBusinessTypesError("");
+      try {
+        const res = await fetch("/api/public/business-types");
+        if (!res.ok) throw new Error("Couldn't load business types");
+        const data = await res.json();
+        if (!cancelled) setBusinessTypes(data.business_types || []);
+      } catch (err) {
+        if (!cancelled)
+          setBusinessTypesError(
+            err.message ||
+              tRef.current.signupErrorBusinessTypes ||
+              "Couldn't load business types",
+          );
+      } finally {
+        if (!cancelled) setBusinessTypesLoading(false);
+      }
+    }
+    loadBusinessTypes();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Changing email invalidates any prior verification
   function updateField(field, value) {
     if (field === "email" && value !== form.email) {
@@ -353,6 +402,8 @@ export default function SignupPage() {
   function validate() {
     if (!form.hotel_name.trim()) return t.signupErrorHotelName;
     if (!form.owner_name.trim()) return t.signupErrorOwnerName;
+    if (!form.business_type_id)
+      return t.signupErrorBusinessType || "Please choose your business type.";
     if (!form.email.trim() || !form.email.includes("@"))
       return t.signupErrorEmail;
     return "";
@@ -369,10 +420,16 @@ export default function SignupPage() {
       owner_name: form.owner_name.trim().length > 0,
       email: form.email.trim().length > 0 && form.email.includes("@"),
       phone: true,
+      business_type_id: form.business_type_id.length > 0,
     }),
     [form],
   );
-  const requiredFields = ["hotel_name", "owner_name", "email"];
+  const requiredFields = [
+    "hotel_name",
+    "owner_name",
+    "business_type_id",
+    "email",
+  ];
   const completedCount = requiredFields.filter((f) => fieldValidity[f]).length;
   const progressPct = Math.round(
     (completedCount / requiredFields.length) * 100,
@@ -476,7 +533,12 @@ export default function SignupPage() {
     const validationError = validate();
     if (validationError) {
       showError(validationError);
-      setTouched({ hotel_name: true, owner_name: true, email: true });
+      setTouched({
+        hotel_name: true,
+        owner_name: true,
+        email: true,
+        business_type_id: true,
+      });
       return;
     }
     setFormError("");
@@ -496,7 +558,6 @@ export default function SignupPage() {
       if (!res.ok) throw new Error(data.error || t.signupErrorGeneric);
 
       if (channel === "hesabpay") {
-        // New: /api/signup returned { hotel_id }, not { id }
         const pres = await fetch("/api/payments/hesabpay/create-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -508,7 +569,6 @@ export default function SignupPage() {
         }
         window.location.href = pdata.payment_url;
       } else {
-        // WhatsApp: /api/signup returned { signup_id }
         const priceLine = plan?.price_monthly
           ? `$${Number(plan.price_monthly).toLocaleString()}${t.signupPriceSuffix || "/mo"}`
           : t.signupCustomPricing || "custom pricing";
@@ -562,7 +622,7 @@ export default function SignupPage() {
       placeholder: t.signupEmailPlaceholder,
       type: "email",
       optional: false,
-      span: "sm:col-span-2", // ← was "" — now full-width row
+      span: "sm:col-span-2",
     },
     {
       field: "phone",
@@ -570,9 +630,15 @@ export default function SignupPage() {
       placeholder: t.signupPhonePlaceholder,
       type: "tel",
       optional: true,
-      span: "sm:col-span-2", // ← was "" — now full-width row
+      span: "sm:col-span-2",
     },
   ];
+
+  const selectedBusinessType = businessTypes.find(
+    (b) => b.id === form.business_type_id,
+  );
+  const businessTypeTouched = touched.business_type_id;
+  const businessTypeValid = !!form.business_type_id;
 
   return (
     <div
@@ -735,6 +801,80 @@ export default function SignupPage() {
                       </div>
                     );
                   },
+                )}
+              </div>
+
+              {/* ---- business type selector ---- */}
+              <div className="mt-5">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <label className="flex items-center gap-1.5 text-[13px] text-[#B7B2C4]">
+                    <Store size={14} className="text-[#C9A227]" />
+                    {t.signupBusinessTypeLabel || "Business type"}
+                  </label>
+                  {selectedBusinessType && (
+                    <span className="text-[11px] text-[#7FC7A6]">
+                      ✓ {selectedBusinessType.name}
+                    </span>
+                  )}
+                </div>
+
+                {businessTypesLoading ? (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-16 animate-pulse rounded-xl border border-[#2E2938] bg-[#2A2534]/40"
+                      />
+                    ))}
+                  </div>
+                ) : businessTypesError ? (
+                  <p className="rounded-lg border border-[#E5484D]/40 bg-[#E5484D]/10 px-3 py-2 text-xs text-[#FF9B9E]">
+                    {businessTypesError}
+                  </p>
+                ) : businessTypes.length === 0 ? (
+                  <p className="rounded-lg border border-[#C9A227]/30 bg-[#C9A227]/5 px-3 py-2 text-xs text-[#E0B93A]">
+                    {t.signupBusinessTypeEmpty ||
+                      "No business types configured yet. Please contact support."}
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {businessTypes.map((bt) => {
+                      const Icon = BUSINESS_TYPE_ICONS[bt.key] || Store;
+                      const active = form.business_type_id === bt.id;
+                      return (
+                        <button
+                          key={bt.id}
+                          type="button"
+                          onClick={() => updateField("business_type_id", bt.id)}
+                          className={`group flex flex-col items-center justify-center gap-1.5 rounded-xl border px-3 py-3 text-center transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60 ${
+                            active
+                              ? "border-[#C9A227] bg-[#C9A227]/10 text-[#E0B93A]"
+                              : "border-[#2E2938] bg-[#15121C] text-[#B7B2C4] hover:border-[#3A3347] hover:text-[#F0EAE2]"
+                          }`}
+                        >
+                          <Icon
+                            size={20}
+                            strokeWidth={1.75}
+                            className={
+                              active
+                                ? "text-[#E0B93A]"
+                                : "text-[#6E687A] group-hover:text-[#C9A227]"
+                            }
+                          />
+                          <span className="text-xs font-medium leading-tight">
+                            {bt.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {businessTypeTouched && !businessTypeValid && (
+                  <p className="mt-1.5 text-[11px] text-[#FF9B9E]">
+                    {t.signupErrorBusinessType ||
+                      "Please choose your business type."}
+                  </p>
                 )}
               </div>
 

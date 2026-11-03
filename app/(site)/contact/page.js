@@ -17,8 +17,6 @@ import {
   Check,
 } from "lucide-react";
 
-
-
 // WhatsApp number (no +, no spaces, country code included)
 const WHATSAPP_NUMBER = "93700000000";
 
@@ -62,7 +60,7 @@ const contactText = {
   },
   ps: {
     badge: "اړیکه",
-    titleA: "راځه چې د خپل هوټل په اړه",
+    titleA: "راځه چې د خپل تجارت په اړه",
     titleHighlight: "خبرې وکړو",
     subtitle:
       "پوښتنې، ډیمو، یا یوازې غواړئ وګورئ چې څنګه کار کوي؟ اړیکه ونیسئ — موږ معمولاً په څو ساعتونو کې ځواب ورکوو.",
@@ -82,12 +80,12 @@ const contactText = {
     formLabel: "موږ ته پیغام ولېږئ",
     nameLabel: "ستاسو نوم",
     namePlaceholder: "احمد خان",
-    hotelLabel: "د هوټل نوم",
-    hotelPlaceholder: "کابل ستار هوټل",
+    hotelLabel: "د تجارت نوم",
+    hotelPlaceholder: "کابل ستار تجارت",
     emailFormLabel: "ستاسو بریښنالیک",
     emailFormPlaceholder: "you@yourhotel.com",
     messageLabel: "پیغام",
-    messagePlaceholder: "د خپل هوټل په اړه یو څه ووایاست او څه پوهیدل غواړئ.",
+    messagePlaceholder: "د خپل تجارت په اړه یو څه ووایاست او څه پوهیدل غواړئ.",
     sendButton: "د واټساپ له لارې ولېږئ",
     sendHint: "دا واټساپ د لیږلو لپاره چمتو پیغام سره پرانیزي.",
     requiredError: "مهرباني وکړئ نوم او پیغام ډک کړئ.",
@@ -98,7 +96,7 @@ const contactText = {
   },
   prs: {
     badge: "تماس با ما",
-    titleA: "بیایید درباره هوتل شما",
+    titleA: "بیایید درباره تجارت شما",
     titleHighlight: "صحبت کنیم",
     subtitle:
       "سوال، دمو، یا فقط می‌خواهید ببینید چطور کار می‌کند؟ تماس بگیرید — معمولاً در چند ساعت پاسخ می‌دهیم.",
@@ -118,12 +116,12 @@ const contactText = {
     formLabel: "برای ما پیام بفرستید",
     nameLabel: "نام شما",
     namePlaceholder: "احمد خان",
-    hotelLabel: "نام هوتل",
-    hotelPlaceholder: "هوتل ستاره کابل",
+    hotelLabel: "نام تجارت",
+    hotelPlaceholder: "تجارت ستاره کابل",
     emailFormLabel: "ایمیل شما",
     emailFormPlaceholder: "you@yourhotel.com",
     messageLabel: "پیام",
-    messagePlaceholder: "کمی از هوتل خود بگویید و چه می‌خواهید بدانید.",
+    messagePlaceholder: "کمی از تجارت خود بگویید و چه می‌خواهید بدانید.",
     sendButton: "ارسال از طریق واتس‌اپ",
     sendHint: "این واتس‌اپ را با پیام آماده باز می‌کند.",
     requiredError: "لطفاً نام و پیام خود را وارد کنید.",

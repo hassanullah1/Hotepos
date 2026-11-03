@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Sparkles,
   AlertCircle,
+  Truck,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -19,12 +20,11 @@ import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 /* ------------------------------------------------------------------ */
 /*  HesabPay validation                                                */
 /* ------------------------------------------------------------------ */
-// Format: 07XXXXXXXX (10 digits, must start with 07)
 const HESABPAY_PATTERN = /^07\d{8}$/;
 
 function validateHesabpay(value: string, t: any): string {
   const v = (value || "").trim();
-  if (!v) return ""; // optional field
+  if (!v) return "";
   if (!/^\d+$/.test(v)) {
     return (
       t.hotel?.hesabpayDigitsOnly || "HesabPay number must contain digits only."
@@ -47,6 +47,23 @@ function validateHesabpay(value: string, t: any): string {
   return "";
 }
 
+/* ------------------------------------------------------------------ */
+/*  Delivery label helper                                              */
+/* ------------------------------------------------------------------ */
+function deliveryLabel(value: string | null | undefined, t: any): string {
+  switch (value) {
+    case "pickup":
+      return t.hotel?.deliveryPickup || "Pickup only";
+    case "delivery":
+      return t.hotel?.deliveryDelivery || "Delivery only";
+    case "both":
+      return t.hotel?.deliveryBoth || "Pickup + Delivery";
+    case "none":
+    default:
+      return t.hotel?.deliveryNone || "No delivery";
+  }
+}
+
 export default function HotelProfilePage() {
   const router = useRouter();
   const { t, dir } = useAdminPreferences();
@@ -62,9 +79,9 @@ export default function HotelProfilePage() {
     logo_url: "",
     address: "",
     hesabpay_account_number: "",
+    delivery_type: "none",
   });
 
-  /* live validation for the HesabPay field */
   const hesabpayError = useMemo(
     () => validateHesabpay(form.hesabpay_account_number, t),
     [form.hesabpay_account_number, t],
@@ -109,6 +126,7 @@ export default function HotelProfilePage() {
           logo_url: h.logo_url || "",
           address: h.address || "",
           hesabpay_account_number: h.hesabpay_account_number || "",
+          delivery_type: h.delivery_type || "none",
         });
       }
     } catch (err: any) {
@@ -127,7 +145,6 @@ export default function HotelProfilePage() {
     e.preventDefault();
     if (!hotel) return;
 
-    // block save if HesabPay number is invalid
     const hpErr = validateHesabpay(form.hesabpay_account_number, t);
     if (hpErr) {
       setError(hpErr);
@@ -224,7 +241,7 @@ export default function HotelProfilePage() {
         )}
 
         {/* status card */}
-        <div className="rounded-2xl border border-teal-200 dark:border-teal-800  shadow-sm p-4 mb-4">
+        <div className="rounded-2xl border border-teal-200 dark:border-teal-800 shadow-sm p-4 mb-4">
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-2xl overflow-hidden bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center shrink-0 ring-1 ring-teal-100 dark:ring-teal-800">
               {hotel.logo_url ? (
@@ -254,6 +271,10 @@ export default function HotelProfilePage() {
               <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 ring-1 ring-emerald-100 dark:ring-emerald-800">
                 <CreditCard className="h-3 w-3" />
                 {hotel.subscription_status || "trial"}
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 ring-1 ring-amber-100 dark:ring-amber-800">
+                <Truck className="h-3 w-3" />
+                {deliveryLabel(hotel.delivery_type, t)}
               </span>
             </div>
           </div>
@@ -325,7 +346,6 @@ export default function HotelProfilePage() {
                 <input
                   value={form.hesabpay_account_number}
                   onChange={(e) => {
-                    // keep digits only, cap at 10 characters
                     const digits = e.target.value
                       .replace(/\D/g, "")
                       .slice(0, 10);
@@ -346,7 +366,6 @@ export default function HotelProfilePage() {
                       : "border-teal-200 dark:border-teal-800 focus:ring-teal-500/30 focus:border-teal-500"
                   }`}
                 />
-                {/* right-side status indicator */}
                 <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
                   {form.hesabpay_account_number.length > 0 &&
                     (hesabpayValid ? (
@@ -360,6 +379,61 @@ export default function HotelProfilePage() {
               </div>
             </Field>
           </div>
+
+          {/* delivery type */}
+          <Field
+            label={
+              <span className="inline-flex items-center gap-1">
+                <Truck className="h-3.5 w-3.5" />
+                {t.hotel?.deliveryType || "Delivery"}
+              </span>
+            }
+            hint={
+              t.hotel?.deliveryHint ||
+              "How customers can receive orders from this hotel."
+            }
+          >
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {(
+                [
+                  {
+                    value: "none",
+                    label: t.hotel?.deliveryNone || "No delivery",
+                  },
+                  {
+                    value: "pickup",
+                    label: t.hotel?.deliveryPickup || "Pickup only",
+                  },
+                  {
+                    value: "delivery",
+                    label: t.hotel?.deliveryDelivery || "Delivery only",
+                  },
+                  {
+                    value: "both",
+                    label: t.hotel?.deliveryBoth || "Pickup + Delivery",
+                  },
+                ] as const
+              ).map((opt) => {
+                const active = form.delivery_type === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() =>
+                      setForm({ ...form, delivery_type: opt.value })
+                    }
+                    className={`px-3 py-2 text-xs rounded-lg border font-medium transition-colors ${
+                      active
+                        ? "bg-teal-600 text-white border-teal-600 shadow-sm"
+                        : "bg-white dark:bg-teal-900/40 text-teal-800 dark:text-teal-200 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/60"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
 
           <div className="flex justify-end pt-3 border-t border-teal-100 dark:border-teal-800/60">
             <button
@@ -386,7 +460,7 @@ export default function HotelProfilePage() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Plan card — compact layout with labeled stats                      */
+/*  Plan card                                                          */
 /* ------------------------------------------------------------------ */
 function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
   const plan = hotel?.plan || null;
@@ -435,8 +509,7 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
   const hasRooms = plan?.is_rooms === true;
 
   return (
-    <div className={`rounded-2xl border ${ring}  shadow-sm p-3 mb-4`}>
-      {/* top row: plan name + status + action button */}
+    <div className={`rounded-2xl border ${ring} shadow-sm p-3 mb-4`}>
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2 min-w-0">
           <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-300 shrink-0" />
@@ -462,20 +535,17 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
         </button>
       </div>
 
-      {/* labeled stat grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {/* Price */}
         <LabeledStat
           label={t.hotel?.planPrice || "Price"}
           value={
             plan
-              ? `${plan.price_monthly.toFixed(2)} ${t.common?.currency || "AFN"}`
+              ? `${Number(plan.price_monthly).toFixed(2)} ${t.common?.currency || "AFN"}`
               : "—"
           }
           sub={t.hotel?.perMonth || "/mo"}
         />
 
-        {/* Expires */}
         <LabeledStat
           label={t.hotel?.expiresAt || "Expires"}
           value={expiresText}
@@ -495,7 +565,6 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
           }
         />
 
-        {/* Branches */}
         <LabeledStat
           label={t.hotel?.branchesLimit || "Branches"}
           value={
@@ -505,7 +574,6 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
           }
         />
 
-        {/* Rooms */}
         <LabeledStat
           label={t.hotel?.rooms || "Rooms"}
           value={
@@ -531,7 +599,6 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
         />
       </div>
 
-      {/* expired hint */}
       {isExpired && (
         <div className="mt-3 flex items-center gap-1.5 text-[11px] text-red-600 dark:text-red-400">
           <AlertCircle className="h-3 w-3 shrink-0" />

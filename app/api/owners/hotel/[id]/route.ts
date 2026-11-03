@@ -3,6 +3,16 @@ import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { ownsHotel } from "@/lib/owner-scope";
 
+/* ---- delivery type helpers ---- */
+const ALLOWED_DELIVERY = ["none", "pickup", "delivery", "both"] as const;
+type DeliveryType = (typeof ALLOWED_DELIVERY)[number];
+
+function isDeliveryType(v: unknown): v is DeliveryType {
+  return (
+    typeof v === "string" && (ALLOWED_DELIVERY as readonly string[]).includes(v)
+  );
+}
+
 function serialize(h: any) {
   const owner = h.hotel_owner ?? null;
   const plan = h.subscription_plans ?? null;
@@ -12,6 +22,7 @@ function serialize(h: any) {
     slug: h.slug,
     logo_url: h.logo_url,
     is_online: h.is_online,
+    delivery_type: h.delivery_type ?? "none",
     verification_status: h.verification_status,
     subscription_status: h.subscription_status,
     subscription_expires_at: h.subscription_expires_at,
@@ -25,7 +36,7 @@ function serialize(h: any) {
           max_branches: plan.max_branches,
           max_pos_devices: plan.max_pos_devices,
           price_monthly: Number(plan.price_monthly),
-          is_rooms: plan.is_rooms === true, // 👈 NEW
+          is_rooms: plan.is_rooms === true,
           features: plan.features ?? {},
         }
       : null,
@@ -97,6 +108,19 @@ export async function PATCH(
       typeof body.logo_url === "string" && body.logo_url.trim()
         ? body.logo_url.trim()
         : null;
+
+  if (body.delivery_type !== undefined) {
+    if (!isDeliveryType(body.delivery_type)) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid delivery_type. Allowed: none | pickup | delivery | both.",
+        },
+        { status: 400 },
+      );
+    }
+    hotelData.delivery_type = body.delivery_type;
+  }
 
   const ownerData: Record<string, unknown> = {};
   if (body.address !== undefined)

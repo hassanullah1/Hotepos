@@ -2,15 +2,37 @@ import prisma from "@/lib/prisma";
 import crypto from "crypto";
 import { sendPasswordResetEmail } from "@/app/admin/email";
 
-// ─────────────────────────────────────────────────────────────
-// Creates the hotel + owner user in an EXPIRED state.
-// Owner user has password_hash = null (they set it via reset link).
-// Idempotent: if this email already owns a hotel, that one is reused.
-// ─────────────────────────────────────────────────────────────
-export async function createExpiredHotel(data) {
-  const { hotel_name, owner_name, email, phone, subscription_plan_id } = data;
+/* ─────────────────────────────────────────────────────────────
+   Input shape for createExpiredHotel
+   ───────────────────────────────────────────────────────────── */
+type CreateExpiredHotelInput = {
+  hotel_name: string;
+  owner_name: string;
+  email: string;
+  phone?: string | null;
+  subscription_plan_id: string;
+  business_type_id?: string | null;
+};
+
+/* ─────────────────────────────────────────────────────────────
+   Creates the hotel + owner user in an EXPIRED state.
+   Owner user has password_hash = null (they set it via reset link).
+   Idempotent: if this email already owns a hotel, that one is reused
+   and its editable fields (name, plan, business type) are refreshed.
+   ───────────────────────────────────────────────────────────── */
+export async function createExpiredHotel(data: CreateExpiredHotelInput) {
+  const {
+    hotel_name,
+    owner_name,
+    email,
+    phone,
+    subscription_plan_id,
+    business_type_id,
+  } = data;
+
   const normalizedEmail = email.trim().toLowerCase();
 
+  /* ── 1. Reuse existing hotel for this email (abandoned signup / retry) ── */
   const existingUser = await prisma.users.findUnique({
     where: { email: normalizedEmail },
     include: { hotel_owners: { include: { hotels: true } } },
@@ -18,13 +40,27 @@ export async function createExpiredHotel(data) {
 
   if (existingUser?.hotel_owners?.[0]?.hotels) {
     const existingHotel = existingUser.hotel_owners[0].hotels;
-    await prisma.hotels.update({
+
+    // Build an update that only sets business_type_id when the caller
+    // actually supplied one — never clobber a previously chosen type
+    // with null on a retry that didn't pick one.
+    const updateData: Record<string, unknown> = {
+      name: hotel_name.trim(),
+      subscription_plan_id,
+    };
+    if (business_type_id) {
+      updateData.business_type_id = business_type_id;
+    }
+
+    const refreshed = await prisma.hotels.update({
       where: { id: existingHotel.id },
-      data: { name: hotel_name.trim(), subscription_plan_id },
+      data: updateData,
     });
-    return { hotel: existingHotel, isNew: false };
+
+    return { hotel: refreshed, isNew: false };
   }
 
+  /* ── 2. Fresh signup — create user role, slug, hotel, owner profile ── */
   const ownerRole = await prisma.roles.upsert({
     where: { name: "hotel_owner" },
     update: {},
@@ -41,9 +77,11 @@ export async function createExpiredHotel(data) {
       subscription_plan_id,
       subscription_status: "expired",
       subscription_expires_at: now,
+      business_type_id: business_type_id ?? null,
     },
   });
 
+  /* ── 3. Resolve the phone (only if it isn't already used elsewhere) ── */
   let phoneValue = phone?.trim() || undefined;
   if (phoneValue) {
     const existingPhoneOwner = await prisma.users.findUnique({
@@ -57,6 +95,7 @@ export async function createExpiredHotel(data) {
     }
   }
 
+  /* ── 4. Create (or link) the owner user ── */
   const ownerUser = await prisma.users.upsert({
     where: { email: normalizedEmail },
     update: { role_id: ownerRole.id },
@@ -76,22 +115,16 @@ export async function createExpiredHotel(data) {
   return { hotel, isNew: true };
 }
 
-// ─────────────────────────────────────────────────────────────
-// Activate a hotel after successful payment. IDEMPOTENT.
-//
-// Safe to call multiple times (webhook retries, race with confirm, etc.):
-//   - Only extends subscription once (atomic conditional update)
-//   - Only sends "set password" email once (guarded by password_hash)
-//
-// `subscription_expires_at` = max(now, current) + 1 month.
-// ─────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────────────────────────
+   Activate a hotel after successful payment. IDEMPOTENT.
+   (unchanged)
+   ───────────────────────────────────────────────────────────── */
 export async function activateHotel(hotelId: string) {
   const hotel = await prisma.hotels.findUnique({ where: { id: hotelId } });
   if (!hotel) throw new Error("hotel_not_found");
 
   const now = new Date();
 
-  // Fast path: already active with future expiry → do nothing
   if (
     hotel.subscription_status === "active" &&
     hotel.subscription_expires_at &&
@@ -105,7 +138,6 @@ export async function activateHotel(hotelId: string) {
     };
   }
 
-  // Compute new expiry: max(now, current) + 1 month
   const currentExpiry = hotel.subscription_expires_at
     ? new Date(hotel.subscription_expires_at)
     : null;
@@ -113,8 +145,6 @@ export async function activateHotel(hotelId: string) {
   const newExpiry = new Date(base);
   newExpiry.setMonth(newExpiry.getMonth() + 1);
 
-  // ATOMIC update — only succeeds if the hotel is still NOT active-with-future-expiry.
-  // This is what makes concurrent webhook retries safe.
   const updateResult = await prisma.hotels.updateMany({
     where: {
       id: hotel.id,
@@ -130,8 +160,10 @@ export async function activateHotel(hotelId: string) {
   });
 
   if (updateResult.count === 0) {
-    // Another concurrent call already activated it. Don't re-extend, don't re-email.
-    console.log("[activateHotel] lost race, already activated by another call:", hotelId);
+    console.log(
+      "[activateHotel] lost race, already activated by another call:",
+      hotelId,
+    );
     const fresh = await prisma.hotels.findUnique({ where: { id: hotelId } });
     return {
       hotel: fresh || hotel,
@@ -140,7 +172,6 @@ export async function activateHotel(hotelId: string) {
     };
   }
 
-  // We are the one that activated it → send password email if needed.
   const owner = await prisma.hotel_owners.findUnique({
     where: { hotel_id: hotel.id },
     include: { users: true },
@@ -183,23 +214,37 @@ export async function activateHotel(hotelId: string) {
   return { hotel: updatedHotel || hotel, resetLinkSent };
 }
 
-// ─────────────────────────────────────────────────────────────
-// Admin approval path (WhatsApp) — creates + activates in one shot.
-// ─────────────────────────────────────────────────────────────
-export async function provisionHotelFromSignup(signup) {
+/* ─────────────────────────────────────────────────────────────
+   Admin approval path (WhatsApp) — creates + activates in one shot.
+
+   `signup` is a pending_signups row. It may or may not have a
+   business_type_id column — `?? null` handles both cases cleanly.
+   ───────────────────────────────────────────────────────────── */
+export async function provisionHotelFromSignup(signup: {
+  hotel_name: string;
+  owner_name: string;
+  email: string;
+  phone?: string | null;
+  subscription_plan_id: string;
+  business_type_id?: string | null;
+}) {
   const { hotel } = await createExpiredHotel({
     hotel_name: signup.hotel_name,
     owner_name: signup.owner_name,
     email: signup.email,
     phone: signup.phone,
     subscription_plan_id: signup.subscription_plan_id,
+    business_type_id: signup.business_type_id ?? null,
   });
 
   await activateHotel(hotel.id);
   return { hotel };
 }
 
-async function uniqueSlug(name) {
+/* ─────────────────────────────────────────────────────────────
+   Slug generation (unchanged)
+   ───────────────────────────────────────────────────────────── */
+async function uniqueSlug(name: string): Promise<string> {
   const base = name
     .toLowerCase()
     .trim()
