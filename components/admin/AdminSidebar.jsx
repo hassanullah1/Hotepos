@@ -14,6 +14,7 @@ import {
   ScrollText,
   Users,
   GitBranch,
+  ChefHat,
   UserCog,
   UserCheck,
   UtensilsCrossed,
@@ -67,6 +68,13 @@ const NAV_ITEMS = [
     section: "manage",
     roles: ["hotel_owner"],
     icon: Building2,
+  },
+  {
+    href: "/admin/kitchen/display",
+    key: "kitchenScreen",
+    section: "main",
+    roles: ["kitchen"],
+    icon: ChefHat,
   },
   {
     href: "/admin/hotels",
