@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
-import { assertManagedBranch } from "@/lib/owner-scope";
+import { assertWaiterManagedBranch } from "@/lib/owner-scope";
 import { hotelHasRoomsFeature } from "@/lib/require-rooms-plan";
 
 async function readJson(request) {
@@ -29,7 +29,7 @@ export async function GET(request) {
       { status: 400 },
     );
 
-  const branch = await assertManagedBranch(branchId, user.id);
+  const branch = await assertWaiterManagedBranch(branchId, user.id);
   if (!branch)
     return NextResponse.json(
       { error: "Branch not found or not accessible" },
@@ -106,7 +106,7 @@ export async function POST(request) {
     );
   }
 
-  const branch = await assertManagedBranch(branchId, user.id);
+  const branch = await assertWaiterManagedBranch(branchId, user.id);
   if (!branch)
     return NextResponse.json(
       { error: "Branch not found or not accessible" },

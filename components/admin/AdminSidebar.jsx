@@ -139,7 +139,7 @@ const NAV_ITEMS = [
     href: "/admin/orders",
     key: "orders",
     section: "ops",
-    roles: ["hotel_owner", "branch_manager"],
+    roles: ["hotel_owner", "branch_manager","waiter"],
     icon: ClipboardList,
   },
   {

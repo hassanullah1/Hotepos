@@ -32,6 +32,9 @@ import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
 const OPEN_STATUSES = ["open", "in_progress", "served"];
 
+// How often to refresh ONLY the orders list (ms)
+const POLL_INTERVAL = 15000;
+
 const STATUS_BG: Record<string, string> = {
   open: "bg-sky-50 dark:bg-sky-950/40",
   in_progress: "bg-amber-50 dark:bg-amber-950/40",
@@ -81,6 +84,9 @@ export default function OrdersPage() {
   const [me, setMe] = useState<any>(null);
   const isOwner = me?.role === "hotel_owner";
   const isBranchManager = me?.role === "branch_manager";
+  // Any role that is locked to a single branch (manager, waiter, ...)
+  const isBranchStaff = !!me && !isOwner;
+  const isWaiter = me?.role === "waiter";
 
   const [hotels, setHotels] = useState<any[]>([]);
   const [selectedHotelId, setSelectedHotelId] = useState("");
@@ -107,7 +113,13 @@ export default function OrdersPage() {
   const [saving, setSaving] = useState(false);
 
   const [draft, setDraft] = useState<any>(null);
-  const pollRef = useRef<any>(null);
+
+  // Guards for polling
+  const ordersInFlight = useRef(false);
+  const branchRef = useRef("");
+  useEffect(() => {
+    branchRef.current = branchId;
+  }, [branchId]);
 
   function handle401(res: Response) {
     if (res.status === 401) {
@@ -117,6 +129,18 @@ export default function OrdersPage() {
     return false;
   }
 
+  // Hotel id used for the customers list (owner → selected hotel, staff → own hotel)
+  function resolveHotelId() {
+    return (
+      selectedHotelId ||
+      me?.hotel_id ||
+      me?.branch?.hotel_id ||
+      branches.find((b: any) => b.id === branchId)?.hotel_id ||
+      ""
+    );
+  }
+
+  /* ───────────── Load current user ───────────── */
   useEffect(() => {
     (async () => {
       try {
@@ -134,6 +158,7 @@ export default function OrdersPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ───────────── Owner: hotels + branches ───────────── */
   useEffect(() => {
     if (!isOwner) return;
     (async () => {
@@ -183,105 +208,140 @@ export default function OrdersPage() {
     if (isOwner && selectedHotelId) {
       setBranchId("");
       setTableFilter("");
-      setSourceFilter("pos"); // ← reset to POS
+      setSourceFilter("pos");
       setDraft(null);
       loadBranches(selectedHotelId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOwner, selectedHotelId]);
 
+  /* ───────────── Branch manager / waiter: fixed branch ───────────── */
   useEffect(() => {
-    if (isBranchManager && me?.branch?.id) setBranchId(me.branch.id);
-  }, [isBranchManager, me]);
+    if (isBranchStaff && me?.branch?.id) {
+      setBranchId(me.branch.id);
+    } else if (isBranchStaff && me && !me.branch?.id) {
+      setError(
+        "Your account is not assigned to a branch. Ask the owner to assign you.",
+      );
+    }
+  }, [isBranchStaff, me]);
 
-  async function loadAll({ silent = false }: { silent?: boolean } = {}) {
-    if (!branchId) return;
-    if (!silent) setLoading(true);
-    setError("");
+  /* ───────────── Data loading ───────────── */
+
+  // Tables, menu, room stays, customers: rarely change → load once per branch
+  async function loadStatic() {
+    const bid = branchId;
+    if (!bid) return;
+    const hotelId = resolveHotelId();
+
+    const [tRes, mRes, rRes, cRes] = await Promise.all([
+      fetchWithAuth(`/api/owners/dining-tables?branch_id=${bid}`),
+      fetchWithAuth(`/api/owners/menu-items?branch_id=${bid}`),
+      fetchWithAuth(`/api/owners/room-stays?branch_id=${bid}&status=active`),
+      hotelId
+        ? fetchWithAuth(`/api/owners/customers?hotel_id=${hotelId}`)
+        : Promise.resolve(null),
+    ]);
+
+    // ignore if user switched branch while loading
+    if (branchRef.current !== bid) return;
+
+    if (
+      tRes.status === 401 ||
+      mRes.status === 401 ||
+      rRes.status === 401 ||
+      (cRes && cRes.status === 401)
+    ) {
+      router.push("/hotel/login");
+      return;
+    }
+
+    if (!tRes.ok) throw new Error("Failed to load tables");
+    if (!mRes.ok) throw new Error("Failed to load menu");
+
+    setTables((await tRes.json()).tables || []);
+    setMenuItems((await mRes.json()).items || []);
+
+    // 403 (role not allowed) → just no room service, page still works
+    if (rRes.ok) setRoomStays((await rRes.json()).stays || []);
+    else setRoomStays([]);
+
+    if (cRes && cRes.ok) {
+      setCustomers((await cRes.json()).customers || []);
+    } else {
+      setCustomers([]);
+    }
+    setCustomersHotelId(hotelId);
+  }
+
+  // Orders: the only thing that changes often → this is what we poll
+  async function loadOrders({ silent = false }: { silent?: boolean } = {}) {
+    const bid = branchId;
+    if (!bid || ordersInFlight.current) return; // never overlap requests
+    ordersInFlight.current = true;
     try {
-      const hotelIdForCustomers =
-        selectedHotelId ||
-        me?.hotel_id ||
-        me?.branch?.hotel_id ||
-        branches.find((b: any) => b.id === branchId)?.hotel_id ||
-        "";
-
-      const [tRes, mRes, oRes, rRes, cRes] = await Promise.all([
-        fetchWithAuth(`/api/owners/dining-tables?branch_id=${branchId}`),
-        fetchWithAuth(`/api/owners/menu-items?branch_id=${branchId}`),
-        fetchWithAuth(`/api/owners/orders?branch_id=${branchId}`),
-        fetchWithAuth(
-          `/api/owners/room-stays?branch_id=${branchId}&status=active`,
-        ),
-        hotelIdForCustomers
-          ? fetchWithAuth(
-              `/api/owners/customers?hotel_id=${hotelIdForCustomers}`,
-            )
-          : Promise.resolve(null),
-      ]);
-
-      if (
-        tRes.status === 401 ||
-        mRes.status === 401 ||
-        oRes.status === 401 ||
-        (rRes && rRes.status === 401)
-      )
-        return router.push("/hotel/login");
-
-      if (!tRes.ok) throw new Error("Failed to load tables");
-      if (!mRes.ok) throw new Error("Failed to load menu");
-      if (!oRes.ok) throw new Error("Failed to load orders");
-
-      const tData = await tRes.json();
-      const mData = await mRes.json();
-      const oData = await oRes.json();
-
-      setTables(tData.tables || []);
-      setMenuItems(mData.items || []);
-      setOrders(oData.orders || []);
-
-      if (rRes && rRes.ok) {
-        const rData = await rRes.json();
-        setRoomStays(rData.stays || []);
-      } else {
-        setRoomStays([]);
+      const res = await fetchWithAuth(`/api/owners/orders?branch_id=${bid}`);
+      if (branchRef.current !== bid) return;
+      if (res.status === 401) {
+        router.push("/hotel/login");
+        return;
       }
-
-      if (cRes && cRes.ok) {
-        const cData = await cRes.json();
-        setCustomers(cData.customers || []);
-        setCustomersHotelId(hotelIdForCustomers);
-      } else {
-        setCustomers([]);
-        setCustomersHotelId(hotelIdForCustomers);
-      }
+      if (!res.ok) throw new Error("Failed to load orders");
+      const data = await res.json();
+      setOrders(data.orders || []);
     } catch (err: any) {
       if (!silent) setError(err.message);
     } finally {
-      if (!silent) setLoading(false);
+      ordersInFlight.current = false;
+    }
+  }
+
+  // Full refresh (first load + manual refresh button)
+  async function loadAll() {
+    if (!branchId) return;
+    setLoading(true);
+    setError("");
+    try {
+      await Promise.all([loadStatic(), loadOrders()]);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     if (branchId) {
       setTableFilter("");
-      setSourceFilter("pos"); // ← reset to POS
+      setSourceFilter("pos");
       setDraft(null);
+      setOrders([]);
+      ordersInFlight.current = false;
       loadAll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId]);
 
+  // Poll ONLY orders, only while the tab is visible
   useEffect(() => {
     if (!branchId) return;
-    pollRef.current = setInterval(() => {
-      loadAll({ silent: true });
-    }, 10000);
+
+    const tick = () => {
+      if (document.visibilityState === "visible") {
+        loadOrders({ silent: true });
+      }
+    };
+    const id = setInterval(tick, POLL_INTERVAL);
+    document.addEventListener("visibilitychange", tick); // refresh when tab is shown again
+
     return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", tick);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId]);
+
+  /* ───────────── Derived data ───────────── */
 
   const openOrders = useMemo(
     () => orders.filter((o: any) => OPEN_STATUSES.includes(o.status)),
@@ -335,6 +395,8 @@ export default function OrdersPage() {
       return s + (item ? Number(item.price) * ci.quantity : 0);
     }, 0);
   }, [draft, menuItems]);
+
+  /* ───────────── Draft helpers ───────────── */
 
   function defaultScope() {
     if (roomStays.length > 0) return "table";
@@ -463,6 +525,8 @@ export default function OrdersPage() {
     setDraft({ mode: "add", orderId, items: [] });
   }
 
+  /* ───────────── Mutations ───────────── */
+
   async function submitDraft() {
     if (!draft || draft.items.length === 0) return;
 
@@ -501,7 +565,7 @@ export default function OrdersPage() {
         const data = await res.json();
         if (!res.ok) return setError(data.error || "Failed to create order");
         setOrders((prev) => [data.order, ...prev]);
-        if (draft.scope === "room") loadAll();
+        if (draft.scope === "room") loadStatic().catch(() => {});
         cancelDraft();
       } else {
         let lastOrder = null;
@@ -663,6 +727,8 @@ export default function OrdersPage() {
     w.document.close();
   }
 
+  /* ───────────── Render ───────────── */
+
   if (!me) {
     return (
       <div
@@ -710,7 +776,7 @@ export default function OrdersPage() {
                   ))}
                 </select>
               )}
-              {isBranchManager && (
+              {isBranchStaff && (
                 <span className="text-xs text-teal-700/70 dark:text-teal-300/70 whitespace-nowrap">
                   {me.branch?.name || t.branch?.branchLabel || "Branch"}
                 </span>
@@ -776,14 +842,17 @@ export default function OrdersPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/admin/owners/online-orders"
-              title="Online order history"
-              className="inline-flex items-center gap-1.5 h-9 rounded-full px-3 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 text-xs font-semibold"
-            >
-              <Globe className="h-3.5 w-3.5" />
-              History
-            </Link>
+            {/* Order history link: hidden for waiters */}
+            {!isWaiter && (
+              <Link
+                href="/admin/owners/online-orders"
+                title="Online order history"
+                className="inline-flex items-center gap-1.5 h-9 rounded-full px-3 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 text-xs font-semibold"
+              >
+                <Globe className="h-3.5 w-3.5" />
+                History
+              </Link>
+            )}
 
             <button
               onClick={() => loadAll()}
@@ -869,12 +938,14 @@ export default function OrdersPage() {
                 <p className="text-xs text-teal-700/50 dark:text-teal-300/50 mt-1">
                   New online orders will appear here automatically.
                 </p>
-                <Link
-                  href="/owners/online-orders"
-                  className="mt-3 text-[11px] font-semibold underline text-emerald-700 dark:text-emerald-300"
-                >
-                  View order history →
-                </Link>
+                {!isWaiter && (
+                  <Link
+                    href="/admin/owners/online-orders"
+                    className="mt-3 text-[11px] font-semibold underline text-emerald-700 dark:text-emerald-300"
+                  >
+                    View order history →
+                  </Link>
+                )}
               </div>
             ) : (
               visibleOrders.map((o: any) => (
