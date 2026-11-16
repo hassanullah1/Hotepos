@@ -21,10 +21,11 @@ import {
   Users,
   Wallet,
   BarChart3,
-  Globe,
   Contact,
   CalendarCheck,
   ShieldCheck,
+  Layers,
+  Globe,
 } from "lucide-react";
 import { fraunces as displayFont } from "@/app/fonts/fraunces";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -340,58 +341,68 @@ function PlanCard({
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[#6E687A]">
               {t.pricingIncludes || "Includes"}
             </p>
-
             {sections.length > 0 ? (
-              <>
-                <ul className="space-y-2">
-                  {shown.map((section: any) => {
-                    const SectionIcon = getSectionIcon(section.key);
-                    return (
-                      <li
-                        key={section.key}
-                        className="flex items-center gap-2.5 text-sm text-[#B7B2C4]"
-                        title={section.description || undefined}
-                      >
-                        <span
-                          className={
-                            "grid h-6 w-6 shrink-0 place-items-center rounded-md " +
-                            (featured
-                              ? "bg-[#C9A227]/15 text-[#E0B93A]"
-                              : "bg-[#C9A227]/10 text-[#C9A227]")
-                          }
-                        >
-                          <SectionIcon size={12} strokeWidth={2.25} />
-                        </span>
-                        <span className="truncate">{section.name}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
+              <div className="space-y-5">
+                {/* Basic Features */}
+                <div>
+                  <ul className="space-y-2">
+                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                        <Layers size={12} />
+                      </span>
+                      <span className="truncate">
+                        {t.pricingBasicFeatures || "Basic Features"}
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                        <Globe size={12} />
+                      </span>
+                      <span className="truncate">
+                        {t.pricingOnlineFeatures || "Online Features"}
+                      </span>
+                    </li>
 
-                {hidden > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setExpanded((v) => !v)}
-                    aria-expanded={expanded}
-                    className="mt-3 inline-flex items-center gap-1 rounded text-xs font-semibold text-[#C9A227] hover:text-[#E0B93A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
-                  >
-                    {expanded
-                      ? t.pricingShowLess || "Show less"
-                      : `${t.pricingShowMore || "Show more"} (+${hidden})`}
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-300 ${
-                        expanded ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                )}
-              </>
+                    {sections.map((section: any) => {
+                      const SectionIcon = getSectionIcon(section.key);
+
+                      return (
+                        <li
+                          key={section.key}
+                          className="flex items-center gap-2.5 text-sm text-[#B7B2C4]"
+                        >
+                          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                            <SectionIcon size={12} />
+                          </span>
+                          <span className="truncate">
+                            {t[section.name] || section.name}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+              </div>
             ) : (
-              <p className="flex items-center gap-2 text-sm text-[#9691A6]">
-                <Check size={14} className="shrink-0 text-[#C9A227]" />
-                {t.pricingCoreFeatures || "Core platform features included."}
-              </p>
+                <ul className="space-y-2">
+                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                        <Layers size={12} />
+                      </span>
+                      <span className="truncate">
+                        {t.pricingBasicFeatures || "Basic Features"}
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                        <Globe size={12} />
+                      </span>
+                      <span className="truncate">
+                        {t.pricingOnlineFeatures || "Online Features"}
+                      </span>
+                    </li>
+                    </ul>
             )}
           </div>
         </div>
@@ -434,8 +445,7 @@ export default function PricingPage() {
             (p: any) => p.is_active !== false,
           );
           active.sort((a: any, b: any) => {
-            if (isNil(a.price_monthly))
-              return isNil(b.price_monthly) ? 0 : 1;
+            if (isNil(a.price_monthly)) return isNil(b.price_monthly) ? 0 : 1;
             if (isNil(b.price_monthly)) return -1;
             return Number(a.price_monthly) - Number(b.price_monthly);
           });
@@ -443,8 +453,7 @@ export default function PricingPage() {
           requestAnimationFrame(() => setMounted(true));
         }
       } catch (err: any) {
-        if (!cancelled)
-          setError(err.message || tRef.current.pricingErrorLoad);
+        if (!cancelled) setError(err.message || tRef.current.pricingErrorLoad);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -577,21 +586,42 @@ export default function PricingPage() {
 
       <style jsx global>{`
         @keyframes drift-a {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(30px, 40px); }
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(30px, 40px);
+          }
         }
         @keyframes drift-b {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(-40px, 30px); }
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(-40px, 30px);
+          }
         }
-        .blob-a { animation: drift-a 9s ease-in-out infinite; }
-        .blob-b { animation: drift-b 11s ease-in-out infinite; }
+        .blob-a {
+          animation: drift-a 9s ease-in-out infinite;
+        }
+        .blob-b {
+          animation: drift-b 11s ease-in-out infinite;
+        }
 
         @keyframes sparkle-turn {
-          0%, 100% { transform: rotate(0deg); }
-          50% { transform: rotate(20deg); }
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          50% {
+            transform: rotate(20deg);
+          }
         }
-        .sparkle-spin { animation: sparkle-turn 1.8s ease-in-out infinite; }
+        .sparkle-spin {
+          animation: sparkle-turn 1.8s ease-in-out infinite;
+        }
 
         @property --angle {
           syntax: "<angle>";
@@ -599,7 +629,9 @@ export default function PricingPage() {
           inherits: false;
         }
         @keyframes spin-border {
-          to { --angle: 360deg; }
+          to {
+            --angle: 360deg;
+          }
         }
         .spin-border {
           background: conic-gradient(
@@ -629,7 +661,10 @@ export default function PricingPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .blob-a, .blob-b, .sparkle-spin, .spin-border {
+          .blob-a,
+          .blob-b,
+          .sparkle-spin,
+          .spin-border {
             animation: none !important;
           }
         }

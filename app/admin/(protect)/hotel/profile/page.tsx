@@ -52,12 +52,11 @@ function validateHesabpay(value: string, t: any): string {
 /* ------------------------------------------------------------------ */
 function deliveryLabel(value: string | null | undefined, t: any): string {
   switch (value) {
-    case "pickup":
-      return t.hotel?.deliveryPickup || "Pickup only";
-    case "delivery":
-      return t.hotel?.deliveryDelivery || "Delivery only";
-    case "both":
-      return t.hotel?.deliveryBoth || "Pickup + Delivery";
+    case "paid":
+      return t.hotel?.deliveryPa || "Paid";
+   
+    case "free":
+      return t.hotel?.deliveryBoth || "free";
     case "none":
     default:
       return t.hotel?.deliveryNone || "No delivery";
@@ -398,20 +397,17 @@ export default function HotelProfilePage() {
                 [
                   {
                     value: "none",
-                    label: t.hotel?.deliveryNone || "No delivery",
+                    label: t.hotel?.deliveryNone || "Noo",
                   },
                   {
-                    value: "pickup",
-                    label: t.hotel?.deliveryPickup || "Pickup only",
+                    value: "free",
+                    label: t.hotel?.deliveryFree || "free",
                   },
                   {
-                    value: "delivery",
-                    label: t.hotel?.deliveryDelivery || "Delivery only",
+                    value: "paid",
+                    label: t.hotel?.deliveryPaid || "Paid",
                   },
-                  {
-                    value: "both",
-                    label: t.hotel?.deliveryBoth || "Pickup + Delivery",
-                  },
+                  
                 ] as const
               ).map((opt) => {
                 const active = form.delivery_type === opt.value;

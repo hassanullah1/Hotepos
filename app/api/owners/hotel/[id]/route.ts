@@ -4,7 +4,7 @@ import { getAuthUser } from "@/lib/auth";
 import { ownsHotel } from "@/lib/owner-scope";
 
 /* ---- delivery type helpers ---- */
-const ALLOWED_DELIVERY = ["none", "pickup", "delivery", "both"] as const;
+const ALLOWED_DELIVERY = ["none", "free", "paid"] as const;
 type DeliveryType = (typeof ALLOWED_DELIVERY)[number];
 
 function isDeliveryType(v: unknown): v is DeliveryType {
@@ -114,7 +114,7 @@ export async function PATCH(
       return NextResponse.json(
         {
           error:
-            "Invalid delivery_type. Allowed: none | pickup | delivery | both.",
+            "Invalid delivery_type. Allowed: none | paid | free | both.",
         },
         { status: 400 },
       );

@@ -179,7 +179,7 @@ const NAV_ITEMS = [
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: Contact,
-    requiresSection: "pos",
+    
   },
 
   /* ── COMMON (platform-only) ────────────────────────────────── */
