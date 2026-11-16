@@ -1,8 +1,21 @@
 "use client";
 
-import { useEffect, useState, use as usePromise } from "react";
+import { useEffect, useMemo, useState, use as usePromise } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, FileDown, FileSpreadsheet } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  FileDown,
+  FileSpreadsheet,
+  Plus,
+  X,
+  Users,
+  Wallet,
+  CircleCheck,
+  Clock,
+  CalendarRange,
+  Loader2,
+} from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
 
@@ -36,16 +49,80 @@ function errText(t, code) {
   return resolved || t?.common?.error || "Something went wrong";
 }
 
-// Detects Arabic-script text (covers Pashto and Dari, both written in
-// Arabic script) so PDF export can route only these strings through the
-// canvas-image fallback below — jsPDF's built-in fonts (Helvetica etc.)
-// only cover Latin/WinAnsi characters and have no Arabic shaping engine,
-// so passing Pashto/Dari straight to doc.text() or autoTable renders
-// garbled, disconnected glyphs. Latin/English text is left on jsPDF's
-// native text renderer, which stays sharper and selectable.
+// Detects Arabic-script text (covers Pashto and Dari) so PDF export can route
+// only these strings through the canvas-image fallback — jsPDF's built-in
+// fonts have no Arabic shaping engine.
 function isArabicScript(text) {
   return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(String(text ?? ""));
 }
+
+const RUN_STATUS = {
+  draft: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200",
+  processed: "bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200",
+  paid: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200",
+};
+const SLIP_STATUS = {
+  paid: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200",
+  unpaid:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200",
+};
+
+const inputCls =
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15 dark:border-gray-700 dark:bg-gray-900";
+
+function Pill({ cls, children }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${cls || RUN_STATUS.draft}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Stat({ icon: Icon, label, value, tone }) {
+  const tones = {
+    teal: "bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300",
+    emerald:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+    amber:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+    gray: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300",
+  };
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+      <div
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${tones[tone]}`}
+      >
+        <Icon size={20} />
+      </div>
+      <div className="min-w-0">
+        <div className="truncate text-lg font-bold tabular-nums leading-tight sm:text-xl">
+          {value}
+        </div>
+        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+          {label}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Skeleton() {
+  return (
+    <div className="mx-auto max-w-5xl space-y-3 p-4 sm:p-6">
+      <div className="h-9 w-48 animate-pulse rounded-xl bg-gray-200/70 dark:bg-gray-800" />
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div
+          key={i}
+          className="h-20 animate-pulse rounded-2xl bg-gray-200/70 dark:bg-gray-800"
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ================= runs list ================= */
 
 export default function BranchPayrollPage({ params }) {
   const { id } = usePromise(params);
@@ -130,13 +207,6 @@ export default function BranchPayrollPage({ params }) {
     }
   }
 
-  if (loading)
-    return (
-      <div className="p-6 text-sm text-gray-500 dark:text-gray-400">
-        {t.staffDetail?.loading}
-      </div>
-    );
-
   if (selectedRunId) {
     return (
       <RunDetail
@@ -153,67 +223,97 @@ export default function BranchPayrollPage({ params }) {
     );
   }
 
+  if (loading && !runs) return <Skeleton />;
+
   return (
     <div
-      className="p-6 max-w-4xl mx-auto dark:bg-gray-900 dark:text-gray-100"
+      className="mx-auto min-h-screen max-w-5xl bg-gray-50/60 p-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100 sm:p-6"
       dir={dir}
     >
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">{bp.title}</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="truncate text-2xl font-bold tracking-tight sm:text-3xl">
+            {bp.title}
+          </h1>
+          {runs && (
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <span className="tabular-nums">{runs.length}</span> ·{" "}
+              {bp.columns.period}
+            </p>
+          )}
+        </div>
         <button
           onClick={() => setShowForm((v) => !v)}
-          className="bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-md text-sm"
+          className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition sm:w-auto ${
+            showForm
+              ? "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
+              : "bg-teal-700 text-white shadow-lg shadow-teal-700/25 hover:bg-teal-800"
+          }`}
         >
+          {showForm ? <X size={16} /> : <Plus size={16} />}
           {showForm ? bp.cancelButton : bp.runButton}
         </button>
       </div>
 
       {error && (
-        <p className="text-red-600 dark:text-red-400 text-sm mb-3">{error}</p>
-      )}
-      {skippedNotice?.map((line, i) => (
-        <p key={i} className="text-amber-600 dark:text-amber-400 text-sm mb-1">
-          {line}
+        <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+          {error}
         </p>
-      ))}
+      )}
+      {skippedNotice?.length > 0 && (
+        <div className="mb-4 space-y-1 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
+          {skippedNotice.map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
+        </div>
+      )}
 
       {showForm && (
         <form
           onSubmit={generate}
-          className="border dark:border-gray-700 rounded-md p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-3"
+          className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-5"
         >
-          <div>
-            <label className="block text-xs font-medium mb-1">
-              {bp.periodStartLabel} *
-            </label>
-            <input
-              type="date"
-              required
-              value={form.period_start}
-              onChange={(e) =>
-                setForm({ ...form, period_start: e.target.value })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600"
-            />
+          <div className="mb-4 flex items-center gap-2 text-sm font-bold">
+            <CalendarRange size={16} className="text-teal-600" />
+            {bp.runButton}
           </div>
-          <div>
-            <label className="block text-xs font-medium mb-1">
-              {bp.periodEndLabel} *
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-300">
+                {bp.periodStartLabel} *
+              </span>
+              <input
+                type="date"
+                required
+                value={form.period_start}
+                onChange={(e) =>
+                  setForm({ ...form, period_start: e.target.value })
+                }
+                className={inputCls}
+              />
             </label>
-            <input
-              type="date"
-              required
-              value={form.period_end}
-              onChange={(e) => setForm({ ...form, period_end: e.target.value })}
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-700 dark:border-gray-600"
-            />
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-300">
+                {bp.periodEndLabel} *
+              </span>
+              <input
+                type="date"
+                required
+                value={form.period_end}
+                onChange={(e) =>
+                  setForm({ ...form, period_end: e.target.value })
+                }
+                className={inputCls}
+              />
+            </label>
           </div>
-          <div className="sm:col-span-2 flex justify-end">
+          <div className="mt-4 flex justify-end">
             <button
               type="submit"
               disabled={generating}
-              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/25 transition hover:bg-teal-800 disabled:opacity-50 disabled:shadow-none sm:w-auto"
             >
+              {generating && <Loader2 size={15} className="animate-spin" />}
               {generating ? bp.generatingButton : bp.generateButton}
             </button>
           </div>
@@ -221,47 +321,70 @@ export default function BranchPayrollPage({ params }) {
       )}
 
       {!runs?.length ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{bp.noRuns}</p>
+        <div className="rounded-2xl border border-dashed border-gray-300 px-6 py-14 text-center dark:border-gray-700">
+          <Wallet className="mx-auto mb-3 text-gray-400" size={32} />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {bp.noRuns}
+          </p>
+        </div>
       ) : (
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="text-start border-b dark:border-gray-700 text-gray-500 dark:text-gray-400">
-              <th className="py-2 pe-4 text-start">{bp.columns.period}</th>
-              <th className="pe-4 text-start">{bp.columns.staff}</th>
-              <th className="pe-4 text-start">{bp.columns.total}</th>
-              <th className="text-start">{bp.columns.status}</th>
-              <th className="text-start">{bp.columns.action}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {runs.map((run) => (
-              <tr
-                key={run.id}
-                onClick={() => setSelectedRunId(run.id)}
-                className="border-b dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                <td className="py-2 pe-4">
-                  {fmtDate(run.period_start)} – {fmtDate(run.period_end)}
-                </td>
-                <td className="pe-4">{run.payslip_count}</td>
-                <td className="pe-4 font-medium">{money(run.total_net)}</td>
-                <td>{bp.statuses[run.status] || run.status}</td>
-                <td className="whitespace-nowrap pe-4">
-                 
-                    <Eye
-                      className="text-teal-700/70 hover:text-teal-700 hover:bg-teal-100 dark:text-teal-300/70 dark:hover:text-teal-200 dark:hover:bg-teal-900 rounded-full transition-colors"
-                      size={16}
-                    />
-                  
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          {/* table */}
+          <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <table className="w-full min-w-[520px] text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-xs text-gray-500 dark:bg-gray-900/50 dark:text-gray-400">
+                  <th className="px-5 py-3 text-start font-semibold">
+                    {bp.columns.period}
+                  </th>
+                  <th className="px-4 py-3 text-start font-semibold">
+                    {bp.columns.staff}
+                  </th>
+                  <th className="px-4 py-3 text-start font-semibold">
+                    {bp.columns.total}
+                  </th>
+                  <th className="px-4 py-3 text-start font-semibold">
+                    {bp.columns.status}
+                  </th>
+                  <th className="w-12 px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {runs.map((run) => (
+                  <tr
+                    key={run.id}
+                    onClick={() => setSelectedRunId(run.id)}
+                    className="cursor-pointer border-t border-gray-100 transition hover:bg-teal-50/60 dark:border-gray-700 dark:hover:bg-teal-900/20"
+                  >
+                    <td className="whitespace-nowrap px-4 py-3 font-medium sm:px-5 sm:py-3.5">
+                      {fmtDate(run.period_start)} – {fmtDate(run.period_end)}
+                    </td>
+                    <td className="px-4 py-3.5 tabular-nums">
+                      {run.payslip_count}
+                    </td>
+                    <td className="px-4 py-3.5 font-semibold tabular-nums">
+                      {money(run.total_net)}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <Pill cls={RUN_STATUS[run.status]}>
+                        {bp.statuses[run.status] || run.status}
+                      </Pill>
+                    </td>
+                    <td className="px-4 py-3.5 text-gray-400">
+                      <ChevronRight size={18} className="rtl:rotate-180" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );
 }
+
+/* ================= run detail ================= */
 
 function RunDetail({ branchId, runId, router, t, dir, onBack }) {
   const bp = t.branchPayroll;
@@ -271,19 +394,11 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
   const [updating, setUpdating] = useState(false);
   const [markingId, setMarkingId] = useState(null);
 
-  // --- export controls ---
-  const [includePaid, setIncludePaid] = useState(true);
-  const [includeUnpaid, setIncludeUnpaid] = useState(true);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingExcel, setExportingExcel] = useState(false);
   const [exportError, setExportError] = useState("");
 
-  // Whether the PDF layout itself (column order, alignment, margins)
-  // should mirror right-to-left. This is driven by the admin's chosen
-  // language direction, not by whether any given string happens to
-  // contain Arabic-script characters — a Pashto/Dari report should read
-  // right-to-left even for rows that are, say, just numbers or a Latin
-  // staff name.
+  // PDF layout mirrors the admin's chosen language direction.
   const isRtl = dir === "rtl";
 
   async function load() {
@@ -313,7 +428,10 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     try {
       const res = await fetchWithAuth(
         `/api/owners/branches/${branchId}/payroll-runs/${runId}`,
-        { method: "PATCH", body: JSON.stringify({ status }) },
+        {
+          method: "PATCH",
+          body: JSON.stringify({ status }),
+        },
       );
       if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
@@ -326,14 +444,16 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     }
   }
 
-  // Reuses the same per-staff payslip endpoint the staff detail page uses,
-  // so "pay this one person now" behaves identically from either screen.
+  // Same per-staff payslip endpoint the staff detail page uses.
   async function markLinePaid(payslip) {
     setMarkingId(payslip.id);
     try {
       const res = await fetchWithAuth(
         `/api/owners/staff/${payslip.user.id}/payslips/${payslip.id}`,
-        { method: "PATCH", body: JSON.stringify({ status: "paid" }) },
+        {
+          method: "PATCH",
+          body: JSON.stringify({ status: "paid" }),
+        },
       );
       if (res.status === 401) return router.push("/hotel/login");
       const body = await res.json();
@@ -346,62 +466,60 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     }
   }
 
-  if (loading)
-    return (
-      <div className="p-6 text-sm text-gray-500 dark:text-gray-400">
-        {t.staffDetail?.loading}
-      </div>
-    );
+  const totals = useMemo(() => {
+    const slips = run?.payslips || [];
+    const sum = (arr) => arr.reduce((s, p) => s + Number(p.net_pay || 0), 0);
+    const paid = slips.filter((p) => p.status === "paid");
+    const unpaid = slips.filter((p) => p.status === "unpaid");
+    return {
+      all: sum(slips),
+      paid: sum(paid),
+      unpaid: sum(unpaid),
+      count: slips.length,
+      unpaidCount: unpaid.length,
+    };
+  }, [run]);
+
+  if (loading && !run) return <Skeleton />;
 
   if (error || !run)
     return (
-      <div className="p-6">
-        <p className="text-red-600 dark:text-red-400 text-sm mb-3">{error}</p>
+      <div className="mx-auto max-w-5xl p-4 sm:p-6" dir={dir}>
+        <p className="mb-3 text-sm text-red-600 dark:text-red-400">{error}</p>
         <button
           onClick={onBack}
-          className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-1"
+          className="flex items-center gap-1 text-sm font-semibold text-teal-700 dark:text-teal-300"
         >
-          <ArrowLeft size={14} /> {bp.backToRuns}
+          <ArrowLeft size={14} className="rtl:rotate-180" /> {bp.backToRuns}
         </button>
       </div>
     );
 
-  // Payslips matching the checked statuses. Both checked (default) = all
-  // rows; both unchecked = empty (export buttons disable themselves).
-  const filteredPayslips = run.payslips.filter((p) => {
-    if (p.status === "paid") return includePaid;
-    if (p.status === "unpaid") return includeUnpaid;
-    return true; // any future status falls through rather than vanishing
-  });
+  const filteredPayslips = run.payslips; // export always includes every record
   const exportDisabled = filteredPayslips.length === 0;
+  const slipLabel = (s) => bp.payslipStatuses?.[s] || s;
 
-  // Month label for the PDF/Excel header — e.g. "August 2026" when the
-  // period lands cleanly in one calendar month, otherwise the date range.
   function periodHeading() {
     const start = new Date(run.period_start);
     const end = new Date(run.period_end);
     const sameMonth =
       start.getUTCFullYear() === end.getUTCFullYear() &&
       start.getUTCMonth() === end.getUTCMonth();
-    if (sameMonth) {
+    if (sameMonth)
       return start.toLocaleDateString(undefined, {
         month: "long",
         year: "numeric",
       });
-    }
     return `${fmtDate(run.period_start)} – ${fmtDate(run.period_end)}`;
   }
 
-  // Renders text via canvas so Arabic-script text (Pashto, Dari) shapes
-  // and joins correctly — jsPDF's built-in fonts have no Arabic shaping
-  // engine, so feeding such text straight to doc.text() produces garbled,
-  // disconnected glyphs. Canvas uses the browser's own text engine, which
-  // handles this correctly; the result is then dropped into the PDF as an
-  // image. Only used for strings that actually contain Arabic-script
-  // characters — Latin text keeps using jsPDF's native, sharper,
-  // selectable text.
-  function textToImageDataUrl(text, { fontSize = 11, bold = false } = {}) {
-    const scale = 3; // supersample for crisp print resolution
+  // Renders text via canvas so Arabic-script text shapes and joins correctly,
+  // then it is placed into the PDF as an image.
+  function textToImageDataUrl(
+    text,
+    { fontSize = 11, bold = false, color = "#111111" } = {},
+  ) {
+    const scale = 3;
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const fontSpec = `${bold ? "bold " : ""}${fontSize * scale}px "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif`;
@@ -409,12 +527,11 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     const metrics = ctx.measureText(text);
     canvas.width = Math.max(1, Math.ceil(metrics.width) + 8 * scale);
     canvas.height = Math.ceil(fontSize * scale * 1.6);
-    // canvas resize clears the context — font must be reapplied
-    ctx.font = fontSpec;
+    ctx.font = fontSpec; // resize clears the context
     ctx.direction = "rtl";
     ctx.textAlign = "right";
     ctx.textBaseline = "top";
-    ctx.fillStyle = "#22eca9";
+    ctx.fillStyle = color;
     ctx.fillText(text, canvas.width - 4 * scale, 2 * scale);
     return {
       dataUrl: canvas.toDataURL("image/png"),
@@ -423,18 +540,6 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     };
   }
 
-  // Writes one header/summary line.
-  //
-  // Alignment/positioning now follows the document's overall direction
-  // (isRtl), not just whether this particular string contains
-  // Arabic-script characters:
-  //  - Arabic-script text always goes through the canvas-image fallback
-  //    (jsPDF has no Arabic shaping) and is placed on the side dictated
-  //    by isRtl.
-  //  - Non-Arabic text (numbers, Latin labels) is still drawn with
-  //    jsPDF's native, selectable text renderer, but right-aligned
-  //    against the right margin when the report is RTL, instead of
-  //    always being pinned to the left margin.
   function writeHeaderLine(doc, text, y, { fontSize = 11, bold = false } = {}) {
     const pageWidth = doc.internal.pageSize.getWidth();
     const marginLeft = 14;
@@ -452,11 +557,8 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
 
     doc.setFontSize(fontSize);
     doc.setFont(undefined, bold ? "bold" : "normal");
-    if (isRtl) {
-      doc.text(text, pageWidth - marginRight, y, { align: "right" });
-    } else {
-      doc.text(text, marginLeft, y);
-    }
+    if (isRtl) doc.text(text, pageWidth - marginRight, y, { align: "right" });
+    else doc.text(text, marginLeft, y);
     return y + fontSize * 0.5 + 2;
   }
 
@@ -511,12 +613,9 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         money(p.bonus_amount ?? 0),
         money(p.advance_deducted ?? 0),
         money(p.net_pay),
-        bp.payslipStatuses?.[p.status] || p.status,
+        slipLabel(p.status),
       ]);
 
-      // Mirror the table's column order for RTL layouts, so the report
-      // reads right-to-left the way the rest of the RTL UI does (staff
-      // name column ends up on the right, status on the left).
       const orderedHeadCells = isRtl ? [...headCells].reverse() : headCells;
       const orderedRows = rows.map((r) => (isRtl ? [...r].reverse() : r));
 
@@ -530,32 +629,26 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
           valign: "middle",
           halign: isRtl ? "right" : "left",
         },
-        headStyles: { fillColor: [20, 20, 20] },
-        // Arabic-script cell text (staff names, translated column
-        // headers) would garble under autoTable's own text renderer for
-        // the same reason as the header block above. We blank the text
-        // here and draw it ourselves as an image in didDrawCell, which
-        // fires after autoTable has painted the cell background/borders.
+        headStyles: { fillColor: [15, 118, 110] },
         didParseCell: (data) => {
-          const raw = data.cell.raw;
-          if (isArabicScript(raw)) {
-            data.cell.text = [];
-          }
+          if (isArabicScript(data.cell.raw)) data.cell.text = [];
         },
         didDrawCell: (data) => {
           const raw = data.cell.raw;
           if (!isArabicScript(raw)) return;
+          const isHead = data.section === "head";
           const { dataUrl, widthMm, heightMm } = textToImageDataUrl(
             String(raw),
-            { fontSize: 9, bold: data.section === "head" },
+            {
+              fontSize: 9,
+              bold: isHead,
+              color: isHead ? "#ffffff" : "#111111",
+            },
           );
           const maxWidth = data.cell.width - 4;
           const scaleDown = Math.min(1, maxWidth / widthMm);
           const drawW = widthMm * scaleDown;
           const drawH = heightMm * scaleDown;
-          // Keep the Arabic-script image glued to the same edge of the
-          // cell that halign is using for everything else, so mixed
-          // Arabic/Latin cells in the same column still line up.
           const x = isRtl
             ? data.cell.x + 2
             : data.cell.x + data.cell.width - drawW - 2;
@@ -576,9 +669,9 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         { bold: true },
       );
 
-      const fileSafeStart = run.period_start?.slice(0, 10);
-      const fileSafeEnd = run.period_end?.slice(0, 10);
-      doc.save(`payroll_${fileSafeStart}_${fileSafeEnd}.pdf`);
+      doc.save(
+        `payroll_${run.period_start?.slice(0, 10)}_${run.period_end?.slice(0, 10)}.pdf`,
+      );
     } catch (err) {
       console.error("PDF export error:", err);
       setExportError(bp.pdfExportFailed || "Failed to generate PDF");
@@ -592,7 +685,6 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     setExportingExcel(true);
     try {
       const XLSX = await import("xlsx");
-
       const rows = filteredPayslips.map((p) => ({
         [bp.payslipColumns.staff]: p.user.full_name,
         [bp.payslipColumns.base]: Number(p.base_salary),
@@ -600,19 +692,15 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         [bp.payslipColumns.bonus]: Number(p.bonus_amount ?? 0),
         [bp.payslipColumns.advance]: Number(p.advance_deducted ?? 0),
         [bp.payslipColumns.net]: Number(p.net_pay),
-        [bp.payslipColumns.status]: bp.payslipStatuses?.[p.status] || p.status,
+        [bp.payslipColumns.status]: slipLabel(p.status),
       }));
-
-      // Excel has no font-shaping issue like jsPDF — Arabic-script text
-      // is stored as plain Unicode text and rendered correctly by Excel
-      // itself, so no image workaround is needed here.
       const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Payroll");
-
-      const fileSafeStart = run.period_start?.slice(0, 10);
-      const fileSafeEnd = run.period_end?.slice(0, 10);
-      XLSX.writeFile(wb, `payroll_${fileSafeStart}_${fileSafeEnd}.xlsx`);
+      XLSX.writeFile(
+        wb,
+        `payroll_${run.period_start?.slice(0, 10)}_${run.period_end?.slice(0, 10)}.xlsx`,
+      );
     } catch (err) {
       console.error("Excel export error:", err);
       setExportError(bp.excelExportFailed || "Failed to generate Excel file");
@@ -621,151 +709,203 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
     }
   }
 
+  const nextAction =
+    run.status === "draft"
+      ? { to: "processed", label: bp.markProcessedButton }
+      : run.status === "processed"
+        ? { to: "paid", label: bp.markPaidButton }
+        : null;
+
   return (
-    <div className="p-6 max-w-4xl mx-auto dark:bg-gray-900 dark:text-gray-100">
+    <div
+      className="mx-auto min-h-screen max-w-5xl bg-gray-50/60 p-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100 sm:p-6"
+      dir={dir}
+    >
       <button
         onClick={onBack}
-        className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-1 mb-4"
+        className="mb-4 inline-flex items-center gap-1.5 rounded-lg py-1 text-sm font-semibold text-teal-700 hover:text-teal-900 dark:text-teal-300"
       >
-        <ArrowLeft size={14} /> {bp.backToRuns}
+        <ArrowLeft size={15} className="rtl:rotate-180" /> {bp.backToRuns}
       </button>
 
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-xl font-semibold">{periodHeading()}</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {fmtDate(run.period_start)} – {fmtDate(run.period_end)} ·{" "}
-            {bp.statuses[run.status] || run.status}
+      {/* header */}
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {periodHeading()}
+            </h1>
+            <Pill cls={RUN_STATUS[run.status]}>
+              {bp.statuses[run.status] || run.status}
+            </Pill>
+          </div>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {fmtDate(run.period_start)} – {fmtDate(run.period_end)}
           </p>
         </div>
-        {run.status === "draft" && (
+        {nextAction && (
           <button
-            onClick={() => transition("processed")}
+            onClick={() => transition(nextAction.to)}
             disabled={updating}
-            className="bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-md text-sm disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/25 transition hover:bg-teal-800 disabled:opacity-50 disabled:shadow-none sm:w-auto"
           >
-            {updating ? bp.updatingButton : bp.markProcessedButton}
-          </button>
-        )}
-        {run.status === "processed" && (
-          <button
-            onClick={() => transition("paid")}
-            disabled={updating}
-            className="bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-md text-sm disabled:opacity-50"
-          >
-            {updating ? bp.updatingButton : bp.markPaidButton}
+            {updating && <Loader2 size={15} className="animate-spin" />}
+            {updating ? bp.updatingButton : nextAction.label}
           </button>
         )}
       </div>
 
-      {/* Export controls */}
-      <div className="border dark:border-gray-700 rounded-md p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-4 mb-3">
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-            {bp.exportIncludeLabel || "Include"}:
-          </span>
-          <label className="flex items-center gap-1.5 text-sm">
-            <input
-              type="checkbox"
-              checked={includePaid}
-              onChange={(e) => setIncludePaid(e.target.checked)}
-            />
-            {bp.payslipStatuses?.paid || "Paid"}
-          </label>
-          <label className="flex items-center gap-1.5 text-sm">
-            <input
-              type="checkbox"
-              checked={includeUnpaid}
-              onChange={(e) => setIncludeUnpaid(e.target.checked)}
-            />
-            {bp.payslipStatuses?.unpaid || "Unpaid"}
-          </label>
-          <span className="text-xs text-gray-400 dark:text-gray-500">
-            ({filteredPayslips.length} {bp.exportRowsLabel || "rows"})
-          </span>
-        </div>
-
-        {exportError && (
-          <p className="text-red-600 dark:text-red-400 text-sm mb-2">
-            {exportError}
-          </p>
-        )}
-
-        <div className="flex gap-2">
-          <button
-            onClick={exportPdf}
-            disabled={exportDisabled || exportingPdf}
-            className="flex items-center gap-1.5 border dark:border-gray-600 px-3 py-1.5 rounded-md text-sm disabled:opacity-50"
-          >
-            <FileDown size={14} />
-            {exportingPdf
-              ? bp.exportingButton || "Exporting…"
-              : bp.exportPdfButton || "Export PDF"}
-          </button>
-          <button
-            onClick={exportExcel}
-            disabled={exportDisabled || exportingExcel}
-            className="flex items-center gap-1.5 border dark:border-gray-600 px-3 py-1.5 rounded-md text-sm disabled:opacity-50"
-          >
-            <FileSpreadsheet size={14} />
-            {exportingExcel
-              ? bp.exportingButton || "Exporting…"
-              : bp.exportExcelButton || "Export Excel"}
-          </button>
-        </div>
+      {/* stats */}
+      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Stat
+          icon={Users}
+          tone="gray"
+          label={bp.columns.staff}
+          value={totals.count}
+        />
+        <Stat
+          icon={Wallet}
+          tone="teal"
+          label={bp.columns.total}
+          value={money(totals.all)}
+        />
+        <Stat
+          icon={CircleCheck}
+          tone="emerald"
+          label={slipLabel("paid")}
+          value={money(totals.paid)}
+        />
+        <Stat
+          icon={Clock}
+          tone="amber"
+          label={slipLabel("unpaid")}
+          value={money(totals.unpaid)}
+        />
       </div>
 
-      <table className="w-full text-sm border-collapse">
-        <thead>
-          <tr className="text-start border-b dark:border-gray-700 text-gray-500 dark:text-gray-400">
-            <th className="py-2 pe-4 text-start">{bp.payslipColumns.staff}</th>
-            <th className="pe-4 text-start">{bp.payslipColumns.base}</th>
-            <th className="pe-4 text-start">{bp.payslipColumns.absence}</th>
-            <th className="pe-4 text-start">{bp.payslipColumns.bonus}</th>
-            <th className="pe-4 text-start">{bp.payslipColumns.advance}</th>
-            <th className="pe-4 text-start">{bp.payslipColumns.net}</th>
-            <th className="text-start">{bp.payslipColumns.status}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {run.payslips.map((p) => {
-            const deduction = Number(p.deduction_amount ?? 0);
-            return (
-              <tr key={p.id} className="border-b dark:border-gray-700">
-                <td className="py-2 pe-4">{p.user.full_name}</td>
-                <td className="pe-4">{money(p.base_salary)}</td>
-                <td className="pe-4">
-                  {deduction > 0 ? (
-                    <span className="text-red-600 dark:text-red-400">
-                      -{money(deduction)}
-                    </span>
-                  ) : (
-                    "—"
-                  )}
-                </td>
-                <td className="pe-4">{money(p.bonus_amount ?? 0)}</td>
-                <td className="pe-4">{money(p.advance_deducted ?? 0)}</td>
-                <td className="pe-4 font-medium">{money(p.net_pay)}</td>
-                <td>{p.status}</td>
-                <td className="text-end">
-                  {p.status === "unpaid" && run.status !== "draft" && (
-                    <button
-                      onClick={() => markLinePaid(p)}
-                      disabled={markingId === p.id}
-                      className="text-green-600 dark:text-green-400 text-xs disabled:opacity-50"
-                    >
-                      {markingId === p.id
-                        ? bp.updatingButton
-                        : bp.markLineButton}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {/* export (all records) */}
+      <div className="mb-5 grid grid-cols-1 gap-2 sm:flex sm:justify-end">
+        <button
+          onClick={exportPdf}
+          disabled={exportDisabled || exportingPdf}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+        >
+          {exportingPdf ? (
+            <Loader2 size={15} className="animate-spin" />
+          ) : (
+            <FileDown size={15} className="text-red-500" />
+          )}
+          {exportingPdf
+            ? bp.exportingButton || "Exporting…"
+            : bp.exportPdfButton || "Export PDF"}
+        </button>
+        <button
+          onClick={exportExcel}
+          disabled={exportDisabled || exportingExcel}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+        >
+          {exportingExcel ? (
+            <Loader2 size={15} className="animate-spin" />
+          ) : (
+            <FileSpreadsheet size={15} className="text-emerald-600" />
+          )}
+          {exportingExcel
+            ? bp.exportingButton || "Exporting…"
+            : bp.exportExcelButton || "Export Excel"}
+        </button>
+      </div>
+      {exportError && (
+        <p className="mb-4 text-sm text-red-600 dark:text-red-400">
+          {exportError}
+        </p>
+      )}
+
+      {/* payslips table */}
+      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <table className="w-full min-w-[760px] text-sm">
+          <thead>
+            <tr className="bg-gray-50 text-xs text-gray-500 dark:bg-gray-900/50 dark:text-gray-400">
+              <th className="sticky start-0 bg-gray-50 px-4 py-3 text-start font-semibold dark:bg-gray-900 sm:px-5">
+                {bp.payslipColumns.staff}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.base}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.absence}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.bonus}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.advance}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.net}
+              </th>
+              <th className="px-3 py-3 text-start font-semibold">
+                {bp.payslipColumns.status}
+              </th>
+              <th className="px-5 py-3" />
+            </tr>
+          </thead>
+          <tbody>
+            {run.payslips.map((p) => {
+              const deduction = Number(p.deduction_amount ?? 0);
+              const canPay = p.status === "unpaid" && run.status !== "draft";
+              return (
+                <tr
+                  key={p.id}
+                  className="border-t border-gray-100 transition hover:bg-gray-50/70 dark:border-gray-700 dark:hover:bg-gray-900/30"
+                >
+                  <td className="sticky start-0 whitespace-nowrap bg-white px-4 py-3.5 font-medium dark:bg-gray-800 sm:px-5">
+                    {p.user.full_name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3.5 tabular-nums">
+                    {money(p.base_salary)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3.5 tabular-nums">
+                    {deduction > 0 ? (
+                      <span className="text-red-600 dark:text-red-400">
+                        -{money(deduction)}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3.5 tabular-nums">
+                    {money(p.bonus_amount ?? 0)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3.5 tabular-nums">
+                    {money(p.advance_deducted ?? 0)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3.5 font-bold tabular-nums text-teal-800 dark:text-teal-300">
+                    {money(p.net_pay)}
+                  </td>
+                  <td className="px-3 py-3.5">
+                    <Pill cls={SLIP_STATUS[p.status]}>
+                      {slipLabel(p.status)}
+                    </Pill>
+                  </td>
+                  <td className="px-5 py-3.5 text-end">
+                    {canPay && (
+                      <button
+                        onClick={() => markLinePaid(p)}
+                        disabled={markingId === p.id}
+                        className="whitespace-nowrap rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                      >
+                        {markingId === p.id
+                          ? bp.updatingButton
+                          : bp.markLineButton}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
