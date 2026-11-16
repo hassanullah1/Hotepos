@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   BedDouble,
   Plus,
-  User as UserIcon,
+  Minus,
   Phone,
   Clock,
   LogOut,
@@ -14,6 +14,13 @@ import {
   Pencil,
   Trash2,
   CalendarPlus,
+  Search,
+  DoorOpen,
+  DoorClosed,
+  Wallet,
+  Layers,
+  IdCard,
+  UserRound,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
@@ -29,6 +36,193 @@ const EMPTY_CHECKIN = {
   expected_check_out: "",
   notes: "",
 };
+
+const money = (n) => (Number(n) || 0).toFixed(2);
+const initials = (name = "") =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("") || "?";
+
+const inputCls =
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm outline-none transition placeholder:text-gray-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15 dark:border-gray-700 dark:bg-gray-900 dark:focus:border-teal-500 dark:focus:bg-gray-900";
+
+/* ---------- small building blocks ---------- */
+
+function Modal({
+  title,
+  subtitle = null,
+  icon: Icon,
+  onClose,
+  onSubmit,
+  error = null,
+  footer,
+  children,
+  wide = false,
+}) {
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-gray-950/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <form
+        onSubmit={onSubmit}
+        className={`flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800 sm:rounded-3xl ${
+          wide ? "sm:max-w-lg" : "sm:max-w-md"
+        }`}
+      >
+        <div className="flex items-start gap-3 border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal-600 text-white shadow-md shadow-teal-600/30">
+            <Icon size={20} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-bold leading-tight">{title}</h2>
+            {subtitle && (
+              <p className="mt-0.5 truncate text-sm text-gray-500 dark:text-gray-400">
+                {subtitle}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+              {error}
+            </div>
+          )}
+          {children}
+        </div>
+
+        <div className="flex justify-end gap-2 border-t border-gray-100 bg-gray-50/70 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/80">
+          {footer}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-300">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div className="space-y-3">
+      <h3 className="text-sm font-bold text-gray-800 dark:text-gray-100">
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+function SelectedChip({ children, onClear }) {
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-2.5 text-sm font-medium text-teal-900 dark:border-teal-800 dark:bg-teal-900/30 dark:text-teal-100">
+      <span className="truncate">{children}</span>
+      <button
+        type="button"
+        onClick={onClear}
+        className="shrink-0 rounded-full p-1 text-teal-700 hover:bg-teal-100 hover:text-red-600 dark:hover:bg-teal-800"
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
+function Suggestions({ children }) {
+  return (
+    <div className="absolute z-20 mt-1.5 max-h-56 w-full overflow-auto rounded-xl border border-gray-200 bg-white p-1 shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      {children}
+    </div>
+  );
+}
+
+const suggestionCls =
+  "block w-full rounded-lg px-3 py-2 text-start text-sm hover:bg-teal-50 dark:hover:bg-teal-900/30";
+
+function GhostBtn({ children, ...p }) {
+  return (
+    <button
+      type="button"
+      {...p}
+      className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-white dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+    >
+      {children}
+    </button>
+  );
+}
+
+function PrimaryBtn({ children, color = "teal", ...p }) {
+  const c =
+    color === "emerald"
+      ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/25"
+      : "bg-teal-700 hover:bg-teal-800 shadow-teal-700/25";
+  return (
+    <button
+      type="submit"
+      {...p}
+      className={`rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition disabled:opacity-50 disabled:shadow-none ${c}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Stat({ icon: Icon, label, value, tone }) {
+  const tones = {
+    teal: "bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300",
+    amber:
+      "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+    gray: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300",
+    emerald:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+  };
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+      <div
+        className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}
+      >
+        <Icon size={20} />
+      </div>
+      <div className="min-w-0">
+        <div className="truncate text-xl font-bold tabular-nums leading-tight">
+          {value}
+        </div>
+        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+          {label}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- page ---------- */
 
 export default function RoomStaysPage() {
   const router = useRouter();
@@ -58,6 +252,15 @@ export default function RoomStaysPage() {
   const [editForm, setEditForm] = useState(null);
   const [checkoutFor, setCheckoutFor] = useState(null);
   const [checkoutPaymentMethodId, setCheckoutPaymentMethodId] = useState("");
+
+  const [roomQuery, setRoomQuery] = useState("");
+  const [customerQuery, setCustomerQuery] = useState("");
+  const [showRoomSuggestions, setShowRoomSuggestions] = useState(false);
+  const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
+
+  // page filters
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   function handle401(res) {
     if (res.status === 401) {
@@ -172,29 +375,20 @@ export default function RoomStaysPage() {
 
       if (rRes.status === 401 || sRes.status === 401)
         return router.push("/hotel/login");
-
       if (!rRes.ok) throw new Error("Failed to load rooms");
       if (!sRes.ok) throw new Error("Failed to load stays");
 
       const rData = await rRes.json();
       const sData = await sRes.json();
-
       setRooms(rData.rooms || []);
       setStays(sData.stays || []);
 
-      if (cRes && cRes.ok) {
-        const cData = await cRes.json();
-        setCustomers(cData.customers || []);
-      } else {
-        setCustomers([]);
-      }
+      if (cRes && cRes.ok) setCustomers((await cRes.json()).customers || []);
+      else setCustomers([]);
 
-      if (pRes && pRes.ok) {
-        const pData = await pRes.json();
-        setPaymentMethods(pData.paymentMethods || []);
-      } else {
-        setPaymentMethods([]);
-      }
+      if (pRes && pRes.ok)
+        setPaymentMethods((await pRes.json()).paymentMethods || []);
+      else setPaymentMethods([]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -214,12 +408,37 @@ export default function RoomStaysPage() {
     return m;
   }, [stays]);
 
-  const roomsWithStatus = useMemo(() => {
-    return rooms.map((r) => ({
-      ...r,
-      activeStay: staysByRoomId[r.id] || null,
-    }));
-  }, [rooms, staysByRoomId]);
+  const roomsWithStatus = useMemo(
+    () => rooms.map((r) => ({ ...r, activeStay: staysByRoomId[r.id] || null })),
+    [rooms, staysByRoomId],
+  );
+
+  const stats = useMemo(() => {
+    const occupied = roomsWithStatus.filter((r) => r.activeStay).length;
+    return {
+      total: roomsWithStatus.length,
+      occupied,
+      available: roomsWithStatus.length - occupied,
+      open: stays.reduce((sum, s) => sum + (s.grand_total || 0), 0),
+    };
+  }, [roomsWithStatus, stays]);
+
+  const visibleRooms = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return roomsWithStatus.filter((r) => {
+      if (filter === "available" && r.activeStay) return false;
+      if (filter === "occupied" && !r.activeStay) return false;
+      if (!q) return true;
+      const s = r.activeStay;
+      return (
+        String(r.room_number).toLowerCase().includes(q) ||
+        (r.room_type?.name || "").toLowerCase().includes(q) ||
+        (s?.guest_name || s?.customer?.full_name || "")
+          .toLowerCase()
+          .includes(q)
+      );
+    });
+  }, [roomsWithStatus, filter, search]);
 
   const selectedHotelName =
     hotels.find((h) => h.id === selectedHotelId)?.name || "";
@@ -227,6 +446,10 @@ export default function RoomStaysPage() {
   // ----- check-in -----
   function openCheckIn(room) {
     setError("");
+    setRoomQuery("");
+    setCustomerQuery("");
+    setShowRoomSuggestions(false);
+    setShowCustomerSuggestions(false);
     setCheckInForm({
       ...EMPTY_CHECKIN,
       room_id: room?.id || "",
@@ -234,31 +457,79 @@ export default function RoomStaysPage() {
     });
   }
 
-  function pickRoomForCheckIn(roomId) {
-    setCheckInForm((prev) => {
-      const room = rooms.find((r) => r.id === roomId);
-      return {
-        ...prev,
-        room_id: roomId,
-        rate_per_night:
-          prev?.rate_per_night || room?.room_type?.base_price || "",
-      };
-    });
+  const availableRooms = useMemo(
+    () =>
+      roomsWithStatus.filter((r) => !r.activeStay && r.status !== "occupied"),
+    [roomsWithStatus],
+  );
+
+  const selectedRoom = useMemo(
+    () => rooms.find((r) => r.id === checkInForm?.room_id) || null,
+    [rooms, checkInForm?.room_id],
+  );
+
+  const roomSuggestions = useMemo(() => {
+    const q = roomQuery.trim().toLowerCase();
+    const list = !q
+      ? availableRooms
+      : availableRooms.filter(
+          (r) =>
+            String(r.room_number).toLowerCase().includes(q) ||
+            (r.room_type?.name || "").toLowerCase().includes(q),
+        );
+    return list.slice(0, 8);
+  }, [roomQuery, availableRooms]);
+
+  function selectRoom(room) {
+    setCheckInForm((prev) => ({
+      ...prev,
+      room_id: room.id,
+      rate_per_night: prev?.rate_per_night || room.room_type?.base_price || "",
+    }));
+    setRoomQuery("");
+    setShowRoomSuggestions(false);
   }
 
-  function pickCustomerForCheckIn(customerId) {
-    setCheckInForm((prev) => {
-      if (!customerId) {
-        return { ...prev, customer_id: "" };
-      }
-      const c = customers.find((x) => x.id === customerId);
-      return {
-        ...prev,
-        customer_id: customerId,
-        guest_name: c?.full_name || prev.guest_name || "",
-        guest_phone: c?.phone || prev.guest_phone || "",
-      };
-    });
+  const selectedCustomer = useMemo(
+    () => customers.find((c) => c.id === checkInForm?.customer_id) || null,
+    [customers, checkInForm?.customer_id],
+  );
+
+  const customerSuggestions = useMemo(() => {
+    const q = customerQuery.trim().toLowerCase();
+    const qn = q.replace(/\s+/g, "");
+    if (!q) return customers.slice(0, 8);
+    return customers
+      .filter((c) => {
+        const cp = (c.phone || "").replace(/\s+/g, "").toLowerCase();
+        const cn = (c.full_name || "").toLowerCase();
+        return cp.includes(qn) || cn.includes(q);
+      })
+      .slice(0, 8);
+  }, [customerQuery, customers]);
+
+  function applyCustomer(c) {
+    setCheckInForm((prev) => ({
+      ...prev,
+      customer_id: c.id,
+      guest_name: c.full_name || prev.guest_name,
+      guest_phone: c.phone || prev.guest_phone,
+    }));
+    setCustomerQuery("");
+    setShowCustomerSuggestions(false);
+  }
+
+  function handleCustomerQueryChange(e) {
+    const v = e.target.value;
+    setCustomerQuery(v);
+    setShowCustomerSuggestions(true);
+    const digits = v.replace(/\s+/g, "");
+    if (digits.length >= 6) {
+      const exact = customers.find(
+        (c) => (c.phone || "").replace(/\s+/g, "") === digits,
+      );
+      if (exact) applyCustomer(exact);
+    }
   }
 
   async function submitCheckIn(e) {
@@ -303,12 +574,12 @@ export default function RoomStaysPage() {
     setError("");
     setEditForm({
       id: stay.id,
+      room: stay.room?.room_number,
       guest_name: stay.guest_name || stay.customer?.full_name || "",
       guest_phone: stay.guest_phone || stay.customer?.phone || "",
       rate_per_night: stay.rate_per_night,
       nights: stay.nights,
       notes: stay.notes || "",
-      extendNights: 1,
     });
   }
 
@@ -412,7 +683,7 @@ export default function RoomStaysPage() {
 
   if (!me) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[60vh] dark:bg-gray-900">
+      <div className="flex min-h-[60vh] items-center justify-center p-6 dark:bg-gray-900">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {t.common?.loading || "Loading..."}
         </p>
@@ -420,26 +691,36 @@ export default function RoomStaysPage() {
     );
   }
 
+  const tabs = [
+    ["all", t.roomStays?.all || "All", stats.total],
+    ["available", t.roomStays?.available || "Available", stats.available],
+    ["occupied", t.roomStays?.occupied || "Occupied", stats.occupied],
+  ];
+
+  const checkInTotal =
+    (Number(checkInForm?.rate_per_night) || 0) *
+    (Number(checkInForm?.nights) || 1);
+
   return (
     <div
-      className="p-6 max-w-[100%] mx-auto overflow-x-hidden dark:bg-gray-900 dark:text-gray-100"
+      className="mx-auto max-w-[100%] overflow-x-hidden bg-gray-50/60 p-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100 sm:p-6"
       dir={dir}
     >
-      {/* header */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-semibold">
+      {/* ===== header ===== */}
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-3xl font-bold tracking-tight">
             {t.roomStays?.title || "Front Desk"}
           </h1>
           {isOwner && hotels.length > 1 ? (
-            <div className="mt-2 flex items-center gap-3 min-w-0">
-              <label className="text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t.branch?.hotelLabel}:
-              </label>
+              </span>
               <select
                 value={selectedHotelId}
                 onChange={(e) => setSelectedHotelId(e.target.value)}
-                className="border rounded-md px-3 py-1.5 text-sm max-w-[200px] truncate dark:bg-gray-800 dark:border-gray-700"
+                className="max-w-[220px] truncate rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
               >
                 {hotels.map((h) => (
                   <option key={h.id} value={h.id}>
@@ -449,11 +730,11 @@ export default function RoomStaysPage() {
               </select>
             </div>
           ) : isOwner && hotels.length === 1 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+            <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">
               {selectedHotelName}
             </p>
           ) : isBranchManager ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+            <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">
               {me.branch?.name || t.branch?.branchLabel}
             </p>
           ) : null}
@@ -465,7 +746,7 @@ export default function RoomStaysPage() {
               value={branchId}
               onChange={(e) => setBranchId(e.target.value)}
               disabled={!branchesReady || branches.length === 0}
-              className="border rounded-md px-3 py-2 text-sm font-medium disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700"
+              className="rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"
             >
               {!branchesReady && <option>Loading…</option>}
               {branchesReady && branches.length === 0 && (
@@ -481,308 +762,504 @@ export default function RoomStaysPage() {
           <button
             onClick={loadAll}
             disabled={!branchId || loading}
-            className="h-9 w-9 rounded-full flex items-center justify-center border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/40 disabled:opacity-40"
+            aria-label="Refresh"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:text-teal-700 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </button>
           <button
             onClick={() => openCheckIn(null)}
             disabled={!branchId}
-            className="inline-flex items-center gap-1.5 bg-teal-700 text-white px-3.5 py-2 rounded-md text-sm font-semibold disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/25 transition hover:bg-teal-800 disabled:opacity-50 disabled:shadow-none"
           >
-            <Plus size={15} />
+            <Plus size={16} />
             {t.roomStays?.checkIn || "Check in"}
           </button>
         </div>
       </div>
 
-      {error && (
-        <p className="text-red-600 dark:text-red-400 text-sm mb-3">{error}</p>
+      {/* ===== stats ===== */}
+      {branchId && (
+        <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Stat
+            icon={Layers}
+            tone="gray"
+            label={t.roomStays?.totalRooms || "Total rooms"}
+            value={stats.total}
+          />
+          <Stat
+            icon={DoorOpen}
+            tone="teal"
+            label={t.roomStays?.available || "Available"}
+            value={stats.available}
+          />
+          <Stat
+            icon={DoorClosed}
+            tone="amber"
+            label={t.roomStays?.occupied || "Occupied"}
+            value={stats.occupied}
+          />
+          <Stat
+            icon={Wallet}
+            tone="emerald"
+            label={t.roomStays?.openBalance || "Open balance"}
+            value={money(stats.open)}
+          />
+        </div>
       )}
 
-      {/* rooms grid */}
+      {/* ===== filters ===== */}
+      {branchId && (
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="inline-flex rounded-xl bg-gray-200/70 p-1 dark:bg-gray-800">
+            {tabs.map(([key, label, count]) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition ${
+                  filter === key
+                    ? "bg-white text-teal-800 shadow-sm dark:bg-gray-700 dark:text-teal-200"
+                    : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                }`}
+              >
+                {label}{" "}
+                <span className="ms-1 text-xs tabular-nums opacity-60">
+                  {count}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="relative w-full sm:w-72">
+            <Search
+              size={15}
+              className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={
+                t.roomStays?.searchRooms || "Search room, type or guest…"
+              }
+              className={`${inputCls} ps-9`}
+            />
+          </div>
+        </div>
+      )}
+
+      {error && !checkInForm && !editForm && !checkoutFor && (
+        <p className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+          {error}
+        </p>
+      )}
+
+      {/* ===== rooms grid ===== */}
       {loading && rooms.length === 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 6 }).map((_, idx) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
             <div
-              key={idx}
-              className="h-40 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse"
+              key={i}
+              className="h-52 animate-pulse rounded-2xl bg-gray-200/70 dark:bg-gray-800"
             />
           ))}
         </div>
-      ) : roomsWithStatus.length === 0 ? (
-        <div className="border border-dashed rounded-xl px-6 py-10 text-center dark:border-gray-700">
-          <p className="font-semibold mb-1">
-            {t.roomStays?.noRooms || "No rooms in this branch"}
+      ) : visibleRooms.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-gray-300 px-6 py-14 text-center dark:border-gray-700">
+          <BedDouble className="mx-auto mb-3 text-gray-400" size={32} />
+          <p className="mb-1 font-semibold">
+            {rooms.length === 0
+              ? t.roomStays?.noRooms || "No rooms in this branch"
+              : t.roomStays?.noResults || "No rooms match your filters"}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {t.roomStays?.noRoomsHint || "Add rooms from the Rooms page first."}
+            {rooms.length === 0
+              ? t.roomStays?.noRoomsHint ||
+                "Add rooms from the Rooms page first."
+              : t.roomStays?.noResultsHint ||
+                "Try another status or search term."}
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {roomsWithStatus.map((r) => {
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {visibleRooms.map((r) => {
             const stay = r.activeStay;
             const occupied = !!stay;
+            const guest =
+              stay?.guest_name || stay?.customer?.full_name || "Walk-in";
+            const phone = stay?.guest_phone || stay?.customer?.phone;
             return (
               <div
                 key={r.id}
-                className={`rounded-xl border p-4 flex flex-col gap-3 ${
-                  occupied
-                    ? "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800"
-                    : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                }`}
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        occupied
-                          ? "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
-                          : "bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300"
-                      }`}
-                    >
-                      <BedDouble size={20} />
-                    </div>
+                <div
+                  className={`h-1.5 ${occupied ? "bg-amber-500" : "bg-teal-500"}`}
+                />
+
+                <div className="flex flex-1 flex-col gap-4 p-4">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-lg font-bold">#{r.room_number}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-2xl font-bold leading-none tabular-nums">
+                        {r.room_number}
+                      </div>
+                      <div className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                         {r.room_type?.name || "—"}
                         {r.floor
                           ? ` · ${t.rooms?.floorShort || "Floor"} ${r.floor}`
                           : ""}
                       </div>
                     </div>
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                        occupied
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200"
+                          : "bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200"
+                      }`}
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${occupied ? "bg-amber-500" : "bg-teal-500"}`}
+                      />
+                      {occupied
+                        ? t.roomStays?.occupied || "Occupied"
+                        : t.roomStays?.available || "Available"}
+                    </span>
                   </div>
-                  <span
-                    className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                      occupied
-                        ? "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200"
-                        : "bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200"
-                    }`}
-                  >
-                    {occupied
-                      ? t.roomStays?.occupied || "Occupied"
-                      : t.roomStays?.available || "Available"}
-                  </span>
-                </div>
 
-                {occupied ? (
-                  <>
-                    <div className="text-sm">
-                      <div className="flex items-center gap-1.5 font-medium truncate">
-                        <UserIcon size={13} />
-                        {stay.guest_name ||
-                          stay.customer?.full_name ||
-                          "Walk-in"}
+                  {occupied ? (
+                    <>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
+                          {initials(guest)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-semibold">
+                            {guest}
+                          </div>
+                          <div className="flex items-center gap-1.5 truncate text-xs text-gray-500 dark:text-gray-400">
+                            {phone ? (
+                              <>
+                                <Phone size={11} />
+                                <span dir="ltr">{phone}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Clock size={11} />
+                                {stay.nights} {t.roomStays?.nights || "nights"}
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      {(stay.guest_phone || stay.customer?.phone) && (
-                        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                          <Phone size={12} />
-                          <span dir="ltr">
-                            {stay.guest_phone || stay.customer?.phone}
+
+                      <div className="rounded-xl bg-gray-50 p-3 text-sm dark:bg-gray-900/60">
+                        <div className="flex justify-between text-gray-500 dark:text-gray-400">
+                          <span>
+                            {t.roomStays?.rent || "Rent"} · {stay.nights}×
+                            {money(stay.rate_per_night)}
+                          </span>
+                          <span className="tabular-nums text-gray-800 dark:text-gray-200">
+                            {money(stay.rent_total)}
                           </span>
                         </div>
-                      )}
-                      <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        <Clock size={12} />
-                        {stay.nights} {t.roomStays?.nights || "nights"}
-                        {" · "}
-                        {stay.rate_per_night.toFixed(2)}
-                        {"/"}
-                        {t.roomStays?.night || "night"}
+                        <div className="mt-1 flex justify-between text-gray-500 dark:text-gray-400">
+                          <span>{t.roomStays?.orders || "Orders"}</span>
+                          <span className="tabular-nums text-gray-800 dark:text-gray-200">
+                            {money(stay.orders_total)}
+                          </span>
+                        </div>
+                        <div className="mt-2 flex items-baseline justify-between border-t border-dashed border-gray-300 pt-2 dark:border-gray-600">
+                          <span className="font-semibold">
+                            {t.roomStays?.total || "Total"}
+                          </span>
+                          <span className="text-lg font-bold tabular-nums text-amber-700 dark:text-amber-400">
+                            {money(stay.grand_total)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">
-                          {t.roomStays?.rent || "Rent"}
-                        </span>
-                        <span className="tabular-nums">
-                          {stay.rent_total.toFixed(2)}
-                        </span>
+                      <div className="mt-auto flex gap-2">
+                        <button
+                          onClick={() => openEdit(stay)}
+                          aria-label={t.common?.edit || "Edit"}
+                          title={t.common?.edit || "Edit"}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          onClick={() => extendStay(stay.id, 1)}
+                          disabled={saving}
+                          title="+1 night"
+                          className="inline-flex h-9 items-center gap-1 rounded-lg border border-gray-200 px-3 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                        >
+                          <CalendarPlus size={14} /> +1
+                        </button>
+                        <button
+                          onClick={() => openCheckout(stay)}
+                          className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 text-xs font-semibold text-white transition hover:bg-emerald-700"
+                        >
+                          <LogOut size={14} />{" "}
+                          {t.roomStays?.checkout || "Check out"}
+                        </button>
+                        <button
+                          onClick={() => cancelStay(stay)}
+                          aria-label={t.roomStays?.cancelStay || "Cancel stay"}
+                          title={t.roomStays?.cancelStay || "Cancel stay"}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                        >
+                          <Trash2 size={14} />
+                        </button>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">
-                          {t.roomStays?.orders || "Orders"}
-                        </span>
-                        <span className="tabular-nums">
-                          {stay.orders_total.toFixed(2)}
-                        </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex flex-1 items-center gap-3 rounded-xl bg-teal-50/70 px-3 py-4 dark:bg-teal-900/20">
+                        <BedDouble
+                          size={22}
+                          className="text-teal-600 dark:text-teal-300"
+                        />
+                        <div>
+                          <div className="text-lg font-bold tabular-nums text-teal-800 dark:text-teal-200">
+                            {r.room_type?.base_price != null
+                              ? money(r.room_type.base_price)
+                              : "—"}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {t.roomStays?.perNight || "per night"}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between font-bold border-t dark:border-gray-700 pt-1 mt-1">
-                        <span>{t.roomStays?.total || "Total"}</span>
-                        <span className="tabular-nums text-amber-700 dark:text-amber-400">
-                          {stay.grand_total.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 pt-1">
                       <button
-                        onClick={() => openEdit(stay)}
-                        className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-medium border rounded-md py-1.5 hover:bg-white/50 dark:hover:bg-gray-900/40 dark:border-gray-700"
+                        onClick={() => openCheckIn(r)}
+                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-teal-700 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800"
                       >
-                        <Pencil size={12} /> {t.common?.edit || "Edit"}
+                        <Plus size={15} /> {t.roomStays?.checkIn || "Check in"}
                       </button>
-                      <button
-                        onClick={() => extendStay(stay.id, 1)}
-                        disabled={saving}
-                        className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-medium border rounded-md py-1.5 hover:bg-white/50 dark:hover:bg-gray-900/40 dark:border-gray-700 disabled:opacity-50"
-                        title="+1 night"
-                      >
-                        <CalendarPlus size={12} /> +1
-                      </button>
-                      <button
-                        onClick={() => openCheckout(stay)}
-                        className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-medium bg-emerald-600 text-white rounded-md py-1.5 hover:bg-emerald-700"
-                      >
-                        <LogOut size={12} />{" "}
-                        {t.roomStays?.checkout || "Check out"}
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => cancelStay(stay)}
-                      className="text-[11px] text-red-500 hover:text-red-700 self-center"
-                    >
-                      <Trash2 size={11} className="inline" />{" "}
-                      {t.roomStays?.cancelStay || "Cancel stay"}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {r.room_type?.base_price != null && (
-                        <span className="text-amber-700 dark:text-amber-400 font-semibold">
-                          {r.room_type.base_price}
-                        </span>
-                      )}
-                      {r.room_type?.base_price != null && (
-                        <span className="ms-1 text-xs">
-                          / {t.roomStays?.night || "night"}
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => openCheckIn(r)}
-                      className="w-full inline-flex items-center justify-center gap-1 text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white rounded-md py-2"
-                    >
-                      <Plus size={13} /> {t.roomStays?.checkIn || "Check in"}
-                    </button>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* check-in modal */}
+      {/* ===== check-in modal ===== */}
       {checkInForm && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
-          dir={dir}
+        <Modal
+          wide
+          icon={DoorOpen}
+          title={t.roomStays?.checkInTitle || "Check in guest"}
+          subtitle={
+            selectedRoom
+              ? `${t.roomStays?.room || "Room"} ${selectedRoom.room_number}`
+              : undefined
+          }
+          error={error}
+          onClose={() => setCheckInForm(null)}
+          onSubmit={submitCheckIn}
+          footer={
+            <>
+              <GhostBtn onClick={() => setCheckInForm(null)}>
+                {t.common?.cancel || "Cancel"}
+              </GhostBtn>
+              <PrimaryBtn disabled={saving || !checkInForm.room_id}>
+                {saving
+                  ? t.common?.saving || "Saving…"
+                  : t.roomStays?.checkIn || "Check in"}
+              </PrimaryBtn>
+            </>
+          }
         >
-          <form
-            onSubmit={submitCheckIn}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md space-y-3"
-          >
-            <h2 className="text-lg font-semibold">
-              {t.roomStays?.checkInTitle || "Check in guest"}
-            </h2>
-            {error && (
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+          <Section title={t.roomStays?.room || "Room"}>
+            {selectedRoom ? (
+              <SelectedChip
+                onClear={() => setCheckInForm((p) => ({ ...p, room_id: "" }))}
+              >
+                #{selectedRoom.room_number}
+                {selectedRoom.room_type?.name
+                  ? ` — ${selectedRoom.room_type.name}`
+                  : ""}
+              </SelectedChip>
+            ) : (
+              <div className="relative">
+                <input
+                  value={roomQuery}
+                  onChange={(e) => {
+                    setRoomQuery(e.target.value);
+                    setShowRoomSuggestions(true);
+                  }}
+                  onFocus={() => setShowRoomSuggestions(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowRoomSuggestions(false), 150)
+                  }
+                  placeholder={
+                    t.roomStays?.pickRoom || "Search room number or type…"
+                  }
+                  className={inputCls}
+                />
+                {showRoomSuggestions && (
+                  <Suggestions>
+                    {roomSuggestions.length === 0 ? (
+                      <div className="px-3 py-2 text-sm text-gray-500">
+                        {t.roomStays?.noRoomsMatch ||
+                          "No available rooms match."}
+                      </div>
+                    ) : (
+                      roomSuggestions.map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => selectRoom(r)}
+                          className={suggestionCls}
+                        >
+                          <div className="font-semibold">
+                            #{r.room_number}
+                            {r.room_type?.name ? ` — ${r.room_type.name}` : ""}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {r.room_type?.base_price != null
+                              ? `${r.room_type.base_price} / ${t.roomStays?.night || "night"}`
+                              : ""}
+                            {r.floor
+                              ? ` · ${t.rooms?.floorShort || "Floor"} ${r.floor}`
+                              : ""}
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </Suggestions>
+                )}
+              </div>
+            )}
+          </Section>
+
+          <Section title={t.roomStays?.guestSection || "Guest"}>
+            {selectedCustomer ? (
+              <SelectedChip
+                onClear={() =>
+                  setCheckInForm((p) => ({ ...p, customer_id: "" }))
+                }
+              >
+                {selectedCustomer.full_name || "Unnamed"}
+                {selectedCustomer.phone ? ` · ${selectedCustomer.phone}` : ""}
+              </SelectedChip>
+            ) : (
+              <div className="relative">
+                <Search
+                  size={15}
+                  className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  value={customerQuery}
+                  onChange={handleCustomerQueryChange}
+                  onFocus={() => setShowCustomerSuggestions(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowCustomerSuggestions(false), 150)
+                  }
+                  placeholder={
+                    t.roomStays?.searchCustomer ||
+                    "Find existing customer by phone or name…"
+                  }
+                  className={`${inputCls} ps-9`}
+                />
+                {showCustomerSuggestions && (
+                  <Suggestions>
+                    {customerSuggestions.length === 0 ? (
+                      <div className="px-3 py-2 text-sm text-gray-500">
+                        {t.roomStays?.noCustomerMatch || "No customers found."}
+                      </div>
+                    ) : (
+                      customerSuggestions.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => applyCustomer(c)}
+                          className={suggestionCls}
+                        >
+                          <div className="font-semibold">
+                            {c.full_name || "Unnamed"}
+                          </div>
+                          {c.phone && (
+                            <div
+                              className="text-xs text-gray-500 dark:text-gray-400"
+                              dir="ltr"
+                            >
+                              {c.phone}
+                            </div>
+                          )}
+                        </button>
+                      ))
+                    )}
+                  </Suggestions>
+                )}
+                <p className="mt-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+                  {t.roomStays?.walkInHint ||
+                    "Skip this for a walk-in guest and fill in the details below."}
+                </p>
+              </div>
             )}
 
-            <div>
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">
-                {t.roomStays?.room || "Room"}
-              </label>
-              <select
-                required
-                value={checkInForm.room_id}
-                onChange={(e) => pickRoomForCheckIn(e.target.value)}
-                className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-              >
-                <option value="">
-                  {t.roomStays?.pickRoom || "Select a room"}
-                </option>
-                {rooms
-                  .filter((r) => !r.activeStay && r.status !== "occupied")
-                  .map((r) => (
-                    <option key={r.id} value={r.id}>
-                      #{r.room_number} — {r.room_type?.name || ""} —{" "}
-                      {r.room_type?.base_price ?? ""}
-                    </option>
-                  ))}
-              </select>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="relative">
+                <UserRound
+                  size={15}
+                  className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  placeholder={t.roomStays?.guestName || "Guest name"}
+                  value={checkInForm.guest_name}
+                  onChange={(e) =>
+                    setCheckInForm({
+                      ...checkInForm,
+                      guest_name: e.target.value,
+                    })
+                  }
+                  className={`${inputCls} ps-9`}
+                />
+              </div>
+              <div className="relative">
+                <Phone
+                  size={15}
+                  className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  placeholder={t.roomStays?.guestPhone || "Phone"}
+                  value={checkInForm.guest_phone}
+                  onChange={(e) =>
+                    setCheckInForm({
+                      ...checkInForm,
+                      guest_phone: e.target.value,
+                    })
+                  }
+                  className={`${inputCls} ps-9`}
+                  dir="ltr"
+                />
+              </div>
             </div>
-
-            <div>
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">
-                {t.roomStays?.customer || "Customer (optional)"}
-              </label>
-              <select
-                value={checkInForm.customer_id}
-                onChange={(e) => pickCustomerForCheckIn(e.target.value)}
-                className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-              >
-                <option value="">
-                  {t.roomStays?.walkIn || "Walk-in (no account)"}
-                </option>
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.full_name || c.phone || "Unnamed"}
-                    {c.phone ? ` · ${c.phone}` : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
+            <div className="relative">
+              <IdCard
+                size={15}
+                className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
-                placeholder={t.roomStays?.guestName || "Guest name"}
-                value={checkInForm.guest_name}
+                placeholder={t.roomStays?.guestId || "ID / Passport (optional)"}
+                value={checkInForm.guest_id_no}
                 onChange={(e) =>
                   setCheckInForm({
                     ...checkInForm,
-                    guest_name: e.target.value,
+                    guest_id_no: e.target.value,
                   })
                 }
-                className="border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-              />
-              <input
-                placeholder={t.roomStays?.guestPhone || "Phone"}
-                value={checkInForm.guest_phone}
-                onChange={(e) =>
-                  setCheckInForm({
-                    ...checkInForm,
-                    guest_phone: e.target.value,
-                  })
-                }
-                className="border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-                dir="ltr"
+                className={`${inputCls} ps-9`}
               />
             </div>
+          </Section>
 
-            <input
-              placeholder={t.roomStays?.guestId || "ID / Passport (optional)"}
-              value={checkInForm.guest_id_no}
-              onChange={(e) =>
-                setCheckInForm({
-                  ...checkInForm,
-                  guest_id_no: e.target.value,
-                })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            />
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">
-                  {t.roomStays?.rate || "Rate / night"}
-                </label>
+          <Section title={t.roomStays?.stayDetails || "Stay"}>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label={t.roomStays?.rate || "Rate / night"}>
                 <input
                   type="number"
                   step="0.01"
@@ -794,248 +1271,231 @@ export default function RoomStaysPage() {
                       rate_per_night: e.target.value,
                     })
                   }
-                  className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+                  className={inputCls}
                 />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">
-                  {t.roomStays?.nights || "Nights"}
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={checkInForm.nights}
-                  onChange={(e) =>
-                    setCheckInForm({
-                      ...checkInForm,
-                      nights: Number(e.target.value),
-                    })
-                  }
-                  className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-                />
-              </div>
+              </Field>
+              <Field label={t.roomStays?.nights || "Nights"}>
+                <div className="flex items-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCheckInForm((p) => ({
+                        ...p,
+                        nights: Math.max(1, (Number(p.nights) || 1) - 1),
+                      }))
+                    }
+                    className="px-3.5 py-2.5 text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    value={checkInForm.nights}
+                    onChange={(e) =>
+                      setCheckInForm({
+                        ...checkInForm,
+                        nights: Number(e.target.value),
+                      })
+                    }
+                    className="w-full bg-transparent text-center text-sm font-semibold tabular-nums outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCheckInForm((p) => ({
+                        ...p,
+                        nights: (Number(p.nights) || 1) + 1,
+                      }))
+                    }
+                    className="px-3.5 py-2.5 text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              </Field>
             </div>
-
-            <div className="rounded-md bg-teal-50 dark:bg-teal-900/30 px-3 py-2 text-sm">
-              <span className="text-teal-700 dark:text-teal-300">
-                {t.roomStays?.total || "Total"}:{" "}
-              </span>
-              <span className="font-bold text-teal-900 dark:text-teal-100">
-                {(
-                  (Number(checkInForm.rate_per_night) || 0) *
-                  (Number(checkInForm.nights) || 1)
-                ).toFixed(2)}
-              </span>
-            </div>
-
             <textarea
               placeholder={t.roomStays?.notes || "Notes (optional)"}
               value={checkInForm.notes}
               onChange={(e) =>
                 setCheckInForm({ ...checkInForm, notes: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
               rows={2}
             />
+          </Section>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setCheckInForm(null)}
-                className="px-4 py-2 text-sm rounded-md border dark:border-gray-700"
-              >
-                {t.common?.cancel || "Cancel"}
-              </button>
-              <button
-                type="submit"
-                disabled={saving || !checkInForm.room_id}
-                className="px-4 py-2 text-sm rounded-md bg-teal-700 text-white disabled:opacity-50"
-              >
-                {saving
-                  ? t.common?.saving || "Saving…"
-                  : t.roomStays?.checkIn || "Check in"}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div className="flex items-baseline justify-between rounded-2xl bg-teal-700 px-5 py-4 text-white">
+            <span className="text-sm text-teal-100">
+              {Number(checkInForm.nights) || 1} ×{" "}
+              {money(checkInForm.rate_per_night)}
+            </span>
+            <span className="text-2xl font-bold tabular-nums">
+              {money(checkInTotal)}
+            </span>
+          </div>
+        </Modal>
       )}
 
-      {/* edit modal */}
+      {/* ===== edit modal ===== */}
       {editForm && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
-          dir={dir}
+        <Modal
+          icon={Pencil}
+          title={t.roomStays?.editStay || "Edit stay"}
+          subtitle={
+            editForm.room
+              ? `${t.roomStays?.room || "Room"} ${editForm.room}`
+              : undefined
+          }
+          error={error}
+          onClose={() => setEditForm(null)}
+          onSubmit={saveEdit}
+          footer={
+            <>
+              <GhostBtn onClick={() => setEditForm(null)}>
+                {t.common?.cancel || "Cancel"}
+              </GhostBtn>
+              <PrimaryBtn disabled={saving}>
+                {saving
+                  ? t.common?.saving || "Saving…"
+                  : t.common?.save || "Save changes"}
+              </PrimaryBtn>
+            </>
+          }
         >
-          <form
-            onSubmit={saveEdit}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm space-y-3"
-          >
-            <h2 className="text-lg font-semibold">
-              {t.roomStays?.editStay || "Edit stay"}
-            </h2>
-            {error && (
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-            )}
+          <Field label={t.roomStays?.guestName || "Guest name"}>
             <input
-              placeholder={t.roomStays?.guestName || "Guest name"}
               value={editForm.guest_name}
               onChange={(e) =>
                 setEditForm({ ...editForm, guest_name: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
             />
+          </Field>
+          <Field label={t.roomStays?.guestPhone || "Phone"}>
             <input
-              placeholder={t.roomStays?.guestPhone || "Phone"}
               value={editForm.guest_phone}
               onChange={(e) =>
                 setEditForm({ ...editForm, guest_phone: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
               dir="ltr"
             />
+          </Field>
+          <Field label={t.roomStays?.rate || "Rate / night"}>
             <input
               type="number"
               step="0.01"
               min="0"
-              placeholder={t.roomStays?.rate || "Rate / night"}
               value={editForm.rate_per_night}
               onChange={(e) =>
-                setEditForm({
-                  ...editForm,
-                  rate_per_night: e.target.value,
-                })
+                setEditForm({ ...editForm, rate_per_night: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
             />
+          </Field>
+          <Field label={t.roomStays?.notes || "Notes"}>
             <textarea
-              placeholder={t.roomStays?.notes || "Notes"}
               value={editForm.notes}
               onChange={(e) =>
                 setEditForm({ ...editForm, notes: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-              rows={2}
+              className={inputCls}
+              rows={3}
             />
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setEditForm(null)}
-                className="px-4 py-2 text-sm rounded-md border dark:border-gray-700"
-              >
-                {t.common?.cancel || "Cancel"}
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 text-sm rounded-md bg-teal-700 text-white disabled:opacity-50"
-              >
-                {saving
-                  ? t.common?.saving || "Saving…"
-                  : t.common?.save || "Save"}
-              </button>
-            </div>
-          </form>
-        </div>
+          </Field>
+        </Modal>
       )}
 
-      {/* checkout modal */}
+      {/* ===== checkout modal ===== */}
       {checkoutFor && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
-          dir={dir}
-        >
-          <form
-            onSubmit={submitCheckout}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm space-y-3"
-          >
-            <h2 className="text-lg font-semibold">
-              {t.roomStays?.checkoutTitle || "Check out"}
-            </h2>
-            {error && (
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-            )}
-            <div className="text-sm space-y-1">
-              <div className="flex justify-between">
-                <span className="text-gray-500 dark:text-gray-400">
-                  {t.roomStays?.room || "Room"}
-                </span>
-                <span className="font-semibold">
-                  #{checkoutFor.room?.room_number}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 dark:text-gray-400">
-                  {t.roomStays?.guest || "Guest"}
-                </span>
-                <span>
-                  {checkoutFor.guest_name ||
-                    checkoutFor.customer?.full_name ||
-                    "—"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 dark:text-gray-400">
-                  {t.roomStays?.rent || "Rent"}
-                </span>
-                <span className="tabular-nums">
-                  {checkoutFor.rent_total.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 dark:text-gray-400">
-                  {t.roomStays?.orders || "Orders"}
-                </span>
-                <span className="tabular-nums">
-                  {checkoutFor.orders_total.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between border-t dark:border-gray-700 pt-1 font-bold">
-                <span>{t.roomStays?.total || "Total"}</span>
-                <span className="text-amber-700 dark:text-amber-400 tabular-nums">
-                  {checkoutFor.grand_total.toFixed(2)}
-                </span>
-              </div>
-            </div>
-
-            {paymentMethods.length > 0 && (
-              <div>
-                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">
-                  {t.roomStays?.paymentMethod || "Payment method"}
-                </label>
-                <select
-                  value={checkoutPaymentMethodId}
-                  onChange={(e) => setCheckoutPaymentMethodId(e.target.value)}
-                  className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-                >
-                  {paymentMethods.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setCheckoutFor(null)}
-                className="px-4 py-2 text-sm rounded-md border dark:border-gray-700"
-              >
+        <Modal
+          icon={LogOut}
+          title={t.roomStays?.checkoutTitle || "Check out"}
+          subtitle={`${t.roomStays?.room || "Room"} ${checkoutFor.room?.room_number ?? ""}`}
+          error={error}
+          onClose={() => setCheckoutFor(null)}
+          onSubmit={submitCheckout}
+          footer={
+            <>
+              <GhostBtn onClick={() => setCheckoutFor(null)}>
                 {t.common?.cancel || "Cancel"}
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 text-sm rounded-md bg-emerald-600 text-white disabled:opacity-50"
-              >
+              </GhostBtn>
+              <PrimaryBtn color="emerald" disabled={saving}>
                 {saving
                   ? t.common?.saving || "Saving…"
-                  : t.roomStays?.checkout || "Check out"}
-              </button>
+                  : `${t.roomStays?.checkout || "Check out"} · ${money(checkoutFor.grand_total)}`}
+              </PrimaryBtn>
+            </>
+          }
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 font-bold text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
+              {initials(
+                checkoutFor.guest_name || checkoutFor.customer?.full_name || "",
+              )}
             </div>
-          </form>
-        </div>
+            <div className="min-w-0">
+              <div className="truncate font-semibold">
+                {checkoutFor.guest_name ||
+                  checkoutFor.customer?.full_name ||
+                  "Walk-in"}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {checkoutFor.nights} {t.roomStays?.nights || "nights"}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2 rounded-2xl bg-gray-50 p-4 text-sm dark:bg-gray-900/60">
+            <div className="flex justify-between">
+              <span className="text-gray-500 dark:text-gray-400">
+                {t.roomStays?.rent || "Rent"}
+              </span>
+              <span className="tabular-nums">
+                {money(checkoutFor.rent_total)}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500 dark:text-gray-400">
+                {t.roomStays?.orders || "Orders"}
+              </span>
+              <span className="tabular-nums">
+                {money(checkoutFor.orders_total)}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between border-t border-dashed border-gray-300 pt-3 dark:border-gray-600">
+              <span className="font-semibold">
+                {t.roomStays?.total || "Total due"}
+              </span>
+              <span className="text-2xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+                {money(checkoutFor.grand_total)}
+              </span>
+            </div>
+          </div>
+
+          {paymentMethods.length > 0 && (
+            <Field label={t.roomStays?.paymentMethod || "Payment method"}>
+              <div className="grid grid-cols-2 gap-2">
+                {paymentMethods.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setCheckoutPaymentMethodId(p.id)}
+                    className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
+                      checkoutPaymentMethodId === p.id
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-800 ring-4 ring-emerald-500/15 dark:bg-emerald-900/30 dark:text-emerald-200"
+                        : "border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            </Field>
+          )}
+        </Modal>
       )}
     </div>
   );

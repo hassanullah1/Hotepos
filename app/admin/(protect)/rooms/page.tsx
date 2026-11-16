@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, Plus, BedDouble, Asterisk, Home } from "lucide-react";
+import Link from "next/link";
+import {
+  Pencil,
+  Trash2,
+  Plus,
+  BedDouble,
+  Users,
+  Layers,
+  ConciergeBell,
+  Tag,
+  X,
+  DoorOpen,
+} from "lucide-react";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
-import Link from "next/link";
 
 const EMPTY_ROOM_TYPE = {
   id: null,
@@ -14,7 +25,6 @@ const EMPTY_ROOM_TYPE = {
   capacity: 2,
   is_active: true,
 };
-
 const EMPTY_ROOM = {
   id: null,
   room_number: "",
@@ -27,26 +37,149 @@ const EMPTY_ROOM = {
 
 const ROOM_STATUSES = ["available", "occupied", "cleaning", "maintenance"];
 
-const STATUS_STYLE = {
-  available: "bg-teal-50/90 text-teal-700",
-  occupied: "bg-amber-50/90 text-amber-700",
-  cleaning: "bg-blue-50/90 text-blue-700",
-  maintenance: "bg-red-50/90 text-red-700",
+const STATUS = {
+  available: {
+    bar: "bg-teal-500",
+    pill: "bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200",
+  },
+  occupied: {
+    bar: "bg-amber-500",
+    pill: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200",
+  },
+  cleaning: {
+    bar: "bg-sky-500",
+    pill: "bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200",
+  },
+  maintenance: {
+    bar: "bg-red-500",
+    pill: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200",
+  },
 };
+
+const inputCls =
+  "w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm outline-none transition placeholder:text-gray-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15 dark:border-gray-700 dark:bg-gray-900";
+
+/* ---------- building blocks ---------- */
+
+function Modal({
+  title,
+  icon: Icon,
+  onClose,
+  onSubmit,
+  error,
+  footer,
+  children,
+}) {
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-gray-950/50 backdrop-blur-sm sm:items-center sm:p-4"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <form
+        onSubmit={onSubmit}
+        className="flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800 sm:max-w-md sm:rounded-3xl"
+      >
+        <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-5 dark:border-gray-700">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-teal-600 text-white shadow-md shadow-teal-600/30">
+            <Icon size={20} />
+          </div>
+          <h2 className="min-w-0 flex-1 truncate text-lg font-bold">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+              {error}
+            </div>
+          )}
+          {children}
+        </div>
+        <div className="flex justify-end gap-2 border-t border-gray-100 bg-gray-50/70 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/80">
+          {footer}
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-300">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function Toggle({ checked, onChange, label }) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm font-medium dark:border-gray-700">
+      {label}
+      <span
+        className={`relative h-6 w-11 rounded-full transition ${checked ? "bg-teal-600" : "bg-gray-300 dark:bg-gray-600"}`}
+      >
+        <span
+          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${checked ? "start-[22px]" : "start-0.5"}`}
+        />
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          className="sr-only"
+        />
+      </span>
+    </label>
+  );
+}
+
+function Footer({ onCancel, saving, t }) {
+  return (
+    <>
+      <button
+        type="button"
+        onClick={onCancel}
+        className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-white dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+      >
+        {t.common.cancel}
+      </button>
+      <button
+        type="submit"
+        disabled={saving}
+        className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/25 transition hover:bg-teal-800 disabled:opacity-50 disabled:shadow-none"
+      >
+        {saving ? t.common.saving : t.common.save}
+      </button>
+    </>
+  );
+}
+
+/* ---------- page ---------- */
 
 export default function RoomsPage() {
   const router = useRouter();
   const { t, dir } = useAdminPreferences();
 
-  // ---------- who is logged in ----------
   const [me, setMe] = useState(null);
   const isOwner = me?.role === "hotel_owner";
   const isBranchManager = me?.role === "branch_manager";
 
-  // ---------- owner-only: hotel + branch selection ----------
   const [hotels, setHotels] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState("");
-
   const [branches, setBranches] = useState([]);
   const [branchesHotelId, setBranchesHotelId] = useState("");
   const [loadingBranches, setLoadingBranches] = useState(false);
@@ -54,6 +187,7 @@ export default function RoomsPage() {
 
   const [roomTypes, setRoomTypes] = useState([]);
   const [activeRoomType, setActiveRoomType] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [rooms, setRooms] = useState([]);
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [roomTypeForm, setRoomTypeForm] = useState(null);
@@ -71,7 +205,7 @@ export default function RoomsPage() {
     return false;
   }
 
-  // ---------- load current user ----------
+  // ---------- data loading ----------
   useEffect(() => {
     (async () => {
       try {
@@ -80,8 +214,7 @@ export default function RoomsPage() {
           if (res.status === 401) return router.push("/hotel/login");
           throw new Error(t.common.loadUserError || "Failed to load user");
         }
-        const data = await res.json();
-        setMe(data.user);
+        setMe((await res.json()).user);
       } catch (err) {
         setError(err.message);
       }
@@ -89,21 +222,18 @@ export default function RoomsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---------- owner: load owned hotels ----------
   async function loadHotels() {
     try {
       const res = await fetchWithAuth("/api/owners/hotel");
       if (handle401(res)) return;
       const data = await res.json();
       setHotels(data.hotels || []);
-      const defaultHotelId = data.selectedHotelId || data.hotels?.[0]?.id || "";
-      setSelectedHotelId(defaultHotelId);
+      setSelectedHotelId(data.selectedHotelId || data.hotels?.[0]?.id || "");
     } catch (err) {
       setError(err.message);
     }
   }
 
-  // ---------- owner: load branches for selected hotel ----------
   async function loadBranches(hotelId) {
     if (!hotelId) return;
     setLoadingBranches(true);
@@ -130,7 +260,6 @@ export default function RoomsPage() {
     }
   }
 
-  // ---------- load room types & rooms ----------
   async function loadRoomTypes() {
     if (!branchId) return;
     try {
@@ -138,8 +267,7 @@ export default function RoomsPage() {
         `/api/owners/room-types?branch_id=${branchId}`,
       );
       if (handle401(res)) return;
-      const data = await res.json();
-      setRoomTypes(data.roomTypes || []);
+      setRoomTypes((await res.json()).roomTypes || []);
     } catch (err) {
       setError(err.message);
     }
@@ -153,8 +281,7 @@ export default function RoomsPage() {
       if (activeRoomType) params.set("room_type_id", activeRoomType);
       const res = await fetchWithAuth(`/api/owners/rooms?${params.toString()}`);
       if (handle401(res)) return;
-      const data = await res.json();
-      setRooms(data.rooms || []);
+      setRooms((await res.json()).rooms || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -162,17 +289,12 @@ export default function RoomsPage() {
     }
   }
 
-  // ---------- role-based init ----------
   useEffect(() => {
-    if (isOwner) {
-      loadHotels();
-    } else if (isBranchManager) {
-      if (me?.branch?.id) setBranchId(me.branch.id);
-    }
+    if (isOwner) loadHotels();
+    else if (isBranchManager && me?.branch?.id) setBranchId(me.branch.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOwner, isBranchManager, me]);
 
-  // Owner: when hotel changes, reload branches
   useEffect(() => {
     if (isOwner && selectedHotelId) {
       setBranchId("");
@@ -183,14 +305,11 @@ export default function RoomsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOwner, selectedHotelId]);
 
-  // Owner: default-select first branch when ready
   useEffect(() => {
-    if (isOwner && branchesReady && !branchId && branches.length > 0) {
+    if (isOwner && branchesReady && !branchId && branches.length > 0)
       setBranchId(branches[0].id);
-    }
   }, [isOwner, branchesReady, branches, branchId]);
 
-  // When branchId changes → reset type, reload types & rooms
   useEffect(() => {
     if (branchId) {
       setActiveRoomType("");
@@ -205,30 +324,47 @@ export default function RoomsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRoomType]);
 
+  // ---------- derived ----------
+  const counts = useMemo(() => {
+    const c = { all: rooms.length };
+    for (const s of ROOM_STATUSES)
+      c[s] = rooms.filter((r) => r.status === s).length;
+    return c;
+  }, [rooms]);
+
+  const visibleRooms = useMemo(
+    () =>
+      statusFilter === "all"
+        ? rooms
+        : rooms.filter((r) => r.status === statusFilter),
+    [rooms, statusFilter],
+  );
+
+  const statusLabel = (s) => t.rooms.statuses?.[s] || s;
+
   // ---------- room type handlers ----------
   async function saveRoomType(e) {
     e.preventDefault();
     setSaving(true);
     setError("");
     const isEdit = !!roomTypeForm.id;
-    const url = isEdit
-      ? `/api/owners/room-types/${roomTypeForm.id}`
-      : "/api/owners/room-types";
     try {
-      const res = await fetchWithAuth(url, {
-        method: isEdit ? "PATCH" : "POST",
-        body: JSON.stringify({
-          ...roomTypeForm,
-          base_price: Number(roomTypeForm.base_price),
-          branch_id: branchId,
-        }),
-      });
+      const res = await fetchWithAuth(
+        isEdit
+          ? `/api/owners/room-types/${roomTypeForm.id}`
+          : "/api/owners/room-types",
+        {
+          method: isEdit ? "PATCH" : "POST",
+          body: JSON.stringify({
+            ...roomTypeForm,
+            base_price: Number(roomTypeForm.base_price),
+            branch_id: branchId,
+          }),
+        },
+      );
       if (handle401(res)) return;
       const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || t.rooms.types.saveError);
-        return;
-      }
+      if (!res.ok) return setError(data.error || t.rooms.types.saveError);
       setRoomTypeForm(null);
       loadRoomTypes();
       loadRooms();
@@ -259,23 +395,20 @@ export default function RoomsPage() {
 
   function openCreateRoomType() {
     setError("");
-    if (!branchId) {
-      setError(t.rooms.selectBranchFirst || "Please select a branch first");
-      return;
-    }
+    if (!branchId)
+      return setError(
+        t.rooms.selectBranchFirst || "Please select a branch first",
+      );
     setRoomTypeForm({ ...EMPTY_ROOM_TYPE });
   }
 
   function openCreateRoom() {
     setError("");
-    if (!branchId) {
-      setError(t.rooms.selectBranchFirst || "Please select a branch first");
-      return;
-    }
-    if (roomTypes.length === 0) {
-      setError(t.rooms.needRoomTypeFirst);
-      return;
-    }
+    if (!branchId)
+      return setError(
+        t.rooms.selectBranchFirst || "Please select a branch first",
+      );
+    if (roomTypes.length === 0) return setError(t.rooms.needRoomTypeFirst);
     setRoomForm({
       ...EMPTY_ROOM,
       room_type_id: activeRoomType || roomTypes[0]?.id || "",
@@ -301,22 +434,19 @@ export default function RoomsPage() {
     setSaving(true);
     setError("");
     const isEdit = !!roomForm.id;
-    const url = isEdit
-      ? `/api/owners/rooms/${roomForm.id}`
-      : "/api/owners/rooms";
     const payload = { ...roomForm, branch_id: branchId };
     delete payload.id;
     try {
-      const res = await fetchWithAuth(url, {
-        method: isEdit ? "PATCH" : "POST",
-        body: JSON.stringify(payload),
-      });
+      const res = await fetchWithAuth(
+        isEdit ? `/api/owners/rooms/${roomForm.id}` : "/api/owners/rooms",
+        {
+          method: isEdit ? "PATCH" : "POST",
+          body: JSON.stringify(payload),
+        },
+      );
       if (handle401(res)) return;
       const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || t.rooms.list.saveError);
-        return;
-      }
+      if (!res.ok) return setError(data.error || t.rooms.list.saveError);
       setRoomForm(null);
       loadRooms();
       loadRoomTypes();
@@ -360,7 +490,7 @@ export default function RoomsPage() {
   // ---------- render ----------
   if (!me) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[60vh] dark:bg-gray-900">
+      <div className="flex min-h-[60vh] items-center justify-center p-6 dark:bg-gray-900">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {t.common.loading || "Loading..."}
         </p>
@@ -370,21 +500,22 @@ export default function RoomsPage() {
 
   const selectedHotelName =
     hotels.find((h) => h.id === selectedHotelId)?.name || "";
+  const showPageError = error && !roomTypeForm && !roomForm;
 
   return (
     <div
-      className="p-6 max-w-[100%] mx-auto overflow-x-hidden dark:bg-gray-900 dark:text-gray-100"
+      className="mx-auto max-w-[100%] overflow-x-hidden bg-gray-50/60 p-4 text-gray-900 dark:bg-gray-900 dark:text-gray-100 sm:p-6"
       dir={dir}
     >
-      {/* ---------- header ---------- */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-semibold">{t.rooms.title}</h1>
+      {/* ===== header ===== */}
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-3xl font-bold tracking-tight">{t.rooms.title}</h1>
           {isOwner && hotels.length > 1 ? (
-            <div className="mt-2 flex items-center gap-3 min-w-0">
+            <div className="mt-2 flex items-center gap-2">
               <label
                 htmlFor="hotel-select"
-                className="text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
+                className="text-sm text-gray-500 dark:text-gray-400"
               >
                 {t.branch.hotelLabel}:
               </label>
@@ -392,7 +523,7 @@ export default function RoomsPage() {
                 id="hotel-select"
                 value={selectedHotelId}
                 onChange={(e) => setSelectedHotelId(e.target.value)}
-                className="border rounded-md px-3 py-1.5 text-sm min-w-0 max-w-[160px] flex-1 truncate dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                className="max-w-[220px] truncate rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800"
               >
                 {hotels.map((h) => (
                   <option key={h.id} value={h.id}>
@@ -402,353 +533,396 @@ export default function RoomsPage() {
               </select>
             </div>
           ) : isOwner && hotels.length === 1 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+            <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">
               {selectedHotelName}
             </p>
           ) : isBranchManager ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+            <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">
               {me.branch?.name || t.branch.branchLabel}
             </p>
           ) : null}
         </div>
 
-        {isOwner && (
-          <select
-            value={branchId}
-            onChange={(e) => setBranchId(e.target.value)}
-            disabled={!branchesReady || branches.length === 0}
-            className="border rounded-md px-3 py-2 text-sm font-medium disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+        <div className="flex items-center gap-2">
+          {isOwner && (
+            <select
+              value={branchId}
+              onChange={(e) => setBranchId(e.target.value)}
+              disabled={!branchesReady || branches.length === 0}
+              className="rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800"
+            >
+              {!branchesReady && <option>{t.branch.branchLoading}</option>}
+              {branchesReady && branches.length === 0 && (
+                <option>{t.branch.noBranches}</option>
+              )}
+              {branches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <Link
+            href="/admin/room-stays"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-teal-700 transition hover:bg-teal-50 dark:border-teal-800 dark:bg-gray-800 dark:text-teal-300 dark:hover:bg-teal-900/30"
           >
-            {!branchesReady && <option>{t.branch.branchLoading}</option>}
-            {branchesReady && branches.length === 0 && (
-              <option>{t.branch.noBranches}</option>
-            )}
-            {branches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {isBranchManager && (
-          <div className="border rounded-md px-3 py-2 text-sm font-medium dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
-            {me.branch?.name || t.branch.branchLabel}
-          </div>
-        )}
+            <ConciergeBell size={16} />
+            {t.rooms.assignRoom || "Front desk"}
+          </Link>
+          <button
+            onClick={openCreateRoom}
+            disabled={!branchId}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-700/25 transition hover:bg-teal-800 disabled:opacity-50 disabled:shadow-none"
+          >
+            <Plus size={16} />
+            {t.rooms.list.add}
+          </button>
+        </div>
       </div>
 
-      {error && (
-        <p className="text-red-600 dark:text-red-400 text-sm mb-3">{error}</p>
+      {showPageError && (
+        <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+          {error}
+        </p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
-        {/* ---------- room types (sidebar) ---------- */}
-        <div className="min-w-0">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              {t.rooms.types.title}
-            </h2>
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[250px_1fr]">
+        {/* ===== room types sidebar ===== */}
+        <aside className="min-w-0 md:sticky md:top-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-bold">{t.rooms.types.title}</h2>
             <button
               onClick={openCreateRoomType}
               disabled={!branchId}
-              className="text-sm font-semibold text-teal-700 dark:text-teal-400 disabled:opacity-40"
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-teal-700 transition hover:bg-teal-50 disabled:opacity-40 dark:text-teal-300 dark:hover:bg-teal-900/30"
             >
+              <Plus size={13} />
               {t.rooms.types.add}
             </button>
           </div>
 
-          <div className="flex md:flex-col flex-row flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible gap-2 md:gap-1 pb-1">
-            <button
-              onClick={() => setActiveRoomType("")}
-              className={`shrink-0 md:shrink text-start px-3 py-2 rounded-md text-sm whitespace-nowrap ${
-                activeRoomType === ""
-                  ? "bg-teal-700 text-white"
-                  : "hover:bg-teal-50 dark:hover:bg-teal-900/30"
-              }`}
-            >
-              {t.rooms.types.allRooms}
-            </button>
-            {roomTypes.map((rt) => (
-              <div
-                key={rt.id}
-                className="group shrink-0 md:shrink-0 flex items-center gap-0.5"
-              >
-                <button
-                  onClick={() => setActiveRoomType(rt.id)}
-                  className={`flex-1 text-start px-3 py-2 rounded-md text-sm whitespace-nowrap ${
-                    activeRoomType === rt.id
-                      ? "bg-teal-700 text-white"
-                      : "hover:bg-teal-50 dark:hover:bg-teal-900/30"
+          <div className="flex flex-row gap-2 overflow-x-auto pb-1 md:flex-col md:overflow-visible">
+            {[
+              {
+                id: "",
+                name: t.rooms.types.allRooms,
+                room_count: counts.all,
+                all: true,
+              },
+              ...roomTypes,
+            ].map((rt) => {
+              const active = activeRoomType === rt.id;
+              return (
+                <div
+                  key={rt.id || "all"}
+                  className={`group flex shrink-0 items-center rounded-xl border transition md:shrink ${
+                    active
+                      ? "border-teal-600 bg-teal-700 text-white shadow-md shadow-teal-700/20"
+                      : "border-gray-200 bg-white hover:border-teal-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-teal-700"
                   }`}
                 >
-                  {rt.name}{" "}
-                  <span className="text-xs opacity-60">({rt.room_count})</span>
-                </button>
-                <button
-                  onClick={() => setRoomTypeForm(rt)}
-                  aria-label={t.common.edit}
-                  title={t.common.edit}
-                  className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-gray-500 hover:bg-teal-50 dark:hover:bg-teal-900/30"
-                >
-                  <Pencil size={13} />
-                </button>
-                <button
-                  onClick={() => deleteRoomType(rt)}
-                  aria-label={t.common.delete}
-                  title={t.common.delete}
-                  className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
-                >
-                  <Trash2 size={13} />
-                </button>
-              </div>
-            ))}
+                  <button
+                    onClick={() => setActiveRoomType(rt.id)}
+                    className="flex min-w-0 flex-1 items-center gap-2.5 px-3 py-2.5 text-start"
+                  >
+                    {rt.all ? (
+                      <Layers size={15} className="shrink-0 opacity-70" />
+                    ) : (
+                      <Tag size={15} className="shrink-0 opacity-70" />
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">
+                        {rt.name}
+                      </span>
+                      {!rt.all && rt.base_price != null && (
+                        <span
+                          className={`block text-[11px] tabular-nums ${active ? "text-teal-100" : "text-gray-500 dark:text-gray-400"}`}
+                        >
+                          {rt.base_price}
+                        </span>
+                      )}
+                    </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums ${
+                        active
+                          ? "bg-white/20"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {rt.room_count ?? 0}
+                    </span>
+                  </button>
+                  {!rt.all && (
+                    <div className="hidden pe-1.5 md:flex md:opacity-0 md:transition md:group-hover:opacity-100 md:focus-within:opacity-100">
+                      <button
+                        onClick={() => setRoomTypeForm(rt)}
+                        aria-label={t.common.edit}
+                        title={t.common.edit}
+                        className={`rounded-md p-1.5 ${active ? "hover:bg-white/20" : "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                      >
+                        <Pencil size={13} />
+                      </button>
+                      <button
+                        onClick={() => deleteRoomType(rt)}
+                        aria-label={t.common.delete}
+                        title={t.common.delete}
+                        className={`rounded-md p-1.5 ${active ? "hover:bg-white/20" : "text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"}`}
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </aside>
 
-        {/* ---------- rooms grid ---------- */}
-        <div className="min-w-0">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center justify-between mb-3 min-w-40">
-              {" "}
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                {t.rooms.list.title}
-              </h2>
-              <Link
-                href={`/admin/room-stays`}
-                className="inline-flex items-center gap-1 text-l text-teal-500 hover:text-teal-700 dark:text-gray-400 dark:hover:text-teal-400"
-              >
-                <Home size={13} />
-                {t.customers?.history || "Assign room"}
-              </Link>
+        {/* ===== rooms ===== */}
+        <section className="min-w-0">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-sm font-bold">{t.rooms.list.title}</h2>
+            <div className="flex max-w-full gap-1 overflow-x-auto rounded-xl bg-gray-200/70 p-1 dark:bg-gray-800">
+              {["all", ...ROOM_STATUSES].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                    statusFilter === s
+                      ? "bg-white text-teal-800 shadow-sm dark:bg-gray-700 dark:text-teal-200"
+                      : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                  }`}
+                >
+                  {s !== "all" && (
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${STATUS[s].bar}`}
+                    />
+                  )}
+                  {s === "all" ? t.rooms.types.allRooms : statusLabel(s)}
+                  <span className="tabular-nums opacity-60">{counts[s]}</span>
+                </button>
+              ))}
             </div>
-            <button
-              onClick={openCreateRoom}
-              disabled={!branchId}
-              className="inline-flex items-center gap-1.5 bg-teal-700 text-white px-3.5 py-2 rounded-md text-sm font-semibold disabled:opacity-50"
-            >
-              <Plus size={15} />
-              {t.rooms.list.add}
-            </button>
           </div>
 
           {loadingRooms ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, idx) => (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
                 <div
-                  key={idx}
-                  className="aspect-[3/2] rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse"
+                  key={i}
+                  className="h-52 animate-pulse rounded-2xl bg-gray-200/70 dark:bg-gray-800"
                 />
               ))}
             </div>
-          ) : rooms.length === 0 ? (
-            <div className="border border-dashed rounded-xl px-6 py-10 text-center dark:border-gray-700">
-              <p className="font-semibold mb-1">{t.rooms.list.noRooms}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+          ) : visibleRooms.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-gray-300 px-6 py-14 text-center dark:border-gray-700">
+              <BedDouble className="mx-auto mb-3 text-gray-400" size={32} />
+              <p className="mb-1 font-semibold">{t.rooms.list.noRooms}</p>
+              <p className="mx-auto max-w-md text-sm text-gray-500 dark:text-gray-400">
                 {t.rooms.list.noRoomsHint}
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-              {rooms.map((r) => (
-                <div
-                  key={r.id}
-                  className="flex flex-col rounded-xl border overflow-hidden bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <div className="relative w-full aspect-[4/3] bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-                    <BedDouble
-                      size={40}
-                      className="text-teal-700/60 dark:text-teal-400/60"
-                    />
-                    <span className="absolute top-2 left-2 text-xs font-bold bg-white/90 dark:bg-gray-800/90 px-2 py-0.5 rounded-full">
-                      #{r.room_number}
-                    </span>
-                    <span
-                      className={`absolute top-2 rtl:left-2 ltr:right-2 text-[11px] font-semibold px-2 py-0.5 rounded-full backdrop-blur ${
-                        STATUS_STYLE[r.status] || STATUS_STYLE.available
-                      }`}
-                    >
-                      {t.rooms.statuses?.[r.status] || r.status}
-                    </span>
-                  </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+              {visibleRooms.map((r) => {
+                const st = STATUS[r.status] || STATUS.available;
+                return (
+                  <div
+                    key={r.id}
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                  >
+                    <div className={`h-1.5 ${st.bar}`} />
+                    <div className="flex flex-1 flex-col gap-3 p-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="text-2xl font-bold leading-none tabular-nums">
+                            {r.room_number}
+                          </div>
+                          <div className="mt-1.5 truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            {r.room_type?.name || "—"}
+                          </div>
+                        </div>
+                        <div className="flex opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100">
+                          <button
+                            onClick={() => openEditRoom(r)}
+                            aria-label={t.common.edit}
+                            title={t.common.edit}
+                            className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-teal-700 dark:hover:bg-gray-700"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                          <button
+                            onClick={() => deleteRoom(r)}
+                            aria-label={t.common.delete}
+                            title={t.common.delete}
+                            className="rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
 
-                  <div className="p-3 flex flex-col gap-2 flex-1">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-sm font-semibold leading-snug">
-                        {r.room_type?.name || "—"}
-                      </h3>
-                      <div className="flex flex-wrap gap-1 text-[11px] text-gray-500 dark:text-gray-400">
+                      <div className="flex flex-wrap gap-1.5 text-[11px] text-gray-600 dark:text-gray-300">
                         {r.floor && (
-                          <span className="border rounded-full px-2 py-0.5 dark:border-gray-700">
-                            {t.rooms.floorShort} {r.floor}
+                          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">
+                            <Layers size={11} /> {t.rooms.floorShort} {r.floor}
                           </span>
                         )}
                         {r.room_type?.capacity != null && (
-                          <span className="border rounded-full px-2 py-0.5 dark:border-gray-700">
-                            {r.room_type.capacity} {t.rooms.guestsShort}
+                          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 dark:bg-gray-700">
+                            <Users size={11} /> {r.room_type.capacity}{" "}
+                            {t.rooms.guestsShort}
                           </span>
                         )}
                       </div>
-                    </div>
 
-                    {r.room_type?.base_price != null && (
-                      <span className="w-fit text-sm font-bold text-amber-700 bg-amber-50 rounded-md px-2 py-1 dark:bg-amber-900/30 dark:text-amber-400">
-                        {r.room_type.base_price}
-                      </span>
-                    )}
+                      {r.room_type?.base_price != null && (
+                        <div className="text-lg font-bold tabular-nums text-amber-700 dark:text-amber-400">
+                          {r.room_type.base_price}
+                        </div>
+                      )}
 
-                    <select
-                      value={r.status}
-                      onChange={(e) => quickStatus(r, e.target.value)}
-                      className="text-xs border rounded-md px-2 py-1 dark:bg-gray-900 dark:border-gray-700"
-                    >
-                      {ROOM_STATUSES.map((s) => (
-                        <option key={s} value={s}>
-                          {t.rooms.statuses?.[s] || s}
-                        </option>
-                      ))}
-                    </select>
-
-                    <div className="mt-auto pt-1 flex gap-4">
-                      <button
-                        onClick={() => openEditRoom(r)}
-                        className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-teal-700 dark:text-gray-400 dark:hover:text-teal-400"
-                      >
-                        <Pencil size={13} />
-                        {t.common.edit}
-                      </button>
-                      <button
-                        onClick={() => deleteRoom(r)}
-                        className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
-                      >
-                        <Trash2 size={13} />
-                        {t.common.delete}
-                      </button>
+                      <div className="mt-auto">
+                        <div className={`relative rounded-lg ${st.pill}`}>
+                          <span
+                            className={`pointer-events-none absolute start-2.5 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full ${st.bar}`}
+                          />
+                          <select
+                            value={r.status}
+                            onChange={(e) => quickStatus(r, e.target.value)}
+                            aria-label={t.rooms.statusLabel || "Status"}
+                            className="w-full cursor-pointer appearance-none rounded-lg bg-transparent py-1.5 ps-6 pe-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500/40"
+                          >
+                            {ROOM_STATUSES.map((s) => (
+                              <option
+                                key={s}
+                                value={s}
+                                className="text-gray-900"
+                              >
+                                {statusLabel(s)}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-        </div>
+        </section>
       </div>
 
-      {/* ---------- room type modal ---------- */}
+      {/* ===== room type modal ===== */}
       {roomTypeForm && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center p-4"
-          dir={dir}
+        <Modal
+          icon={Tag}
+          title={
+            roomTypeForm.id ? t.rooms.types.editTitle : t.rooms.types.addTitle
+          }
+          error={error}
+          onClose={() => setRoomTypeForm(null)}
+          onSubmit={saveRoomType}
+          footer={
+            <Footer
+              onCancel={() => setRoomTypeForm(null)}
+              saving={saving}
+              t={t}
+            />
+          }
         >
-          <form
-            onSubmit={saveRoomType}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm space-y-3"
-          >
-            <h2 className="text-lg font-semibold">
-              {roomTypeForm.id
-                ? t.rooms.types.editTitle
-                : t.rooms.types.addTitle}
-            </h2>
-            {error && (
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-            )}
+          <Field label={t.rooms.types.namePlaceholder}>
             <input
               required
-              placeholder={t.rooms.types.namePlaceholder}
               value={roomTypeForm.name}
               onChange={(e) =>
                 setRoomTypeForm({ ...roomTypeForm, name: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
             />
-            <input
-              required
-              type="number"
-              step="0.01"
-              placeholder={t.rooms.types.basePricePlaceholder}
-              value={roomTypeForm.base_price}
-              onChange={(e) =>
-                setRoomTypeForm({ ...roomTypeForm, base_price: e.target.value })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            />
-            <input
-              type="number"
-              min="1"
-              placeholder={t.rooms.types.capacityPlaceholder}
-              value={roomTypeForm.capacity}
-              onChange={(e) =>
-                setRoomTypeForm({
-                  ...roomTypeForm,
-                  capacity: Number(e.target.value),
-                })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            />
-            <label className="flex items-center gap-2 text-sm">
+          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={t.rooms.types.basePricePlaceholder}>
               <input
-                type="checkbox"
-                checked={roomTypeForm.is_active}
+                required
+                type="number"
+                step="0.01"
+                min="0"
+                value={roomTypeForm.base_price}
                 onChange={(e) =>
                   setRoomTypeForm({
                     ...roomTypeForm,
-                    is_active: e.target.checked,
+                    base_price: e.target.value,
                   })
                 }
+                className={inputCls}
               />
-              {t.rooms.types.active}
-            </label>
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setRoomTypeForm(null)}
-                className="px-4 py-2 text-sm rounded-md border dark:border-gray-700"
-              >
-                {t.common.cancel}
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 text-sm rounded-md bg-teal-700 text-white disabled:opacity-50"
-              >
-                {saving ? t.common.saving : t.common.save}
-              </button>
-            </div>
-          </form>
-        </div>
+            </Field>
+            <Field label={t.rooms.types.capacityPlaceholder}>
+              <input
+                type="number"
+                min="1"
+                value={roomTypeForm.capacity}
+                onChange={(e) =>
+                  setRoomTypeForm({
+                    ...roomTypeForm,
+                    capacity: Number(e.target.value),
+                  })
+                }
+                className={inputCls}
+              />
+            </Field>
+          </div>
+          <Toggle
+            label={t.rooms.types.active}
+            checked={roomTypeForm.is_active}
+            onChange={(v) => setRoomTypeForm({ ...roomTypeForm, is_active: v })}
+          />
+        </Modal>
       )}
 
-      {/* ---------- room modal ---------- */}
+      {/* ===== room modal ===== */}
       {roomForm && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center p-4"
-          dir={dir}
+        <Modal
+          icon={DoorOpen}
+          title={roomForm.id ? t.rooms.list.editTitle : t.rooms.list.addTitle}
+          error={error}
+          onClose={() => setRoomForm(null)}
+          onSubmit={saveRoom}
+          footer={
+            <Footer onCancel={() => setRoomForm(null)} saving={saving} t={t} />
+          }
         >
-          <form
-            onSubmit={saveRoom}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm space-y-3"
-          >
-            <h2 className="text-lg font-semibold">
-              {roomForm.id ? t.rooms.list.editTitle : t.rooms.list.addTitle}
-            </h2>
-            {error && (
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-            )}
-            <input
-              required
-              placeholder={t.rooms.list.roomNumberPlaceholder}
-              value={roomForm.room_number}
-              onChange={(e) =>
-                setRoomForm({ ...roomForm, room_number: e.target.value })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={t.rooms.list.roomNumberPlaceholder}>
+              <input
+                required
+                value={roomForm.room_number}
+                onChange={(e) =>
+                  setRoomForm({ ...roomForm, room_number: e.target.value })
+                }
+                className={inputCls}
+              />
+            </Field>
+            <Field label={t.rooms.list.floorPlaceholder}>
+              <input
+                value={roomForm.floor}
+                onChange={(e) =>
+                  setRoomForm({ ...roomForm, floor: e.target.value })
+                }
+                className={inputCls}
+              />
+            </Field>
+          </div>
+          <Field label={t.rooms.types.title}>
             <select
               required
               value={roomForm.room_type_id}
               onChange={(e) =>
                 setRoomForm({ ...roomForm, room_type_id: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
             >
               <option value="">{t.rooms.list.noRoomType}</option>
               {roomTypes.map((rt) => (
@@ -757,64 +931,44 @@ export default function RoomsPage() {
                 </option>
               ))}
             </select>
-            <input
-              placeholder={t.rooms.list.floorPlaceholder}
-              value={roomForm.floor}
-              onChange={(e) =>
-                setRoomForm({ ...roomForm, floor: e.target.value })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            />
-            <select
-              value={roomForm.status}
-              onChange={(e) =>
-                setRoomForm({ ...roomForm, status: e.target.value })
-              }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
-            >
+          </Field>
+
+          <Field label={t.rooms.statusLabel || "Status"}>
+            <div className="grid grid-cols-2 gap-2">
               {ROOM_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {t.rooms.statuses?.[s] || s}
-                </option>
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setRoomForm({ ...roomForm, status: s })}
+                  className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
+                    roomForm.status === s
+                      ? "border-teal-500 bg-teal-50 text-teal-900 ring-4 ring-teal-500/15 dark:bg-teal-900/30 dark:text-teal-100"
+                      : "border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <span className={`h-2 w-2 rounded-full ${STATUS[s].bar}`} />
+                  {statusLabel(s)}
+                </button>
               ))}
-            </select>
+            </div>
+          </Field>
+
+          <Field label={t.rooms.list.notesPlaceholder}>
             <textarea
-              placeholder={t.rooms.list.notesPlaceholder}
+              rows={2}
               value={roomForm.notes}
               onChange={(e) =>
                 setRoomForm({ ...roomForm, notes: e.target.value })
               }
-              className="w-full border rounded-md px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700"
+              className={inputCls}
             />
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={roomForm.is_active}
-                onChange={(e) =>
-                  setRoomForm({ ...roomForm, is_active: e.target.checked })
-                }
-              />
-              {t.rooms.list.active}
-            </label>
-
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setRoomForm(null)}
-                className="px-4 py-2 text-sm rounded-md border dark:border-gray-700"
-              >
-                {t.common.cancel}
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 text-sm rounded-md bg-teal-700 text-white disabled:opacity-50"
-              >
-                {saving ? t.common.saving : t.common.save}
-              </button>
-            </div>
-          </form>
-        </div>
+          </Field>
+          <Toggle
+            label={t.rooms.list.active}
+            checked={roomForm.is_active}
+            onChange={(v) => setRoomForm({ ...roomForm, is_active: v })}
+          />
+        </Modal>
       )}
     </div>
   );
