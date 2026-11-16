@@ -36,7 +36,7 @@ function serialize(h: any) {
           max_branches: plan.max_branches,
           max_pos_devices: plan.max_pos_devices,
           price_monthly: Number(plan.price_monthly),
-          is_rooms: plan.is_rooms === true,
+        
           features: plan.features ?? {},
         }
       : null,

@@ -57,11 +57,10 @@ export default async function RoomsLayout({
 
     const hotel = await prisma.hotels.findUnique({
       where: { id: hotelId },
-      select: { subscription_plans: { select: { is_rooms: true } } },
+     
     });
 
-    const planHasRooms = hotel?.subscription_plans?.is_rooms === true;
-    if (!planHasRooms) redirect("/admin");
+   
   }
 
   return children;

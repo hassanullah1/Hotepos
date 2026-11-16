@@ -42,7 +42,7 @@ export async function GET(request: Request) {
           max_branches: true,
           max_pos_devices: true,
           price_monthly: true,
-          is_rooms: true,
+       
         },
       },
     },
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
           max_branches: plan.max_branches,
           max_pos_devices: plan.max_pos_devices,
           price_monthly: Number(plan.price_monthly),
-          is_rooms: plan.is_rooms === true,
+        
         }
       : null,
     subscription_status: hotel.subscription_status,

@@ -502,7 +502,7 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
       })
     : "—";
 
-  const hasRooms = plan?.is_rooms === true;
+
 
   return (
     <div className={`rounded-2xl border ${ring} shadow-sm p-3 mb-4`}>
@@ -570,29 +570,7 @@ function PlanCard({ hotel, router, t }: { hotel: any; router: any; t: any }) {
           }
         />
 
-        <LabeledStat
-          label={t.hotel?.rooms || "Rooms"}
-          value={
-            plan ? (
-              hasRooms ? (
-                <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300">
-                  ✓ {t.hotel?.included || "Included"}
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                  ✕ {t.hotel?.notIncluded || "Not included"}
-                </span>
-              )
-            ) : (
-              "—"
-            )
-          }
-          sub={
-            plan && plan.max_pos_devices != null
-              ? `${t.hotel?.posLabel || "POS"}: ${t.hotel?.maxLabel || "max"} ${plan.max_pos_devices}`
-              : undefined
-          }
-        />
+       
       </div>
 
       {isExpired && (

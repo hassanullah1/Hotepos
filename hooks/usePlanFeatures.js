@@ -21,9 +21,7 @@ function normalizePlanFeatures(plan) {
     }
   }
 
-  if (typeof plan?.is_rooms === "boolean" && !("rooms" in out)) {
-    out.rooms = plan.is_rooms;
-  }
+
 
   return out;
 }
