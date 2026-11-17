@@ -397,12 +397,12 @@ export default function TrackPage() {
      .then((r) => r.json())
      .then((d) => {
        if (!d.ok) {
-         console.warn("Confirm returned pending:", d);
+         
        }
        setConfirming(false);
      })
      .catch((err) => {
-       console.error("Confirm request failed:", err);
+    
        setConfirming(false);
      });
 

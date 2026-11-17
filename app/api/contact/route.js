@@ -18,7 +18,7 @@ export async function POST(request) {
 
   // Email sending intentionally disabled.
   // Log so the submission isn't silently lost; replace with DB insert if needed.
-  console.log("[contact] new submission:", { name, email, hotel, message });
+
 
   return NextResponse.json({ ok: true });
 }

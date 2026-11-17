@@ -40,7 +40,7 @@ export async function PATCH(request, { params }) {
     });
     return NextResponse.json({ tutorial: updated });
   } catch (err) {
-    console.error("Update tutorial failed:", err);
+  
     return NextResponse.json(
       { error: "Could not update tutorial" },
       { status: 500 },
@@ -63,7 +63,7 @@ export async function DELETE(request, { params }) {
     await prisma.tutorials.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Delete tutorial failed:", err);
+    
     return NextResponse.json(
       { error: "Could not delete tutorial" },
       { status: 500 },

@@ -44,7 +44,7 @@ export async function POST(request, { params }) {
       hotel_slug: hotel.slug,
     });
   } catch (err) {
-    console.error("Manual approve failed:", err);
+  
     return NextResponse.json(
       { error: "Could not create hotel account" },
       { status: 500 },

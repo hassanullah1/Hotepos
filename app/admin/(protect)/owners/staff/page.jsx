@@ -135,7 +135,7 @@ export default function StaffPage() {
       const data = await res.json();
       setRoles(data.roles || []);
     } catch (err) {
-      console.error(err);
+  
     }
   }
 

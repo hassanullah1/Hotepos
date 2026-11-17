@@ -123,7 +123,7 @@ export async function POST(req: Request) {
     const res = NextResponse.json({ user: buyer }, { status: 201 });
     return setBuyerCookieOnResponse(res, token);
   } catch (err) {
-    console.error("Buyer signup error:", err);
+    
     return NextResponse.json({ error: "Signup failed" }, { status: 500 });
   }
 }

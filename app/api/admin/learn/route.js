@@ -74,7 +74,7 @@ export async function POST(request) {
 
     return NextResponse.json({ tutorial: created }, { status: 201 });
   } catch (err) {
-    console.error("Create tutorial failed:", err);
+  
     return NextResponse.json(
       { error: "Could not create tutorial" },
       { status: 500 },

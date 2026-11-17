@@ -51,7 +51,7 @@ export async function sendOwnerWelcomeEmail({
   tempPassword,
 }) {
   if (!to) {
-    console.warn("sendOwnerWelcomeEmail: no email address, skipping send");
+  
     return { sent: false, reason: "no_email" };
   }
 

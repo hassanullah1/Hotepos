@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     );
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[cron refresh-menu-stats]", err);
+   
     return NextResponse.json({ error: "Refresh failed" }, { status: 500 });
   }
 }

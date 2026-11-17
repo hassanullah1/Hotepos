@@ -491,7 +491,7 @@ export default function KitchenDisplayPage() {
         else if (document.msExitFullscreen) await document.msExitFullscreen();
       }
     } catch (err) {
-      console.warn("Fullscreen toggle failed:", err);
+   
     }
   }
 

@@ -169,7 +169,7 @@ export async function PATCH(request: Request) {
     });
     return NextResponse.json({ user: serialize(updated) });
   } catch (err) {
-    console.error("Update profile error:", err);
+  
     return NextResponse.json(
       { error: "Failed to update profile" },
       { status: 400 },

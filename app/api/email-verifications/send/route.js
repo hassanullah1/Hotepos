@@ -52,7 +52,7 @@ export async function POST(request) {
       { status: 201 },
     );
   } catch (err) {
-    console.error("email-verifications/send failed:", err);
+  
     return NextResponse.json({ error: "Could not send code" }, { status: 500 });
   }
 }

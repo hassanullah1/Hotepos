@@ -40,7 +40,7 @@ export default function CreatePlanPage() {
         const data = await res.json();
         if (!cancelled) setAllSections(data.sections || []);
       } catch (err) {
-        console.error(err);
+  
       } finally {
         if (!cancelled) setSectionsLoading(false);
       }

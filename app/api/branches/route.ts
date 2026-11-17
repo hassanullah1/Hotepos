@@ -220,7 +220,7 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (err) {
-    console.error("Create branch error:", err);
+  
     const code =
       typeof err === "object" && err !== null && "code" in err
         ? (err as { code: string }).code

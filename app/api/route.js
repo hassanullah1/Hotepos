@@ -124,7 +124,7 @@ export async function POST(request) {
 
     return NextResponse.json({ user: serializeUser(created) }, { status: 201 });
   } catch (err) {
-    console.error("Create user error:", err);
+  
     return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
   }
 }

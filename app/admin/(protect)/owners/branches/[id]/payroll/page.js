@@ -673,7 +673,7 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         `payroll_${run.period_start?.slice(0, 10)}_${run.period_end?.slice(0, 10)}.pdf`,
       );
     } catch (err) {
-      console.error("PDF export error:", err);
+  
       setExportError(bp.pdfExportFailed || "Failed to generate PDF");
     } finally {
       setExportingPdf(false);
@@ -702,7 +702,7 @@ function RunDetail({ branchId, runId, router, t, dir, onBack }) {
         `payroll_${run.period_start?.slice(0, 10)}_${run.period_end?.slice(0, 10)}.xlsx`,
       );
     } catch (err) {
-      console.error("Excel export error:", err);
+  
       setExportError(bp.excelExportFailed || "Failed to generate Excel file");
     } finally {
       setExportingExcel(false);

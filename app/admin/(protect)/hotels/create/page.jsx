@@ -189,7 +189,7 @@ export default function CreateHotelPage() {
         .then((res) => (res.ok ? res.json() : { owners: [] }))
         .then((data) => setOwnerResults(data.owners || []))
         .catch((err) => {
-          console.error("Search error:", err);
+        
           setOwnerResults([]);
         });
     }, 300);

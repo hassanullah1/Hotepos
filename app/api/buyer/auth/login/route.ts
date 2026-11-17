@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 
     return setBuyerCookieOnResponse(res, token);
   } catch (err) {
-    console.error("Buyer login error:", err);
+    
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
   }
 }

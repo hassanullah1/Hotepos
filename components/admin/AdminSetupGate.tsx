@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAdminAuth } from "@/providers/AdminAuthProvider";
-import { useAdminPreferences } from "@/providers/AdminPreferencesProvider";
-import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useEffect, useMemo, useState } from "react";
+import { useAdminAuth, type SetupInfo } from "@/providers/AdminAuthProvider";
 import AdminSetupModal from "./AdminSetupModal";
 import AdminSetupSuccess from "./AdminSetupSuccess";
 
@@ -12,10 +10,50 @@ const HESABPAY_PATTERN = /^07\d{8}$/;
 
 export type SetupStep = "hotel" | "branch" | "hesabpay";
 
-type GateState = "checking" | "needs_setup" | "allowed";
-
 function hesabpaySkipKey(hotelId: string) {
   return `hesabpay_setup_skipped_${hotelId}`;
+}
+
+type Decision = { step: SetupStep; hotelId: string; allowSkip: boolean } | null;
+
+function decide(
+  role: string | null,
+  setup: SetupInfo,
+  skippedHesabpay: boolean,
+): Decision {
+  if (!role || !setup) return null;
+  if (EXEMPT_ROLES.includes(role)) return null;
+  if (role !== "hotel_owner" && role !== "branch_manager") return null;
+
+  // Verification gate handles unverified — don't open setup modal on /admin/verify
+  if (!setup.verified) return null;
+
+  // No hotel → create one
+  if (!setup.hasHotel) {
+    return { step: "hotel", hotelId: "", allowSkip: true };
+  }
+
+  // No branch → add one
+  if (!setup.hasBranch) {
+    return {
+      step: "branch",
+      hotelId: setup.hotelId ?? "",
+      allowSkip: setup.isOnline !== true,
+    };
+  }
+
+  // Has branch, but no branch has a valid hesabpay yet
+  if (!setup.hasHesabpay) {
+    const allowSkip = setup.isOnline !== true;
+    if (allowSkip && skippedHesabpay) return null;
+    return {
+      step: "hesabpay",
+      hotelId: setup.hotelId ?? "",
+      allowSkip,
+    };
+  }
+
+  return null;
 }
 
 export default function AdminSetupGate({
@@ -23,179 +61,63 @@ export default function AdminSetupGate({
 }: {
   children: React.ReactNode;
 }) {
-  const { role, loading: authLoading } = useAdminAuth();
-  const { t } = useAdminPreferences();
+  const { role, loading, setup, setSetup } = useAdminAuth();
 
-  const [state, setState] = useState<GateState>("checking");
-  const [initialStep, setInitialStep] = useState<SetupStep>("hotel");
-  const [initialHotelId, setInitialHotelId] = useState<string>("");
-  // allowSkip = true  → hotel NOT online → HesabPay optional (Skip visible)
-  // allowSkip = false → hotel IS online  → HesabPay required (Skip hidden)
-  const [allowSkip, setAllowSkip] = useState(true);
+  const [skippedHesabpay, setSkippedHesabpay] = useState(false);
+  const [skipChecked, setSkipChecked] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [recheckKey, setRecheckKey] = useState(0);
 
-  const isExempt = EXEMPT_ROLES.includes(role);
-  const isOwner = role === "hotel_owner";
-  const isBranchManager = role === "branch_manager";
-
+  // Read localStorage once per hotel id
   useEffect(() => {
-    if (authLoading || !role) return;
-
-    if (isExempt || isBranchManager || !isOwner) {
-      setState("allowed");
-      return;
-    }
-
-    let cancelled = false;
-    setState("checking");
-
-    (async () => {
-      try {
-        const verifRes = await fetchWithAuth("/api/owner/verification");
-        if (cancelled) return;
-        if (verifRes.ok) {
-          const vData = await verifRes.json();
-          const vStatus = vData.hotel?.verification_status || "pending";
-          if (vStatus !== "verified") {
-            setState("allowed");
-            return;
-          }
-        }
-
-        const hotelsRes = await fetchWithAuth("/api/owners/hotel");
-        if (cancelled) return;
-        if (!hotelsRes.ok) {
-          setState("allowed");
-          return;
-        }
-        const hotelsData = await hotelsRes.json();
-        const hotels: any[] = hotelsData.hotels || [];
-
-        if (hotels.length === 0) {
-          setInitialStep("hotel");
-          setInitialHotelId("");
-          setAllowSkip(true);
-          setState("needs_setup");
-          return;
-        }
-
-        const hotelId: string =
-          hotelsData.selectedHotelId || hotels[0].id || "";
-        if (!hotelId) {
-          setInitialStep("hotel");
-          setInitialHotelId("");
-          setAllowSkip(true);
-          setState("needs_setup");
-          return;
-        }
-
-        const hotelRes = await fetchWithAuth(`/api/owners/hotel/${hotelId}`);
-        if (cancelled) return;
-        if (!hotelRes.ok) {
-          setState("allowed");
-          return;
-        }
-        const hotelData = await hotelRes.json();
-        const hotelObj = hotelData.hotel || {};
-        const hp = String(hotelObj.hesabpay_account_number || "").trim();
-
-        // Flipped rule: skip is allowed only when hotel is NOT online.
-        const skipAllowed = hotelObj.is_online !== true;
-
-        const branchesRes = await fetchWithAuth(
-          `/api/branches?hotel_id=${hotelId}`,
+    setSkipChecked(false);
+    try {
+      if (setup?.hotelId) {
+        setSkippedHesabpay(
+          localStorage.getItem(hesabpaySkipKey(setup.hotelId)) === "1",
         );
-        if (cancelled) return;
-
-        let branches: any[] = [];
-        if (branchesRes.ok) {
-          const bData = await branchesRes.json();
-          branches = bData.branches || [];
-        }
-
-        if (branches.length === 0) {
-          setInitialStep("branch");
-          setInitialHotelId(hotelId);
-          setAllowSkip(skipAllowed);
-          setState("needs_setup");
-          return;
-        }
-
-        if (!HESABPAY_PATTERN.test(hp)) {
-          if (skipAllowed) {
-            let skipped = false;
-            try {
-              skipped = localStorage.getItem(hesabpaySkipKey(hotelId)) === "1";
-            } catch {
-              /* ignore */
-            }
-            if (skipped) {
-              setState("allowed");
-              return;
-            }
-          }
-
-          setInitialStep("hesabpay");
-          setInitialHotelId(hotelId);
-          setAllowSkip(skipAllowed);
-          setState("needs_setup");
-          return;
-        }
-
-        setState("allowed");
-      } catch {
-        if (!cancelled) setState("allowed");
+      } else {
+        setSkippedHesabpay(false);
       }
-    })();
+    } catch {
+      setSkippedHesabpay(false);
+    }
+    setSkipChecked(true);
+  }, [setup?.hotelId]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [authLoading, role, isExempt, isOwner, isBranchManager, recheckKey]);
+  const decision = useMemo(() => {
+    if (loading || !skipChecked) return null;
+    return decide(role, setup, skippedHesabpay);
+  }, [loading, skipChecked, role, setup, skippedHesabpay]);
 
-  /* ── Called when the last setup step is saved ── */
   function handleAllComplete() {
-    // Unmount the setup modal, reveal the dashboard behind, and play
-    // the celebration. We do NOT re-check yet — that happens after the
-    // celebration closes, to avoid a modal/celebration race.
-    setState("allowed");
+    // Optimistically mark complete so the modal doesn't reopen in this session.
+    // The layout will refresh real data on the next navigation (force-dynamic).
+    setSetup((prev) =>
+      prev
+        ? { ...prev, hasHotel: true, hasBranch: true, hasHesabpay: true }
+        : prev,
+    );
     setShowSuccess(true);
   }
 
-  function handleSuccessDone() {
-    setShowSuccess(false);
-    setRecheckKey((k) => k + 1);
-  }
+  const needsSetup = !!decision && !showSuccess;
 
   return (
     <>
       {children}
 
-      {state === "checking" && !showSuccess && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-[#15121C]/95 px-6 py-5 ring-1 ring-white/10">
-            <div className="h-7 w-7 animate-spin rounded-full border-2 border-[#C9A227]/30 border-t-[#C9A227]" />
-            <p
-              className="text-[10px] uppercase tracking-[0.25em] text-[#6E687A]"
-              style={{ fontFamily: "var(--font-geist-mono)" }}
-            >
-              {t?.setup?.checking || "Checking setup…"}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {state === "needs_setup" && !showSuccess && (
+      {needsSetup && decision && (
         <AdminSetupModal
-          initialStep={initialStep}
-          initialHotelId={initialHotelId}
-          allowSkip={allowSkip}
+          initialStep={decision.step}
+          initialHotelId={decision.hotelId}
+          allowSkip={decision.allowSkip}
           onAllComplete={handleAllComplete}
         />
       )}
 
-      {showSuccess && <AdminSetupSuccess onDone={handleSuccessDone} />}
+      {showSuccess && (
+        <AdminSetupSuccess onDone={() => setShowSuccess(false)} />
+      )}
     </>
   );
 }

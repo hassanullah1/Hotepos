@@ -210,7 +210,7 @@ export async function PATCH(
       },
     });
   } catch (err) {
-    console.error("Update branch error:", err);
+   
     const code =
       typeof err === "object" && err !== null && "code" in err
         ? (err as { code: string }).code
@@ -244,7 +244,7 @@ export async function DELETE(
     await prisma.branches.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Delete branch error:", err);
+    
     return NextResponse.json(
       { error: "Failed to delete branch" },
       { status: 400 },
