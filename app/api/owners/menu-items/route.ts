@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
-import { assertWaiterManagedBranch } from "@/lib/owner-scope";
+import { assertWaiterManagedBranch, ownsHotel } from "@/lib/owner-scope";
 
 const ITEM_SELECT = {
   id: true,
@@ -61,7 +61,12 @@ function serialize(i, branchId) {
 }
 
 /**
- * GET /api/owners/menu-items?branch_id=X&category_id=Y&q=foo
+ * GET /api/owners/menu-items?branch_id=X&category_id=Y&q=foo&available_only=1
+ * Owners, branch managers and waiters (for their own branch).
+ *
+ * available_only=1  → hide items this branch has switched off
+ *                     (branch_menu_items.is_available = false).
+ *                     No branch_menu_items row = available (the default).
  */
 export async function GET(request) {
   const user = await getAuthUser(request);
@@ -72,6 +77,9 @@ export async function GET(request) {
   const branchId = searchParams.get("branch_id");
   const categoryId = searchParams.get("category_id");
   const q = (searchParams.get("q") || "").trim();
+  const availableOnly = ["1", "true"].includes(
+    searchParams.get("available_only") || "",
+  );
 
   if (!branchId)
     return NextResponse.json(
@@ -90,6 +98,17 @@ export async function GET(request) {
     hotel_id: branch.hotel_id,
     ...(categoryId ? { category_id: categoryId } : {}),
     ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
+    ...(availableOnly
+      ? {
+          // exclude ONLY items this branch explicitly turned off;
+          // items with no branch row stay visible (default = available)
+          NOT: {
+            branch_items: {
+              some: { branch_id: branchId, is_available: false },
+            },
+          },
+        }
+      : {}),
   };
 
   const items = await prisma.menu_items.findMany({
@@ -102,7 +121,7 @@ export async function GET(request) {
 }
 
 /**
- * POST /api/owners/menu-items
+ * POST /api/owners/menu-items   (HOTEL OWNER ONLY)
  * Body: {
  *   branch_id, name, base_price,
  *   category_id?, product_category_id?, description?, image_url?,
@@ -130,6 +149,15 @@ export async function POST(request) {
       { error: "Branch not found in your hotel" },
       { status: 404 },
     );
+
+  // Branch managers can't create hotel-wide menu items
+  const isOwner = await ownsHotel(user.id, branch.hotel_id);
+  if (!isOwner) {
+    return NextResponse.json(
+      { error: "Only the hotel owner can create menu items" },
+      { status: 403 },
+    );
+  }
 
   if (body.category_id) {
     const cat = await prisma.menu_categories.findFirst({

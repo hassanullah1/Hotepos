@@ -32,6 +32,7 @@ const EMPTY_ITEM = {
   name: "",
   description: "",
   base_price: "",
+  price_override: "",
   tax_rate: 0,
   is_available: true,
   is_online: false,
@@ -65,6 +66,9 @@ export default function MenuPage() {
   const [me, setMe] = useState(null);
   const isOwner = me?.role === "hotel_owner";
   const isBranchManager = me?.role === "branch_manager";
+  // Owners edit the hotel-wide menu. Branch managers only edit their branch
+  // (price override, available, online).
+  const canEditCatalog = isOwner;
 
   const [hotels, setHotels] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState("");
@@ -276,6 +280,12 @@ export default function MenuPage() {
 
   useEffect(() => {
     if (!me) return;
+    // /api/owners/hotel/:id is owner-only, so branch managers skip the lookup
+    // (avoids the 404). The server is the final authority anyway.
+    if (!isOwner) {
+      setHesabpayStatus("valid");
+      return;
+    }
     loadHesabpayStatus(hotelIdForHesabpay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [me, isOwner, hotelIdForHesabpay]);
@@ -291,6 +301,7 @@ export default function MenuPage() {
 
   async function saveCategory(e) {
     e.preventDefault();
+    if (!canEditCatalog) return;
     setSaving(true);
     setError("");
     const isEdit = !!categoryForm.id;
@@ -326,6 +337,7 @@ export default function MenuPage() {
   }
 
   async function deleteCategory(c) {
+    if (!canEditCatalog) return;
     if (!confirm(t.branch.categories.confirmDelete.replace("{name}", c.name)))
       return;
     try {
@@ -343,6 +355,7 @@ export default function MenuPage() {
   }
 
   function openCreateCategory() {
+    if (!canEditCatalog) return;
     setError("");
     if (!branchId) {
       setError(t.branch.selectBranchFirst || "Please select a branch first");
@@ -352,6 +365,7 @@ export default function MenuPage() {
   }
 
   function openCreateItem() {
+    if (!canEditCatalog) return;
     setError("");
     if (!branchId) {
       setError(t.branch.selectBranchFirst || "Please select a branch first");
@@ -370,6 +384,7 @@ export default function MenuPage() {
       name: i.name,
       description: i.description || "",
       base_price: i.base_price,
+      price_override: i.price_override != null ? String(i.price_override) : "",
       tax_rate: i.tax_rate ?? 0,
       is_available: i.is_available,
       is_online: i.is_online ?? false,
@@ -392,34 +407,53 @@ export default function MenuPage() {
     setSaving(true);
     setError("");
     const isEdit = !!itemForm.id;
+
+    // Branch managers can only update their own branch's item (never create).
+    if (!canEditCatalog && !isEdit) {
+      setError("Only the hotel owner can create menu items");
+      setSaving(false);
+      return;
+    }
+
     const url = isEdit
       ? `/api/owners/menu-items/${itemForm.id}`
       : "/api/owners/menu-items";
 
     const unitId = itemForm.unit_id || null;
 
-    const payload = {
-      branch_id: branchId,
-      name: itemForm.name,
-      description: itemForm.description,
-      image_url: itemForm.image_url,
-      base_price: Number(itemForm.base_price),
-      tax_rate: itemForm.tax_rate,
-      is_kitchen: itemForm.is_kitchen,
-      category_id: itemForm.category_id || null,
-      product_category_id: itemForm.product_category_id || null,
-      is_available: itemForm.is_available,
-      is_online: itemForm.is_online,
+    const payload = canEditCatalog
+      ? {
+          branch_id: branchId,
+          name: itemForm.name,
+          description: itemForm.description,
+          image_url: itemForm.image_url,
+          base_price: Number(itemForm.base_price),
+          tax_rate: itemForm.tax_rate,
+          is_kitchen: itemForm.is_kitchen,
+          category_id: itemForm.category_id || null,
+          product_category_id: itemForm.product_category_id || null,
+          is_available: itemForm.is_available,
+          is_online: itemForm.is_online,
 
-      unit_id: unitId,
-      unit_quantity:
-        unitId &&
-        itemForm.unit_quantity !== "" &&
-        itemForm.unit_quantity !== null &&
-        itemForm.unit_quantity !== undefined
-          ? Number(itemForm.unit_quantity)
-          : null,
-    };
+          unit_id: unitId,
+          unit_quantity:
+            unitId &&
+            itemForm.unit_quantity !== "" &&
+            itemForm.unit_quantity !== null &&
+            itemForm.unit_quantity !== undefined
+              ? Number(itemForm.unit_quantity)
+              : null,
+        }
+      : {
+          // branch manager: branch-level fields only
+          branch_id: branchId,
+          price_override:
+            itemForm.price_override === "" || itemForm.price_override == null
+              ? null
+              : Number(itemForm.price_override),
+          is_available: itemForm.is_available,
+          is_online: itemForm.is_online,
+        };
 
     try {
       const res = await fetchWithAuth(url, {
@@ -443,6 +477,7 @@ export default function MenuPage() {
   }
 
   async function deleteItem(i) {
+    if (!canEditCatalog) return;
     if (!confirm(t.branch.items.confirmDelete.replace("{name}", i.name)))
       return;
     try {
@@ -459,9 +494,11 @@ export default function MenuPage() {
     }
   }
 
+  // Empty input = reset to the hotel's base price (price_override = null)
   async function quickPrice(i, newPrice) {
-    const n = Number(newPrice);
-    if (!Number.isFinite(n)) return;
+    const raw = String(newPrice).trim();
+    const n = raw === "" ? null : Number(raw);
+    if (n !== null && (!Number.isFinite(n) || n < 0)) return;
     try {
       const res = await fetchWithAuth(`/api/owners/menu-items/${i.id}`, {
         method: "PATCH",
@@ -471,7 +508,12 @@ export default function MenuPage() {
         }),
       });
       if (handle401(res)) return;
-      if (res.ok) loadItems();
+      if (res.ok) {
+        loadItems();
+      } else {
+        const data = await res.json().catch(() => null);
+        setError(data?.error || "Failed to update price");
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -640,13 +682,15 @@ export default function MenuPage() {
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
                 {t.branch.categories.title}
               </h2>
-              <button
-                onClick={openCreateCategory}
-                disabled={!branchId}
-                className="text-sm font-semibold text-teal-700 dark:text-teal-400 disabled:opacity-40"
-              >
-                {t.branch.categories.add}
-              </button>
+              {canEditCatalog && (
+                <button
+                  onClick={openCreateCategory}
+                  disabled={!branchId}
+                  className="text-sm font-semibold text-teal-700 dark:text-teal-400 disabled:opacity-40"
+                >
+                  {t.branch.categories.add}
+                </button>
+              )}
             </div>
 
             <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-visible gap-1 pb-1">
@@ -676,22 +720,26 @@ export default function MenuPage() {
                     {c.name}{" "}
                     <span className="text-xs opacity-60">({c.item_count})</span>
                   </button>
-                  <button
-                    onClick={() => setCategoryForm(c)}
-                    aria-label={t.common.edit}
-                    title={t.common.edit}
-                    className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-900/30"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                  <button
-                    onClick={() => deleteCategory(c)}
-                    aria-label={t.common.delete}
-                    title={t.common.delete}
-                    className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                  {canEditCatalog && (
+                    <>
+                      <button
+                        onClick={() => setCategoryForm(c)}
+                        aria-label={t.common.edit}
+                        title={t.common.edit}
+                        className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-900/30"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                      <button
+                        onClick={() => deleteCategory(c)}
+                        aria-label={t.common.delete}
+                        title={t.common.delete}
+                        className="hidden md:inline-flex opacity-0 group-hover:opacity-100 p-1 rounded text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -702,14 +750,16 @@ export default function MenuPage() {
               <h2 className="text-xs font-semibold uppercase tracking-wide text-teal-700/70 dark:text-teal-300/70">
                 {t.branch.items.title}
               </h2>
-              <button
-                onClick={openCreateItem}
-                disabled={!branchId}
-                className="inline-flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white px-3.5 py-2 rounded-full text-sm font-semibold disabled:opacity-50"
-              >
-                <Plus size={15} />
-                {t.branch.items.add}
-              </button>
+              {canEditCatalog && (
+                <button
+                  onClick={openCreateItem}
+                  disabled={!branchId}
+                  className="inline-flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white px-3.5 py-2 rounded-full text-sm font-semibold disabled:opacity-50"
+                >
+                  <Plus size={15} />
+                  {t.branch.items.add}
+                </button>
+              )}
             </div>
 
             {loadingItems ? (
@@ -779,9 +829,16 @@ export default function MenuPage() {
 
                         <div className="flex items-center gap-2 flex-wrap">
                           <input
+                            key={`${i.id}-${i.price}`}
                             type="number"
                             step="0.01"
+                            min="0"
                             defaultValue={i.price}
+                            title={
+                              i.price_override != null
+                                ? `Branch price (hotel price: ${i.base_price}). Clear to reset.`
+                                : "Set a price for this branch"
+                            }
                             onBlur={(e) =>
                               e.target.value !== String(i.price) &&
                               quickPrice(i, e.target.value)
@@ -826,13 +883,15 @@ export default function MenuPage() {
                             <Pencil size={13} />
                             {t.common.edit}
                           </button>
-                          <button
-                            onClick={() => deleteItem(i)}
-                            className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
-                          >
-                            <Trash2 size={13} />
-                            {t.common.delete}
-                          </button>
+                          {canEditCatalog && (
+                            <button
+                              onClick={() => deleteItem(i)}
+                              className="inline-flex items-center gap-1 text-xs text-teal-700/70 hover:text-red-600 dark:text-teal-300/70 dark:hover:text-red-400"
+                            >
+                              <Trash2 size={13} />
+                              {t.common.delete}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -844,7 +903,7 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {categoryForm && (
+      {categoryForm && canEditCatalog && (
         <CategoryModal
           t={t}
           dir={dir}
@@ -858,7 +917,7 @@ export default function MenuPage() {
         />
       )}
 
-      {itemForm && (
+      {itemForm && canEditCatalog && (
         <ItemModal
           t={t}
           dir={dir}
@@ -875,6 +934,20 @@ export default function MenuPage() {
           handleImageSelect={handleImageSelect}
           removeImage={removeImage}
           fileInputRef={fileInputRef}
+          guardOnline={guardOnline}
+        />
+      )}
+
+      {itemForm && !canEditCatalog && (
+        <BranchItemModal
+          t={t}
+          dir={dir}
+          form={itemForm}
+          setForm={setItemForm}
+          onSubmit={saveItem}
+          onClose={() => !saving && setItemForm(null)}
+          saving={saving}
+          error={error}
           guardOnline={guardOnline}
         />
       )}
@@ -1118,6 +1191,9 @@ function CategoryModal({
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Owner: full item editor (hotel-wide fields + this branch's flags)  */
+/* ------------------------------------------------------------------ */
 function ItemModal({
   t,
   dir,
@@ -1431,6 +1507,149 @@ function ItemModal({
           <button
             type="submit"
             disabled={saving || uploadingImage}
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-full bg-teal-600 hover:bg-teal-700 text-white font-medium disabled:opacity-50"
+          >
+            {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {saving ? t.common.saving : t.common.save}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Branch manager: branch-only editor (price, available, online)      */
+/* ------------------------------------------------------------------ */
+function BranchItemModal({
+  t,
+  dir,
+  form,
+  setForm,
+  onSubmit,
+  onClose,
+  saving,
+  error,
+  guardOnline,
+}) {
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === "Escape" && !saving) onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [saving, onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      dir={dir}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget && !saving) onClose();
+      }}
+    >
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl border border-teal-200 dark:border-teal-800 bg-white dark:bg-teal-950 shadow-2xl overflow-hidden"
+      >
+        <div className="flex items-center justify-between gap-3 border-b border-teal-100 dark:border-teal-800/60 px-5 py-3">
+          <h2 className="text-base font-semibold text-teal-950 dark:text-teal-50 truncate">
+            {form.name}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="h-8 w-8 rounded-full flex items-center justify-center text-teal-700/70 dark:text-teal-200 hover:bg-teal-100 dark:hover:bg-teal-900 disabled:opacity-50"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          {error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-900 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+              {error}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <div className="h-16 w-16 shrink-0 rounded-xl overflow-hidden border border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-900/40 flex items-center justify-center">
+              {form.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={form.image_url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <ImageOff className="h-5 w-5 text-teal-400" />
+              )}
+            </div>
+            <p className="text-xs text-teal-700/70 dark:text-teal-300/70">
+              {t.branch.items.managerHint ||
+                "Item details are managed by the hotel owner. You can set the price, availability and online visibility for your branch."}
+            </p>
+          </div>
+
+          <div>
+            <label className={labelClass}>
+              {t.branch.items.branchPrice || "Price at this branch"}
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              dir="ltr"
+              value={form.price_override}
+              onChange={(e) =>
+                setForm({ ...form, price_override: e.target.value })
+              }
+              placeholder={String(form.base_price ?? "")}
+              className={inputClass}
+            />
+            <p className="mt-1 text-[11px] text-teal-700/60 dark:text-teal-300/60">
+              {t.branch.items.branchPriceHint ||
+                `Leave empty to use the hotel price (${form.base_price}).`}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <ToggleTile
+              checked={form.is_available}
+              onChange={(v) => setForm({ ...form, is_available: v })}
+              label={t.branch.items.available}
+            />
+            <ToggleTile
+              checked={form.is_online}
+              onChange={(v) => {
+                if (v && !guardOnline(true)) return;
+                setForm({ ...form, is_online: v });
+              }}
+              label={t.branch.items.online || "Online (this branch)"}
+              icon={form.is_online ? <Globe size={12} /> : <Store size={12} />}
+              accent={form.is_online ? "emerald" : undefined}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 border-t border-teal-100 dark:border-teal-800/60 px-5 py-3 bg-white dark:bg-teal-950">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="px-4 py-2 text-sm rounded-full border border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-900/50 disabled:opacity-50"
+          >
+            {t.common.cancel}
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
             className="inline-flex items-center gap-1.5 px-4 py-2 text-sm rounded-full bg-teal-600 hover:bg-teal-700 text-white font-medium disabled:opacity-50"
           >
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

@@ -236,7 +236,8 @@ export default function OrdersPage() {
 
     const [tRes, mRes, rRes, cRes] = await Promise.all([
       fetchWithAuth(`/api/owners/dining-tables?branch_id=${bid}`),
-      fetchWithAuth(`/api/owners/menu-items?branch_id=${bid}`),
+      // only items that are available at THIS branch
+      fetchWithAuth(`/api/owners/menu-items?branch_id=${bid}&available_only=1`),
       fetchWithAuth(`/api/owners/room-stays?branch_id=${bid}&status=active`),
       hotelId
         ? fetchWithAuth(`/api/owners/customers?hotel_id=${hotelId}`)
@@ -260,7 +261,24 @@ export default function OrdersPage() {
     if (!mRes.ok) throw new Error("Failed to load menu");
 
     setTables((await tRes.json()).tables || []);
-    setMenuItems((await mRes.json()).items || []);
+
+    // keep only items available at this branch (server already filters;
+    // this is a second safety net)
+    const available = ((await mRes.json()).items || []).filter(
+      (m: any) => m.is_available !== false,
+    );
+    setMenuItems(available);
+
+    // drop anything in the cart that is no longer available
+    const okIds = new Set(available.map((m: any) => m.id));
+    setDraft((prev: any) =>
+      prev?.items
+        ? {
+            ...prev,
+            items: prev.items.filter((ci: any) => okIds.has(ci.menu_item_id)),
+          }
+        : prev,
+    );
 
     // 403 (role not allowed) → just no room service, page still works
     if (rRes.ok) setRoomStays((await rRes.json()).stays || []);
@@ -563,7 +581,13 @@ export default function OrdersPage() {
         });
         if (handle401(res)) return;
         const data = await res.json();
-        if (!res.ok) return setError(data.error || "Failed to create order");
+        if (!res.ok) {
+          // an item was switched off meanwhile → refresh the menu + cart
+          if (String(data.error || "").startsWith("Not available")) {
+            loadStatic().catch(() => {});
+          }
+          return setError(data.error || "Failed to create order");
+        }
         setOrders((prev) => [data.order, ...prev]);
         if (draft.scope === "room") loadStatic().catch(() => {});
         cancelDraft();
@@ -582,7 +606,12 @@ export default function OrdersPage() {
           );
           if (handle401(res)) return;
           const data = await res.json();
-          if (!res.ok) return setError(data.error || "Failed to add item");
+          if (!res.ok) {
+            if (String(data.error || "").startsWith("Not available")) {
+              loadStatic().catch(() => {});
+            }
+            return setError(data.error || "Failed to add item");
+          }
           lastOrder = data.order;
         }
         if (lastOrder)
@@ -607,8 +636,32 @@ export default function OrdersPage() {
       if (handle401(res)) return;
       const data = await res.json();
       if (!res.ok) return setError(data.error || "Failed to update order");
+
+      let updated = data.order;
+
+      // "Paid" means the order is finished: close it right away so the
+      // table / area is released and the order leaves the open list.
+      if (status === "paid") {
+        const closeRes = await fetchWithAuth(`/api/owners/orders/${orderId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: "closed" }),
+        });
+        if (handle401(closeRes)) return;
+        const closeData = await closeRes.json();
+        if (!closeRes.ok) {
+          // paid went through, closing failed → show it as paid + the error
+          setOrders((prev) =>
+            prev.map((o: any) => (o.id === orderId ? updated : o)),
+          );
+          return setError(
+            closeData.error || "Paid, but failed to close the order",
+          );
+        }
+        updated = closeData.order;
+      }
+
       setOrders((prev) =>
-        prev.map((o: any) => (o.id === orderId ? data.order : o)),
+        prev.map((o: any) => (o.id === orderId ? updated : o)),
       );
       setError("");
     } catch (err: any) {

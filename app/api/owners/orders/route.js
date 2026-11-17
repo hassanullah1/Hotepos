@@ -257,19 +257,31 @@ export async function POST(request) {
   }
 
   /* ─────────────────────────────────────────────────────────────
-     MENU LOOKUP — items are hotel-level now, per-branch state is
-     in branch_menu_items. We fetch items belonging to the hotel
-     AND linked to this specific branch, with the override price.
+     MENU LOOKUP
+     Items belong to the HOTEL. The branch only stores overrides in
+     branch_menu_items:
+       • no row for this branch      → item is AVAILABLE (default)
+       • row with is_available=false → item is NOT available here
+       • price = price_override ?? base_price
      ───────────────────────────────────────────────────────────── */
-  const menuIds = items.map((i) => i.menu_item_id).filter(Boolean);
+  const menuIds = [
+    ...new Set(items.map((i) => i.menu_item_id).filter(Boolean)),
+  ];
+  if (menuIds.length === 0) {
+    return NextResponse.json(
+      { error: "Each item needs a menu_item_id" },
+      { status: 400 },
+    );
+  }
+
   const menuRows = await prisma.menu_items.findMany({
     where: {
       id: { in: menuIds },
       hotel_id: branch.hotel_id,
-      branch_items: { some: { branch_id } },
     },
     select: {
       id: true,
+      name: true,
       base_price: true,
       is_kitchen: true,
       prep_station: true,
@@ -280,6 +292,7 @@ export async function POST(request) {
     },
   });
 
+  // every item must exist in this hotel
   if (menuRows.length !== menuIds.length) {
     return NextResponse.json(
       { error: "One or more menu items are invalid for this branch" },
@@ -287,6 +300,21 @@ export async function POST(request) {
     );
   }
   const menuMap = new Map(menuRows.map((m) => [m.id, m]));
+
+  // none may be switched off for this branch
+  const unavailable = menuRows.filter(
+    (m) => m.branch_items?.[0]?.is_available === false,
+  );
+  if (unavailable.length > 0) {
+    return NextResponse.json(
+      {
+        error: `Not available at this branch: ${unavailable
+          .map((m) => m.name)
+          .join(", ")}`,
+      },
+      { status: 400 },
+    );
+  }
 
   const resolved = items.map((i) => {
     const m = menuMap.get(i.menu_item_id);
