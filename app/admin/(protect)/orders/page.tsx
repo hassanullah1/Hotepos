@@ -636,32 +636,8 @@ export default function OrdersPage() {
       if (handle401(res)) return;
       const data = await res.json();
       if (!res.ok) return setError(data.error || "Failed to update order");
-
-      let updated = data.order;
-
-      // "Paid" means the order is finished: close it right away so the
-      // table / area is released and the order leaves the open list.
-      if (status === "paid") {
-        const closeRes = await fetchWithAuth(`/api/owners/orders/${orderId}`, {
-          method: "PATCH",
-          body: JSON.stringify({ status: "closed" }),
-        });
-        if (handle401(closeRes)) return;
-        const closeData = await closeRes.json();
-        if (!closeRes.ok) {
-          // paid went through, closing failed → show it as paid + the error
-          setOrders((prev) =>
-            prev.map((o: any) => (o.id === orderId ? updated : o)),
-          );
-          return setError(
-            closeData.error || "Paid, but failed to close the order",
-          );
-        }
-        updated = closeData.order;
-      }
-
       setOrders((prev) =>
-        prev.map((o: any) => (o.id === orderId ? updated : o)),
+        prev.map((o: any) => (o.id === orderId ? data.order : o)),
       );
       setError("");
     } catch (err: any) {
