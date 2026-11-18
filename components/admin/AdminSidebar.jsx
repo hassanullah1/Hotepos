@@ -139,7 +139,7 @@ const NAV_ITEMS = [
     href: "/admin/orders",
     key: "orders",
     section: "ops",
-    roles: ["hotel_owner", "branch_manager","waiter"],
+    roles: ["hotel_owner", "branch_manager", "waiter"],
     icon: ClipboardList,
   },
   {
@@ -179,7 +179,7 @@ const NAV_ITEMS = [
     section: "ops",
     roles: ["hotel_owner", "branch_manager"],
     icon: Contact,
-    
+    requiresSection: "customers",
   },
 
   /* ── COMMON (platform-only) ────────────────────────────────── */
