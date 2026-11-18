@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 // WhatsApp number (no +, no spaces, country code included)
-const WHATSAPP_NUMBER = "93700000000";
+const WHATSAPP_NUMBER = "93776655076";
 
 const contactText = {
   en: {
