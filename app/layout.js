@@ -1,7 +1,7 @@
 // app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import { nazanin } from "./fonts";
-import InstallPrompt from "./components/InstallPrompt"; 
+import InstallPrompt from "./components/InstallPrompt";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import "./globals.css";
 
@@ -17,25 +17,23 @@ const geistMono = Geist_Mono({
 
 // ─────────── metadata (includes PWA) ───────────
 
-
-
 export const metadata = {
   metadataBase: new URL("https://melmah.app"),
 
   title: {
     default:
-      "MM Melmah | Hotel Management, Restaurant POS & Online Food Ordering Afghanistan",
-    template: "%s | MM Melmah",
+      " Melmah | Hotel Management, Restaurant POS & Online Food Ordering Afghanistan",
+    template: "%s |  Melmah",
   },
 
   description:
-    "MM Melmah is an all-in-one hotel management, restaurant POS and online food ordering platform in Afghanistan. Manage hotels, branches, staff, tables, orders, sales and accept online food orders. د هوټل مدیریت او آنلاین خوړو فرمایش سیستم | سیستم مدیریت هوتل و سفارش آنلاین غذا.",
+    " Melmah is an all-in-one hotel management, restaurant POS and online food ordering platform in Afghanistan. Manage hotels, branches, staff, tables, orders, sales and accept online food orders. د هوټل مدیریت او آنلاین خوړو فرمایش سیستم | سیستم مدیریت هوتل و سفارش آنلاین غذا.",
 
-  applicationName: "MM Melmah",
+  applicationName: " Melmah",
 
   keywords: [
     // English: Hotel Management
-    "MM Melmah",
+    " Melmah",
     "Hotel Management System Afghanistan",
     "Hotel Management Software",
     "Hotel POS Software",
@@ -99,28 +97,27 @@ export const metadata = {
     "پلتفرم سفارش غذا در افغانستان",
   ],
 
-  authors: [{ name: "MM Melmah" }],
-  creator: "MM Melmah",
-  publisher: "MM Melmah",
+  authors: [{ name: " Melmah" }],
+  creator: " Melmah",
+  publisher: " Melmah",
 
   alternates: {
     canonical: "/",
   },
 
   openGraph: {
-    title:
-      "MM Melmah | Hotel Management, Restaurant POS & Online Food Ordering",
+    title: " Melmah | Hotel Management, Restaurant POS & Online Food Ordering",
     description:
-      "Manage your hotel, restaurant, staff, tables, orders and sales. Let customers browse menus and order food online with MM Melmah.",
+      "Manage your hotel, restaurant, staff, tables, orders and sales. Let customers browse menus and order food online with  Melmah.",
     url: "https://melmah.app",
-    siteName: "MM Melmah",
+    siteName: " Melmah",
     locale: "en_US",
     type: "website",
   },
 
   twitter: {
-    card: "summary_large_image",
-    title: "MM Melmah | Hotel POS & Online Food Ordering",
+    card: "suary_large_image",
+    title: " Melmah | Hotel POS & Online Food Ordering",
     description:
       "Hotel management, restaurant POS and online food ordering platform in Afghanistan.",
   },
@@ -143,7 +140,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "MM Melmah",
+    title: " Melmah",
   },
 
   icons: {
@@ -159,8 +156,6 @@ export const metadata = {
     telephone: false,
   },
 };
-
-
 
 // ─────────── viewport (separate export in Next 15+) ───────────
 export const viewport = {
@@ -189,7 +184,6 @@ export default function RootLayout({ children }) {
       >
         <main className="flex-1">{children}</main>
         <ServiceWorkerRegister />
-        
       </body>
     </html>
   );

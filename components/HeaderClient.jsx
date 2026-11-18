@@ -144,11 +144,11 @@ export default function HeaderClient() {
 
   const navLinks = [
     { href: "/", label: t("home"), icon: Home },
-    {
-      href: "/hotel",
-      label: t("hotelRegister") || "Rgister hotel",
-      icon: ShoppingBag,
-    },
+    // {
+    //   href: "/hotel",
+    //   label: t("hotelRegister") || "Rgister hotel",
+    //   icon: ShoppingBag,
+    // },
     { href: "/about", label: t("about"), icon: Info },
     { href: "/pricing", label: t("pricing"), icon: Tag },
     { href: "/tutorials", label: t("tutorials"), icon: Book },
