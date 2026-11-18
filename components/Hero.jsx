@@ -71,7 +71,7 @@ export default function Hero({
     const targetHotels = parseInt(stats?.hotels) || 40;
     const targetCities = parseInt(stats?.cities) || 6;
     const targetOrders =
-      parseInt(String(stats?.orders).replace(/,/g, "")) || 12000;
+      parseInt(String(stats?.orders).replace(/,/g, "")) || 1200;
 
     const duration = 1500;
     const startTime = performance.now();

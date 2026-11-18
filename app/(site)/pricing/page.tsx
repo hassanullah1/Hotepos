@@ -288,7 +288,7 @@ function PlanCard({
           <div className="relative mt-5 flex items-baseline gap-1">
             {hasPrice ? (
               <>
-                <span className="text-2xl font-semibold text-[#C9A227]">$</span>
+                <span className="text-2xl font-semibold text-[#C9A227]">؋</span>
                 <span
                   className="text-5xl font-bold tabular-nums tracking-tight text-[#F0EAE2]"
                   style={{ fontFamily: "var(--font-display)" }}
@@ -382,27 +382,26 @@ function PlanCard({
                     })}
                   </ul>
                 </div>
-
               </div>
             ) : (
-                <ul className="space-y-2">
-                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
-                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
-                        <Layers size={12} />
-                      </span>
-                      <span className="truncate">
-                        {t.pricingBasicFeatures || "Basic Features"}
-                      </span>
-                    </li>
-                    <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
-                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
-                        <Globe size={12} />
-                      </span>
-                      <span className="truncate">
-                        {t.pricingOnlineFeatures || "Online Features"}
-                      </span>
-                    </li>
-                    </ul>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                    <Layers size={12} />
+                  </span>
+                  <span className="truncate">
+                    {t.pricingBasicFeatures || "Basic Features"}
+                  </span>
+                </li>
+                <li className="flex items-center gap-2.5 text-sm text-[#B7B2C4]">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#C9A227]/10 text-[#C9A227]">
+                    <Globe size={12} />
+                  </span>
+                  <span className="truncate">
+                    {t.pricingOnlineFeatures || "Online Features"}
+                  </span>
+                </li>
+              </ul>
             )}
           </div>
         </div>
