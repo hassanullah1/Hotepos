@@ -665,7 +665,7 @@ export default function DashboardPage() {
                     {margin.toFixed(0)}%
                   </span>
                   <span className="text-[10px] uppercase tracking-wider text-gray-400">
-                    margin
+                    {d.margin || "margin"}
                   </span>
                 </div>
               </div>
@@ -744,8 +744,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium uppercase tracking-wider text-amber-50">
-                    {d.topBranch?.label ||
-                      `Top branch — last ${chartDates.length || 7} days`}
+                    {(
+                      d.topBranch?.label || "Top branch — last {days} days"
+                    ).replace("{days}", chartDates.length || 7)}
                   </p>
                   <p className="truncate text-xl font-bold">
                     {data.topBranch.branchName}
@@ -776,16 +777,27 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             <div className={cardClass}>
               <SectionTitle icon={TrendingUp} tone="teal">
-                {d.charts?.trend?.replace("{days}", chartDates.length) ||
-                  `Sales — last ${chartDates.length || 7} days`}
+                {(d.charts?.trend || "Sales — last {days} days").replace(
+                  "{days}",
+                  chartDates.length || 7,
+                )}
               </SectionTitle>
               {trendStats && (
                 <div className="mb-4 grid grid-cols-3 gap-2">
                   {[
-                    { k: "Total", v: currency(trendStats.total) },
-                    { k: "Avg / day", v: currency(trendStats.avg) },
                     {
-                      k: `Best · ${trendStats.best.label}`,
+                      k: d.stats?.total || "Total",
+                      v: currency(trendStats.total),
+                    },
+                    {
+                      k: d.stats?.avgPerDay || "Avg / day",
+                      v: currency(trendStats.avg),
+                    },
+                    {
+                      k: (d.stats?.best || "Best · {label}").replace(
+                        "{label}",
+                        trendStats.best.label,
+                      ),
                       v: currency(trendStats.best.value),
                     },
                   ].map((x) => (
@@ -943,11 +955,10 @@ export default function DashboardPage() {
           {showBranchComparison && (
             <div className={cardClass}>
               <SectionTitle icon={BarChart3} tone="indigo">
-                {d.charts?.branchComparison?.replace(
-                  "{days}",
-                  chartDates.length,
-                ) ||
-                  `Every branch — sales vs expenses (last ${chartDates.length || 7} days)`}
+                {(
+                  d.charts?.branchComparison ||
+                  "Every branch — sales vs expenses (last {days} days)"
+                ).replace("{days}", chartDates.length || 7)}
               </SectionTitle>
               <div className="overflow-x-auto">
                 <div
