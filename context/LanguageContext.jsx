@@ -79,8 +79,8 @@ const translations = {
 };
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState("en");
-  const [dir, setDir] = useState("ltr");
+  const [language, setLanguage] = useState("prs");
+  const [dir, setDir] = useState("rtl");
 
   useEffect(() => {
     const saved = localStorage.getItem("language");

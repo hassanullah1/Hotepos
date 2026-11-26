@@ -295,8 +295,8 @@ export default function HeaderClient() {
         href={`/hotel/login?next=${encodeURIComponent(pathname || "/order")}`}
         className="flex items-center gap-2 rounded-full border border-[#2E2938] bg-[#1B1823]/80 px-3 py-2 text-[#CFCADB] transition-colors hover:border-[#C9A227]/60 hover:text-[#E0B93A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227]/60"
       >
-        <LogIn size={15} className="text-[#C9A227]" />
-        <span className="text-sm font-medium">{t("signIn") || "Sign in"}</span>
+        <LogIn size={17} className="text-[#C9A227]" />
+        
       </Link>
     );
   };
