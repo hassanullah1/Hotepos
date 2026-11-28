@@ -1,166 +1,180 @@
 // components/LoadingScreen.jsx
 "use client";
 
+import styles from "./LoadingScreen.module.css";
+
+const WORD = "MELMAH".split("");
+
+const SPARKLES = [
+  { left: "-4%", top: "6%", size: 14, delay: "2.55s" },
+  { left: "40%", top: "-18%", size: 11, delay: "2.7s" },
+  { left: "78%", top: "-14%", size: 16, delay: "2.6s" },
+  { left: "104%", top: "26%", size: 12, delay: "2.8s" },
+];
+
+/*
+ * Critical styles are inline on purpose.
+ * Inline styles are part of the HTML, so size, position and hidden start state
+ * are correct on the very first paint, even before any stylesheet is ready.
+ * This stops the "big text across the full width" flash at the start.
+ * Animations and decoration live in LoadingScreen.module.css.
+ */
+const FONT =
+  'ui-rounded, "Nunito", "Poppins", "Segoe UI", system-ui, sans-serif';
+
 /**
- * Minimal loading screen — a gold ring spinner on the same dark surface
- * as the header and footer, with an optional caption.
+ * Melmah text-only loading screen, centered.
+ *
+ * 1. A small teal dot pops in at the center.
+ * 2. The dot stretches into a line.
+ * 3. M, E, L, M, A, H hop up from the bottom one at a time like jelly (squash and stretch).
+ * Then the word shines and bounces, and the letters spring away to the top in the same order
+ * (M first), and the cycle repeats (5s) until loading ends.
+ *
+ * Needs LoadingScreen.module.css in the same folder.
  *
  * @param {Object} props
- * @param {string}  [props.text="Loading..."]  Caption under the spinner. Pass "" to hide it.
- * @param {boolean} [props.fullScreen=true]     If true, fills the viewport and centers itself.
- * @param {string}  [props.className=""]        Extra classes for the outer wrapper.
+ * @param {boolean} [props.fullScreen=true]  If true, fills the viewport. Otherwise fills its parent area.
+ * @param {string}  [props.className=""]     Extra classes for the outer wrapper.
  */
-export default function LoadingScreen({
-  text = "Loading...",
-  fullScreen = true,
-  className = "",
-}) {
+export default function LoadingScreen({ fullScreen = true, className = "" }) {
   return (
     <div
-      className={`${
-        fullScreen ? "min-h-[100dvh] w-full" : "w-full"
-      } relative flex items-center justify-center overflow-hidden bg-[#15121C] px-4 ${className}`}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      aria-label="Loading Melmah"
+      className={`${styles.root} ${className}`}
+      style={{
+        position: "relative",
+        display: "grid",
+        placeItems: "center",
+        width: "100%",
+        minHeight: fullScreen ? "100dvh" : "240px",
+        padding: "2.5rem 1.5rem",
+        overflow: "hidden",
+        background: "#fff",
+        boxSizing: "border-box",
+      }}
     >
-      {/* Ambient gold glow — matches the header/footer blobs */}
       <div
-        className="kls-glow pointer-events-none absolute h-64 w-64 rounded-full bg-[#C9A227]/10 blur-3xl"
+        className={styles.bg}
         aria-hidden="true"
+        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       />
 
-      <div className="kls-tuck relative flex flex-col items-center gap-5">
-        <div className="kls-spin-wrap relative h-14 w-14">
-          {/* Soft gold halo behind the ring */}
-          <div className="kls-halo absolute inset-0 rounded-full bg-gradient-to-br from-[#E0B93A] to-[#8A6E1A] opacity-40 blur-md" />
-
-          {/* Gradient ring — same gold as the header logo ring */}
-          <svg viewBox="0 0 56 56" className="kls-ring relative h-14 w-14">
-            <defs>
-              <linearGradient id="kls-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#E0B93A" />
-                <stop offset="100%" stopColor="#A9821E" />
-              </linearGradient>
-            </defs>
-            <circle
-              cx="28"
-              cy="28"
-              r="22"
-              fill="none"
-              strokeWidth="4"
-              className="stroke-[#2E2938]"
-            />
-            <circle
-              cx="28"
-              cy="28"
-              r="22"
-              fill="none"
-              stroke="url(#kls-grad)"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeDasharray="90 138"
-            />
-          </svg>
+      {/* Compact block, centered in the middle of the screen */}
+      <div
+        aria-hidden="true"
+        style={{ position: "relative", width: "fit-content", maxWidth: "100%" }}
+      >
+        <div
+          className={styles.word}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "0.06em",
+            fontFamily: FONT,
+            fontWeight: 800,
+            fontSize: "clamp(1.9rem, 9vw, 3.5rem)",
+            lineHeight: 1,
+            letterSpacing: "0.08em",
+            color: "#007068",
+          }}
+        >
+          {WORD.map((letter, i) => (
+            <span
+              key={i}
+              className={styles.mask}
+              style={{ display: "inline-block" }}
+            >
+              <span
+                className={styles.letter}
+                style={{
+                  display: "inline-block",
+                  opacity: 0,
+                  transform: "translateY(120%)",
+                  "--dir": i % 2 ? 1 : -1,
+                  animationDelay: `${0.45 + i * 0.2}s`,
+                }}
+              >
+                <span
+                  className={styles.wave}
+                  style={{
+                    display: "inline-block",
+                    animationDelay: `${0.45 + i * 0.2}s`,
+                  }}
+                >
+                  <span
+                    className={styles.ink}
+                    style={{
+                      display: "inline-block",
+                      animationDelay: `${0.45 + i * 0.2}s`,
+                    }}
+                  >
+                    {letter}
+                  </span>
+                </span>
+              </span>
+            </span>
+          ))}
         </div>
 
-        {text && (
-          <p className="kls-caption text-xs font-medium uppercase tracking-[0.25em] text-[#C9A227]">
-            {text}
-          </p>
-        )}
+        {/* Loads first: a dot that stretches into a line */}
+        <div
+          className={styles.lineWrap}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            height: 6,
+            marginTop: "0.7rem",
+          }}
+        >
+          <span
+            className={styles.line}
+            style={{
+              display: "block",
+              width: 6,
+              height: 6,
+              borderRadius: 999,
+              background: "#12958a",
+              opacity: 0,
+              transform: "scale(0)",
+            }}
+          />
+        </div>
+
+        {SPARKLES.map((sp, i) => (
+          <span
+            key={i}
+            className={styles.sparkle}
+            style={{
+              position: "absolute",
+              left: sp.left,
+              top: sp.top,
+              width: sp.size,
+              height: sp.size,
+              marginLeft: -sp.size / 2,
+              marginTop: -sp.size / 2,
+              opacity: 0,
+              pointerEvents: "none",
+              animationDelay: sp.delay,
+            }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width={sp.size}
+              height={sp.size}
+              style={{ display: "block" }}
+            >
+              <path
+                d="M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0Z"
+                fill="#12958a"
+              />
+            </svg>
+          </span>
+        ))}
       </div>
-
-      <style jsx>{`
-        .kls-tuck {
-          opacity: 0;
-          transform: translateY(10px) scale(0.8);
-          animation: kls-tuck-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1)
-            forwards;
-        }
-        .kls-spin-wrap {
-          animation: kls-bounce 1.4s ease-in-out infinite;
-        }
-        .kls-ring {
-          animation: kls-spin 1.1s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
-          transform-origin: center;
-        }
-        .kls-halo {
-          animation: kls-pulse 1.6s ease-in-out infinite;
-        }
-        .kls-glow {
-          animation: kls-ambient 3.5s ease-in-out infinite;
-        }
-        .kls-caption {
-          animation: kls-fade 1.6s ease-in-out infinite;
-        }
-
-        @keyframes kls-tuck-in {
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        @keyframes kls-spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes kls-bounce {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-3px);
-          }
-        }
-        @keyframes kls-pulse {
-          0%,
-          100% {
-            transform: scale(0.9);
-            opacity: 0.3;
-          }
-          50% {
-            transform: scale(1.15);
-            opacity: 0.55;
-          }
-        }
-        @keyframes kls-ambient {
-          0%,
-          100% {
-            transform: translate(0, 0) scale(1);
-            opacity: 0.35;
-          }
-          50% {
-            transform: translate(15px, -10px) scale(1.1);
-            opacity: 0.55;
-          }
-        }
-        @keyframes kls-fade {
-          0%,
-          100% {
-            opacity: 0.65;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .kls-tuck {
-            animation: none !important;
-            opacity: 1;
-            transform: none;
-          }
-          .kls-spin-wrap,
-          .kls-halo,
-          .kls-glow,
-          .kls-caption {
-            animation: none !important;
-          }
-          .kls-ring {
-            animation-duration: 2.2s;
-          }
-        }
-      `}</style>
     </div>
   );
 }

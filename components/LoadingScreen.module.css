@@ -1,0 +1,214 @@
+/* components/LoadingScreen.module.css */
+
+.root {
+  --teal-700: #007068;
+  --teal-500: #12958a;
+  --teal-300: #5fd3bf;
+}
+
+.bg {
+  background:
+    radial-gradient(
+      60% 45% at 85% 0%,
+      rgba(95, 211, 191, 0.28),
+      transparent 70%
+    ),
+    radial-gradient(
+      55% 40% at 10% 100%,
+      rgba(18, 149, 138, 0.18),
+      transparent 70%
+    );
+}
+
+.letter {
+  animation: roll 5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.wave {
+  transform-origin: 50% 100%;
+  animation: wave 5s ease-in-out infinite;
+}
+
+.ink {
+  background: linear-gradient(
+    100deg,
+    var(--teal-700) 0%,
+    var(--teal-700) 38%,
+    var(--teal-300) 50%,
+    var(--teal-700) 62%,
+    var(--teal-700) 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shine 5s ease-in-out infinite;
+}
+
+.line {
+  background: linear-gradient(
+    90deg,
+    var(--teal-500),
+    var(--teal-300),
+    var(--teal-500)
+  ) !important;
+  background-size: 300% 100% !important;
+  animation:
+    dotToLine 0.6s cubic-bezier(0.34, 1.4, 0.5, 1) forwards,
+    lineShine 1.6s linear 1s infinite;
+}
+
+.sparkle {
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+/* 0-35% the dot pops in, 35-100% it stretches into a full-width line */
+@keyframes dotToLine {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+    width: 6px;
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.4);
+    width: 6px;
+  }
+  50% {
+    transform: scale(1);
+    width: 6px;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    width: 100%;
+  }
+}
+
+@keyframes lineShine {
+  to {
+    background-position: -300% 0;
+  }
+}
+
+/* Cute jelly motion.
+   In (0-19%): hops up from below, lands with a squash, wobbles, settles.
+   Out (72-100%): squashes down, springs up, stretches and floats away to the top.
+   --dir is +1 / -1 per letter so neighbours tilt in opposite directions. */
+@keyframes roll {
+  0% {
+    opacity: 0;
+    transform: translateY(120%) scale(0.7, 1.3)
+      rotate(calc(var(--dir) * -12deg));
+  }
+  7% {
+    opacity: 1;
+    transform: translateY(-14%) scale(0.92, 1.12)
+      rotate(calc(var(--dir) * 6deg));
+  }
+  10% {
+    transform: translateY(0) scale(1.15, 0.82) rotate(0deg);
+  }
+  13% {
+    transform: translateY(-5%) scale(0.97, 1.05)
+      rotate(calc(var(--dir) * -2deg));
+  }
+  16% {
+    transform: translateY(0) scale(1.04, 0.97) rotate(0deg);
+  }
+  19%,
+  72% {
+    opacity: 1;
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+    animation-timing-function: ease-in;
+  }
+  77% {
+    opacity: 1;
+    transform: translateY(4%) scale(1.14, 0.82) rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(-45%) scale(0.85, 1.25)
+      rotate(calc(var(--dir) * 8deg));
+  }
+  93%,
+  100% {
+    opacity: 0;
+    transform: translateY(-130%) scale(0.6, 1.3)
+      rotate(calc(var(--dir) * 14deg));
+  }
+}
+
+/* Bounce and shine run after the whole word has landed (38% of the cycle) */
+@keyframes wave {
+  0%,
+  38%,
+  54%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  41% {
+    transform: translateY(0) scale(1.08, 0.9);
+  }
+  46% {
+    transform: translateY(-0.1em) scale(0.96, 1.06);
+  }
+  51% {
+    transform: translateY(0) scale(1.04, 0.96);
+  }
+}
+
+@keyframes shine {
+  0%,
+  38% {
+    background-position: 100% 0;
+  }
+  62%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0);
+  }
+  4% {
+    opacity: 1;
+    transform: scale(1.2) rotate(45deg);
+  }
+  10%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .wave,
+  .ink,
+  .sparkle {
+    animation: none !important;
+  }
+  .ink {
+    background-position: 50% 0;
+  }
+  .sparkle {
+    display: none;
+  }
+  .line {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    width: 100% !important;
+  }
+}
